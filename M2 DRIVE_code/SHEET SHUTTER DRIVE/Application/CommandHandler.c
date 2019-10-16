@@ -625,7 +625,7 @@ VOID commandHandler(VOID)
                             if(!uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterLowerLimit)
                             {
                                 inputFlags.value = CLOSE_SHUTTER;
-                                TIME_CMD_close_shutter=00;
+                                TIME_CMD_close_shutter=100;
                                 //if shutter is moving then calculate min distance travel required.
                                 if(rampOutputStatus.shutterMoving)
                                 {

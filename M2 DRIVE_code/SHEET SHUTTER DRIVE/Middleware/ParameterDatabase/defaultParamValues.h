@@ -114,7 +114,7 @@ CONST _EEPDriveMotorCtrlBlock uEEP_M2DriveMotorCtrlBlockDefault =
 		0,      //UINT8	breakEnabled_A511;
 		100,      //UINT16	speed_PI_KP_A512;
 		70,      //UINT8	speed_PI_KI_A513;
-		100,      //UINT16	current_PI_KP_A514;
+		300,      //UINT16	current_PI_KP_A514;
 		40,      //UINT8	current_PI_KI_A515;
 		0,      //UINT16	outputFreq_A516;
 		9,     //UINT8	inchSpeed_A517;

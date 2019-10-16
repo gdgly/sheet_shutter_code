@@ -217,7 +217,7 @@ void __attribute__((interrupt, no_auto_psv)) _T1Interrupt (void)
 	// If user press down button when shutter is not at lower limit and motor cable has some connection issue, which result shutter to fall down wih high speed
 
 #define		MTR_CABLE_FAULT_TOP_UP_SPEED_VALUE_TO_S1_DOWN	500  // it is an top speed to S1 down speed to declare "motor cable fault" error
-#define		MTR_CABLE_FAULT_MONITOR_TIME					100         // it is an time period in msec for which "motor cable fault" error needs to monitor,
+#define		MTR_CABLE_FAULT_MONITOR_TIME					250         // it is an time period in msec for which "motor cable fault" error needs to monitor,
 	// before stoping the motor and declaring the error
 	// max limit = 250 msec
 
