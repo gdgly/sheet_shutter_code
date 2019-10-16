@@ -96,7 +96,8 @@ typedef enum installationState
     INSTALL_SUCCESSFUL,  //bug_NO.35
     INSTALL_COMPLETE,
     INSTALL_RESTART,   
-    INSTALL_STATE_END      
+    INSTALL_STATE_END, 
+    INSTALL_A130        
 }installationState_en;
 
 typedef struct _powerUpCalib
@@ -163,6 +164,7 @@ UINT32 getSystemTick(VOID);
 
 VOID checkShutterPosition(VOID);
 VOID powerUpCalibration(VOID);
+VOID startApertureHeight(VOID);
 VOID startInstallation(VOID);
 
 VOID checkShutterInstallation(VOID);

@@ -558,7 +558,8 @@ typedef union // Drive status register
             UINT32 driveBoardBootloader		: 1;
             UINT32 shutterBetweenUplmtAphgt	: 1;	//STT  shutter position between upperlimit and ApertureHeight     //bug_NO.12?13?14?15
             UINT32 shutterBetweenLowlmtAphgt	: 1;	//STT  shutter position between lowerlimit and ApertureHeight  //bug_NO.12?13?14?15
-            UINT32 unused						: 11;
+            UINT32 driveApertureHeight 		: 1; 
+            UINT32 unused						: 10;
 
 	   } bits;
 
@@ -576,7 +577,8 @@ typedef union  // Drive installation status register
               UINT8 installationSuccess      : 1; // success can be flagged on completion of A102, then runtime calibration 
               									  // can be taken up separately 
               UINT8 installationFailed       : 1;
-              UINT8 unused                   : 2;
+              UINT8 installA130              : 1;
+              UINT8 unused                   : 1;
        } bits;
 } _DriveInstallationStatus_A606;
 

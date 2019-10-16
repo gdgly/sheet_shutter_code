@@ -85,7 +85,8 @@
 #define EXPECTED_CRC_START_POWER_ON_CALIBRATION				0x7792
 #define EXPECTED_CRC_STOP_POWER_ON_CALIBRATION				0x76D2
 //Added by AOYAGI_ST 20160418 for clean error
-#define EXPECTED_CRC_CLEAN_ERROR                0xB253          
+#define EXPECTED_CRC_CLEAN_ERROR                0xB253     
+#define EXPECTED_CRC_APERTUREHEIGHT                0x7292 
 
 CONST UINT32 drive_fw_version = 0x00000000;  //bug_NO.64
 
@@ -134,6 +135,7 @@ enum _CBCommand
 	stop_power_on_calibraion = 0x36,
     //Added by AOYAGI_ST 20160418 for clean error
     clean_error = 0x38,
+    start_apertureHeight =0x39,
 }enCBCommand; /* Used to identify command coming from CB */ 
 
 
@@ -253,6 +255,7 @@ const _stCBCommand constCBCommandList[NUM_OF_CONTROL_BOARD_COMMANDS] =
 	{DRIVE_BOARD_ADDRESS, CONTROL_BOARD_ADDRESS, STOP_POWER_ON_CALIBRATION_CMND_LEN,	stop_power_on_calibraion,	{(EXPECTED_CRC_STOP_POWER_ON_CALIBRATION & 0x00FF) , ((EXPECTED_CRC_STOP_POWER_ON_CALIBRATION & 0xFF00) >> 8)}, no_cmnd },
     //Added by AOYAGI_ST 20160418 for adding clean error function
     {DRIVE_BOARD_ADDRESS, CONTROL_BOARD_ADDRESS, CLEAN_ERROR_CMND_LEN,	clean_error,	{(EXPECTED_CRC_CLEAN_ERROR & 0x00FF) , ((EXPECTED_CRC_CLEAN_ERROR & 0xFF00) >> 8)}, no_cmnd },
+    {DRIVE_BOARD_ADDRESS, CONTROL_BOARD_ADDRESS, CLEAN_APERTUREHEIGHT_CMND_LEN,	start_apertureHeight,	{(EXPECTED_CRC_APERTUREHEIGHT & 0x00FF) , ((EXPECTED_CRC_APERTUREHEIGHT & 0xFF00) >> 8)}, no_cmnd },    
 	
 }; 
 
@@ -491,7 +494,9 @@ VOID commandHandler(VOID)
                         startInstallation();
                         
                     break;
-                    
+                case  start_apertureHeight:
+                       startApertureHeight();
+                    break;
                 case confirm_sub_state_install:    						
                     if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveInstallation) 
                     {
@@ -558,7 +563,10 @@ VOID commandHandler(VOID)
                         //It is a inch command. It is valid during installation only
                         if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveInstallation)
                         {
-                            inputFlags.value = OPEN_SHUTTER_JOG_10;
+                            //if((!uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterUpperLimit)&&(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveApertureHeight))
+                            //     inputFlags.value = STOP_SHUTTER;
+                            //else 
+                                inputFlags.value = OPEN_SHUTTER_JOG_10;
                         }
                         else
                         {
@@ -669,6 +677,9 @@ VOID commandHandler(VOID)
                         //It is a inch command. It is valid during installation only
                         if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveInstallation)
                         {
+                            //if((!uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterLowerLimit)&&(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveApertureHeight))
+                           //      inputFlags.value = STOP_SHUTTER;
+                           // else 
                             inputFlags.value = CLOSE_SHUTTER_JOG_10;
                         }
                         else
@@ -815,6 +826,10 @@ VOID commandHandler(VOID)
                                    parameter=parameter&0xFFFFFFBF;
                                    parameter=parameter|0x00000080;
                                }
+                            }
+                            if((paramIndex == 605)&&((parameter&0x00200008)==0x00200008))
+                            {
+                                  parameter=parameter&0xFFFFFFF7;                                  
                             }
                             transmitParameter(parameter, paramIndex, byteCount); 
                         }

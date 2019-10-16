@@ -42,7 +42,7 @@
 #define CRC_LENGTH						2 
 //	Changed from 17 to 19 as power on calibration control commands added
 //  Changed from 19 to 20 by AOYAGI_ST to add clean error function
-#define NUM_OF_CONTROL_BOARD_COMMANDS	20//19
+#define NUM_OF_CONTROL_BOARD_COMMANDS	21//20//19
 #define CMD_STATE_SIZE					1
 
 #define CRC_SEED 0 //0xFFFF
@@ -81,6 +81,7 @@
 #define STOP_POWER_ON_CALIBRATION_CMND_LEN				0x06
 //Added by AOYAGI_ST 20160418 for clean error
 #define CLEAN_ERROR_CMND_LEN                0x06
+#define CLEAN_APERTUREHEIGHT_CMND_LEN                0x06
 
 
 #define RESTART_DRIVE_COMM_COMMAND 			0x00

@@ -1335,6 +1335,27 @@ VOID checkShutterInstallation(VOID)
 	}
 }
 
+VOID startApertureHeight(VOID)
+{
+    //set drive installation in progress and install A100 position
+    //reset drive ready status
+    //Set installation in progress status
+    uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveApertureHeight = TRUE;
+    uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveInstallation = TRUE;
+    
+    //Reset drive installation failed flag
+    uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveInstallationStatus.bits.installationFailed = FALSE;
+    uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveInstallationStatus.bits.installationSuccess = FALSE;
+    //set current installation status bit
+    uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveInstallationStatus.bits.installA100 = FALSE;                     
+    //Reset ready flag
+    uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveReady = FALSE;
+    uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveInstallationStatus.bits.installA130 = TRUE; 
+    //Set current installation state
+    shutterInstall.currentState = INSTALL_A130;  
+	// Added to overcome installation issue (A100) - RN- NOV 2015
+	//gucInstallationInitiated = INITIATED;
+}
 VOID startInstallation(VOID)
 {
 	if(gucInstallationCalledFrom == 1)
@@ -1369,15 +1390,14 @@ VOID startInstallation(VOID)
 	gucInstallationInitiated = INITIATED;
     ShutterInstallationEnabled = TRUE;
 }
-
 VOID shutterInstallation(VOID)
 {
     SHORT positionError;
     
         
-    if((uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveInstallation) && ShutterInstallationEnabled)
+    if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveInstallation) //&& ShutterInstallationEnabled)
     {
-        if(ShutterInstallationStepNeedSave)   //bug_NO.43
+        if((ShutterInstallationStepNeedSave)&&(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveApertureHeight==0))   //bug_NO.43
         {
             ShutterInstallationStep = readBYTE(EEP_SHUTTER_INSTALLATION_STEP);
             switch(ShutterInstallationStep)
@@ -1713,8 +1733,7 @@ VOID shutterInstallation(VOID)
                     }
                     
                     break;
-                }
-                
+                } 
             case INSTALL_SUCCESSFUL:    //bug_NO.35
                 { 
                     //If enter button is pressed then set installation sucessful
@@ -1920,6 +1939,19 @@ VOID shutterInstallation(VOID)
                 break;
             }
 
+            case INSTALL_A130: 
+                if(shutterInstall.enterCmdRcvd)
+                {
+                        uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveInstallation = FALSE;
+                        uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveApertureHeight = FALSE;
+                        uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveReady = TRUE;
+                        uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveInstallationStatus.bits.installA130 = FALSE;
+                        
+                        shutterInstall.enterCmdRcvd = FALSE;
+                        //reset the calibration state machine
+                        shutterInstall.currentState = INSTALL_COMPLETE;
+                }
+                break;
             default:
                 break;
         }
