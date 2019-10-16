@@ -587,29 +587,37 @@ VOID commandHandler(VOID)
                     break;
                 case open_shutter_aperture_height:
                     //If shutter is at upper limit then do not process command
-                    if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveReady)
+                    if((TIME_CMD_open_shutter==0)&&(TIME_CMD_close_shutter==0))
                     {
-                        if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterLowerLimit ||
-                           uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterBetweenLowlmtAphgt) 
-                        {
-                            inputFlags.value = OPEN_SHUTTER_APERTURE; 
-                            bUpApertureCmdRecd = TRUE;
-                            //if shutter is moving then calculate min distance travel required.
-                            if(rampOutputStatus.shutterMoving)
+                        FLAG_CMD_open_shutter=0;
+                            if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveReady)
                             {
-                                calcShtrMinDistValue();
+                                if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterLowerLimit ||
+                                   uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterBetweenLowlmtAphgt) 
+                                {
+                                    inputFlags.value = OPEN_SHUTTER_APERTURE; 
+                                    TIME_CMD_open_shutter=100;
+                                    bUpApertureCmdRecd = TRUE;
+                                    //if shutter is moving then calculate min distance travel required.
+                                    if(rampOutputStatus.shutterMoving)
+                                    {
+                                        calcShtrMinDistValue();
+                                    }
+                                }
+                                else
+                                {
+                                    status = nack;
+                                }
                             }
-                        }
-                        else
-                        {
-                            status = nack;
-                        }
+                            else
+                            {
+                                status = nack;
+                            }
                     }
-                    else
-                    {
-                        status = nack;
-                    }
-                    
+                    else {
+                        FLAG_CMD_open_shutter=1;
+                        CMD_open_shutter=open_shutter_aperture_height;
+                    }                    
                     break;
                 case close_shutter:
                     FLAG_CMD_open_shutter=0;
@@ -688,39 +696,45 @@ VOID commandHandler(VOID)
 
                     break;
                 case close_shutter_aperture_height:
+                    FLAG_CMD_open_shutter=0;
                     //If shutter is at upper limit then do not process command
-                    if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveReady)
-                    {                        
-						//instruct function for to not scan PE sensor - YG - Nov 2015              
-                        faultTrgFlag = readCurrSensorState(TRUE)
-                            |uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.powerFail;
-                        
-                        if(faultTrgFlag == FALSE)
-                        {
-                            if(!uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterLowerLimit)
-                            {
-                                inputFlags.value = CLOSE_SHUTTER_APERTURE; 
-                                bDownApertureCmdRecd = TRUE;
-                                //if shutter is moving then calculate min distance travel required.
-                                if(rampOutputStatus.shutterMoving)
+                    if((TIME_CMD_open_shutter==0)&&(TIME_CMD_close_shutter==0))
+                    {                     
+                            if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveReady)
+                            {                        
+                                //instruct function for to not scan PE sensor - YG - Nov 2015              
+                                faultTrgFlag = readCurrSensorState(TRUE)
+                                    |uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.powerFail;
+
+                                if(faultTrgFlag == FALSE)
                                 {
-                                    calcShtrMinDistValue();
+                                    if(!uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterLowerLimit)
+                                    {
+                                        inputFlags.value = CLOSE_SHUTTER_APERTURE; 
+                                        TIME_CMD_close_shutter=100;
+                                        bDownApertureCmdRecd = TRUE;
+                                        //if shutter is moving then calculate min distance travel required.
+                                        if(rampOutputStatus.shutterMoving)
+                                        {
+                                            calcShtrMinDistValue();
+                                        }
+                                    }
+                                    else
+                                    {
+                                        status = nack;
+                                    }
+                                }
+                                else
+                                {
+                                    status = nack;
                                 }
                             }
                             else
                             {
                                 status = nack;
                             }
-                        }
-                        else
-                        {
-                            status = nack;
-                        }
                     }
-                    else
-                    {
-                        status = nack;
-                    }                    
+                    else status =no_reply_reqd;                    
                     break;
                     
                 case close_shutter_ignoring_sensors: 
