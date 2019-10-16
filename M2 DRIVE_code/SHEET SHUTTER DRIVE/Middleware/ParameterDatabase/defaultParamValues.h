@@ -90,7 +90,7 @@ CONST _EEPDriveMotorCtrlBlock uEEP_M2DriveMotorCtrlBlockDefault =
 		600,    //UINT16 fallChangeGearPos2_A107;
 		0,      //UINT16 fallChangeGearPos3_A108;
 		50,      //UINT8 	shtrRevOperMinLimit_A110;
-#endif        
+#endif
 #if 0
         //20160805  AOYAGI
 		750,//400,//500,    //UINT16 riseChangeGearPos1_A103;
@@ -103,15 +103,15 @@ CONST _EEPDriveMotorCtrlBlock uEEP_M2DriveMotorCtrlBlockDefault =
         //20160805  AOYAGI
 #endif
 #if 1
-		650,//850,    //UINT16 riseChangeGearPos1_A103; //20160915
-		400,//450,    //UINT16 riseChangeGearPos2_A104; //20160915
+		600,//850,    //UINT16 riseChangeGearPos1_A103; //20160915
+		300,//450,    //UINT16 riseChangeGearPos2_A104; //20160915
 		200,      //UINT16 riseChangeGearPos3_A105;
-		650,//1150,    //UINT16 fallChangeGearPos1_A106; //20160915
-		400,//450,    //UINT16 fallChangeGearPos2_A107; //20160915
+		600,//1150,    //UINT16 fallChangeGearPos1_A106; //20160915
+		300,//450,    //UINT16 fallChangeGearPos2_A107; //20160915
 		200,      //UINT16 fallChangeGearPos3_A108;
 		20,//175,      //UINT8 	shtrRevOperMinLimit_A110;
         //20160824 AOYAGI_CQ ??
-#endif          
+#endif
         0,      //UINT16 	PWMFreqMotorCtrl_A500;
 		0,      //UINT8 	startupDutyCycle_A501;
 		0,      //UINT16 	maxStartupTimeLim_A504;
@@ -127,35 +127,35 @@ CONST _EEPDriveMotorCtrlBlock uEEP_M2DriveMotorCtrlBlockDefault =
 		100,      //UINT16	CW_PI_KP_A512;
 		70,      //UINT8	CW_PI_KI_A513;
 		300,      //UINT16	CCW_PI_KP_A514;
-		40,      //UINT8	CCW_PI_KI_A515;        
-#endif        
+		40,      //UINT8	CCW_PI_KI_A515;
+#endif
 #if 1
 		100,      //UINT16	CW_PI_KP_A512;   //20160824 AOYAGI_CQ ??
 		70,//20,      //UINT8	CW_PI_KI_A513; 20160915
 		100,//200,      //UINT16	CCW_PI_KP_A514; 20160915
-		70,//12,      //UINT8	CCW_PI_KI_A515; 20160915        
-#endif 
+		70,//12,      //UINT8	CCW_PI_KI_A515; 20160915
+#endif
 		0,      //UINT16	outputFreq_A516;
 #if 0
         9,     //UINT8	inchSpeed_A517;
 #endif
 #if 1
         15,     //UINT8	inchSpeed_A517;   //20160824 AOYAGI_CQ ??
-#endif         
+#endif
 		0,      //UINT8	driveStatus_A518;
 		0,      //UINT8	currentError_A519;
 
 		500,      //UINT32	accel1Up_A520;
 		600,      //UINT32	decel1Up_A521;
 		2450,//2500,   //UINT16  s1Up_A522;20160915
-		500,//400,    //UINT16  s2Up_A523;20160915
-		300,//200,//200,      //UINT16  s3Up_A524;20160915
+		1200,//400,    //UINT16  s2Up_A523;20160915
+		600,//200,//200,      //UINT16  s3Up_A524;20160915
 		3,      //UINT8	upStepCount_A525;
 		0,      //UINT32	accel1Down_A526;
 		0,      //UINT32	decel1Down_A527;
 		2450,//2500,   //UINT16  s1Down_A528;20160915
-		400,    //UINT16  s2Down_A529;
-		200,//200,      //UINT16  s3Down_A530;
+		1200,    //UINT16  s2Down_A529;
+		600,//200,      //UINT16  s3Down_A530;
 		3,      //UINT8 	downStepCount_A531;
 		0,      //UINT8 	shutterLength_A536;
 		2,      //UINT8 	shutterType_A537;
@@ -201,7 +201,7 @@ CONST _EEPDriveApplBlock uDriveApplBlockEEPDefault =
     {
         0,      //UINT8 	snowModePhotoelec_A008;
 		0,      //UINT8 	initialValSetting_A021;
-		500,      //UINT16 	maintenanceCountLimit_A025; // to avoid error flag getting set
+		300,//500,      //UINT16 	maintenanceCountLimit_A025; // to avoid error flag getting set
 		0,      //UINT16 	maintenanceCountValue_A636;
 		0,      //UINT8 	microSensorCounter_A080;
 		0,      //UINT8 	microSensorCountReset_A081;
@@ -213,7 +213,7 @@ CONST _EEPDriveApplBlock uDriveApplBlockEEPDefault =
 		0,      //UINT8 	resetToDefaultValues_A120;
 		0,      //UINT8 	powerUpCalib_A125;
 		500,//10,      //UINT8 	correctedFreqAperture_A126;
-		0,      //UINT8 	autoCorrectionEnabled_A127;
+		1,//0,      //UINT8 	autoCorrectionEnabled_A127;
 		0,//3001,      //UINT8 	driveFWVersion_A549;
 		001,      //UINT8 	driveHWVersion_A550;
 		0,      //UINT32 	operationCount_A600;

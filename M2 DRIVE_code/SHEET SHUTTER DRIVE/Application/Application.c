@@ -109,12 +109,12 @@ BYTE gucInstallationCalledFrom = 0;
     #define FALL_GEAR_POS3_OFFSET    100
 #else
 //20160806 AOYAGI
-	#define RISE_GEAR_POS1_OFFSET    650//850//300//500 20160915
-	#define RISE_GEAR_POS2_OFFSET    400//450//200//450 20160915
+	#define RISE_GEAR_POS1_OFFSET    600//850//300//500 20160915
+	#define RISE_GEAR_POS2_OFFSET    300//450//200//450 20160915
 	#define RISE_GEAR_POS3_OFFSET    200//100//200
 
-	#define FALL_GEAR_POS1_OFFSET    650//1150//300//500 20160915
-	#define FALL_GEAR_POS2_OFFSET    400/450//200//450 20160915
+	#define FALL_GEAR_POS1_OFFSET    600//1150//300//500 20160915
+	#define FALL_GEAR_POS2_OFFSET    300//450//200//450 20160915
 	#define FALL_GEAR_POS3_OFFSET    200//100//200
 //20160806 AOYAGI
 #endif
@@ -226,7 +226,7 @@ VOID initApplication(VOID)
 void __attribute__((interrupt, no_auto_psv)) _T6Interrupt (void)
 {
     IFS2bits.T6IF = 0;
-    
+
 #ifndef PROGRAMMABLE_DEBOUNCE
     systemTick++;
     //monitor sensor interface
@@ -537,9 +537,9 @@ VOID updateDriveStatusFlags(VOID)
         }
 
 		//if(uDriveCommonBlockEEP.stEEPDriveCommonBlock.apertureHeightPos_A130 >= rampOutputStatus.shutterCurrentPosition)
-		if((rampOutputStatus.shutterCurrentPosition <= (uDriveCommonBlockEEP.stEEPDriveCommonBlock.apertureHeightPos_A130 + 
+		if((rampOutputStatus.shutterCurrentPosition <= (uDriveCommonBlockEEP.stEEPDriveCommonBlock.apertureHeightPos_A130 +
                                                        uDriveApplBlockEEP.stEEPDriveApplBlock.overrunProtection_A112)) &&
-            (rampOutputStatus.shutterCurrentPosition >= (uDriveCommonBlockEEP.stEEPDriveCommonBlock.apertureHeightPos_A130 - 
+            (rampOutputStatus.shutterCurrentPosition >= (uDriveCommonBlockEEP.stEEPDriveCommonBlock.apertureHeightPos_A130 -
                                                        uDriveApplBlockEEP.stEEPDriveApplBlock.overrunProtection_A112)))//20160806 AOYAGI
         {
 			// update drive status position to aperture height
@@ -561,9 +561,9 @@ VOID updateDriveStatusFlags(VOID)
         {
             uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterUpperLimit = FALSE;
         }
-         if((rampOutputStatus.shutterCurrentPosition > (uDriveCommonBlockEEP.stEEPDriveCommonBlock.upperStoppingPos_A100 + 
-            uDriveApplBlockEEP.stEEPDriveApplBlock.overrunProtection_A112)) && (rampOutputStatus.shutterCurrentPosition < 
-            (uDriveCommonBlockEEP.stEEPDriveCommonBlock.apertureHeightPos_A130 - 
+         if((rampOutputStatus.shutterCurrentPosition > (uDriveCommonBlockEEP.stEEPDriveCommonBlock.upperStoppingPos_A100 +
+            uDriveApplBlockEEP.stEEPDriveApplBlock.overrunProtection_A112)) && (rampOutputStatus.shutterCurrentPosition <
+            (uDriveCommonBlockEEP.stEEPDriveCommonBlock.apertureHeightPos_A130 -
             uDriveApplBlockEEP.stEEPDriveApplBlock.overrunProtection_A112)))
         {
             uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterBetweenUplmtAphgt = TRUE;
@@ -572,10 +572,10 @@ VOID updateDriveStatusFlags(VOID)
         {
             uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterBetweenUplmtAphgt = FALSE;
         }
-        
-        if((rampOutputStatus.shutterCurrentPosition < (uDriveCommonBlockEEP.stEEPDriveCommonBlock.lowerStoppingPos_A101 - 
-            uDriveApplBlockEEP.stEEPDriveApplBlock.overrunProtection_A112)) && (rampOutputStatus.shutterCurrentPosition > 
-            (uDriveCommonBlockEEP.stEEPDriveCommonBlock.apertureHeightPos_A130 + 
+
+        if((rampOutputStatus.shutterCurrentPosition < (uDriveCommonBlockEEP.stEEPDriveCommonBlock.lowerStoppingPos_A101 -
+            uDriveApplBlockEEP.stEEPDriveApplBlock.overrunProtection_A112)) && (rampOutputStatus.shutterCurrentPosition >
+            (uDriveCommonBlockEEP.stEEPDriveCommonBlock.apertureHeightPos_A130 +
             uDriveApplBlockEEP.stEEPDriveApplBlock.overrunProtection_A112)))
         {
             uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterBetweenLowlmtAphgt = TRUE;
@@ -1307,17 +1307,17 @@ VOID startApertureHeight(VOID)
     //Set installation in progress status
     uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveApertureHeight = TRUE;
     uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveInstallation = TRUE;
-    
+
     //Reset drive installation failed flag
     uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveInstallationStatus.bits.installationFailed = FALSE;
     uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveInstallationStatus.bits.installationSuccess = FALSE;
     //set current installation status bit
-    uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveInstallationStatus.bits.installA100 = FALSE;                     
+    uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveInstallationStatus.bits.installA100 = FALSE;
     //Reset ready flag
     uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveReady = FALSE;
-    uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveInstallationStatus.bits.installA130 = TRUE; 
+    uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveInstallationStatus.bits.installA130 = TRUE;
     //Set current installation state
-    shutterInstall.currentState = INSTALL_A130;  
+    shutterInstall.currentState = INSTALL_A130;
 	// Added to overcome installation issue (A100) - RN- NOV 2015
 	//gucInstallationInitiated = INITIATED;
     ShutterInstallationEnabled = TRUE;
@@ -1399,8 +1399,8 @@ VOID shutterInstallation(VOID)
                     uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveInstallationStatus.bits.installA101 = FALSE;
                     uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveInstallationStatus.bits.installA102 = FALSE;
                     break;
-                }                   
-            }       
+                }
+            }
         }
         //read current position
         shutterInstall.currentPosition = hallCounts;
@@ -1588,7 +1588,7 @@ VOID shutterInstallation(VOID)
                             //reset the installation state machine
                             ShutterInstallationStepNeedSave = FALSE;
                             shutterInstall.currentState = INSTALL_STATE_END;
-                            
+
                             //reset input flag to ramp generator
                             inputFlags.value = STOP_SHUTTER;
                             inputFlags_Installation.value = inputFlags.value;
@@ -1776,7 +1776,7 @@ VOID shutterInstallation(VOID)
             case INSTALL_STATE_END:
             {
                 if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveInstallationStatus.bits.installationFailed)
-                {            
+                {
 //                    delayMs(8888);
                     if(StopCnt)
                     {
@@ -1803,7 +1803,7 @@ VOID shutterInstallation(VOID)
 //                        InstallCnt = 0;
 //                        uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveInstallationStatus.bits.installationFailed = FALSE;
 //                        uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveInstallation = FALSE;
-//                        shutterInstall.currentState = INSTALL_A100; 
+//                        shutterInstall.currentState = INSTALL_A100;
 //                    }
 //                    else
 //                    {
@@ -1812,15 +1812,15 @@ VOID shutterInstallation(VOID)
                 }
                 break;
             }
-            
-            case INSTALL_A130: 
+
+            case INSTALL_A130:
                 if(shutterInstall.enterCmdRcvd)
                 {
                         uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveInstallation = FALSE;
                         uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveApertureHeight = FALSE;
                         uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveReady = TRUE;
                         uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveInstallationStatus.bits.installA130 = FALSE;
-                        
+
                         shutterInstall.enterCmdRcvd = FALSE;
                         //reset the calibration state machine
                         shutterInstall.currentState = INSTALL_COMPLETE;

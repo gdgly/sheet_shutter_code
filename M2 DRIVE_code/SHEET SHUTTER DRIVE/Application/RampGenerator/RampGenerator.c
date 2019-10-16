@@ -16,9 +16,9 @@
 
 /****************************************************************************
  *  Modification History
- *  
- *  Date                  Name          Comments 
- *  09/04/2014            iGate          Initial Creation                                                               
+ *
+ *  Date                  Name          Comments
+ *  09/04/2014            iGate          Initial Creation
 *****************************************************************************/
 #include <p33Exxxx.h>
 #include "RampGenerator.h"
@@ -55,16 +55,18 @@
 #define RAMP_STARTING_CURRENT_MAX   5000       //Limit starting current to 10A
 #define RAMP_STARTING_CURRENT_MIN   1000       //Limit starting current to 10A
 #define RAMP_STARTING_CURRENT_STEP  500         //Current change step is 200mA
-#define RAMP_STARTING_SPEED_MAX     3600        //Limit starting speed to 3600rpm
+//2016/09/27 Overun
+//#define RAMP_STARTING_SPEED_MAX     3600        //Limit starting speed to 3600rpm
+#define RAMP_STARTING_SPEED_MAX     2600        //Limit starting speed to 2600rpm
 
 #define MECHANICAL_LOCK_ACTIVATION_DELAY    50//100//500//1000    //Time delay required to energize mechanical lock 20160915
 #define MECHANICAL_LOCK_DEACTIVATION_DELAY  50      //Time delay required to de-energize mechanical lock
 #define MECHANICAL_LOCK_ACTIVATION_DELAY_CNT    (MECHANICAL_LOCK_ACTIVATION_DELAY/RAMP_GENERATOR_TIME_PERIOD)//10
 #define MECHANICAL_LOCK_DEACTIVATION_DELAY_CNT  (MECHANICAL_LOCK_DEACTIVATION_DELAY/RAMP_GENERATOR_TIME_PERIOD)//5
 
-//a = start speed, b = end speed, c = change rate in ms            
-#define ACCELARATION_RATE(a,b,c)     __builtin_divud(((DWORD)(b-a)*RAMP_GENERATOR_TIME_PERIOD),c);   
-#define DECELARATION_RATE(a,b,c)     __builtin_divud(((DWORD)(a-b)*RAMP_GENERATOR_TIME_PERIOD),c); 
+//a = start speed, b = end speed, c = change rate in ms
+#define ACCELARATION_RATE(a,b,c)     __builtin_divud(((DWORD)(b-a)*RAMP_GENERATOR_TIME_PERIOD),c);
+#define DECELARATION_RATE(a,b,c)     __builtin_divud(((DWORD)(a-b)*RAMP_GENERATOR_TIME_PERIOD),c);
 
 #define FAN_ON_TIME                 600000UL//1000ms*60*10 = 10 minute
 #define FAN_ON_TIME_CNT             (FAN_ON_TIME/RAMP_GENERATOR_TIME_PERIOD)
@@ -73,7 +75,7 @@
                                                 //50% of S1UP speed.
 
 //	Maximum count allowed if shutter is moving in wrong direction
-#define	MAX_FALSE_MOVEMENT_COUNT_LIMIT		54  // Number of hall pulses / mechanical revolution  X allowed false revolution 
+#define	MAX_FALSE_MOVEMENT_COUNT_LIMIT		54  // Number of hall pulses / mechanical revolution  X allowed false revolution
 												// 18 (750W motor) X 3
 
 /* Enumaration for ramp profile */
@@ -92,7 +94,7 @@ typedef enum rampProfileNo
 
 //Declare array of sensors
 #ifndef PROGRAMMABLE_DEBOUNCE
-safetySensors_t sensorList[SAFETY_SENSOR_END] = 
+safetySensors_t sensorList[SAFETY_SENSOR_END] =
 {
     {&readEmergencySensorSts,0,0,0,0,0,0,0,&emergencySensorSwTriggered},         //EMERGENCY_SENSOR
     {&readMicroSwSensorSts,0,0,0,0,0,0,0,&microSwSensorTiggered},      //MICRO_SW_SENSOR
@@ -102,7 +104,7 @@ safetySensors_t sensorList[SAFETY_SENSOR_END] =
     {&readTemperatureSensorSts,0,0,0,0,0,0,0,&tempSensorTriggered},    //TEMPERATURE_SENSOR
     {&readOriginSensorSts,0,0,0,0,0,0,0,&calculateDrift},              //ORIGIN_SENSOR
     {&readFourPtSensorSts,0,0,0,0,0,0,0,&fourPtLimitSwTriggered},      //FOUR_PT_SW_SENSOR
-    {&readPowerFailSensorSts,0,0,0,0,0,0,0,&tempSensorTriggered},      //POWER_FAIL_SW_SENSOR    
+    {&readPowerFailSensorSts,0,0,0,0,0,0,0,&tempSensorTriggered},      //POWER_FAIL_SW_SENSOR
 };
 #else
 //	CHANGE FOLLOWING PARAMETERS TO ADJUST "SENSOR ACTIVE DEBOUNCE VALUES" (all values in mS)
@@ -132,7 +134,7 @@ safetySensors_t sensorList[SAFETY_SENSOR_END] =
 //	Ingnore false debounce time
 #define	FALSE_DEBOUNCE_TIME					5//20	//	Reduced to handle "offset at upper & lower limit"
 
-safetySensors_t sensorList[SAFETY_SENSOR_END] = 
+safetySensors_t sensorList[SAFETY_SENSOR_END] =
 {
     {&readEmergencySensorSts,0,0,0,0,0,0,0,0,0,&emergencySensorSwTriggered},         //EMERGENCY_SENSOR
     {&readMicroSwSensorSts,0,0,0,0,0,0,0,0,0,&microSwSensorTiggered},      //MICRO_SW_SENSOR
@@ -142,10 +144,10 @@ safetySensors_t sensorList[SAFETY_SENSOR_END] =
     {&readTemperatureSensorSts,0,0,0,0,0,0,0,0,0,&tempSensorTriggered},    //TEMPERATURE_SENSOR
     {&readOriginSensorSts,0,0,0,0,0,0,0,0,0,&calculateDrift},              //ORIGIN_SENSOR
     {&readFourPtSensorSts,0,0,0,0,0,0,0,0,0,&fourPtLimitSwTriggered},      //FOUR_PT_SW_SENSOR
-    {&readPowerFailSensorSts,0,0,0,0,0,0,0,0,0,&tempSensorTriggered},      //POWER_FAIL_SW_SENSOR    
+    {&readPowerFailSensorSts,0,0,0,0,0,0,0,0,0,&tempSensorTriggered},      //POWER_FAIL_SW_SENSOR
 };
 
-SHORT sensorActiveDebounceValue[SAFETY_SENSOR_END] = 
+SHORT sensorActiveDebounceValue[SAFETY_SENSOR_END] =
 {
 	EMERGENCY_SENSOR_ACTIVE_DEBOUNCE,
 	MICRO_SW_SENSOR_ACTIVE_DEBOUNCE,
@@ -158,7 +160,7 @@ SHORT sensorActiveDebounceValue[SAFETY_SENSOR_END] =
 	POWER_FAIL_SW_SENSOR_ACTIVE_DEBOUNCE,
 };
 
-SHORT sensorInactiveDebounceValue[SAFETY_SENSOR_END] = 
+SHORT sensorInactiveDebounceValue[SAFETY_SENSOR_END] =
 {
 	EMERGENCY_SENSOR_INACTIVE_DEBOUNCE,
 	MICRO_SW_SENSOR_INACTIVE_DEBOUNCE,
@@ -243,11 +245,11 @@ BYTE gucTempFalseMovementCount = 0;
  * RETURNS: none
  *
  * ERRNO: none
- ********************************************************************************/  
+ ********************************************************************************/
 VOID initRampGenerator(VOID)
-{   
+{
     currentDirection = CW;
-    requiredDirection = CW; 
+    requiredDirection = CW;
     rampCurrentState = RAMP_STATE_END;
     rampStatusFlags.rampDcInjectionOn = 0;
     rampStatusFlags.rampBrakeOn = 1;
@@ -261,7 +263,7 @@ VOID initRampGenerator(VOID)
     rampCurrentSpeed = 0;
     rampCurrentTotCurr = 0;
     rampCurrentOpenloopDuty = 0;
-    rampDcInjectionOnCounter = 0;    
+    rampDcInjectionOnCounter = 0;
     rampOutputStatus.shutterCurrentPosition = hallCounts;
     rampOutputStatus.shutterMoving = 0;
     rampOutputStatus.shutterMovementDirection = currentDirection;
@@ -272,16 +274,16 @@ VOID initRampGenerator(VOID)
     rampStatusFlags.safetySensorTriggered = 0;
     rampStatusFlags.rampOpenInProgress = 0;
     rampStatusFlags.rampCloseInProgress = 0;
-    rampStatusFlags.rampMaintainHoldingDuty = 0;  
+    rampStatusFlags.rampMaintainHoldingDuty = 0;
     rampStatusFlags.rampDriftCalculated = 0;
     //rampStatusFlags.saveParamToEeprom = FALSE;
-    
+
 	// Acceleration and Decelaration logic updated to compute same based on S1 up and S1 down instead of Rated speed - YG - NOV 15
 	gs16UpAccelaration = 0;
 	gs16UpDecelaration = 0;
 	gs16DownAccelaration = 0;
 	gs16DownDecelaration = 0;
-    
+
     rampTripSts.rampTripUpStarted = 0;
     rampTripSts.rampTripUpCompleted = 1;
     rampTripSts.rampTripDnStarted = 0;
@@ -292,7 +294,7 @@ VOID initRampGenerator(VOID)
 VOID initProfileData(VOID)
 {
 
-	
+
     //calculate accelaration and decelaration rate common for all profiles
 
 	// Acceleration and Decelaration logic updated to compute same based on S1 up and S1 down instead of Rated speed - YG - NOV 15
@@ -300,18 +302,18 @@ VOID initProfileData(VOID)
     accelaration = ACCELARATION_RATE(RAMP_START_SPEED, \
                                      uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.ratedSpeed_A546, uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.accel1Up_A520);
     decelaration = DECELARATION_RATE(uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.ratedSpeed_A546, \
-                                     RAMP_START_SPEED, uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.decel1Up_A521);   
+                                     RAMP_START_SPEED, uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.decel1Up_A521);
 */
 
     gs16UpAccelaration = ACCELARATION_RATE(RAMP_START_SPEED, \
                                            uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.s1Up_A522, uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.accel1Up_A520);
     gs16UpDecelaration = DECELARATION_RATE(uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.s1Up_A522, \
-                                     	   RAMP_START_SPEED, uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.decel1Up_A521);   
+                                     	   RAMP_START_SPEED, uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.decel1Up_A521);
 
     gs16DownAccelaration = ACCELARATION_RATE(RAMP_START_SPEED, \
                                              uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.s1Down_A528, uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.accel1Up_A520);
     gs16DownDecelaration = DECELARATION_RATE(uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.s1Down_A528, \
-                                     	     RAMP_START_SPEED, uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.decel1Up_A521);   
+                                     	     RAMP_START_SPEED, uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.decel1Up_A521);
     initRampProfileData();
     initJogProfileData();
     initInchProfileData();
@@ -321,7 +323,7 @@ VOID initProfileData(VOID)
 VOID initRampProfileData(VOID)
 {
     SHORT i;
-    
+
 #if (STARTUP_IN_CURRENT_MODE == 1)
     rampFlags_t upBrakeRelease =    {0,1,0,0,0,1,0,1,1,0,0};
 #else
@@ -329,13 +331,13 @@ VOID initRampProfileData(VOID)
 #endif
     rampFlags_t upBrakeApply =      {1,0,0,0,1,0,1,0,1,0,0};
     rampFlags_t upRunMode =         {1,0,0,0,0,0,0,0,1,0,0};
-    
+
     rampFlags_t dnBrakeRelease =    {1,0,0,0,0,1,0,1,0,1,0};
     rampFlags_t dnBrakeApply =      {1,0,0,0,1,0,1,0,0,1,0};
     rampFlags_t dnRunMode =         {1,0,0,0,0,0,0,0,0,1,0};
-    
+
     //Initialize required parameters from parameter database
-    //Initialize up going profile   
+    //Initialize up going profile
     i = 0;
     rampUpGoingProfile[i].rampGenFlags = upBrakeRelease;
     rampUpGoingProfile[i].startPosition = uDriveCommonBlockEEP.stEEPDriveCommonBlock.lowerStoppingPos_A101;
@@ -359,7 +361,7 @@ VOID initRampProfileData(VOID)
     rampUpGoingProfile[i].endPosition = uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.riseChangeGearPos2_A104;
     rampUpGoingProfile[i].startSpeed = rampUpGoingProfile[i-1].endSpeed;
     rampUpGoingProfile[i].endSpeed = uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.s2Up_A523;
-    rampUpGoingProfile[i].speedChangeRate = gs16UpDecelaration;  
+    rampUpGoingProfile[i].speedChangeRate = gs16UpDecelaration;
     i++;
     rampUpGoingProfile[i].rampGenFlags = upRunMode;
     rampUpGoingProfile[i].startPosition = rampUpGoingProfile[i-1].startPosition;
@@ -368,15 +370,15 @@ VOID initRampProfileData(VOID)
     rampUpGoingProfile[i].endSpeed = rampUpGoingProfile[i-1].endSpeed;
     rampUpGoingProfile[i].speedChangeRate = NO_SPEED_CHANGE;
     i++;
-    
+
     if(uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.upStepCount_A525 == TWO_STEP_RAMP_PROFILE)
-    {        
+    {
         rampUpGoingProfile[i].rampGenFlags = upBrakeApply; //Value to apply brake
         rampUpGoingProfile[i].startPosition = rampUpGoingProfile[i-1].endPosition;
         rampUpGoingProfile[i].endPosition = uDriveCommonBlockEEP.stEEPDriveCommonBlock.upperStoppingPos_A100;
         rampUpGoingProfile[i].startSpeed = rampUpGoingProfile[i-1].endSpeed;
         rampUpGoingProfile[i].endSpeed = SHUTTER_SPEED_MIN_STOP;
-        rampUpGoingProfile[i].speedChangeRate = gs16UpDecelaration;  
+        rampUpGoingProfile[i].speedChangeRate = gs16UpDecelaration;
         rampUpGoingProfile[i].dcInjectionDuty = rampUpGoingProfile[i+2].dcInjectionDuty;
         rampUpGoingProfile[i].dcInjectionTime = rampUpGoingProfile[i+2].dcInjectionTime;
     }
@@ -387,7 +389,7 @@ VOID initRampProfileData(VOID)
         rampUpGoingProfile[i].endPosition = uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.riseChangeGearPos3_A105;
         rampUpGoingProfile[i].startSpeed = rampUpGoingProfile[i-1].endSpeed;
         rampUpGoingProfile[i].endSpeed = uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.s3Up_A524;
-        rampUpGoingProfile[i].speedChangeRate = gs16UpDecelaration; 
+        rampUpGoingProfile[i].speedChangeRate = gs16UpDecelaration;
         i++;
         rampUpGoingProfile[i].rampGenFlags = upRunMode;
         rampUpGoingProfile[i].startPosition = rampUpGoingProfile[i-1].startPosition;
@@ -401,9 +403,9 @@ VOID initRampProfileData(VOID)
         rampUpGoingProfile[i].endPosition = uDriveCommonBlockEEP.stEEPDriveCommonBlock.upperStoppingPos_A100;
         rampUpGoingProfile[i].startSpeed = rampUpGoingProfile[i-1].endSpeed;
         rampUpGoingProfile[i].endSpeed = SHUTTER_SPEED_MIN_STOP;
-        rampUpGoingProfile[i].speedChangeRate = gs16UpDecelaration;  
-    } 
-    
+        rampUpGoingProfile[i].speedChangeRate = gs16UpDecelaration;
+    }
+
     //Initialize down going profile
     i = 0;
     rampDnGoingProfile[i].rampGenFlags = dnBrakeRelease; //value to remove brake
@@ -425,7 +427,7 @@ VOID initRampProfileData(VOID)
     rampDnGoingProfile[i].endPosition = uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.fallChangeGearPos2_A107;
     rampDnGoingProfile[i].startSpeed = rampDnGoingProfile[i-1].endSpeed;
     rampDnGoingProfile[i].endSpeed = uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.s2Down_A529;
-    rampDnGoingProfile[i].speedChangeRate = gs16DownDecelaration;  
+    rampDnGoingProfile[i].speedChangeRate = gs16DownDecelaration;
     i++;
     rampDnGoingProfile[i].rampGenFlags = dnRunMode;
     rampDnGoingProfile[i].startPosition = rampDnGoingProfile[i-1].startPosition;
@@ -434,15 +436,15 @@ VOID initRampProfileData(VOID)
     rampDnGoingProfile[i].endSpeed = rampDnGoingProfile[i-1].endSpeed;
     rampDnGoingProfile[i].speedChangeRate = NO_SPEED_CHANGE;
     i++;
-    
+
     if(uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.downStepCount_A531 == TWO_STEP_RAMP_PROFILE)
-    {        
+    {
         rampDnGoingProfile[i].rampGenFlags = dnBrakeApply; //Value to apply brake
         rampDnGoingProfile[i].startPosition = rampDnGoingProfile[i-1].endPosition;
         rampDnGoingProfile[i].endPosition = uDriveCommonBlockEEP.stEEPDriveCommonBlock.lowerStoppingPos_A101;
         rampDnGoingProfile[i].startSpeed = rampDnGoingProfile[i-1].endSpeed;
         rampDnGoingProfile[i].endSpeed = SHUTTER_SPEED_MIN_STOP;
-        rampDnGoingProfile[i].speedChangeRate = gs16DownDecelaration;  
+        rampDnGoingProfile[i].speedChangeRate = gs16DownDecelaration;
         rampDnGoingProfile[i].dcInjectionDuty = rampDnGoingProfile[i+2].dcInjectionDuty;
         rampDnGoingProfile[i].dcInjectionTime = rampDnGoingProfile[i+2].dcInjectionTime;
     }
@@ -453,7 +455,7 @@ VOID initRampProfileData(VOID)
         rampDnGoingProfile[i].endPosition = uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.fallChangeGearPos3_A108;
         rampDnGoingProfile[i].startSpeed = rampDnGoingProfile[i-1].endSpeed;
         rampDnGoingProfile[i].endSpeed = uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.s3Down_A530;
-        rampDnGoingProfile[i].speedChangeRate = gs16DownDecelaration; 
+        rampDnGoingProfile[i].speedChangeRate = gs16DownDecelaration;
         i++;
         rampDnGoingProfile[i].rampGenFlags = dnRunMode;
         rampDnGoingProfile[i].startPosition = rampDnGoingProfile[i-1].startPosition;
@@ -467,55 +469,55 @@ VOID initRampProfileData(VOID)
         rampDnGoingProfile[i].endPosition = uDriveCommonBlockEEP.stEEPDriveCommonBlock.lowerStoppingPos_A101;
         rampDnGoingProfile[i].startSpeed = rampDnGoingProfile[i-1].endSpeed;
         rampDnGoingProfile[i].endSpeed = SHUTTER_SPEED_MIN_STOP;
-        rampDnGoingProfile[i].speedChangeRate = gs16DownDecelaration;  
-    }     
+        rampDnGoingProfile[i].speedChangeRate = gs16DownDecelaration;
+    }
 }
 
 VOID initJogProfileData(VOID)
 {
     SHORT i;
-    
+
     rampFlags_t upBrakeRelease =    {1,0,0,0,0,1,0,1,1,0,0};
     rampFlags_t upBrakeApply =      {1,0,0,0,1,0,1,0,1,0,0};
     rampFlags_t upRunMode =         {1,0,0,0,0,0,0,0,1,0,0};
-    
+
     rampFlags_t dnBrakeRelease =    {1,0,0,0,0,1,0,1,0,1,0};
     rampFlags_t dnBrakeApply =      {1,0,0,0,1,0,1,0,0,1,0};
     rampFlags_t dnRunMode =         {1,0,0,0,0,0,0,0,0,1,0};
-    
+
     //Initialize required parameters from parameter database
     //Initialize Jog up going profile
     i = 0;
     rampJogUpProfile[i].rampGenFlags = upBrakeRelease; //value to remove brake
     rampJogUpProfile[i].startPosition = uDriveCommonBlockEEP.stEEPDriveCommonBlock.lowerStoppingPos_A101;
-    
+
 	//	Default value of riseChangeGearPos3_A105 is 0. This resulted in shutter overshoot at the upper limit
 	//	when parameters are reset in case of shutter type change - Dec 2015
     /*if(uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.upStepCount_A525 == TWO_STEP_RAMP_PROFILE)
         rampJogUpProfile[i].endPosition = uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.riseChangeGearPos2_A104;
     else
         rampJogUpProfile[i].endPosition = uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.riseChangeGearPos3_A105;*/
-	
+
 	rampJogUpProfile[i].endPosition = \
 		//uDriveCommonBlockEEP.stEEPDriveCommonBlock.upperStoppingPos_A100 + 100;
     uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.riseChangeGearPos2_A104;
-    
+
     if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.drivePowerOnCalibration ||
        uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveRuntimeCalibration ||
        uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveInstallation)
     {
-        rampJogUpProfile[i].startSpeed = RAMP_START_SPEED;    
+        rampJogUpProfile[i].startSpeed = RAMP_START_SPEED;
         rampJogUpProfile[i].endSpeed = __builtin_divud(((DWORD)uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.jogSpeed_A551 \
                                          *uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.ratedSpeed_A546),100);
     }
     else
     {
-        rampJogUpProfile[i].startSpeed = RAMP_START_SPEED;    
+        rampJogUpProfile[i].startSpeed = RAMP_START_SPEED;
         rampJogUpProfile[i].endSpeed = __builtin_divud(((DWORD)SAFETY_SENSOR_JOG_SPEED_PERCENT \
                                                         *uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.s1Up_A522),100);
     }
-    
-    
+
+
     rampJogUpProfile[i].speedChangeRate = gs16UpAccelaration;
     i++;
     rampJogUpProfile[i].rampGenFlags = upRunMode;
@@ -530,7 +532,7 @@ VOID initJogProfileData(VOID)
     rampJogUpProfile[i].endPosition = uDriveCommonBlockEEP.stEEPDriveCommonBlock.upperStoppingPos_A100;
     rampJogUpProfile[i].startSpeed = rampJogUpProfile[i-1].endSpeed;
     rampJogUpProfile[i].endSpeed = SHUTTER_SPEED_MIN_STOP;
-    rampJogUpProfile[i].speedChangeRate = gs16UpDecelaration; 
+    rampJogUpProfile[i].speedChangeRate = gs16UpDecelaration;
 
     //Initialize Jog down going profile
     i = 0;
@@ -543,7 +545,7 @@ VOID initJogProfileData(VOID)
         rampJogDnProfile[i].endPosition = uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.fallChangeGearPos3_A108;
 
     rampJogDnProfile[i].startSpeed = RAMP_START_SPEED;
-    rampJogDnProfile[i].endSpeed = rampJogUpProfile[i].endSpeed; 
+    rampJogDnProfile[i].endSpeed = rampJogUpProfile[i].endSpeed;
     rampJogDnProfile[i].speedChangeRate = gs16DownAccelaration;
     i++;
     rampJogDnProfile[i].rampGenFlags = dnRunMode;
@@ -558,7 +560,7 @@ VOID initJogProfileData(VOID)
     rampJogDnProfile[i].endPosition = uDriveCommonBlockEEP.stEEPDriveCommonBlock.lowerStoppingPos_A101;
     rampJogDnProfile[i].startSpeed = rampJogDnProfile[i-1].endSpeed;
     rampJogDnProfile[i].endSpeed = SHUTTER_SPEED_MIN_STOP;
-    rampJogDnProfile[i].speedChangeRate = gs16DownDecelaration; 
+    rampJogDnProfile[i].speedChangeRate = gs16DownDecelaration;
 }
 
 VOID initApertureProfileData(VOID)
@@ -568,18 +570,18 @@ VOID initApertureProfileData(VOID)
     rampFlags_t upBrakeRelease =    {1,0,0,0,0,1,0,1,1,0,0};
     rampFlags_t upBrakeApply =      {1,0,0,0,1,0,1,0,1,0,0};
     rampFlags_t upRunMode =         {1,0,0,0,0,0,0,0,1,0,0};
-    
+
     rampFlags_t dnBrakeRelease =    {1,0,0,0,0,1,0,1,0,1,0};
     rampFlags_t dnBrakeApply =      {1,0,0,0,1,0,1,0,0,1,0};
     rampFlags_t dnRunMode =         {1,0,0,0,0,0,0,0,0,1,0};
-    
+
     //Initialize required parameters from parameter database
     //Initialize Aperture up going profile
     i = 0;
     rampApertureUpProfile[i].rampGenFlags = upBrakeRelease; //value to remove brake
     rampApertureUpProfile[i].startPosition = uDriveCommonBlockEEP.stEEPDriveCommonBlock.lowerStoppingPos_A101;
     rampApertureUpProfile[i].endPosition = (uDriveCommonBlockEEP.stEEPDriveCommonBlock.apertureHeightPos_A130 + 550);//APERPOS_OFFSET);   //bug_No.98
-    
+
     rampApertureUpProfile[i].startSpeed = RAMP_START_SPEED;
     rampApertureUpProfile[i].endSpeed = uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.s1Up_A522;
 //            __builtin_divud(((DWORD)uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.jogSpeed_A551 \
@@ -598,7 +600,7 @@ VOID initApertureProfileData(VOID)
     rampApertureUpProfile[i].endPosition = uDriveCommonBlockEEP.stEEPDriveCommonBlock.apertureHeightPos_A130;
     rampApertureUpProfile[i].startSpeed = rampApertureUpProfile[i-1].endSpeed;
     rampApertureUpProfile[i].endSpeed = SHUTTER_SPEED_MIN_STOP;
-    rampApertureUpProfile[i].speedChangeRate = gs16UpDecelaration;   
+    rampApertureUpProfile[i].speedChangeRate = gs16UpDecelaration;
     //Initialize Aperture down going profile
     i = 0;
     rampApertureDnProfile[i].rampGenFlags = dnBrakeRelease; //value to remove brake
@@ -606,7 +608,7 @@ VOID initApertureProfileData(VOID)
     rampApertureDnProfile[i].endPosition = (uDriveCommonBlockEEP.stEEPDriveCommonBlock.lowerStoppingPos_A101 - 350);//APERPOS_OFFSET);
     rampApertureDnProfile[i].startSpeed = RAMP_START_SPEED;
     rampApertureDnProfile[i].endSpeed = uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.s1Down_A528;
-    //rampApertureUpProfile[i].endSpeed; 
+    //rampApertureUpProfile[i].endSpeed;
     rampApertureDnProfile[i].speedChangeRate = gs16DownAccelaration;
     i++;
     rampApertureDnProfile[i].rampGenFlags = dnRunMode;
@@ -621,7 +623,7 @@ VOID initApertureProfileData(VOID)
     rampApertureDnProfile[i].endPosition = uDriveCommonBlockEEP.stEEPDriveCommonBlock.lowerStoppingPos_A101;
     rampApertureDnProfile[i].startSpeed = rampApertureDnProfile[i-1].endSpeed;
     rampApertureDnProfile[i].endSpeed = SHUTTER_SPEED_MIN_STOP;
-    rampApertureDnProfile[i].speedChangeRate = gs16DownDecelaration; 
+    rampApertureDnProfile[i].speedChangeRate = gs16DownDecelaration;
 }
 
 
@@ -632,17 +634,17 @@ VOID initInchProfileData(VOID)
     rampFlags_t upBrakeRelease =    {1,0,0,0,0,1,0,1,1,0,0};
     rampFlags_t upBrakeApply =      {1,0,0,0,1,0,1,0,1,0,0};
     rampFlags_t upRunMode =         {1,0,0,0,0,0,0,0,1,0,0};
-    
+
     rampFlags_t dnBrakeRelease =    {1,0,0,0,0,1,0,1,0,1,0};
     rampFlags_t dnBrakeApply =      {1,0,0,0,1,0,1,0,0,1,0};
     rampFlags_t dnRunMode =         {1,0,0,0,0,0,0,0,0,1,0};
-   
+
     //Initialize required parameters from parameter database
     //Initialize Inch up going profile
     i = 0;
     rampInchUpProfile[i].rampGenFlags = upBrakeRelease; //value to remove brake
     rampInchUpProfile[i].startPosition = 32767;     //in inch mode we do not check start and end position
-    rampInchUpProfile[i].endPosition = -32768;      //in inch mode we do not check start and end position    
+    rampInchUpProfile[i].endPosition = -32768;      //in inch mode we do not check start and end position
     rampInchUpProfile[i].startSpeed = RAMP_START_SPEED;
     rampInchUpProfile[i].endSpeed = __builtin_divud(((DWORD)uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.inchSpeed_A517 \
                                      *uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.ratedSpeed_A546),100);
@@ -660,7 +662,7 @@ VOID initInchProfileData(VOID)
     rampInchUpProfile[i].endPosition = rampInchUpProfile[i-1].endPosition;
     rampInchUpProfile[i].startSpeed = rampInchUpProfile[i-1].endSpeed;
     rampInchUpProfile[i].endSpeed = SHUTTER_SPEED_MIN_STOP;
-    rampInchUpProfile[i].speedChangeRate = gs16UpDecelaration;     
+    rampInchUpProfile[i].speedChangeRate = gs16UpDecelaration;
     //Initialize Inch down going profile
     i = 0;
     rampInchDnProfile[i].rampGenFlags = dnBrakeRelease; //value to remove brake
@@ -682,18 +684,18 @@ VOID initInchProfileData(VOID)
     rampInchDnProfile[i].endPosition = rampInchDnProfile[i-1].endPosition;
     rampInchDnProfile[i].startSpeed = rampInchDnProfile[i-1].endSpeed;
     rampInchDnProfile[i].endSpeed = SHUTTER_SPEED_MIN_STOP;
-    rampInchDnProfile[i].speedChangeRate = gs16DownDecelaration;   
+    rampInchDnProfile[i].speedChangeRate = gs16DownDecelaration;
 }
 
 VOID reAdjustRampPositions(VOID)
 {
     SHORT cnt = 0;
-    
+
     //if drift was calculated and it is non-zero then readjust ramp positions
     if(uDriveCommonBlockEEP.stEEPDriveCommonBlock.originSensorDrift_A637 != 0)
     {
         //Check the direction of movement then adjust ramp profiles
-        if(requiredDirection == CW)    
+        if(requiredDirection == CW)
         {
             if(currentRampProfileNo == RAMP_GOING_UP_PROFILE)
             {
@@ -706,8 +708,8 @@ VOID reAdjustRampPositions(VOID)
                     {
                         //find the parameter which needs to be adjusted
                         if(rampUpGoingProfile[cnt].endPosition < uDriveCommonBlockEEP.stEEPDriveCommonBlock.originSensorPosMonitor_A128)
-                        {                             
-                            //Adjust knee points also                            
+                        {
+                            //Adjust knee points also
                             rampUpGoingProfile[cnt].startPosition = rampUpGoingProfile[cnt].startPosition + \
                                 uDriveCommonBlockEEP.stEEPDriveCommonBlock.originSensorDrift_A637;
                             rampUpGoingProfile[cnt].endPosition = rampUpGoingProfile[cnt].endPosition + \
@@ -721,7 +723,7 @@ VOID reAdjustRampPositions(VOID)
                     {
                         //find the parameter which needs to be adjusted
                         if(rampUpGoingProfile[cnt].endPosition < uDriveCommonBlockEEP.stEEPDriveCommonBlock.originSensorPosMonitor_A128)
-                        {                            
+                        {
                             rampUpGoingProfile[cnt].startPosition = rampUpGoingProfile[cnt].startPosition + \
                                 uDriveCommonBlockEEP.stEEPDriveCommonBlock.originSensorDrift_A637;
                             rampUpGoingProfile[cnt].endPosition = rampUpGoingProfile[cnt].endPosition + \
@@ -738,7 +740,7 @@ VOID reAdjustRampPositions(VOID)
                 {
                     //find the parameter which needs to be adjusted
                     if(rampApertureUpProfile[cnt].endPosition < uDriveCommonBlockEEP.stEEPDriveCommonBlock.originSensorPosMonitor_A128)
-                    {                        
+                    {
                         rampApertureUpProfile[cnt].startPosition = rampApertureUpProfile[cnt].startPosition + \
                             uDriveCommonBlockEEP.stEEPDriveCommonBlock.originSensorDrift_A637;
                         rampApertureUpProfile[cnt].endPosition = rampApertureUpProfile[cnt].endPosition + \
@@ -754,7 +756,7 @@ VOID reAdjustRampPositions(VOID)
                 {
                     //find the parameter which needs to be adjusted
                     if(rampJogUpProfile[cnt].endPosition < uDriveCommonBlockEEP.stEEPDriveCommonBlock.originSensorPosMonitor_A128)
-                    {                        
+                    {
                         rampJogUpProfile[cnt].startPosition = rampJogUpProfile[cnt].startPosition + \
                             uDriveCommonBlockEEP.stEEPDriveCommonBlock.originSensorDrift_A637;
                         rampJogUpProfile[cnt].endPosition = rampJogUpProfile[cnt].endPosition + \
@@ -778,11 +780,11 @@ VOID reAdjustRampPositions(VOID)
                     {
                         //find the parameter which needs to be adjusted
                         if(rampDnGoingProfile[cnt].endPosition > uDriveCommonBlockEEP.stEEPDriveCommonBlock.originSensorPosMonitor_A128)
-                        {   
+                        {
                             rampDnGoingProfile[cnt].startPosition = rampDnGoingProfile[cnt].startPosition + \
                                 uDriveCommonBlockEEP.stEEPDriveCommonBlock.originSensorDrift_A637;
                             rampDnGoingProfile[cnt].endPosition = rampDnGoingProfile[cnt].endPosition + \
-                                uDriveCommonBlockEEP.stEEPDriveCommonBlock.originSensorDrift_A637;                            
+                                uDriveCommonBlockEEP.stEEPDriveCommonBlock.originSensorDrift_A637;
                         }
                     }
                 }
@@ -832,7 +834,7 @@ VOID reAdjustRampPositions(VOID)
                             uDriveCommonBlockEEP.stEEPDriveCommonBlock.originSensorDrift_A637;
                     }
                 }
-            }            
+            }
         }
     }
 }
@@ -852,9 +854,9 @@ VOID pwmBufferControl(SHORT status)
 /******************************************************************************
  * chargeBootstraps
  *
- *  This function charges the bootstrap caps each time the motor is energized for the   
+ *  This function charges the bootstrap caps each time the motor is energized for the
  *  first time after an undetermined amount of time. ChargeBootstraps subroutine turns
- *  ON the lower transistors for 10 ms to ensure voltage on these caps, and then it 
+ *  ON the lower transistors for 10 ms to ensure voltage on these caps, and then it
  *  transfers the control of the outputs to the PWM module.
  *
  * PARAMETER REQ: none
@@ -862,23 +864,23 @@ VOID pwmBufferControl(SHORT status)
  * RETURNS: none
  *
  * ERRNO: none
- ********************************************************************************/    
+ ********************************************************************************/
 VOID chargeBootstraps(VOID)
-{   
-    IOCON1 = 0xC780;        
-	IOCON2 = 0xC780;        
-	IOCON3 = 0xC780;   
+{
+    IOCON1 = 0xC780;
+	IOCON2 = 0xC780;
+	IOCON3 = 0xC780;
     PTCONbits.PTEN = 1;
     pwmBufferControl(ENABLE);
-	delayMs(CHARGE_BOOTSTRAP_CAP); 
-    pwmBufferControl(DISABLE);    
+	delayMs(CHARGE_BOOTSTRAP_CAP);
+    pwmBufferControl(DISABLE);
     IOCON1 = 0xF000;
     IOCON2 = 0xF000;
     IOCON3 = 0xF000;
     PTCONbits.PTEN = 0;
-    
+
     PDC1 = PHASE1 / 2;	// initialise as 0 volts
-	PDC2 = PHASE2 / 2;	
+	PDC2 = PHASE2 / 2;
 	PDC3 = PHASE3 / 2;
 }
 
@@ -886,15 +888,15 @@ VOID chargeBootstraps(VOID)
  * startMotor
  *
  * This function initializes speed controller and charges bootstrap capacitors.
- * It starts timer1 for speed PI controller, speed measurement and force 
+ * It starts timer1 for speed PI controller, speed measurement and force
  * commutation. it enables hall feedback and starts MCPWM to run the motor
- * 
+ *
  * PARAMETER REQ: none
  *
  * RETURNS: none
  *
  * ERRNO: none
- ********************************************************************************/  
+ ********************************************************************************/
 VOID startMotor(VOID)
 {
     flags.speedControl = 1;
@@ -903,11 +905,11 @@ VOID startMotor(VOID)
 #else
     flags.currentControl = 0;
 #endif
-    
+
     initCurrentLimitPI();
     intitSpeedController();     /* Initialize speed controller */
     intitCurrentController();   /* Initialize current controller */
-    
+
 	TMR1 = 0;			/* Reset timer 1 for speed control */
     TMR2 = 0;			/* Reset timer 2 for current control */
 	TMR3 = 0;			/* Reset timer 3 for speed measurement */
@@ -918,7 +920,7 @@ VOID startMotor(VOID)
     IFS0bits.T2IF = 0;		/* Clear timer 2 flag */
     IFS0bits.T3IF = 0;		/* Clear timer 3 flag */
 	IFS0bits.IC1IF = 0;		/* Clear interrupt flag */
-	IFS0bits.IC2IF = 0;	
+	IFS0bits.IC2IF = 0;
 	IFS2bits.IC3IF = 0;
 	IEC0bits.T1IE = 1;		/* Enable interrupts for timer 1 */
     IEC0bits.T2IE = 1;		/* Enable interrupts for timer 2 */
@@ -926,20 +928,20 @@ VOID startMotor(VOID)
 	IEC0bits.IC1IE = 1;		/* Enable interrupts on IC1 */
 	IEC0bits.IC2IE = 1;		/* Enable interrupts on IC2 */
 	IEC2bits.IC3IE = 1;		/* Enable interrupts on IC3 */
-    AD1CON1bits.ADON = 1;   //turn ON ADC module 
-	flags.motorRunning = 1;	/* Indicate that the motor is running */    
+    AD1CON1bits.ADON = 1;   //turn ON ADC module
+	flags.motorRunning = 1;	/* Indicate that the motor is running */
     fanOnCnt = 0;           //Reset fan timer count
     flags.exstFanOn = 1; //set fan status flag
     fanON;               //Turn ON heat sink fan
-    
+
 }
 
 /******************************************************************************
  * stopMotor
  *
- * This function stops timer1 for speed PI controller, speed measurement and force 
+ * This function stops timer1 for speed PI controller, speed measurement and force
  * commutation. it disables hall feedback and stops MCPWM to stop the motor.
- * 
+ *
  * PARAMETER REQ: none
  *
  * RETURNS: none
@@ -949,7 +951,7 @@ VOID startMotor(VOID)
 VOID stopMotor(VOID)
 {
     pwmBufferControl(DISABLE);
-    PTCONbits.PTEN = 0; 
+    PTCONbits.PTEN = 0;
     IEC5bits.PWM1IE = 0;
     T7CONbits.TON = 0;
 	IEC0bits.T1IE = 0;
@@ -962,22 +964,22 @@ VOID stopMotor(VOID)
 //	No need to disable hall interrupts
 //	Changed to handle "offset at upper & lower limit"
 #if 0
-	IEC0bits.IC1IE = 0;	
+	IEC0bits.IC1IE = 0;
 	IEC0bits.IC2IE = 0;
-	IEC2bits.IC3IE = 0;	
+	IEC2bits.IC3IE = 0;
 #endif
-    AD1CON1bits.ADON = 0;   //turn OFF ADC module 
+    AD1CON1bits.ADON = 0;   //turn OFF ADC module
 	flags.motorRunning = 0;	/* Indicate that the motor has been stopped */
 }
 
 /******************************************************************************
  * getDriveMovement
  *
- * This function is required to update drive status - Moving up, Moving Down or Stopped 
- * 
+ * This function is required to update drive status - Moving up, Moving Down or Stopped
+ *
  * PARAMETER REQ: none
  *
- * RETURNS: UINT8 - 0 - If Stopped, 1 - If Moving Up, 2 - If Moving down 
+ * RETURNS: UINT8 - 0 - If Stopped, 1 - If Moving Up, 2 - If Moving down
  *
  * ERRNO: none
  ********************************************************************************/
@@ -985,15 +987,15 @@ UINT8 getDriveMovement()
 {
 	if(!rampOutputStatus.shutterMoving)
 	{
-		return SHUTTER_STOPPED; 
+		return SHUTTER_STOPPED;
 	}
 	else if(rampOutputStatus.shutterMovementDirection)
 	{
-		return SHUTTER_MOVING_DOWN; 
+		return SHUTTER_MOVING_DOWN;
 	}
-	else 
+	else
 	{
-		return SHUTTER_MOVING_UP; 
+		return SHUTTER_MOVING_UP;
 	}
 }
 
@@ -1001,7 +1003,7 @@ UINT8 getDriveMovement()
  * startRampGenerator
  *
  * This function starts timer 4 for Ramp generator .
- * 
+ *
  * PARAMETER REQ: none
  *
  * RETURNS: none
@@ -1015,12 +1017,12 @@ VOID startRampGenerator(VOID)
     IEC1bits.T4IE = 1;		/* Enable interrupts for timer 4 */
     T4CONbits.TON = 1;
 }
-    
+
 /******************************************************************************
  * stopRampGenerator
  *
  * This function stops timer4 for ramp generator and calls stop motor function.
- * 
+ *
  * PARAMETER REQ: none
  *
  * RETURNS: none
@@ -1058,7 +1060,7 @@ VOID monitorSafetySensors(VOID)
                 sensorList[i].sensorCurrSteadyVal = sensorList[i].sensorCurrVal;
                 if(sensorList[i].sensorCurrSteadyVal != sensorList[i].sensorPrevSteadyVal)
                 {
-                    sensorList[i].sensorFuncPtr(sensorList[i].sensorCurrSteadyVal);                    
+                    sensorList[i].sensorFuncPtr(sensorList[i].sensorCurrSteadyVal);
                     sensorList[i].sensorPrevSteadyVal = sensorList[i].sensorCurrSteadyVal;
                 }
             }
@@ -1097,7 +1099,7 @@ VOID monitorSafetySensors(VOID)
 				}
 				else
 				{
-					
+
 				}
 				sensorList[i].sensorData = (i == ORIGIN_SENSOR) ? hallCounts : 0;
 			}
@@ -1113,7 +1115,7 @@ VOID monitorSafetySensors(VOID)
 					sensorList[i].sensorCurrSteadyVal = sensorList[i].sensorCurrVal;
 					if(sensorList[i].sensorCurrSteadyVal != sensorList[i].sensorPrevSteadyVal)
 					{
-						sensorList[i].sensorFuncPtr(sensorList[i].sensorCurrSteadyVal);                    
+						sensorList[i].sensorFuncPtr(sensorList[i].sensorCurrSteadyVal);
 						sensorList[i].sensorPrevSteadyVal = sensorList[i].sensorCurrSteadyVal;
 					}
 				}
@@ -1127,10 +1129,10 @@ VOID monitorSafetySensors(VOID)
 					sensorList[i].sensorCurrSteadyVal = sensorList[i].sensorCurrVal;
 					if(sensorList[i].sensorCurrSteadyVal != sensorList[i].sensorPrevSteadyVal)
 					{
-						sensorList[i].sensorFuncPtr(sensorList[i].sensorCurrSteadyVal);                    
+						sensorList[i].sensorFuncPtr(sensorList[i].sensorCurrSteadyVal);
 						sensorList[i].sensorPrevSteadyVal = sensorList[i].sensorCurrSteadyVal;
 					}
-				}				
+				}
 			}
         }
     }
@@ -1146,10 +1148,10 @@ VOID updatePhotoElectricDebounceTime(VOID)
 
 //Reset sensor status after it get read by control board
 VOID resetSensorStatus(VOID)
-{    
+{
     if(!photoElecObsSensTrigrd)
     {
-       uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.peObstacle = FALSE; 
+       uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.peObstacle = FALSE;
     }
     if(!microSwSensorTrigrd)
     {
@@ -1157,33 +1159,33 @@ VOID resetSensorStatus(VOID)
     }
     if(!tempSensTrigrd)
     {
-       uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorOverheat = FALSE;  
+       uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorOverheat = FALSE;
     }
     if(!emergencySensorTrigrd)
     {
-        uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.emergencyStop = FALSE; 
+        uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.emergencyStop = FALSE;
     }
     //if(!OvercurrentfaultTrigrd)
     //{
-    //    uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorOverCurrent = FALSE; 
+    //    uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorOverCurrent = FALSE;
     //}
-    
+
     if(originSensorDetected && uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterUpperLimit)
     {
         uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.osDetectOnUp = FALSE;
     }
-    
+
     if(!originSensorDetected && uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterLowerLimit)
     {
         uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.osDetectOnDown = FALSE;
     }
-    
+
     updateSenStsCmd = FALSE;
 }
 
 #ifndef PROGRAMMABLE_DEBOUNCE
 VOID initSensorList(VOID)
-{    
+{
     //Initialize all sensor modules
     SHORT i;
     for(i = 0; i < SAFETY_SENSOR_END; i++)
@@ -1196,15 +1198,15 @@ VOID initSensorList(VOID)
         sensorList[i].sensorData = (i == ORIGIN_SENSOR)?uDriveCommonBlockEEP.stEEPDriveCommonBlock.originSensorPosMonitor_A128:0;
     }
     //init sensor current status
-    emergencySensorTrigrd = sensorList[EMERGENCY_SENSOR].sensorCurrSteadyVal; 	
-    microSwSensorTrigrd = sensorList[MICRO_SW_SENSOR].sensorCurrSteadyVal; 		
-    photoElecObsSensTrigrd = sensorList[PHOTOELECTRIC_SENSOR].sensorCurrSteadyVal; 	
-    tempSensTrigrd = sensorList[TEMPERATURE_SENSOR].sensorCurrSteadyVal; 			
-    originSensorDetected = sensorList[ORIGIN_SENSOR].sensorCurrSteadyVal;  
+    emergencySensorTrigrd = sensorList[EMERGENCY_SENSOR].sensorCurrSteadyVal;
+    microSwSensorTrigrd = sensorList[MICRO_SW_SENSOR].sensorCurrSteadyVal;
+    photoElecObsSensTrigrd = sensorList[PHOTOELECTRIC_SENSOR].sensorCurrSteadyVal;
+    tempSensTrigrd = sensorList[TEMPERATURE_SENSOR].sensorCurrSteadyVal;
+    originSensorDetected = sensorList[ORIGIN_SENSOR].sensorCurrSteadyVal;
 }
 #else
 VOID initSensorList(VOID)
-{    
+{
     //Initialize all sensor modules
     SHORT i;
     for(i = 0; i < SAFETY_SENSOR_END; i++)
@@ -1215,14 +1217,14 @@ VOID initSensorList(VOID)
         sensorList[i].sensorPrevSteadyVal = sensorList[i].sensorCurrVal;
         sensorList[i].sensorHighDebounceCnt = 0;
 		sensorList[i].sensorLowDebounceCnt = 0;
-        sensorList[i].sensorData = (i == ORIGIN_SENSOR)?uDriveCommonBlockEEP.stEEPDriveCommonBlock.originSensorPosMonitor_A128:0;        
+        sensorList[i].sensorData = (i == ORIGIN_SENSOR)?uDriveCommonBlockEEP.stEEPDriveCommonBlock.originSensorPosMonitor_A128:0;
     }
     //init sensor current status
-    emergencySensorTrigrd = sensorList[EMERGENCY_SENSOR].sensorCurrSteadyVal; 	
-    microSwSensorTrigrd = sensorList[MICRO_SW_SENSOR].sensorCurrSteadyVal; 		
-    photoElecObsSensTrigrd = sensorList[PHOTOELECTRIC_SENSOR].sensorCurrSteadyVal; 	
-    tempSensTrigrd = sensorList[TEMPERATURE_SENSOR].sensorCurrSteadyVal; 			
-    originSensorDetected = sensorList[ORIGIN_SENSOR].sensorCurrSteadyVal;  
+    emergencySensorTrigrd = sensorList[EMERGENCY_SENSOR].sensorCurrSteadyVal;
+    microSwSensorTrigrd = sensorList[MICRO_SW_SENSOR].sensorCurrSteadyVal;
+    photoElecObsSensTrigrd = sensorList[PHOTOELECTRIC_SENSOR].sensorCurrSteadyVal;
+    tempSensTrigrd = sensorList[TEMPERATURE_SENSOR].sensorCurrSteadyVal;
+    originSensorDetected = sensorList[ORIGIN_SENSOR].sensorCurrSteadyVal;
 }
 #endif	//	PROGRAMMABLE_DEBOUNCE
 
@@ -1282,25 +1284,25 @@ SHORT readPowerFailSensorSts(VOID)
  * RETURNS: none
  *
  * ERRNO: none
- ********************************************************************************/ 
+ ********************************************************************************/
 void __attribute__((interrupt, no_auto_psv)) _T4Interrupt (void)
-{    
+{
     static SHORT ms10Cnt = 0;
-    
+
     IFS1bits.T4IF = 0;
     if(++cnt_motor_stop>10)
     {
         measuredSpeed = 0;
         cnt_motor_stop = 11;
     }
-    
+
     //checkParamUpdateToEEP();
-        
+
     if(++ms10Cnt >= RAMP_GENERATOR_PERIOD_CNT)
     {
         ms10Cnt = 0;
         checkRampCommand();
-        executeRampState();  
+        executeRampState();
         updateShutterOutputStatus();
 
 		//	If shutter is moving in wrong direction stop the shutter
@@ -1335,7 +1337,7 @@ void __attribute__((interrupt, no_auto_psv)) _T4Interrupt (void)
 		//uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.minDutyCycle_A510 = gucTempFalseMovementCount;
 
 #endif
-       
+
         if(flags.exstFanOn) //if fan is on check timer is expired or not
         {
             if(++fanOnCnt > FAN_ON_TIME_CNT)
@@ -1348,7 +1350,7 @@ void __attribute__((interrupt, no_auto_psv)) _T4Interrupt (void)
 }
 
 //VOID checkParamUpdateToEEP(VOID)
-//{	
+//{
 //    if((!rampOutputStatus.shutterMoving) && (!rampStatusFlags.rampDcInjectionOn))
 //    {
 //        //if(rampStatusFlags.saveParamToEeprom)
@@ -1358,16 +1360,16 @@ void __attribute__((interrupt, no_auto_psv)) _T4Interrupt (void)
 //            {
 //                //save current position to eeprom
 //                //uDriveCommonBlockEEP.stEEPDriveCommonBlock.currentValueMonitor_A129 = hallCounts;
-//                //writeWORD(EEP_CURRENT_VAL_MONITOR, uDriveCommonBlockEEP.stEEPDriveCommonBlock.currentValueMonitor_A129); 				
-//                //writeWORD(EEP_ORIGIN_SENS_DRIFT_POS, uDriveCommonBlockEEP.stEEPDriveCommonBlock.originSensorDrift_A637); 
-//                //updateCommonBlockCrc(); 
-//                
+//                //writeWORD(EEP_CURRENT_VAL_MONITOR, uDriveCommonBlockEEP.stEEPDriveCommonBlock.currentValueMonitor_A129);
+//                //writeWORD(EEP_ORIGIN_SENS_DRIFT_POS, uDriveCommonBlockEEP.stEEPDriveCommonBlock.originSensorDrift_A637);
+//                //updateCommonBlockCrc();
+//
 //                //writeDWORD(EEP_OPERATION_COUNT,uDriveApplBlockEEP.stEEPDriveApplBlock.operationCount_A600);
 //                //writeWORD(EEP_MAINTENANCE_COUNT_VALUE,uDriveApplBlockEEP.stEEPDriveApplBlock.maintenanceCountValue_A636);
 //                //writeDWORD(EEP_APERTURE_HEIGHT_OP_COUNT,uDriveApplBlockEEP.stEEPDriveApplBlock.apertureHeightOperCount_A604);
 //                //writeBYTE(EEP_MICRO_SENS_COUNT,uDriveApplBlockEEP.stEEPDriveApplBlock.microSensorCounter_A080);
 //                //updateApplBlockCrc();
-//                
+//
 //                //rampStatusFlags.saveParamToEeprom = FALSE;
 //            }
 //        }
@@ -1384,34 +1386,34 @@ void __attribute__((interrupt, no_auto_psv)) _T4Interrupt (void)
  * RETURNS: none
  *
  * ERRNO: none
- ********************************************************************************/ 
+ ********************************************************************************/
 void __attribute__ ((interrupt, no_auto_psv)) _INT0Interrupt(void)
 {
     IFS0bits.INT0IF = 0;
-    
+
     if(readPowerFailSensorSts())
     {
         //pwmBufferControl(DISABLE);
         //lockApply;
         //INTCON2bits.GIE = 0; //Disable all interrupts
-        
+
         forceStopShutter();
 
-        uDriveCommonBlockEEP.stEEPDriveCommonBlock.currentValueMonitor_A129 = hallCounts;        
+        uDriveCommonBlockEEP.stEEPDriveCommonBlock.currentValueMonitor_A129 = hallCounts;
         //if installation was in progress then reset shutter positions
         if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveInstallation)
         {
-//            uDriveCommonBlockEEP.stEEPDriveCommonBlock.upperStoppingPos_A100 = 0; 
-//            uDriveCommonBlockEEP.stEEPDriveCommonBlock.lowerStoppingPos_A101 = 0; 
-            writeWORD(EEP_UPPER_STOPPING_POS, uDriveCommonBlockEEP.stEEPDriveCommonBlock.upperStoppingPos_A100); 
-            writeWORD(EEP_LOWER_STOPPING_POS, uDriveCommonBlockEEP.stEEPDriveCommonBlock.lowerStoppingPos_A101); 
-            writeWORD(EEP_PHOTOELEC_POS, uDriveCommonBlockEEP.stEEPDriveCommonBlock.photoElecPosMonitor_A102); 
-            writeWORD(EEP_ORIGIN_SENS_POS, uDriveCommonBlockEEP.stEEPDriveCommonBlock.originSensorPosMonitor_A128); 
-        }        
+//            uDriveCommonBlockEEP.stEEPDriveCommonBlock.upperStoppingPos_A100 = 0;
+//            uDriveCommonBlockEEP.stEEPDriveCommonBlock.lowerStoppingPos_A101 = 0;
+            writeWORD(EEP_UPPER_STOPPING_POS, uDriveCommonBlockEEP.stEEPDriveCommonBlock.upperStoppingPos_A100);
+            writeWORD(EEP_LOWER_STOPPING_POS, uDriveCommonBlockEEP.stEEPDriveCommonBlock.lowerStoppingPos_A101);
+            writeWORD(EEP_PHOTOELEC_POS, uDriveCommonBlockEEP.stEEPDriveCommonBlock.photoElecPosMonitor_A102);
+            writeWORD(EEP_ORIGIN_SENS_POS, uDriveCommonBlockEEP.stEEPDriveCommonBlock.originSensorPosMonitor_A128);
+        }
         writeWORD(EEP_CURRENT_VAL_MONITOR, uDriveCommonBlockEEP.stEEPDriveCommonBlock.currentValueMonitor_A129);
-        writeWORD(EEP_ORIGIN_SENS_DRIFT_POS, uDriveCommonBlockEEP.stEEPDriveCommonBlock.originSensorDrift_A637); 
-        updateCommonBlockCrc(); 
-        
+        writeWORD(EEP_ORIGIN_SENS_DRIFT_POS, uDriveCommonBlockEEP.stEEPDriveCommonBlock.originSensorDrift_A637);
+        updateCommonBlockCrc();
+
         writeDWORD(EEP_OPERATION_COUNT,uDriveApplBlockEEP.stEEPDriveApplBlock.operationCount_A600);
         //writeWORD(EEP_MAINTENANCE_COUNT_VALUE,uDriveApplBlockEEP.stEEPDriveApplBlock.maintenanceCountValue_A636);
         //writeDWORD(EEP_APERTURE_HEIGHT_OP_COUNT,uDriveApplBlockEEP.stEEPDriveApplBlock.apertureHeightOperCount_A604);
@@ -1432,7 +1434,7 @@ void __attribute__ ((interrupt, no_auto_psv)) _INT0Interrupt(void)
  * RETURNS: none
  *
  * ERRNO: none
- ********************************************************************************/ 
+ ********************************************************************************/
 void __attribute__ ((interrupt, no_auto_psv)) _INT1Interrupt(void)
 {
     IFS1bits.INT1IF = 0;
@@ -1445,10 +1447,10 @@ void __attribute__ ((interrupt, no_auto_psv)) _INT1Interrupt(void)
 	{
 		PORTAbits.RA7 = 1;
 	}*/
-    
+
     if(PWMCON1bits.FLTSTAT)
 		overcurrentfaultTriggered(TRUE);
-#if 1 
+#if 1
     else
         igbtOverTempSensorTriggered(TRUE);
 #endif
@@ -1469,14 +1471,14 @@ VOID calculateDrift(BOOL sts)
 			//	Do this only when power fail flag is off. This check is needed as it was observed that during
 			//	powerfail condition, while running executePowerFailRoutine() value of A129 was getting changed
 			//	resulting in dbCRC error upon next power on. Similarly A637 may change. Added - Feb 2016
-            if(/*(currentRampProfileNo == RAMP_GOING_UP_PROFILE) ||*/ 
+            if(/*(currentRampProfileNo == RAMP_GOING_UP_PROFILE) ||*/
 				(currentRampProfileNo == RAMP_GOING_DN_PROFILE) &&
 				(!gucPowerFailFlag)
 			)
             {
                 //if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveReady)
                 //{
-                    //Calculate the drift and set drift calculated status for position calculations.            
+                    //Calculate the drift and set drift calculated status for position calculations.
                     uDriveCommonBlockEEP.stEEPDriveCommonBlock.originSensorDrift_A637 = sensorList[ORIGIN_SENSOR].sensorData \
                         - uDriveCommonBlockEEP.stEEPDriveCommonBlock.originSensorPosMonitor_A128;
                     rampStatusFlags.rampDriftCalculated = 1;
@@ -1484,11 +1486,11 @@ VOID calculateDrift(BOOL sts)
             }
         }
     }
-    
+
     if(uDriveApplBlockEEP.stEEPDriveApplBlock.apertureHeightOperCount_A604 != 0)
     {
-        // Reset aperture frequency count whenever we cross origin sensor 
-        uDriveApplBlockEEP.stEEPDriveApplBlock.apertureHeightOperCount_A604 = 0; 
+        // Reset aperture frequency count whenever we cross origin sensor
+        uDriveApplBlockEEP.stEEPDriveApplBlock.apertureHeightOperCount_A604 = 0;
         //rampStatusFlags.saveParamToEeprom = TRUE;
     }
     //update orign sensor toggled status
@@ -1505,13 +1507,13 @@ VOID checkPhotoElecObsLevel(BOOL sts)
 {
     photoElecObsSensTrigrd = sts;
     rampCurrentPosition = hallCounts;
-    
+
     uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.peSensorStatus = photoElecObsSensTrigrd;
     //photo electic sensor is normally closed, it is triggered when opened
     if(photoElecObsSensTrigrd)
     {
         if(rampCurrentPosition < uDriveCommonBlockEEP.stEEPDriveCommonBlock.photoElecPosMonitor_A102)     //bug_No.78
-           uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.peObstacle = TRUE;   //bug_No.78        
+           uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.peObstacle = TRUE;   //bug_No.78
         //If system is in ready state then process photoelectric trigger
         if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveReady)
         {
@@ -1524,12 +1526,12 @@ VOID checkPhotoElecObsLevel(BOOL sts)
                        //if current shutter position is above ignore PE level then only trigger stop shutter
                        if(rampCurrentPosition < uDriveCommonBlockEEP.stEEPDriveCommonBlock.photoElecPosMonitor_A102)
                        {
-                           rampCurrentState = RAMP_STOP; //Set the current state to ramp stop
-                           calcShtrMinDistValue();
+//                           rampCurrentState = RAMP_STOP; //Set the current state to ramp stop
+//                           calcShtrMinDistValue();
 						   //	Stop shutter initiated by safety sensor
 						   //	Clear flag so as to stop the shutter immediately
 						   gui8StopKeyPressed = 0;
-                           stopShutter(); //stop shutter immediately
+//                           stopShutter(); //stop shutter immediately
                            photElecSensorFault = TRUE;
                            //set fault status
                            //uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.peObstacle = TRUE;   //bug_No.78
@@ -1537,7 +1539,7 @@ VOID checkPhotoElecObsLevel(BOOL sts)
                            rampCurrentState = RAMP_START;
                           //2016/09/03 PHOTOELECTRIC_SENSOR 2nd input after not reverce
                           uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.peSensorStatus = photoElecObsSensTrigrd;   //bug_No.97
-                           
+
                        }
                    }
             }
@@ -1545,7 +1547,7 @@ VOID checkPhotoElecObsLevel(BOOL sts)
     }
     else
     {
-        photElecSensorFault = FALSE; //clear the photo electric fault        
+        photElecSensorFault = FALSE; //clear the photo electric fault
         updateSenStsCmd = TRUE;
     }
 }
@@ -1553,7 +1555,7 @@ VOID checkPhotoElecObsLevel(BOOL sts)
 VOID microSwSensorTiggered(BOOL sts)
 {
     microSwSensorTrigrd = sts;
-    
+
     uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.microSwitchSensorStatus = microSwSensorTrigrd;
     //micro switch is normally open, it is triggered when closed
     if(microSwSensorTrigrd)
@@ -1569,21 +1571,21 @@ VOID microSwSensorTiggered(BOOL sts)
 			gui8StopKeyPressed = 0;
             stopShutter(); //stop shutter immediately
             //set mocro switch error flag
-            uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.microSwitch = TRUE; 
+            uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.microSwitch = TRUE;
             if((currentRampProfileNo == RAMP_GOING_DN_PROFILE)&&(rampOutputStatus.shutterMoving))   //bug_No.84
             {
                 inputFlags.value = OPEN_SHUTTER_JOG_50;
                 rampCurrentState = RAMP_START;
             }
-                
-            // Increment micro switch sensor count - A080 
-			uDriveApplBlockEEP.stEEPDriveApplBlock.microSensorCounter_A080++; 
-            // if count has exceeded limit value A603 
+
+            // Increment micro switch sensor count - A080
+			uDriveApplBlockEEP.stEEPDriveApplBlock.microSensorCounter_A080++;
+            // if count has exceeded limit value A603
 			if(uDriveApplBlockEEP.stEEPDriveApplBlock.microSensorCounter_A080 >= 20)
 //               > uDriveApplBlockEEP.stEEPDriveApplBlock.microSensorLimValue_A603)
 			{
                 //once microswitch limit is triggered then set the limit from 10 to 50
-//                uDriveApplBlockEEP.stEEPDriveApplBlock.microSensorLimValue_A603 = 50;                
+//                uDriveApplBlockEEP.stEEPDriveApplBlock.microSensorLimValue_A603 = 50;
 //                writeBYTE(EEP_MICRO_SENSOR_LIMIT_VAL,uDriveApplBlockEEP.stEEPDriveApplBlock.microSensorLimValue_A603);
 //                updateApplBlockCrc();
                 //set max microSwitchSensorLimit error flag
@@ -1592,7 +1594,7 @@ VOID microSwSensorTiggered(BOOL sts)
             else
             {
                 //reset max microSwitchSensorLimit error flag
-                uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.microSwitchSensorLimit = FALSE;                
+                uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.microSwitchSensorLimit = FALSE;
             }
             //rampStatusFlags.saveParamToEeprom = TRUE;
         }
@@ -1632,7 +1634,7 @@ VOID tempSensorTriggered(BOOL sts)
 VOID igbtOverTempSensorTriggered(BOOL sts)
 {
 	//PORTAbits.RA7 = 0;
-	
+
     //emergency stop sensor is normally open, it is triggered when closed
     if(sts)
     {
@@ -1642,14 +1644,14 @@ VOID igbtOverTempSensorTriggered(BOOL sts)
             //if emergency switch is triggered the stop shutter immediately
             forceStopShutter();
             //set emergency stop error flag
-            uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.igbtOverTemperature = TRUE; 
+            uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.igbtOverTemperature = TRUE;
         }
     }
     //else
     //{
     //    updateSenStsCmd = TRUE;
     //}
-	
+
 }
 
 VOID fourPtLimitSwTriggered(BOOL sts)
@@ -1676,7 +1678,7 @@ VOID emergencySensorSwTriggered(BOOL sts)
 	// Disabled emergency stop functionality for version 4 board as emergency stop is not present in it - RN - Nov 15
 #if 0
     emergencySensorTrigrd = sts;
-    
+
     //emergency stop sensor is normally open, it is triggered when closed
     if(emergencySensorTrigrd)
     {
@@ -1690,7 +1692,7 @@ VOID emergencySensorSwTriggered(BOOL sts)
             currentLimitClamp = controlOutput;
             outputDecRate = __builtin_divud(currentLimitClamp, PWM_COASTING_TIME);
             //set emergency stop error flag
-            uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.emergencyStop = TRUE; 
+            uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.emergencyStop = TRUE;
         }
     }
     else
@@ -1712,7 +1714,7 @@ VOID overcurrentfaultTriggered(BOOL sts)
             //if emergency switch is triggered the stop shutter immediately
             forceStopShutter();
             //set emergency stop error flag
-            uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorOverCurrent = TRUE; 
+            uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorOverCurrent = TRUE;
         }
     }
     //else
@@ -1740,7 +1742,7 @@ VOID checkPwmCoastingRequired(VOID)
                 forceStopShutter();
                 uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorPWMCosting = TRUE;
             }
-        }        
+        }
     }
 }
 
@@ -1749,10 +1751,10 @@ VOID checkRampTripStatus(VOID)
     //SHORT positionError;
     //Monitor ramp trip staus in up going and down going direction
     //Reset the hall counts when shutter has reached to upper limit or lower limit
-    
+
     //Read current position
     rampCurrentPosition = hallCounts;
-    
+
     //Check the ramp trip only during full ramp operation.
     if((currentRampProfileNo == RAMP_GOING_UP_PROFILE) && (!rampTripSts.rampTripUpCompleted))
     {
@@ -1766,7 +1768,7 @@ VOID checkRampTripStatus(VOID)
             initProfileData();
             //Reset current profile parameters
             currentRampProfile = *currentRampProfilePtr;
-                
+
             //if origin sensor not detected during trip set the error flag
             if(!rampTripSts.rampOrgSenToggled)
             {
@@ -1779,7 +1781,7 @@ VOID checkRampTripStatus(VOID)
                 uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.osNotDetectUP = FALSE;
                 uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.osNotDetectDown = FALSE;
                 rampTripSts.rampOrgSenToggled = 0;
-            }            
+            }
         }
     }
     else
@@ -1787,7 +1789,7 @@ VOID checkRampTripStatus(VOID)
         rampTripSts.rampTripUpStarted = 0;
         rampTripSts.rampTripUpCompleted = 1;
     }
-        
+
     if((currentRampProfileNo == RAMP_GOING_DN_PROFILE) && (!rampTripSts.rampTripDnCompleted))
     {
         //if Dn trip completed then reset the hall count to lower limit
@@ -1800,7 +1802,7 @@ VOID checkRampTripStatus(VOID)
             initProfileData();
             //Reset current profile parameters
             currentRampProfile = *currentRampProfilePtr;
-                
+
             //if origin sensor not detected during trip set the error flag
             if(!rampTripSts.rampOrgSenToggled)
             {
@@ -1813,7 +1815,7 @@ VOID checkRampTripStatus(VOID)
                 uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.osNotDetectUP = FALSE;
                 uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.osNotDetectDown = FALSE;
                 rampTripSts.rampOrgSenToggled = 0;
-            }  
+            }
         }
     }
     else //Reset the trip status flags
@@ -1832,7 +1834,7 @@ VOID checkRampCommand(VOID)
         rampStatusFlags.rampOpenInProgress = 0;
         rampStatusFlags.rampCloseInProgress = 0;
     }
-    
+
     if(inputFlags.bits.shutterStop)
     {
         if(rampOutputStatus.shutterMoving || rampStatusFlags.rampOpenInProgress || rampStatusFlags.rampCloseInProgress)
@@ -1841,9 +1843,9 @@ VOID checkRampCommand(VOID)
             rampStatusFlags.rampOpenInProgress = 0;
             rampStatusFlags.rampCloseInProgress = 0;
         }
-    }        
+    }
     else if(inputFlags.bits.shutterOpen)
-    {  
+    {
         if(rampStatusFlags.rampCloseInProgress && rampOutputStatus.shutterMoving)
         {
             rampCurrentState = RAMP_STOP;
@@ -1861,7 +1863,7 @@ VOID checkRampCommand(VOID)
                 rampStatusFlags.rampOpenInProgress = 1;
                 rampStatusFlags.rampCloseInProgress = 0;
                 rampTripSts.rampTripUpStarted = 1;
-                rampTripSts.rampTripUpCompleted = 0;                        
+                rampTripSts.rampTripUpCompleted = 0;
                 if(uDriveCommonBlockEEP.stEEPDriveCommonBlock.currentValueMonitor_A129 <= \
                    uDriveCommonBlockEEP.stEEPDriveCommonBlock.originSensorPosMonitor_A128)
                 {
@@ -1877,10 +1879,10 @@ VOID checkRampCommand(VOID)
                 else
                 {
                     rampTripSts.rampOrgSenToggled = 0;
-                }                        
+                }
             }
         }
-    }        
+    }
     else if(inputFlags.bits.shutterClose)
     {
         if(rampStatusFlags.rampOpenInProgress && rampOutputStatus.shutterMoving)
@@ -1900,7 +1902,7 @@ VOID checkRampCommand(VOID)
                 rampStatusFlags.rampCloseInProgress = 1;
                 rampStatusFlags.rampOpenInProgress = 0;
                 rampTripSts.rampTripDnStarted = 1;
-                rampTripSts.rampTripDnCompleted = 0;                        
+                rampTripSts.rampTripDnCompleted = 0;
                 if(uDriveCommonBlockEEP.stEEPDriveCommonBlock.currentValueMonitor_A129 >= \
                    uDriveCommonBlockEEP.stEEPDriveCommonBlock.originSensorPosMonitor_A128)
                 {
@@ -1916,10 +1918,10 @@ VOID checkRampCommand(VOID)
                 else
                 {
                     rampTripSts.rampOrgSenToggled = 0;
-                }                         
+                }
             }
         }
-    } 
+    }
 }
 
 VOID updateShutterOutputStatus(VOID)
@@ -1946,7 +1948,7 @@ VOID executeRampState(VOID)
         //Reset current profile parameters
         currentRampProfile = *currentRampProfilePtr;
     }
-    
+
     switch(rampCurrentState)
     {
         case RAMP_START:
@@ -1961,27 +1963,27 @@ VOID executeRampState(VOID)
                 startShutter();
                 break;
             }
-            
+
         case RAMP_RESTART:
             {
                 runShutterToReqSpeed();
                 break;
             }
-            
+
         case RAMP_RUNNING:
             {
                 executeRampProfile();
                 break;
             }
-            
+
         case RAMP_STOP:
             {
                 stopShutter();
                 break;
             }
-            
-        default:            
-            break;        
+
+        default:
+            break;
     }
 }
 
@@ -1998,11 +2000,11 @@ VOID forceStopShutter(VOID)
     rampStatusFlags.rampSpeedControlRequired = 0;
     rampStatusFlags.rampCurrentControlRequired = 0;
     rampStatusFlags.rampOpenInProgress = 0;
-    rampStatusFlags.rampCloseInProgress = 0;    
+    rampStatusFlags.rampCloseInProgress = 0;
 }
 
 VOID startShutter(VOID)
-{   
+{
     //Select profile for execution
     rampCurrentStep = 0;
     if(inputFlags.bits.shutterOpen && (inputFlags.bits.jogPercentage == 0))
@@ -2010,7 +2012,7 @@ VOID startShutter(VOID)
         if(!inputFlags.bits.aperture)
         {
             //Ramp up profile
-            currentRampProfileNo = RAMP_GOING_UP_PROFILE;           
+            currentRampProfileNo = RAMP_GOING_UP_PROFILE;
             if(uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.upStepCount_A525 == TWO_STEP_RAMP_PROFILE)
                 rampTotalStates = (RAMP_UP_STATES - 2);
             else
@@ -2024,7 +2026,7 @@ VOID startShutter(VOID)
             currentRampProfileNo = RAMP_APERTURE_UP_PROFILE;
             rampTotalStates = APER_UP_STATES;
             currentRampProfilePtr = (rampStructure_t*)rampApertureUpProfile;
-            currentRampProfile = *currentRampProfilePtr; 
+            currentRampProfile = *currentRampProfilePtr;
         }
     }
     else if(inputFlags.bits.shutterOpen && (inputFlags.bits.jogPercentage == 1))
@@ -2049,12 +2051,12 @@ VOID startShutter(VOID)
         {
             //Ramp dn profile
             currentRampProfileNo = RAMP_GOING_DN_PROFILE;
-            
+
             if(uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.downStepCount_A531 == TWO_STEP_RAMP_PROFILE)
                 rampTotalStates = (RAMP_DN_STATES - 2);
             else
-                rampTotalStates = RAMP_DN_STATES;        
-            
+                rampTotalStates = RAMP_DN_STATES;
+
             currentRampProfilePtr = (rampStructure_t*)rampDnGoingProfile;
             currentRampProfile = *currentRampProfilePtr;
         }
@@ -2083,7 +2085,7 @@ VOID startShutter(VOID)
         currentRampProfilePtr = (rampStructure_t*)rampJogDnProfile;
         currentRampProfile = *currentRampProfilePtr;
     }
-    
+
     if((currentRampProfileNo == RAMP_GOING_UP_PROFILE) || (currentRampProfileNo == RAMP_GOING_DN_PROFILE))
     {
         //If previously shutter stopped in between then first run the shutter to required speed
@@ -2096,7 +2098,7 @@ VOID startShutter(VOID)
         {
             //Change the ramp state to running
             rampCurrentState = RAMP_RUNNING;
-            rampStatusFlags.shutterOperationStart = 1; //shutter operation started 
+            rampStatusFlags.shutterOperationStart = 1; //shutter operation started
             rampStatusFlags.shutterOperationComplete = 0; //shutter operation completed
         }
     }
@@ -2104,10 +2106,10 @@ VOID startShutter(VOID)
     {
         //Change the ramp state to running
         rampCurrentState = RAMP_RUNNING;
-        rampStatusFlags.shutterOperationStart = 1; //shutter operation started 
+        rampStatusFlags.shutterOperationStart = 1; //shutter operation started
         rampStatusFlags.shutterOperationComplete = 0; //shutter operation completed
     }
-    
+
     lockActivationDelayCnt = 0; //reset lock activation delay
     lockDeactivationDelayCnt = 0; //reset lock de-activation delay
 }
@@ -2124,7 +2126,7 @@ VOID runShutterToReqSpeed(VOID)
     if(currentRampProfile.rampGenFlags.ccwDirection)
     {
         requiredDirection = CCW;
-        
+
         //if mechanical release required then
         if(currentRampProfile.rampGenFlags.brakeRelease && rampStatusFlags.rampBrakeOn)
         {
@@ -2133,49 +2135,49 @@ VOID runShutterToReqSpeed(VOID)
             {
                 controlOutput = currentRampProfile.dcInjectionDuty;
                 rampStatusFlags.rampDcInjectionOn = 1;
-                DCInjectionON();  
+                DCInjectionON();
                 rampDcInjectionOnCounter = 0;
                 lockDeactivationDelayCnt = 0; //reset lock de-activation delay
             }
             else
-            {                
+            {
                 if(++lockDeactivationDelayCnt >= 4)//MECHANICAL_LOCK_DEACTIVATION_DELAY_CNT) //5
                 {
                     lockRelease;
-                    rampStatusFlags.rampBrakeOn = 0; 
+                    rampStatusFlags.rampBrakeOn = 0;
                 }
-                    
+
                 //turn off DC injection after required time
                 if(++rampDcInjectionOnCounter >= currentRampProfile.dcInjectionTime)//10
                 {
-                    rampStatusFlags.rampDcInjectionOn = 0; 
+                    rampStatusFlags.rampDcInjectionOn = 0;
 //                    if(uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.shutterType_A537 == BEAD_SHUTTER)
                         rampStatusFlags.rampMaintainHoldingDuty = 0;
 //                    else
 //                        rampStatusFlags.rampMaintainHoldingDuty = 1;
-                    
+
                     refSpeed = SHUTTER_SPEED_MIN;
                     refiTotalCurrent = RAMP_STARTING_CURRENT_MIN;
-                    
+
                     //search for current state in ramp profile
                     while(rampCurrentPosition > currentRampProfile.endPosition)
                     {
                         //Goto next step
                         if(++rampCurrentStep < rampTotalStates)
                         {
-                            currentRampProfilePtr++; 
+                            currentRampProfilePtr++;
                             currentRampProfile = *currentRampProfilePtr;
                         }
                         else
                         {
                             rampCurrentState = RAMP_STOP;
                             stopShutter();
-                            rampStatusFlags.shutterOperationStart = 0; 
+                            rampStatusFlags.shutterOperationStart = 0;
                             rampStatusFlags.shutterOperationComplete = 1;
                             break;
                         }
-                    }                    
-                    
+                    }
+
                     #if (STARTUP_IN_CURRENT_MODE == 1)
                     if(currentRampProfile.rampGenFlags.currentMode)
                         rampStatusFlags.rampCurrentControlRequired = 1;
@@ -2185,42 +2187,42 @@ VOID runShutterToReqSpeed(VOID)
                     rampStatusFlags.rampSpeedControlRequired = 1;
                     #endif
                     startMotor(); //After removing brake start motor
-                    rampOutputStatus.shutterMoving = 1;                    
+                    rampOutputStatus.shutterMoving = 1;
                 }
             }
-            
-        } 
+
+        }
         //if only DC injection is ON then first turn OFF DC injection
         else if(currentRampProfile.rampGenFlags.brakeRelease && rampStatusFlags.rampDcInjectionOn)
         {
-            rampStatusFlags.rampDcInjectionOn = 0;             
+            rampStatusFlags.rampDcInjectionOn = 0;
 //            if(uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.shutterType_A537 == BEAD_SHUTTER)
                 rampStatusFlags.rampMaintainHoldingDuty = 0;
 //            else
 //                rampStatusFlags.rampMaintainHoldingDuty = 1;
-            
+
             refSpeed = SHUTTER_SPEED_MIN;
             refiTotalCurrent = RAMP_STARTING_CURRENT_MIN;
-            
+
             //search for current state in ramp profile
             while(rampCurrentPosition > currentRampProfile.endPosition)
             {
                 //Goto next step
                 if(++rampCurrentStep < rampTotalStates)
                 {
-                    currentRampProfilePtr++; 
+                    currentRampProfilePtr++;
                     currentRampProfile = *currentRampProfilePtr;
                 }
                 else
                 {
                     rampCurrentState = RAMP_STOP;
                     stopShutter();
-                    rampStatusFlags.shutterOperationStart = 0; 
+                    rampStatusFlags.shutterOperationStart = 0;
                     rampStatusFlags.shutterOperationComplete = 1;
                     break;
                 }
-            } 
-            
+            }
+
             #if (STARTUP_IN_CURRENT_MODE == 1)
             if(currentRampProfile.rampGenFlags.currentMode)
                 rampStatusFlags.rampCurrentControlRequired = 1;
@@ -2231,7 +2233,7 @@ VOID runShutterToReqSpeed(VOID)
             #endif
             startMotor(); //After removing brake start motor
             rampOutputStatus.shutterMoving = 1;
-        }            
+        }
         //if shutter is moving in up direction then start shutter in current mode
         else if(rampCurrentPosition < currentRampProfile.endPosition)
         {
@@ -2247,7 +2249,7 @@ VOID runShutterToReqSpeed(VOID)
                         //Set the current reference
                         refiTotalCurrent = 0;
                         //Disable current loop
-                        rampStatusFlags.rampCurrentControlRequired = 0;                    
+                        rampStatusFlags.rampCurrentControlRequired = 0;
                         //set the current reference
                         refSpeed += gs16DownDecelaration;
                         //check boundary of max speed
@@ -2263,7 +2265,7 @@ VOID runShutterToReqSpeed(VOID)
                 {
                     //Change the ramp state to running
                     rampCurrentState = RAMP_RUNNING;
-                    rampStatusFlags.shutterOperationStart = 1;      //shutter operation started 
+                    rampStatusFlags.shutterOperationStart = 1;      //shutter operation started
                     rampStatusFlags.shutterOperationComplete = 0;   //shutter operation completed
                 }
             }
@@ -2278,14 +2280,14 @@ VOID runShutterToReqSpeed(VOID)
                         //set the speed reference
                         refSpeed = currentRampProfile.endSpeed;
                         //disable speed control
-                        rampStatusFlags.rampSpeedControlRequired = 0;                            
+                        rampStatusFlags.rampSpeedControlRequired = 0;
                         //set the current reference
-                        refiTotalCurrent += currentRampProfile.currentChangeRate;                            
+                        refiTotalCurrent += currentRampProfile.currentChangeRate;
                         //Limit refcurrent
                         if(refiTotalCurrent > currentRampProfile.endCurrent)
                         {
                             refiTotalCurrent = currentRampProfile.endCurrent;
-                        } 
+                        }
                         //Enable current control
                         rampStatusFlags.rampCurrentControlRequired = 1;
                     }
@@ -2293,7 +2295,7 @@ VOID runShutterToReqSpeed(VOID)
                     {
                         //Change the ramp state to running
                         rampCurrentState = RAMP_RUNNING;
-                        rampStatusFlags.shutterOperationStart = 1;      //shutter operation started 
+                        rampStatusFlags.shutterOperationStart = 1;      //shutter operation started
                         rampStatusFlags.shutterOperationComplete = 0;   //shutter operation completed
                     }
                 }
@@ -2301,32 +2303,32 @@ VOID runShutterToReqSpeed(VOID)
                 {
                     //Change the ramp state to running
                     rampCurrentState = RAMP_RUNNING;
-                    rampStatusFlags.shutterOperationStart = 1;      //shutter operation started 
+                    rampStatusFlags.shutterOperationStart = 1;      //shutter operation started
                     rampStatusFlags.shutterOperationComplete = 0;   //shutter operation completed
                 }
-            } 
+            }
         }
         else
         {
             //Goto next step
             if(++rampCurrentStep < rampTotalStates)
             {
-                currentRampProfilePtr++; 
+                currentRampProfilePtr++;
                 currentRampProfile = *currentRampProfilePtr;
             }
             else
             {
                 rampCurrentState = RAMP_STOP;
                 stopShutter();
-                rampStatusFlags.shutterOperationStart = 0; 
+                rampStatusFlags.shutterOperationStart = 0;
                 rampStatusFlags.shutterOperationComplete = 1;
             }
-        }        
+        }
     }
     else if(currentRampProfile.rampGenFlags.cwDirection)
     {
         requiredDirection = CW;
-        
+
         //if mechanical release required then
         if(currentRampProfile.rampGenFlags.brakeRelease && rampStatusFlags.rampBrakeOn)
         {
@@ -2335,45 +2337,45 @@ VOID runShutterToReqSpeed(VOID)
             {
                 controlOutput = currentRampProfile.dcInjectionDuty;
                 rampStatusFlags.rampDcInjectionOn = 1;
-                DCInjectionON();                
+                DCInjectionON();
                 rampDcInjectionOnCounter = 0;
                 lockDeactivationDelayCnt = 0;       //reset lock de-activation delay
             }
             else
-            {                
+            {
                 if(++lockDeactivationDelayCnt >= 4)//MECHANICAL_LOCK_DEACTIVATION_DELAY_CNT)
                 {
                     lockRelease;
-                    rampStatusFlags.rampBrakeOn = 0; 
+                    rampStatusFlags.rampBrakeOn = 0;
                 }
-                
+
                 //turn off DC injection after required time
                 if(++rampDcInjectionOnCounter >= currentRampProfile.dcInjectionTime)
                 {
-                    rampStatusFlags.rampDcInjectionOn = 0;  
+                    rampStatusFlags.rampDcInjectionOn = 0;
                     rampStatusFlags.rampMaintainHoldingDuty = 1;
                     refSpeed = SHUTTER_SPEED_MIN;
                     refiTotalCurrent = RAMP_STARTING_CURRENT_MIN;
-                    
+
                     //search for current state in ramp profile
                     while(rampCurrentPosition < currentRampProfile.endPosition)
                     {
                         //Goto next step
                         if(++rampCurrentStep < rampTotalStates)
                         {
-                            currentRampProfilePtr++; 
+                            currentRampProfilePtr++;
                             currentRampProfile = *currentRampProfilePtr;
                         }
                         else
                         {
                             rampCurrentState = RAMP_STOP;
                             stopShutter();
-                            rampStatusFlags.shutterOperationStart = 0; 
+                            rampStatusFlags.shutterOperationStart = 0;
                             rampStatusFlags.shutterOperationComplete = 1;
                             break;
                         }
-                    } 
-                    
+                    }
+
                     #if (STARTUP_IN_CURRENT_MODE == 1)
                     if(currentRampProfile.rampGenFlags.currentMode)
                         rampStatusFlags.rampCurrentControlRequired = 1;
@@ -2385,35 +2387,35 @@ VOID runShutterToReqSpeed(VOID)
                     startMotor();   //After removing brake start motor
                     rampOutputStatus.shutterMoving = 1;
                 }
-            }            
-        }  
+            }
+        }
         //if only DC injection is ON then first turn OFF DC injection
         else if(currentRampProfile.rampGenFlags.brakeRelease && rampStatusFlags.rampDcInjectionOn)
         {
-            rampStatusFlags.rampDcInjectionOn = 0;  
+            rampStatusFlags.rampDcInjectionOn = 0;
             rampStatusFlags.rampMaintainHoldingDuty = 1;
             refSpeed = SHUTTER_SPEED_MIN;
             refiTotalCurrent = RAMP_STARTING_CURRENT_MIN;
-            
+
             //search for current state in ramp profile
             while(rampCurrentPosition < currentRampProfile.endPosition)
             {
                 //Goto next step
                 if(++rampCurrentStep < rampTotalStates)
                 {
-                    currentRampProfilePtr++; 
+                    currentRampProfilePtr++;
                     currentRampProfile = *currentRampProfilePtr;
                 }
                 else
                 {
                     rampCurrentState = RAMP_STOP;
                     stopShutter();
-                    rampStatusFlags.shutterOperationStart = 0; 
+                    rampStatusFlags.shutterOperationStart = 0;
                     rampStatusFlags.shutterOperationComplete = 1;
                     break;
                 }
-            } 
-            
+            }
+
             #if (STARTUP_IN_CURRENT_MODE == 1)
             if(currentRampProfile.rampGenFlags.currentMode)
                 rampStatusFlags.rampCurrentControlRequired = 1;
@@ -2424,7 +2426,7 @@ VOID runShutterToReqSpeed(VOID)
             #endif
             startMotor();   //After removing brake start motor
             rampOutputStatus.shutterMoving = 1;
-        }            
+        }
         //if shutter is moving in dn direction then start shutter in speed mode
         else if(rampCurrentPosition >= currentRampProfile.endPosition)
         {
@@ -2433,14 +2435,14 @@ VOID runShutterToReqSpeed(VOID)
             {
                 //if target speed is achived then change the state to running
                 if(rampCurrentSpeed < currentRampProfile.endSpeed)
-                {                
+                {
                     //if required state is found then start current mode
                     if(rampCurrentSpeed < RAMP_STARTING_SPEED_MAX)
                     {
                         //Set the current reference
                         refiTotalCurrent = 0;
                         //Disable current loop
-                        rampStatusFlags.rampCurrentControlRequired = 0;                    
+                        rampStatusFlags.rampCurrentControlRequired = 0;
                         //set the speed reference
                         refSpeed += gs16UpDecelaration;
                         //check boundary of max speed
@@ -2456,7 +2458,7 @@ VOID runShutterToReqSpeed(VOID)
                 {
                     //Change the ramp state to running
                     rampCurrentState = RAMP_RUNNING;
-                    rampStatusFlags.shutterOperationStart = 1; //shutter operation started 
+                    rampStatusFlags.shutterOperationStart = 1; //shutter operation started
                     rampStatusFlags.shutterOperationComplete = 0; //shutter operation completed
                 }
             }
@@ -2471,14 +2473,14 @@ VOID runShutterToReqSpeed(VOID)
                         //set the speed reference
                         refSpeed = currentRampProfile.endSpeed;
                         //disable speed control
-                        rampStatusFlags.rampSpeedControlRequired = 0;                            
+                        rampStatusFlags.rampSpeedControlRequired = 0;
                         //set the current reference
-                        refiTotalCurrent += currentRampProfile.currentChangeRate;                            
+                        refiTotalCurrent += currentRampProfile.currentChangeRate;
                         //Limit refcurrent
                         if(refiTotalCurrent > currentRampProfile.endCurrent)
                         {
                             refiTotalCurrent = currentRampProfile.endCurrent;
-                        } 
+                        }
                         //Enable current control
                         rampStatusFlags.rampCurrentControlRequired = 1;
                     }
@@ -2486,7 +2488,7 @@ VOID runShutterToReqSpeed(VOID)
                     {
                         //Change the ramp state to running
                         rampCurrentState = RAMP_RUNNING;
-                        rampStatusFlags.shutterOperationStart = 1; //shutter operation started 
+                        rampStatusFlags.shutterOperationStart = 1; //shutter operation started
                         rampStatusFlags.shutterOperationComplete = 0; //shutter operation completed
                     }
                 }
@@ -2494,28 +2496,28 @@ VOID runShutterToReqSpeed(VOID)
                 {
                     //Change the ramp state to running
                     rampCurrentState = RAMP_RUNNING;
-                    rampStatusFlags.shutterOperationStart = 1; //shutter operation started 
+                    rampStatusFlags.shutterOperationStart = 1; //shutter operation started
                     rampStatusFlags.shutterOperationComplete = 0; //shutter operation completed
                 }
-            } 
+            }
         }
         else
         {
             //Goto next step
             if(++rampCurrentStep < rampTotalStates)
             {
-                currentRampProfilePtr++; 
+                currentRampProfilePtr++;
                 currentRampProfile = *currentRampProfilePtr;
             }
             else
             {
                 rampCurrentState = RAMP_STOP;
                 stopShutter();
-                rampStatusFlags.shutterOperationStart = 0; 
+                rampStatusFlags.shutterOperationStart = 0;
                 rampStatusFlags.shutterOperationComplete = 1;
             }
         }
-    }    
+    }
 }
 
 VOID calcShtrMinDistValue(VOID)
@@ -2541,14 +2543,14 @@ VOID calcShtrMinDistValue(VOID)
             shtrMinDistVal = uDriveCommonBlockEEP.stEEPDriveCommonBlock.lowerStoppingPos_A101;
         }
     }
-    shtrMinDistReqFlg = TRUE;    
+    shtrMinDistReqFlg = TRUE;
 }
 
 VOID calcShtrStopDistValue(VOID)
 {
     //Read current position
     rampCurrentPosition = hallCounts;
-    
+
     if(requiredDirection == CW)
     {
         shtrMinDistVal = rampCurrentPosition - SHUTTER_STOP_DISTANCE_CW;
@@ -2567,7 +2569,7 @@ VOID calcShtrStopDistValue(VOID)
             shtrMinDistVal = uDriveCommonBlockEEP.stEEPDriveCommonBlock.lowerStoppingPos_A101;
         }
     }
-    shtrMinDistReqFlg = TRUE;    
+    shtrMinDistReqFlg = TRUE;
 }
 
 
@@ -2583,24 +2585,24 @@ VOID stopShutter(VOID)
     static SHORT I_gainForStop = 0;		//	current gain during stop operation
 	static SHORT lsucCaptureI = 0;		//	variable to restore original current gain after stop
 	#endif
-	
-    BOOL applyBrake = FALSE;  
+
+    BOOL applyBrake = FALSE;
     rampCurrentPosition = hallCounts;
-    rampCurrentSpeed = refSpeed;   
-    
+    rampCurrentSpeed = refSpeed;
+
     //if current speed is greater than 200 rpm then apply descelaration
-    //then apply DC injection, then mechanical brake     
+    //then apply DC injection, then mechanical brake
     if(
 		(!gui8StopKeyPressed && (rampCurrentSpeed > SHUTTER_SPEED_MIN)) ||		//	Safety sensor is triggered
 		(
 			(gui8StopKeyPressed) &&		//	Stop key is pressed
 			(
-				(rampCurrentSpeed > SHUTTER_SPEED_MIN) || 
-				( 
-					((measuredSpeed > GO_UP_MIN_SPEED_BEFORE_APPLYING_BRAKE) && (requiredDirection == CW)) ||		//	measured speed is greater than 300 while going up 
+				(rampCurrentSpeed > SHUTTER_SPEED_MIN) ||
+				(
+					((measuredSpeed > GO_UP_MIN_SPEED_BEFORE_APPLYING_BRAKE) && (requiredDirection == CW)) ||		//	measured speed is greater than 300 while going up
 					((measuredSpeed > GO_DOWN_MIN_SPEED_BEFORE_APPLYING_BRAKE) && (requiredDirection == CCW))		//	measured speed is greater than 450 while going down
 				)
-			) 
+			)
 		)
 	)
     {
@@ -2620,15 +2622,15 @@ VOID stopShutter(VOID)
 			I_gainForStop = lsucCaptureI;
 		}
 		#endif
-		
+
         refiTotalCurrent = 0;
-        rampStatusFlags.rampCurrentControlRequired = 0;        
+        rampStatusFlags.rampCurrentControlRequired = 0;
         refSpeed -= decelaration;
         if(refSpeed < SHUTTER_SPEED_MIN)
         {
             refSpeed = SHUTTER_SPEED_MIN;
         }
-        
+
         rampStatusFlags.rampSpeedControlRequired = 1;
 		// Logic related to increasing I gain while stoping the shutter is commneted - YG - Nov 15
 		#if 0
@@ -2643,7 +2645,7 @@ VOID stopShutter(VOID)
 			speedPIparms.qKi = I_gainForStop;
 		}
 		#endif
-		
+
     }
     //Check if minimum travel before reverse is required
     else if(shtrMinDistReqFlg)
@@ -2653,9 +2655,9 @@ VOID stopShutter(VOID)
 		//	restore current gain value
 		I_gainForStop = lsucCaptureI;
 		speedPIparms.qKi = I_gainForStop;
-		lsucCaptureI = 0;	
+		lsucCaptureI = 0;
 		#endif
-		
+
         if((requiredDirection == CW) && (rampCurrentPosition > shtrMinDistVal))
         {
             rampStatusFlags.rampSpeedControlRequired = 1;
@@ -2675,25 +2677,25 @@ VOID stopShutter(VOID)
 
 		// Logic related to increasing I gain while stoping the shutter is commneted - YG - Nov 15
 		#if 0
-		//	restore current gain value		
+		//	restore current gain value
 		I_gainForStop = lsucCaptureI;
 		speedPIparms.qKi = I_gainForStop;
 		lsucCaptureI = 0;
 		#endif
-		
+
         applyBrake = TRUE;
     }
-        
+
     if(applyBrake == TRUE)
     {
         rampStatusFlags.rampSpeedControlRequired = 0;
         rampStatusFlags.rampCurrentControlRequired = 0;
-        
+
         if(!rampStatusFlags.rampDcInjectionOn)
         {
             controlOutput = SHUTTER_LOAD_HOLDING_DUTY;
             rampStatusFlags.rampDcInjectionOn = 1;
-            DCInjectionON();            
+            DCInjectionON();
             rampOutputStatus.shutterMoving = 0; //indicate shutter stopped
             rampDcInjectionOnCounter = 0;
             lockActivationDelayCnt = 0; //reset lock activation delay
@@ -2706,7 +2708,7 @@ VOID stopShutter(VOID)
             {
                 //Turn ON mechanical brake
                 lockApply;
-                rampStatusFlags.rampBrakeOn = 1;                
+                rampStatusFlags.rampBrakeOn = 1;
             }
 
             //If mechanical brake is ON decrement DC injection duty.
@@ -2729,17 +2731,17 @@ VOID stopShutter(VOID)
 				//	Shutter is stopped, clear flag
 				gui8StopKeyPressed = 0;
             }
-            
+
         }
         //check the trip status
         //if shutter has reached to upper or lower limit then immediately stop the shutter
-        if((rampCurrentPosition < uDriveCommonBlockEEP.stEEPDriveCommonBlock.upperStoppingPos_A100) 
+        if((rampCurrentPosition < uDriveCommonBlockEEP.stEEPDriveCommonBlock.upperStoppingPos_A100)
            || (rampCurrentPosition > uDriveCommonBlockEEP.stEEPDriveCommonBlock.lowerStoppingPos_A101))
         {
 			//	No need to call this function from here as it may override drift calculation logic
             //checkRampTripStatus();
         }
-        
+
     }
 }
 #endif
@@ -2761,17 +2763,17 @@ VOID stopShutter(VOID)
 
 	UINT16 lu16KiIncrementMaxValue;
 	#endif
-	
-    BOOL applyBrake = FALSE;  
+
+    BOOL applyBrake = FALSE;
     rampCurrentPosition = hallCounts;
-    rampCurrentSpeed = refSpeed; 
+    rampCurrentSpeed = refSpeed;
 
 
   	//Check if minimum travel before reverse is required
     if(shtrMinDistReqFlg)
     {
 		// Logic related to increasing I gain while stoping the shutter is commneted - YG - Nov 15
-		
+
         if((requiredDirection == CW) && (rampCurrentPosition > shtrMinDistVal))
         {
             rampStatusFlags.rampSpeedControlRequired = 1;
@@ -2784,41 +2786,39 @@ VOID stopShutter(VOID)
         {
             shtrMinDistReqFlg = FALSE;
         }
-    }  
+    }
     //if current speed is greater than 200 rpm then apply descelaration
-    //then apply DC injection, then mechanical brake     
+    //then apply DC injection, then mechanical brake
+/*
     else if(
-             (applyBrake == FALSE)&&  //20160915REVERSEPROTECT
 				(
 					// Logic added for safety sensor and Up/ Down button press when shutter is moving, to go in respective apposite direction after achieving safe speed - YG NOV 15
 					//	Safety sensor is triggered
 				    (
-						!gui8StopKeyPressed && 
+						!gui8StopKeyPressed &&
 						(
-							//(rampCurrentSpeed > SHUTTER_SPEED_MIN_STOP) || //20160915
-                            (rampCurrentSpeed > 500) ||
-							//(measuredSpeed > MIN_SPEED_BEFORE_REVERSE_ACTION) //20160915
-                            (rampCurrentSpeed > 500) //20160915
+//							(rampCurrentSpeed > SHUTTER_SPEED_MIN_STOP) ||
+							(rampCurrentSpeed > 1000) ||
+							(measuredSpeed > MIN_SPEED_BEFORE_REVERSE_ACTION)
 						)
-					) ||		
+					) ||
 					//	Stop key is pressed
 					(
-						(gui8StopKeyPressed) &&		
+						(gui8StopKeyPressed) &&
 						(
-							(rampCurrentSpeed > 500) ||   //20160915SHUTTER_SPEED_MIN_STOP
-							( 
-								((measuredSpeed > GO_UP_MIN_SPEED_BEFORE_APPLYING_BRAKE) && (requiredDirection == CW)) ||		//	measured speed is greater than 300 while going up 
-								//((measuredSpeed > GO_DOWN_MIN_SPEED_BEFORE_APPLYING_BRAKE) && (requiredDirection == CCW))		//	measured speed is greater than 450 while 20160915
-                                ((rampCurrentSpeed > 500) && (requiredDirection == CCW)) //20160915
+							(rampCurrentSpeed > SHUTTER_SPEED_MIN_STOP) ||
+							(
+								((measuredSpeed > GO_UP_MIN_SPEED_BEFORE_APPLYING_BRAKE) && (requiredDirection == CW)) ||		//	measured speed is greater than 300 while going up
+								((measuredSpeed > GO_DOWN_MIN_SPEED_BEFORE_APPLYING_BRAKE) && (requiredDirection == CCW))		//	measured speed is greater than 450 while going down
 							)
-						) 
+						)
 					)
 				) &&
 				// Check shutter current position with referance upper and lower limit and depending on the direction of movement
 				(
 
-					(requiredDirection == CW /* UP Direction*/    && rampCurrentPosition > uDriveCommonBlockEEP.stEEPDriveCommonBlock.upperStoppingPos_A100) ||
-					(requiredDirection == CCW /* DOWN Direction*/ && rampCurrentPosition < uDriveCommonBlockEEP.stEEPDriveCommonBlock.lowerStoppingPos_A101)
+					(requiredDirection == CW  && rampCurrentPosition > uDriveCommonBlockEEP.stEEPDriveCommonBlock.upperStoppingPos_A100) ||
+					(requiredDirection == CCW && rampCurrentPosition < uDriveCommonBlockEEP.stEEPDriveCommonBlock.lowerStoppingPos_A101)
 
 				)
           )
@@ -2839,16 +2839,15 @@ VOID stopShutter(VOID)
 			I_gainForStop = lsucCaptureI;
 		}
 		#endif
-		
+
         refiTotalCurrent = 0;
-        rampStatusFlags.rampCurrentControlRequired = 0;        
-        //refSpeed -= gs16UpDecelaration;20160915
-        refSpeed -= 400; //20160915
+        rampStatusFlags.rampCurrentControlRequired = 0;
+        refSpeed -= gs16UpDecelaration;
         if(refSpeed < SHUTTER_SPEED_MIN_STOP)
         {
             refSpeed = SHUTTER_SPEED_MIN_STOP;
         }
-        
+
         rampStatusFlags.rampSpeedControlRequired = 1;
 		// Logic related to increasing I gain while stoping the shutter is tuned to optimize value - YG - Nov 15
 		#if 1
@@ -2869,7 +2868,97 @@ VOID stopShutter(VOID)
 
 		}
 			//	dynamically increment i gain to speed up stop action
-			I_gainForStop = I_gainForStop + 250; //20160915 200
+			I_gainForStop = I_gainForStop + 200;
+			if (I_gainForStop >= lu16KiIncrementMaxValue)
+			{
+				I_gainForStop = lu16KiIncrementMaxValue;
+			}
+			speedPIparms.qKi = I_gainForStop;
+		}
+		#endif
+
+    }
+*/
+    else if(
+             (applyBrake == FALSE)&&  //20160915REVERSEPROTECT
+				(
+					// Logic added for safety sensor and Up/ Down button press when shutter is moving, to go in respective apposite direction after achieving safe speed - YG NOV 15
+					//	Safety sensor is triggered
+				    (
+						!gui8StopKeyPressed &&
+						(
+                            (rampCurrentSpeed > 500) //20160915
+						)
+					) ||
+					//	Stop key is pressed
+					(
+						(gui8StopKeyPressed) &&
+						(
+							(rampCurrentSpeed > 500) ||   //20160915SHUTTER_SPEED_MIN_STOP
+							(
+								((measuredSpeed > GO_UP_MIN_SPEED_BEFORE_APPLYING_BRAKE) && (requiredDirection == CW))		//	measured speed is greater than 300 while going up
+							)
+						)
+					)
+				) &&
+				// Check shutter current position with referance upper and lower limit and depending on the direction of movement
+				(
+
+					(requiredDirection == CW  && rampCurrentPosition > uDriveCommonBlockEEP.stEEPDriveCommonBlock.upperStoppingPos_A100) ||
+					(requiredDirection == CCW && rampCurrentPosition < uDriveCommonBlockEEP.stEEPDriveCommonBlock.lowerStoppingPos_A101)
+
+				)
+          )
+    {
+		//  Logic related to increasing I gain while stoping the shutter is tuned to optimize value - YG - Nov 15
+		#if 1
+		if (lsucCaptureI == 0)
+		{
+			//	update current gain value for stop operation
+			if(requiredDirection == CW)
+			{
+				lsucCaptureI = uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.speed_PI_KI_A513 * 10;
+			}
+			else if(requiredDirection == CCW)
+			{
+				lsucCaptureI = uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.current_PI_KI_A515 * 10;
+			}
+			I_gainForStop = lsucCaptureI;
+		}
+		#endif
+
+        refiTotalCurrent = 0;
+        rampStatusFlags.rampCurrentControlRequired = 0;
+        //refSpeed -= gs16UpDecelaration;20160915
+        if(refSpeed>800) refSpeed = 800;
+        else refSpeed -= 400; //20160915
+//        refSpeed -= 2000; //20160915
+        if(refSpeed < SHUTTER_SPEED_MIN_STOP)
+        {
+            refSpeed = SHUTTER_SPEED_MIN_STOP;
+        }
+
+        rampStatusFlags.rampSpeedControlRequired = 1;
+		// Logic related to increasing I gain while stoping the shutter is tuned to optimize value - YG - Nov 15
+		#if 1
+		if(lsucCaptureI)
+		{
+		lu16KiIncrementMaxValue = uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.maxStartupTimeLim_A504;
+
+		if (lu16KiIncrementMaxValue == 0)
+		{
+
+		lu16KiIncrementMaxValue = 1000;
+
+		}
+		else
+		{
+
+		lu16KiIncrementMaxValue = uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.maxStartupTimeLim_A504;
+
+		}
+			//	dynamically increment i gain to speed up stop action
+			I_gainForStop = I_gainForStop + 200; //20160915 200
 			if (I_gainForStop >= lu16KiIncrementMaxValue)
 			{
 				I_gainForStop = lu16KiIncrementMaxValue;
@@ -2879,32 +2968,32 @@ VOID stopShutter(VOID)
 		#endif
        if((requiredDirection == CCW)&&(currentDirection == CW)){applyBrake = TRUE;} //20160915REVERSEPROTECT
        if((requiredDirection == CW)&&(currentDirection == CCW)){applyBrake = TRUE;} //20160915REVERSEPROTECT
-		
+
     }
     else
     {
 
 		//  Logic related to increasing I gain while stoping the shutter is tuned to optimize value - YG - Nov 15
 		#if 1
-		//	restore current gain value		
+		//	restore current gain value
 		I_gainForStop = lsucCaptureI;
 		speedPIparms.qKi = I_gainForStop;
 		lsucCaptureI = 0;
 		#endif
-		
+
         applyBrake = TRUE;
     }
-        
+
     if(applyBrake == TRUE)
     {
         rampStatusFlags.rampSpeedControlRequired = 0;
         rampStatusFlags.rampCurrentControlRequired = 0;
-        
+
         if(!rampStatusFlags.rampDcInjectionOn)
         {
             controlOutput = SHUTTER_LOAD_HOLDING_DUTY;
             rampStatusFlags.rampDcInjectionOn = 1;
-            DCInjectionON();            
+            DCInjectionON();
             rampOutputStatus.shutterMoving = 0; //indicate shutter stopped
             rampDcInjectionOnCounter = 0;
             lockActivationDelayCnt = 0; //reset lock activation delay
@@ -2917,7 +3006,7 @@ VOID stopShutter(VOID)
             {
                 //Turn ON mechanical brake
                 lockApply;
-                rampStatusFlags.rampBrakeOn = 1;                
+                rampStatusFlags.rampBrakeOn = 1;
             }
 
             //If mechanical brake is ON decrement DC injection duty.
@@ -2940,17 +3029,16 @@ VOID stopShutter(VOID)
 				//	Shutter is stopped, clear flag
 				gui8StopKeyPressed = 0;
             }
-            
         }
         //check the trip status
         //if shutter has reached to upper or lower limit then immediately stop the shutter
-        if((rampCurrentPosition < uDriveCommonBlockEEP.stEEPDriveCommonBlock.upperStoppingPos_A100) 
+        if((rampCurrentPosition < uDriveCommonBlockEEP.stEEPDriveCommonBlock.upperStoppingPos_A100)
            || (rampCurrentPosition > uDriveCommonBlockEEP.stEEPDriveCommonBlock.lowerStoppingPos_A101))
         {
 			//	No need to call this function from here as it may override drift calculation logic
             //checkRampTripStatus();
         }
-        
+
     }
 }
 #endif
@@ -2958,7 +3046,7 @@ VOID stopShutter(VOID)
 
 
 VOID executeRampProfile(VOID)
-{    
+{
     rampCurrentPosition = hallCounts;
     rampCurrentSpeed = refSpeed;
     rampCurrentTotCurr = refiTotalCurrent;
@@ -2967,7 +3055,7 @@ VOID executeRampProfile(VOID)
     if(currentRampProfile.rampGenFlags.ccwDirection)
     {
         requiredDirection = CCW;
-        
+
         //if mechanical release required then
         if(currentRampProfile.rampGenFlags.brakeRelease && rampStatusFlags.rampBrakeOn)
         {
@@ -2976,22 +3064,22 @@ VOID executeRampProfile(VOID)
             {
                 controlOutput = currentRampProfile.dcInjectionDuty;
                 rampStatusFlags.rampDcInjectionOn = 1;
-                DCInjectionON();                
+                DCInjectionON();
                 rampDcInjectionOnCounter = 0;
                 lockDeactivationDelayCnt = 0;
             }
             else
-            {                
+            {
                 if(++lockDeactivationDelayCnt >= 4)//MECHANICAL_LOCK_DEACTIVATION_DELAY_CNT)
                 {
                     lockRelease;
                     rampStatusFlags.rampBrakeOn = 0;
                 }
-               
+
                 //turn off DC injection after required time
                 if(++rampDcInjectionOnCounter >= currentRampProfile.dcInjectionTime)
                 {
-                    rampStatusFlags.rampDcInjectionOn = 0; 
+                    rampStatusFlags.rampDcInjectionOn = 0;
 //                    if(uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.shutterType_A537 == BEAD_SHUTTER)
                         rampStatusFlags.rampMaintainHoldingDuty = 0;
 //                    else
@@ -3009,12 +3097,12 @@ VOID executeRampProfile(VOID)
                     startMotor();   //After removing brake start motor
                     rampOutputStatus.shutterMoving = 1;
                 }
-            }            
-        } 
+            }
+        }
         //if only DC injection is ON then first turn OFF DC injection
         else if(currentRampProfile.rampGenFlags.brakeRelease && rampStatusFlags.rampDcInjectionOn)
         {
-            rampStatusFlags.rampDcInjectionOn = 0; 
+            rampStatusFlags.rampDcInjectionOn = 0;
 //            if(uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.shutterType_A537 == BEAD_SHUTTER)
                 rampStatusFlags.rampMaintainHoldingDuty = 0;
 //            else
@@ -3062,7 +3150,7 @@ VOID executeRampProfile(VOID)
                         if(refSpeed < currentRampProfile.endSpeed)
                         {
                             refSpeed = currentRampProfile.endSpeed;
-                        }                        
+                        }
                         rampStatusFlags.rampSpeedControlRequired = 1;
                     }
                     else
@@ -3110,7 +3198,7 @@ VOID executeRampProfile(VOID)
                         //Set the current refernce
                         refiTotalCurrent = currentRampProfile.endCurrent;
                         //Disable current loop
-                        rampStatusFlags.rampCurrentControlRequired = 0;                        
+                        rampStatusFlags.rampCurrentControlRequired = 0;
                         //set the speed reference
                         refSpeed += currentRampProfile.speedChangeRate;
 #if 0
@@ -3120,7 +3208,7 @@ VOID executeRampProfile(VOID)
                         if(refSpeed > currentRampProfile.endSpeed)
                         {
                             refSpeed = currentRampProfile.endSpeed;
-                        }                        
+                        }
                         //enable speed control
                         rampStatusFlags.rampSpeedControlRequired = 1;
                     }
@@ -3166,7 +3254,7 @@ VOID executeRampProfile(VOID)
                 //Goto next step
                 if(++rampCurrentStep < rampTotalStates)
                 {
-                    currentRampProfilePtr++; 
+                    currentRampProfilePtr++;
                     currentRampProfile = *currentRampProfilePtr;
                 }
                 else
@@ -3174,7 +3262,7 @@ VOID executeRampProfile(VOID)
                     brakingRequired();
                 }
             }
-        }        
+        }
         //If it is current mode
         else if(currentRampProfile.rampGenFlags.currentMode)
         {
@@ -3192,14 +3280,14 @@ VOID executeRampProfile(VOID)
                             //set the speed reference
                             refSpeed = currentRampProfile.endSpeed;
                             //disable speed control
-                            rampStatusFlags.rampSpeedControlRequired = 0;                            
+                            rampStatusFlags.rampSpeedControlRequired = 0;
                             //set the current reference
-                            refiTotalCurrent -= currentRampProfile.currentChangeRate;                            
+                            refiTotalCurrent -= currentRampProfile.currentChangeRate;
                             //Limit refcurrent
                             if(refiTotalCurrent < currentRampProfile.endCurrent)
                             {
                                 refiTotalCurrent = currentRampProfile.endCurrent;
-                            }                              
+                            }
                             //Enable current control
                             rampStatusFlags.rampCurrentControlRequired = 1;
                         }
@@ -3260,14 +3348,14 @@ VOID executeRampProfile(VOID)
                             //set the speed reference
                             refSpeed = currentRampProfile.endSpeed;
                             //disable speed control
-                            rampStatusFlags.rampSpeedControlRequired = 0;                            
+                            rampStatusFlags.rampSpeedControlRequired = 0;
                             //set the current reference
-                            refiTotalCurrent += currentRampProfile.currentChangeRate;                            
+                            refiTotalCurrent += currentRampProfile.currentChangeRate;
                             //Limit refcurrent
                             if(refiTotalCurrent > currentRampProfile.endCurrent)
                             {
                                 refiTotalCurrent = currentRampProfile.endCurrent;
-                            }                              
+                            }
                             //Enable current control
                             rampStatusFlags.rampCurrentControlRequired = 1;
                         }
@@ -3322,7 +3410,7 @@ VOID executeRampProfile(VOID)
                 //Goto next step
                 if(++rampCurrentStep < rampTotalStates)
                 {
-                    currentRampProfilePtr++; 
+                    currentRampProfilePtr++;
                     currentRampProfile = *currentRampProfilePtr;
                 }
                 else
@@ -3331,7 +3419,7 @@ VOID executeRampProfile(VOID)
                 }
             }
         }
-        //if it is open loop mode 
+        //if it is open loop mode
         else if(currentRampProfile.rampGenFlags.openloopMode)
         {
             //if current position is within the required limit then execute the step else goto next step
@@ -3406,7 +3494,7 @@ VOID executeRampProfile(VOID)
                 //Goto next step
                 if(++rampCurrentStep < rampTotalStates)
                 {
-                    currentRampProfilePtr++; 
+                    currentRampProfilePtr++;
                     currentRampProfile = *currentRampProfilePtr;
                 }
                 else
@@ -3416,10 +3504,10 @@ VOID executeRampProfile(VOID)
             }
         }
     }
-    else if(currentRampProfile.rampGenFlags.cwDirection) 
-    {		
+    else if(currentRampProfile.rampGenFlags.cwDirection)
+    {
         requiredDirection = CW;
-            
+
         //if mechanical release required then
         if(currentRampProfile.rampGenFlags.brakeRelease && rampStatusFlags.rampBrakeOn)
         {
@@ -3428,22 +3516,22 @@ VOID executeRampProfile(VOID)
             {
                 controlOutput = currentRampProfile.dcInjectionDuty;
                 rampStatusFlags.rampDcInjectionOn = 1;
-                DCInjectionON();                
+                DCInjectionON();
                 rampDcInjectionOnCounter = 0;
                 lockDeactivationDelayCnt = 0;   //reset lock de-activation delay
             }
             else
-            {               
+            {
                 if(++lockDeactivationDelayCnt >= 4)//MECHANICAL_LOCK_DEACTIVATION_DELAY_CNT)
                 {
                     lockRelease;
-                    rampStatusFlags.rampBrakeOn = 0; 
+                    rampStatusFlags.rampBrakeOn = 0;
                 }
-                
+
                 //turn off DC injection after required time
                 if(++rampDcInjectionOnCounter >= currentRampProfile.dcInjectionTime)
                 {
-                    rampStatusFlags.rampDcInjectionOn = 0;  
+                    rampStatusFlags.rampDcInjectionOn = 0;
                     rampStatusFlags.rampMaintainHoldingDuty = 1;
                     refSpeed = SHUTTER_SPEED_MIN;
                     refiTotalCurrent = RAMP_STARTING_CURRENT_MIN;
@@ -3458,12 +3546,12 @@ VOID executeRampProfile(VOID)
                     startMotor();   //After removing brake start motor
                     rampOutputStatus.shutterMoving = 1;
                 }
-            }            
-        }  
+            }
+        }
         //if only DC injection is ON then first turn OFF DC injection
         else if(currentRampProfile.rampGenFlags.brakeRelease && rampStatusFlags.rampDcInjectionOn)
         {
-            rampStatusFlags.rampDcInjectionOn = 0;  
+            rampStatusFlags.rampDcInjectionOn = 0;
             rampStatusFlags.rampMaintainHoldingDuty = 1;
             refSpeed = SHUTTER_SPEED_MIN;
             refiTotalCurrent = RAMP_STARTING_CURRENT_MIN;
@@ -3486,7 +3574,7 @@ VOID executeRampProfile(VOID)
             //if current position is within the required limit then execute the step else goto next step
             if(rampCurrentPosition >= currentRampProfile.endPosition)
             {
-                if(currentRampProfile.startSpeed > currentRampProfile.endSpeed)                
+                if(currentRampProfile.startSpeed > currentRampProfile.endSpeed)
                 {
                     //descelaration
                     if(rampCurrentSpeed > currentRampProfile.endSpeed)
@@ -3498,7 +3586,7 @@ VOID executeRampProfile(VOID)
                         //Set the current refernce
                         refiTotalCurrent = currentRampProfile.endCurrent;
                         //Disable current loop
-                        rampStatusFlags.rampCurrentControlRequired = 0;                        
+                        rampStatusFlags.rampCurrentControlRequired = 0;
                         //set the speed reference
                         refSpeed -= currentRampProfile.speedChangeRate;
 #if 0
@@ -3509,7 +3597,7 @@ VOID executeRampProfile(VOID)
                         if(refSpeed < currentRampProfile.endSpeed)
                         {
                             refSpeed = currentRampProfile.endSpeed;
-                        }                        
+                        }
                         //enable speed control
                         rampStatusFlags.rampSpeedControlRequired = 1;
                     }
@@ -3558,7 +3646,7 @@ VOID executeRampProfile(VOID)
                         //Set the current refernce
                         refiTotalCurrent = currentRampProfile.endCurrent;
                         //Disable current loop
-                        rampStatusFlags.rampCurrentControlRequired = 0;                        
+                        rampStatusFlags.rampCurrentControlRequired = 0;
                         //set the speed reference
                         refSpeed += currentRampProfile.speedChangeRate;
 #if 0
@@ -3569,7 +3657,7 @@ VOID executeRampProfile(VOID)
                         if(refSpeed > currentRampProfile.endSpeed)
                         {
                             refSpeed = currentRampProfile.endSpeed;
-                        }                        
+                        }
                         //enable speed control
                         rampStatusFlags.rampSpeedControlRequired = 1;
                     }
@@ -3618,7 +3706,7 @@ VOID executeRampProfile(VOID)
                 //Goto next step
                 if(++rampCurrentStep < rampTotalStates)
                 {
-                    currentRampProfilePtr++; 
+                    currentRampProfilePtr++;
                     currentRampProfile = *currentRampProfilePtr;
                 }
                 else
@@ -3626,7 +3714,7 @@ VOID executeRampProfile(VOID)
                     brakingRequired();
                 }
             }
-        }        
+        }
         //If it is current mode
         else if(currentRampProfile.rampGenFlags.currentMode)
         {
@@ -3644,14 +3732,14 @@ VOID executeRampProfile(VOID)
                             //set the speed reference
                             refSpeed = currentRampProfile.endSpeed;
                             //disable speed control
-                            rampStatusFlags.rampSpeedControlRequired = 0;                            
+                            rampStatusFlags.rampSpeedControlRequired = 0;
                             //set the current reference
-                            refiTotalCurrent -= currentRampProfile.currentChangeRate;                            
+                            refiTotalCurrent -= currentRampProfile.currentChangeRate;
                             //Limit refcurrent
                             if(refiTotalCurrent < currentRampProfile.endCurrent)
                             {
                                 refiTotalCurrent = currentRampProfile.endCurrent;
-                            } 
+                            }
                             //Enable current control
                             rampStatusFlags.rampCurrentControlRequired = 1;
                         }
@@ -3710,14 +3798,14 @@ VOID executeRampProfile(VOID)
                             //set the speed reference
                             refSpeed = currentRampProfile.endSpeed;
                             //disable speed control
-                            rampStatusFlags.rampSpeedControlRequired = 0;                            
+                            rampStatusFlags.rampSpeedControlRequired = 0;
                             //set the current reference
-                            refiTotalCurrent += currentRampProfile.currentChangeRate;                            
+                            refiTotalCurrent += currentRampProfile.currentChangeRate;
                             //Limit refcurrent
                             if(refiTotalCurrent > currentRampProfile.endCurrent)
                             {
                                 refiTotalCurrent = currentRampProfile.endCurrent;
-                            } 
+                            }
                             //Enable current control
                             rampStatusFlags.rampCurrentControlRequired = 1;
                         }
@@ -3772,7 +3860,7 @@ VOID executeRampProfile(VOID)
                 //Goto next step
                 if(++rampCurrentStep < rampTotalStates)
                 {
-                    currentRampProfilePtr++; 
+                    currentRampProfilePtr++;
                     currentRampProfile = *currentRampProfilePtr;
                 }
                 else
@@ -3781,7 +3869,7 @@ VOID executeRampProfile(VOID)
                 }
             }
         }
-        //if it is open loop mode 
+        //if it is open loop mode
         else if(currentRampProfile.rampGenFlags.openloopMode)
         {
             //if current position is within the required limit then execute the step else goto next step
@@ -3856,7 +3944,7 @@ VOID executeRampProfile(VOID)
                 //Goto next step
                 if(++rampCurrentStep < rampTotalStates)
                 {
-                    currentRampProfilePtr++; 
+                    currentRampProfilePtr++;
                     currentRampProfile = *currentRampProfilePtr;
                 }
                 else
@@ -3867,17 +3955,17 @@ VOID executeRampProfile(VOID)
         }
 
     }
-    
+
 }
 
 
 VOID brakingRequired(VOID)
 {
     BOOL applyBrake = FALSE;
-    
+
     rampCurrentSpeed = refSpeed;
     rampCurrentPosition = hallCounts;
-    
+
     if(requiredDirection == CW)
     {
         if(rampCurrentPosition <= currentRampProfile.endPosition)
@@ -3893,7 +3981,7 @@ VOID brakingRequired(VOID)
          }
 		 //	Commented to handle "offset at upper & lower limit"
 		 //	Shutter used to stop above lower limit because of this.
-#if 0         
+#if 0
          if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterLowerLimit)
          {
              applyBrake = TRUE;
@@ -3905,16 +3993,16 @@ VOID brakingRequired(VOID)
     {
         rampStatusFlags.rampSpeedControlRequired = 0;
         rampStatusFlags.rampCurrentControlRequired = 0;
-        
+
         if(!rampStatusFlags.rampDcInjectionOn)
         {
             controlOutput = currentRampProfile.dcInjectionDuty;
             rampStatusFlags.rampDcInjectionOn = 1;
-            DCInjectionON();            
+            DCInjectionON();
             rampOutputStatus.shutterMoving = 0; //indicate shutter stopped
             rampDcInjectionOnCounter = 0;
             lockActivationDelayCnt = 0; //reset lock activation delay
-            rampStatusFlags.shutterOperationStart = 0; 
+            rampStatusFlags.shutterOperationStart = 0;
             rampStatusFlags.shutterOperationComplete = 1;
             //calculate decrement value for dc injection
             dcInjDecVal = __builtin_divud(currentRampProfile.dcInjectionDuty, (currentRampProfile.dcInjectionTime - MECHANICAL_LOCK_ACTIVATION_DELAY_CNT));
@@ -3927,7 +4015,7 @@ VOID brakingRequired(VOID)
                 lockApply;
                 rampStatusFlags.rampBrakeOn = 1;
             }
-            
+
             //If mechanical brake is ON decrement DC injection duty.
             if(rampStatusFlags.rampBrakeOn)
             {
@@ -3935,14 +4023,14 @@ VOID brakingRequired(VOID)
                 if(controlOutput < 0)
                     controlOutput = 0;
             }
-            
+
             //Change the state after dc injection apply timer overflow
             if(++rampDcInjectionOnCounter >= currentRampProfile.dcInjectionTime)
             {
                 DCInjectionOFF();
                 rampStatusFlags.rampDcInjectionOn = 0;
                 stopMotor();
-                
+
                 if(++rampCurrentStep < rampTotalStates)
                 {
                     currentRampProfilePtr++;
@@ -3951,7 +4039,7 @@ VOID brakingRequired(VOID)
                 else
                 {
                     rampCurrentState = RAMP_STATE_END;
-                    currentRampProfileNo = RAMP_PROFILE_END;  
+                    currentRampProfileNo = RAMP_PROFILE_END;
                 }
             }
         }
