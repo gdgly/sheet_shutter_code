@@ -88,7 +88,7 @@
 #define EXPECTED_CRC_CLEAN_ERROR                0xB253     
 #define EXPECTED_CRC_APERTUREHEIGHT                0x7292 
 
-CONST UINT32 drive_fw_version = 0x00000100;  //bug_NO.64
+CONST UINT32 drive_fw_version = 0x00000200;  //bug_NO.64
 
 
 enum {
@@ -1002,15 +1002,27 @@ VOID commandHandler(VOID)
                 case clean_error:
                     if(!rampOutputStatus.shutterMoving)
                     {
-                        if((uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorStall)||          \
-                           (uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorExceedingTorque)|| \
-                           (uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorSusOC)||           \
-                           (uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorPWMCosting))
+                        if((uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorStall)||          
+                           (uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorExceedingTorque)|| 
+                           (uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorSusOC)||           
+                           (uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorPWMCosting)||    
+                                                                                                                                     
+                           (uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.osNotDetectUP)||           //bug_No.101  20160909
+                           (uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.osNotDetectDown)||     
+                           (uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.osDetectOnUp)||     
+                           (uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.osDetectOnDown)||     
+                           (uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.osFailValidation))
                         {
                             uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorStall = FALSE;
                             uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorExceedingTorque = FALSE;
                             uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorSusOC = FALSE;
-                            uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorPWMCosting = FALSE;      
+                            uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorPWMCosting = FALSE;    
+                            
+                            uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.osNotDetectUP = FALSE;      //bug_No.101  20160909
+                            uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.osNotDetectDown = FALSE;
+                            uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.osDetectOnUp = FALSE;
+                            uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.osDetectOnDown = FALSE;
+                            uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.osFailValidation = FALSE;                            
                             //initSensorList();
                             //initApplication();
                             //initRampGenerator();
