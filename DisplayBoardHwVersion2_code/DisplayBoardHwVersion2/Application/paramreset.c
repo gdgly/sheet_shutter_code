@@ -64,6 +64,7 @@
 
 
 extern uint8_t flag_out_setting_cyw;
+extern uint8_t KEY_PRESS_3SEC_ENT_FORRESET_CYW;
 /****************************************************************************
  *  Global variables for this file:
 ****************************************************************************/
@@ -115,9 +116,9 @@ uint8_t paramResetRunTime(char *paramStr, uint16_t paramno)
 	 		// Clear Screen.
 	 		//GrRectFIllBolymin(0, 126, 0, 63, true, true);
 
-	if(gKeysStatus.bits.Key_3secEnter_pressed)
+	if(KEY_PRESS_3SEC_ENT_FORRESET_CYW)
 	 {
-	     gKeysStatus.bits.Key_3secEnter_pressed = 0;
+		KEY_PRESS_3SEC_ENT_FORRESET_CYW = 0;
 
 	     GrRectFIllBolymin(0, 127, 0, 63, 0x00, true);
 
@@ -271,6 +272,7 @@ uint8_t paramResetRunTime(char *paramStr, uint16_t paramno)
 						gstUMtoCMoperational.commandToControlBoard.bits.settingsModeStatus = 1;
 						gstUMtoCMoperational.additionalCommandData = 0;
 						gstUMtoCMoperational.commandRequestStatus = eACTIVE;
+						//ui32OperationCount = 0;
 					    flag_out_setting_cyw = 1;
 					}
 					gui8SettingsModeStatus = DEACTIVATED;
@@ -344,6 +346,7 @@ uint8_t paramResetA120Paint(void)
 	paramResetPaintprocess(_STR_SHEETPOS_english);
 
 	gKeysStatus.bits.Key_3secEnter_pressed = 0;
+	KEY_PRESS_3SEC_ENT_FORRESET_CYW =0;
 	return 0;
 }
 
@@ -355,6 +358,7 @@ uint8_t paramResetA020Paint(void)
 	paramResetPaintprocess(_STR_OPRCOUNT_english);
 
 	gKeysStatus.bits.Key_3secEnter_pressed = 0;
+	KEY_PRESS_3SEC_ENT_FORRESET_CYW =0;
 	return 0;
 }
 
@@ -366,6 +370,7 @@ uint8_t paramResetA081Paint(void)
 	paramResetPaintprocess(_STR_MICSWCOUNT_english);
 
 	gKeysStatus.bits.Key_3secEnter_pressed = 0;
+	KEY_PRESS_3SEC_ENT_FORRESET_CYW =0;
 	return 0;
 }
 /******************************************************************************

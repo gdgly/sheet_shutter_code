@@ -47,6 +47,8 @@ uint8_t Flag_lcdbackon = 0;
 
 //uint8_t  Flag_lcd_light_on =0;
 extern uint8_t flag_out_setting_cyw;
+extern uint8_t setting_flag;
+void guest_reinit(void);
 
 void Set_lcdlightON(void)
 {
@@ -133,7 +135,7 @@ void Out_of_settingmode_cyw(void)
 								gParamListRenderStarted = 0;
 
 								guest_reinit();
-
+								setting_flag = 1;//disable guesure
 								flag_out_setting_cyw = 0;
 				}
 			}
@@ -168,8 +170,8 @@ void Out_of_settingmode_cyw(void)
 								gParamListRenderStarted = 0;
 
 								guest_reinit();
-
-								flag_out_setting_cyw = 0;
+								setting_flag = 1;
+								flag_out_setting_cyw = 0;//disable guesure
 				}
 			}
 		}

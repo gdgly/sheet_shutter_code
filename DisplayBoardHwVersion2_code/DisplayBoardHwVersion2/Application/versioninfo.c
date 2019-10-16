@@ -52,6 +52,10 @@ extern uint32_t gDriveFirmwareVersion;
 extern uint32_t gDisplayHardwareVersion;
 extern uint32_t gDisplayFirmwareVersion;
 
+extern const uint8_t display_fw[][3];
+extern const uint8_t control_fw[][3];
+extern const uint8_t drive_fw[][3];
+
 uint32_t *ptrBoardVersions[6] = {
 		&gControlHardwareVersion,
 		&gControlFirmwareVersion,
@@ -291,11 +295,28 @@ uint8_t VerInfoPaintprocess(uint8_t stridx)
 	luBoardVer.ui32VersionWord = *ptrBoardVersions[stridx*2 + 1];
 	//usnprintf((char *)viewbuff, sizeof(viewbuff), "FW VERSION: %04u", *ptrBoardVersions[stridx*2 + 1]);
 	//usnprintf((char *)viewbuff, sizeof(viewbuff), "FW VERSION: 1.%u", luBoardVer.ui8VersionBytes[0] );
-	if(gu8_language == Japanese_IDX)
-	usnprintf((char *)viewbuff, sizeof(viewbuff), "FWバージョン:%u.%u", luBoardVer.ui8VersionBytes[1],luBoardVer.ui8VersionBytes[0] );
-	else
-	usnprintf((char *)viewbuff, sizeof(viewbuff), "FW VERSION:%u.%u", luBoardVer.ui8VersionBytes[1],luBoardVer.ui8VersionBytes[0] );
-
+	 switch(stridx)
+	 {
+	 case _IDX_CTRLVER:
+		 if(gu8_language == Japanese_IDX)
+			 usnprintf((char *)viewbuff, sizeof(viewbuff), "FWバージョン:%u%u%u.%u", control_fw[luBoardVer.ui8VersionBytes[1]][0],control_fw[luBoardVer.ui8VersionBytes[1]][1],control_fw[luBoardVer.ui8VersionBytes[1]][2],luBoardVer.ui8VersionBytes[0] );
+		 else
+			 usnprintf((char *)viewbuff, sizeof(viewbuff), "FW VERSION:%u%u%u.%u", control_fw[luBoardVer.ui8VersionBytes[1]][0],control_fw[luBoardVer.ui8VersionBytes[1]][1],control_fw[luBoardVer.ui8VersionBytes[1]][2],luBoardVer.ui8VersionBytes[0] );
+		 break;
+	 case _IDX_DISPVER:
+		if(gu8_language == Japanese_IDX)
+			usnprintf((char *)viewbuff, sizeof(viewbuff), "FWバージョン:%u%u%u.%u", display_fw[luBoardVer.ui8VersionBytes[1]][0],display_fw[luBoardVer.ui8VersionBytes[1]][1],display_fw[luBoardVer.ui8VersionBytes[1]][2],luBoardVer.ui8VersionBytes[0] );
+		else
+			usnprintf((char *)viewbuff, sizeof(viewbuff), "FW VERSION:%u%u%u.%u", display_fw[luBoardVer.ui8VersionBytes[1]][0],display_fw[luBoardVer.ui8VersionBytes[1]][1],display_fw[luBoardVer.ui8VersionBytes[1]][2],luBoardVer.ui8VersionBytes[0] );
+		break;
+	 case _IDX_DRVVER:
+		if(gu8_language == Japanese_IDX)
+			usnprintf((char *)viewbuff, sizeof(viewbuff), "FWバージョン:%u%u%u.%u", drive_fw[luBoardVer.ui8VersionBytes[1]][0],drive_fw[luBoardVer.ui8VersionBytes[1]][1],drive_fw[luBoardVer.ui8VersionBytes[1]][2],luBoardVer.ui8VersionBytes[0] );
+		else
+			usnprintf((char *)viewbuff, sizeof(viewbuff), "FW VERSION:%u%u%u.%u",drive_fw[luBoardVer.ui8VersionBytes[1]][0],drive_fw[luBoardVer.ui8VersionBytes[1]][1],drive_fw[luBoardVer.ui8VersionBytes[1]][2],luBoardVer.ui8VersionBytes[0]  );
+		break;
+	 default:break;
+	 }
 	//displayText(viewbuff, 2, 32, false, false, false, false, false, false);
 	//memset(lBuff_cyw,0x20,sizeof(lBuff_cyw));
 

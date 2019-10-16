@@ -99,6 +99,7 @@ void CheckTempReleaseAndResetClock (uint8_t cucTempReleaseMaxLimit, uint8_t *lpC
 
 void Set_lcdlightON(void);
 uint8_t KEY_PRESS_3SEC_ENT_FLAG_CYW=0;
+uint8_t KEY_PRESS_3SEC_ENT_FORRESET_CYW=0;
 uint8_t KEY_PRESS_3SEC_MODE_FLAG_CYW=0;
 uint8_t KEY_PRESS_3SEC_STOP_FLAG_CYW=0;
 /****************************************************************************
@@ -1330,6 +1331,7 @@ void keysProcessFlags(uint8_t keyState, uint8_t keyChanged)
 					{
 
 						//PRESS_DISABLE_FLAG = 1;
+						//LAST_PRESS_TIME=g_ui32TickCount;//20160823
 					gKeysStatus.bits.Key_Stop_pressed = true;
 						gKeysStatus.bits.Key_Stop_released = false;
 						currentTickCount = 0;
@@ -1344,6 +1346,7 @@ void keysProcessFlags(uint8_t keyState, uint8_t keyChanged)
 					{
 
 						//PRESS_DISABLE_FLAG = 2;
+						//LAST_PRESS_TIME=g_ui32TickCount;//20160823
 						gKeysStatus.bits.Key_Open_pressed = true;
 						gKeysStatus.bits.Key_Open_released = false;
 						currentTickCount = 0;
@@ -1358,6 +1361,7 @@ void keysProcessFlags(uint8_t keyState, uint8_t keyChanged)
 					{
 
                       // PRESS_DISABLE_FLAG = 3;
+						//LAST_PRESS_TIME=g_ui32TickCount;//20160823
                         gKeysStatus.bits.Key_Close_released = false;
                         gKeysStatus.bits.Key_Close_pressed = true;
                         currentTickCount = 0;
@@ -1506,6 +1510,7 @@ void keysProcessFlags(uint8_t keyState, uint8_t keyChanged)
 
 			currentTickCount_ent_cyw = 0;
 		    KEY_PRESS_3SEC_ENT_FLAG_CYW = true;
+		    KEY_PRESS_3SEC_ENT_FORRESET_CYW = true;
 		}
 
 		if((KEY_MODE == pressedState) && ((currentTickCount_mode_cyw++) >= SYSTICK_3SEC_KEYPRESS_CYW))
@@ -1574,7 +1579,7 @@ void keysProcessFlags(uint8_t keyState, uint8_t keyChanged)
 	    PriorityLastSentPressKey = Priority_Stop_Key;
 		break;
 	case 2:
-		LAST_PRESS_TIME=g_ui32TickCount;
+		//LAST_PRESS_TIME=g_ui32TickCount;
 		PRESS_DISABLE_FLAG = 0;
 		gKeysStatus.bits.Key_Open_pressed = true;
 		gKeysStatus.bits.Key_Open_released = false;

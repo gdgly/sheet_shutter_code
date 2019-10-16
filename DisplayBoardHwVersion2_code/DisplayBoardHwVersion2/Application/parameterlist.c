@@ -434,6 +434,8 @@ const stParamDatabase gsParamDatabase[TOTAL_PARAMETERS] =
 /****************************************************************************/
 void Para_On_Display_Board_init_cyw(void)
 {
+	//ui32OperationCount = 0;
+
 	gu16_lcdlight =gu16_backlight_DEF;
 	menu_gesture_flag_cyw =gu8_guestue_DEF;
 	writeParameterUpdateInDB((PARAM_DISP)gsParamDatabase[Para_LcdBackLight_Index_cyw].paramEEPROMIndex, (uint8_t *)&gu16_lcdlight);

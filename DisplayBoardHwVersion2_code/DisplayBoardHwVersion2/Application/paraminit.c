@@ -50,6 +50,7 @@ extern uint8_t gui8SettingsModeStatus;
 
 
 void Para_On_Display_Board_init_cyw(void);
+extern uint8_t KEY_PRESS_3SEC_ENT_FORRESET_CYW;
 /****************************************************************************/
 
 #define PARAMNO_INITVAL 21
@@ -201,8 +202,8 @@ uint8_t paramInitRunTime(void) {
 		static uint32_t lsui32TickCount3Seconds = 0;
 
 	#ifdef DISP_TARGET_BOARD
-		if (gKeysStatus.bits.Key_3secEnter_pressed) {
-			gKeysStatus.bits.Key_3secEnter_pressed = 0;
+		if (KEY_PRESS_3SEC_ENT_FORRESET_CYW) {
+			KEY_PRESS_3SEC_ENT_FORRESET_CYW = 0;
 	#endif
 			lsui32TickCount3Seconds = g_ui32TickCount;
 			Sec2Start_cyw =1;
@@ -385,6 +386,7 @@ uint8_t paramInitPaint(void) {
 	// Clear Screen.
 	//GrRectFIllBolymin(0, 126, 0, 63, true, true);
 	GrRectFIllBolymin(0, 127, 0, 63, 0x00, true);
+	KEY_PRESS_3SEC_ENT_FORRESET_CYW =0;
 	if(gu8_language == Japanese_IDX)
 	{
 	//displayText("INIT SHUTTER & DRIVE", 2, 0, false, false, false, false,false,true);
