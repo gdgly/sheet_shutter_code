@@ -1479,9 +1479,12 @@ VOID calculateDrift(BOOL sts)
                 //if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveReady)
                 //{
                     //Calculate the drift and set drift calculated status for position calculations.
+/* 2016/10/19 orign calibration
                     uDriveCommonBlockEEP.stEEPDriveCommonBlock.originSensorDrift_A637 = sensorList[ORIGIN_SENSOR].sensorData \
                         - uDriveCommonBlockEEP.stEEPDriveCommonBlock.originSensorPosMonitor_A128;
                     rampStatusFlags.rampDriftCalculated = 1;
+*/
+                    hallCounts = uDriveCommonBlockEEP.stEEPDriveCommonBlock.originSensorPosMonitor_A128;
                 //}
             }
         }

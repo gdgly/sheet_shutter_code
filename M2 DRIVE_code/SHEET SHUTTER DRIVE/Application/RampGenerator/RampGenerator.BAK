@@ -2887,14 +2887,14 @@ VOID stopShutter(VOID)
 				    (
 						!gui8StopKeyPressed &&
 						(
-                            (rampCurrentSpeed > 200) //20160915
+                            (rampCurrentSpeed > 500) //20160915
 						)
 					) ||
 					//	Stop key is pressed
 					(
 						(gui8StopKeyPressed) &&
 						(
-							(rampCurrentSpeed > 200) ||   //20160915SHUTTER_SPEED_MIN_STOP
+							(rampCurrentSpeed > 500) ||   //20160915SHUTTER_SPEED_MIN_STOP
 							(
 								((measuredSpeed > GO_UP_MIN_SPEED_BEFORE_APPLYING_BRAKE) && (requiredDirection == CW))		//	measured speed is greater than 300 while going up
 							)
@@ -2930,9 +2930,9 @@ VOID stopShutter(VOID)
         refiTotalCurrent = 0;
         rampStatusFlags.rampCurrentControlRequired = 0;
         //refSpeed -= gs16UpDecelaration;20160915
-//        if(refSpeed>800) refSpeed = 800;
-//        else refSpeed -= 400; //20160915
-        refSpeed -= 400; //20160915
+        if(refSpeed>800) refSpeed = 800;
+        else refSpeed -= 400; //20160915
+//        refSpeed -= 2000; //20160915
         if(refSpeed < SHUTTER_SPEED_MIN_STOP)
         {
             refSpeed = SHUTTER_SPEED_MIN_STOP;
