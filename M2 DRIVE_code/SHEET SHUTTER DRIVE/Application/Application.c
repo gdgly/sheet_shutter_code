@@ -1300,7 +1300,28 @@ VOID checkShutterInstallation(VOID)
 		gucInstallationCalledFrom = 0;
 	}
 }
-
+VOID startApertureHeight(VOID)
+{
+    //set drive installation in progress and install A100 position
+    //reset drive ready status
+    //Set installation in progress status
+    uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveApertureHeight = TRUE;
+    uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveInstallation = TRUE;
+    
+    //Reset drive installation failed flag
+    uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveInstallationStatus.bits.installationFailed = FALSE;
+    uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveInstallationStatus.bits.installationSuccess = FALSE;
+    //set current installation status bit
+    uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveInstallationStatus.bits.installA100 = FALSE;                     
+    //Reset ready flag
+    uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveReady = FALSE;
+    uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveInstallationStatus.bits.installA130 = TRUE; 
+    //Set current installation state
+    shutterInstall.currentState = INSTALL_A130;  
+	// Added to overcome installation issue (A100) - RN- NOV 2015
+	//gucInstallationInitiated = INITIATED;
+    ShutterInstallationEnabled = TRUE;
+}
 VOID startInstallation(VOID)
 {
 	if(gucInstallationCalledFrom == 1)
@@ -1340,9 +1361,9 @@ VOID shutterInstallation(VOID)
 {
     SHORT positionError;
 
-    if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveInstallation)
+    if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveInstallation && ShutterInstallationEnabled)
     {
-        if(ShutterInstallationStepNeedSave)
+        if((ShutterInstallationStepNeedSave)&&(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveApertureHeight==0))   //bug_NO.43
         {
             ShutterInstallationStep = readBYTE(EEP_SHUTTER_INSTALLATION_STEP);
             switch(ShutterInstallationStep)
@@ -1533,6 +1554,7 @@ VOID shutterInstallation(VOID)
                         shutterInstall.osToggle = 0;
                         //Start shutter jog up movement
                         inputFlags.value = OPEN_SHUTTER_JOG_50;
+                        inputFlags_Installation.value = inputFlags.value;
                     }
 
                     break;
@@ -1553,6 +1575,7 @@ VOID shutterInstallation(VOID)
                         shutterInstall.currentState = INSTALL_MOVE_UP_50MM;
                         //update input to ramp generator
                         inputFlags.value = OPEN_SHUTTER_JOG_50;
+                        inputFlags_Installation.value = inputFlags.value;
                     }
                     else
                     {
@@ -1568,6 +1591,7 @@ VOID shutterInstallation(VOID)
                             
                             //reset input flag to ramp generator
                             inputFlags.value = STOP_SHUTTER;
+                            inputFlags_Installation.value = inputFlags.value;
                         }
                     }
 
@@ -1584,6 +1608,7 @@ VOID shutterInstallation(VOID)
                         shutterInstall.currentState = INSTALL_MOVE_DN_50MM;
                         //update input to ramp generator
                         inputFlags.value = CLOSE_SHUTTER_JOG_10;
+                        inputFlags_Installation.value = inputFlags.value;
                     }
 
                     break;
@@ -1609,6 +1634,7 @@ VOID shutterInstallation(VOID)
                         shutterInstall.currentState = INSTALL_MOVE_TO_UP_LIMIT;
                         //update input to ramp generator
                         inputFlags.value = OPEN_SHUTTER_JOG_50;
+                        inputFlags_Installation.value = inputFlags.value;
                     }
 
                     break;
@@ -1629,6 +1655,7 @@ VOID shutterInstallation(VOID)
                         shutterInstall.currentState = INSTALL_STATE_END;
                         //reset input flag to ramp generator
                         inputFlags.value = STOP_SHUTTER;
+                        inputFlags_Installation.value = inputFlags.value;
                     }
 
                     //if ramp has reached to final position
@@ -1656,6 +1683,7 @@ VOID shutterInstallation(VOID)
                             ShutterInstallationStepNeedSave = FALSE;
                             //reset input flag to ramp generator
                             inputFlags.value = STOP_SHUTTER;
+                            inputFlags_Installation.value = inputFlags.value;
                         }
                         else
                         {
@@ -1668,6 +1696,7 @@ VOID shutterInstallation(VOID)
                             ShutterInstallationStepNeedSave = FALSE;
                             //reset input flag to ramp generator
                             inputFlags.value = STOP_SHUTTER;
+                            inputFlags_Installation.value = inputFlags.value;
                         }
                     }
 
@@ -1783,7 +1812,21 @@ VOID shutterInstallation(VOID)
                 }
                 break;
             }
-
+            
+            case INSTALL_A130: 
+                if(shutterInstall.enterCmdRcvd)
+                {
+                        uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveInstallation = FALSE;
+                        uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveApertureHeight = FALSE;
+                        uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveReady = TRUE;
+                        uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveInstallationStatus.bits.installA130 = FALSE;
+                        
+                        shutterInstall.enterCmdRcvd = FALSE;
+                        //reset the calibration state machine
+                        shutterInstall.currentState = INSTALL_COMPLETE;
+                        ShutterInstallationEnabled = FALSE;
+                }
+                break;
             default:
                 break;
         }

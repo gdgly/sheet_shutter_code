@@ -265,7 +265,8 @@ CONST _DriveInstallationStatus_A606 uDriveInstallationStatusDefault =
         0,      //UINT8 installationSuccess      : 1; // success can be flagged on completion of A102, then runtime calibration
                 //// can be taken up separately
         0,      //UINT8 installationFailed       : 1;
-        0,      //UINT8 unused                   : 2;
+        0,      //A130
+        0,      //UINT8 unused                   : 1;
     }
 };
 

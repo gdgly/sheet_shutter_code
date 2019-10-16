@@ -85,7 +85,9 @@
 #define EXPECTED_CRC_STOP_POWER_ON_CALIBRATION				0x76D2
 //Added by AOYAGI_ST 20160418 for clean error
 #define EXPECTED_CRC_CLEAN_ERROR                0xB253   
-CONST UINT32 drive_fw_version = 0x00000000;
+#define EXPECTED_CRC_APERTUREHEIGHT                0x7292 
+
+CONST UINT32 drive_fw_version = 0x00000100;
 
 enum {
 	no_error = 0,
@@ -131,6 +133,7 @@ enum _CBCommand
 	stop_power_on_calibraion = 0x36,
     //Added by AOYAGI_ST 20160418 for clean error
     clean_error = 0x38,
+    start_apertureHeight =0x39,
 }enCBCommand; /* Used to identify command coming from CB */
 
 
@@ -250,6 +253,7 @@ const _stCBCommand constCBCommandList[NUM_OF_CONTROL_BOARD_COMMANDS] =
 	{DRIVE_BOARD_ADDRESS, CONTROL_BOARD_ADDRESS, STOP_POWER_ON_CALIBRATION_CMND_LEN,	stop_power_on_calibraion,	{(EXPECTED_CRC_STOP_POWER_ON_CALIBRATION & 0x00FF) , ((EXPECTED_CRC_STOP_POWER_ON_CALIBRATION & 0xFF00) >> 8)}, no_cmnd },
 //Added by AOYAGI_ST 20160418 for adding clean error function
     {DRIVE_BOARD_ADDRESS, CONTROL_BOARD_ADDRESS, CLEAN_ERROR_CMND_LEN,	clean_error,	{(EXPECTED_CRC_CLEAN_ERROR & 0x00FF) , ((EXPECTED_CRC_CLEAN_ERROR & 0xFF00) >> 8)}, no_cmnd },
+    {DRIVE_BOARD_ADDRESS, CONTROL_BOARD_ADDRESS, CLEAN_APERTUREHEIGHT_CMND_LEN,	start_apertureHeight,	{(EXPECTED_CRC_APERTUREHEIGHT & 0x00FF) , ((EXPECTED_CRC_APERTUREHEIGHT & 0xFF00) >> 8)}, no_cmnd },     
 };
 
 /******************************************************************************
@@ -488,7 +492,10 @@ VOID commandHandler(VOID)
                         startInstallation();
 
                     break;
-
+                case  start_apertureHeight:
+                       startApertureHeight();
+                    break;
+                    
                 case confirm_sub_state_install:
                     if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveInstallation)
                     {
@@ -802,6 +809,10 @@ VOID commandHandler(VOID)
                                    parameter=parameter&0xFFFFFFBF;
                                    parameter=parameter|0x00000080;
                                }
+                            }
+                            if((paramIndex == 605)&&((parameter&0x00200008)==0x00200008))
+                            {
+                                  parameter=parameter&0xFFFFFFF7;                                  
                             }                            
                             transmitParameter(parameter, paramIndex, byteCount);
                         }
@@ -923,7 +934,19 @@ VOID commandHandler(VOID)
 				//	Added on 03 FEB 2015 to implement user control on power up calibration
 				case start_power_on_calibraion:
 					//	Set global flag to indicate power on calibration is initiated by user from display board
-					powerOnCalibration = INITIATED;
+                    if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.drivePowerOnCalibration ||
+                            uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveRuntimeCalibration)
+                    {
+                                        powerOnCalibration = INITIATED;
+                    }
+                    if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveInstallation)
+                    {
+                        ShutterInstallationEnabled = TRUE;
+                        //inputFlags.value = OPEN_SHUTTER_JOG_50;
+                        //shutterInstall.currentState = INSTALL_SEARCH_ORG;
+                        
+                        inputFlags.value = inputFlags_Installation.value;
+                    }
                     break;
 
 				//	Added on 03 FEB 2015 to implement user control on power up calibration
@@ -939,16 +962,24 @@ VOID commandHandler(VOID)
                     //    status = nack;
                     //}
 
-                    inputFlags.value = STOP_SHUTTER;
+                                    inputFlags.value = STOP_SHUTTER;
                     //If drive is ready then travel min distance before stop
                     //if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveReady)
                     //{
                     //    calcShtrMinDistValue();
                     //}
-
+					
 					//	Set global flag to indicate power on calibration is terminated by user from display board
-					powerOnCalibration = TERMINATED;
-                    break;
+                    if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.drivePowerOnCalibration ||
+                            uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveRuntimeCalibration)
+                    {
+                                    powerOnCalibration = TERMINATED;
+                    }
+                    if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveInstallation)
+                    {
+                        ShutterInstallationEnabled = FALSE;
+                    }
+                    break; 
                     //added by AOYAGI_ST 20160418 for adding clean error function
                 case clean_error:
                     if(!rampOutputStatus.shutterMoving)
