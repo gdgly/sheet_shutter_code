@@ -74,12 +74,12 @@ CONST _EEPDriveMotorCtrlBlock uEEP_M1DriveMotorCtrlBlockDefault =
     {
         0,      //UINT8 decelByPhotoElecBlckingLim_A011;
 		0,      //UINT8 waitForStoppage_A011; 
-		350,    //UINT16 riseChangeGearPos1_A103; 
-		250,    //UINT16 riseChangeGearPos2_A104; 
-		150,      //UINT16 riseChangeGearPos3_A105;		
-		350,//400,    //UINT16 fallChangeGearPos1_A106;20160915   
-		250,    //UINT16 fallChangeGearPos2_A107; 
-		150,      //UINT16 fallChangeGearPos3_A108;         
+		400,//350,    //UINT16 riseChangeGearPos1_A103;   //add 20161018
+		200,//250,    //UINT16 riseChangeGearPos2_A104;   //add 20161018
+		100,//150,      //UINT16 riseChangeGearPos3_A105;	 //add 20161018	
+		400,//350,//400,    //UINT16 fallChangeGearPos1_A106;20160915    //add 20161018
+		200,//250,    //UINT16 fallChangeGearPos2_A107;   //add 20161018
+		100,//150,      //UINT16 fallChangeGearPos3_A108;   //add 20161018       
 		20,//50,      //UINT8 	shtrRevOperMinLimit_A110;20160915   
         0,      //UINT16 	PWMFreqMotorCtrl_A500; 
 		0,      //UINT8 	startupDutyCycle_A501; 

@@ -105,13 +105,13 @@ BYTE gucInstallationCalledFrom = 0;
             #define FALL_GEAR_POS2_OFFSET_BEAD    150 //350
             #define FALL_GEAR_POS3_OFFSET_BEAD    100
 
-            #define RISE_GEAR_POS1_OFFSET_M1    350//300 //400//20160915
-            #define RISE_GEAR_POS2_OFFSET_M1    250//200 //350//20160915
-            #define RISE_GEAR_POS3_OFFSET_M1    150//100 //20160915
+            #define RISE_GEAR_POS1_OFFSET_M1    400//350//300 //400//20160915     //add 20161018
+            #define RISE_GEAR_POS2_OFFSET_M1    200//250//200 //350//20160915    //add 20161018
+            #define RISE_GEAR_POS3_OFFSET_M1    100//150//100 //20160915   //add 20161018
 
-            #define FALL_GEAR_POS1_OFFSET_M1    350//300//400 20160915
-            #define FALL_GEAR_POS2_OFFSET_M1    250//200 //350//20160915
-            #define FALL_GEAR_POS3_OFFSET_M1    150//100 //20160915
+            #define FALL_GEAR_POS1_OFFSET_M1    400//350//300//400 20160915   //add 20161018
+            #define FALL_GEAR_POS2_OFFSET_M1    200//250//200 //350//20160915  //add 20161018
+            #define FALL_GEAR_POS3_OFFSET_M1    100//150//100 //20160915   //add 20161018
 
 #elif (SHUTTER_TYPE == SHUTTER_4M_4M)
     #define RISE_GEAR_POS1_OFFSET    700
