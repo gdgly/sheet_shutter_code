@@ -97,7 +97,7 @@ BYTE gucInstallationCalledFrom = 0;
 #if (SHUTTER_TYPE == SHUTTER_2M_2M)
 
 	// default value changed on request from BX san - YG - NOV 15    //bug_NO.53
-            #define RISE_GEAR_POS1_OFFSET_BEAD    450 //400
+            #define RISE_GEAR_POS1_OFFSET_BEAD    400 //400
             #define RISE_GEAR_POS2_OFFSET_BEAD    250 //350
             #define RISE_GEAR_POS3_OFFSET_BEAD    150
 
@@ -109,7 +109,7 @@ BYTE gucInstallationCalledFrom = 0;
             #define RISE_GEAR_POS2_OFFSET_M1    250 //350
             #define RISE_GEAR_POS3_OFFSET_M1    150
 
-            #define FALL_GEAR_POS1_OFFSET_M1    400
+            #define FALL_GEAR_POS1_OFFSET_M1    350
             #define FALL_GEAR_POS2_OFFSET_M1    250 //350
             #define FALL_GEAR_POS3_OFFSET_M1    150
 
@@ -135,8 +135,6 @@ UINT8  FLAG_CMD_open_shutter=0;
 UINT8  CMD_open_shutter=0;
 UINT8  FLAG_StartApertureCorrection = 0;   //bug_No.12
 UINT8  FLAG_open_shutter_one = 0;
-UINT16 TIME_shutterUpperLimit_STOP=0;    //20160930
-UINT8  FLAG_shutterUpperLimit_STOP=0;    //20160930
 /******************************************************************************
  * initApplication
  *
@@ -559,25 +557,10 @@ VOID updateDriveStatusFlags(VOID)
         {
 			// update drive status position to upper limit
             uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterUpperLimit = TRUE; 
-            
-            /***********20160930 start    Overload, >40kg,brake ok, But pwm is not turned off************/
-            if((++TIME_shutterUpperLimit_STOP>400)&&(FLAG_shutterUpperLimit_STOP==0))
-            {
-                FLAG_shutterUpperLimit_STOP=1;
-                inputFlags.value = STOP_SHUTTER;
-                rampCurrentState = RAMP_STOP;
-                gui8StopKeyPressed = 1;
-                stopShutter();
-            }
-            /***********20160930 end    Overload, >40kg,brake ok, But pwm is not turned off************/          
 		}
         else
         {
             uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterUpperLimit = FALSE; 
-            /***********20160930 end    Overload, >40kg,brake ok, But pwm is not turned off************/
-            TIME_shutterUpperLimit_STOP=0;
-            FLAG_shutterUpperLimit_STOP=0;
-            /***********20160930 start    Overload, >40kg,brake ok, But pwm is not turned off************/
         }
         
         if((rampOutputStatus.shutterCurrentPosition > (uDriveCommonBlockEEP.stEEPDriveCommonBlock.upperStoppingPos_A100 +    //bug_NO.12?13?14?15

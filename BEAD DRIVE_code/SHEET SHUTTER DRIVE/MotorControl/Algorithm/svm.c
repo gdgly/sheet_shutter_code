@@ -390,9 +390,11 @@ void __attribute__((interrupt, no_auto_psv)) _PWM1Interrupt (void)
     if((requiredDirection == CW) && (measuredSpeed >= 1000))
     {
         if(controlOutput < 0)
-            svm(-(controlOutput+1), phase+ PhaseAdvance);  
+            //svm(-(controlOutput+1), phase+ PhaseAdvance);
+            svm(-(controlOutput+1), phase);  
         else
-            svm(controlOutput, phase + PhaseAdvance);  
+            //svm(controlOutput, phase + PhaseAdvance);
+            svm(controlOutput, phase);  
     }
     else
     {

@@ -42,7 +42,7 @@
 //#define PHASE_OFFSET_CCW 9840 //182 counts for 1 degree
 
 #ifdef USE_PHASE_INC_AND_CORRECTION
-#define PHASE_OFFSET_CW 910//1274//2002 //measured offset is 1274*(360/65536) = 7 degrees.
+#define PHASE_OFFSET_CW 2002//4550//3640//910//1274//2002 //measured offset is 1274*(360/65536) = 7 degrees.
 #define PHASE_OFFSET_CCW 9828//9828//53 degrees
 #define PHASE_OFFSET_INC_STEP 1
 #define PHASE_OFFSET_DEC_STEP 20
@@ -764,11 +764,12 @@ VOID calculatePhaseValue(WORD sectorNo)
 		LED_RED = 0;
 	}
 
-    if(measuredSpeed >= 300)
+
+    if(measuredSpeed >= 500)
     {
         phaseOffsetCW  += PHASE_OFFSET_INC_STEP;
-        if(phaseOffsetCW >= 2002)
-            phaseOffsetCW = 2002;
+        if(phaseOffsetCW >= 6006)
+            phaseOffsetCW = 6006;
     }
     else
     {
@@ -802,7 +803,7 @@ VOID calculatePhaseValue(WORD sectorNo)
         tmpQu = __builtin_divmodud((DWORD)(sectorNo + SECTOR_THREE), (WORD)SECTOR_END, &tmpRe);
         //Use phase offset calculation only when shutter moving up
         if((requiredDirection == CW) && (!rampStatusFlags.rampDcInjectionOn))
-            phaseCopy = phase = phaseValues[tmpRe]+ (phaseOffsetCCW - phaseValue);
+            phaseCopy = phase = phaseValues[tmpRe]+ phaseOffsetCCW;
         else
             phaseCopy = phase = phaseValues[tmpRe] + phaseOffsetCCW;// + phaseValue;
 //        if((requiredDirection == CW) && (!rampStatusFlags.rampDcInjectionOn))
@@ -897,7 +898,8 @@ VOID speedControl(VOID)
 //        speedPIparms.qOutMin = -(currentLimitClamp);
 //    }
 #ifdef MOTOR_750W_BD
-            speedPIparms.qOutMax = 22000;//17000;//currentLimitClamp;20160915
+            if(measuredSpeed<500){speedPIparms.qOutMax = 7000;}//10000;//22000;//17000;//currentLimitClamp;20160915
+            else{speedPIparms.qOutMax = 17000;}
             speedPIparms.qOutMin = -(currentLimitClamp);
 #endif
 #ifdef MOTOR_750W_M1
