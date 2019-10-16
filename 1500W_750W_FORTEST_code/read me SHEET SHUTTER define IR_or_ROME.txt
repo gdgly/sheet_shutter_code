@@ -1,0 +1,49 @@
+FileName: Extern.h
+
+//define IGBT type    
+#define IGBT_LowActive_IR
+//#define IGBT_HighActive_ROME
+
+
+
+FileName: MCPWM.c
+
+#include "./Common/Extern/Extern.h"
+
+#ifdef IGBT_LowActive_IR
+    IOCON1 = 0xF000;
+	IOCON2 = 0xF000;
+	IOCON3 = 0xF000;    
+#endif    
+#ifdef IGBT_HighActive_ROME
+    IOCON1 = 0xC000;    
+    IOCON2 = 0xC000;
+    IOCON3 = 0xC000;     
+#endif
+
+
+
+
+FileName: RampGenerator.c     VOID chargeBootstraps(VOID)
+
+#ifdef IGBT_LowActive_IR
+    IOCON1 = 0xC780;
+	IOCON2 = 0xC780;
+	IOCON3 = 0xC780;    
+#endif    
+#ifdef IGBT_HighActive_ROME
+    IOCON1 = 0xC740;   
+	IOCON2 = 0xC740;
+	IOCON3 = 0xC740;     
+#endif
+
+#ifdef IGBT_LowActive_IR
+    IOCON1 = 0xF000;
+    IOCON2 = 0xF000;
+    IOCON3 = 0xF000;    
+#endif    
+#ifdef IGBT_HighActive_ROME
+    IOCON1 = 0xC000;    
+    IOCON2 = 0xC000;
+    IOCON3 = 0xC000;    
+#endif 

@@ -1,0 +1,91 @@
+
+**** Build of configuration Debug for project ControlBoard ****
+
+"C:\\ti\\ccsv5\\utils\\bin\\gmake" -k all 
+'Building file: ../Middleware/debounce.c'
+'Invoking: ARM Compiler'
+"C:/ti/ccsv5/tools/compiler/arm_5.0.4/bin/armcl" -mv7M4 --code_state=16 --float_support=FPv4SPD16 --abi=eabi -me -Ooff -g --include_path="C:/ti/TivaWare_C_Series-1.1/examples/boards/dk-tm4c123g" --include_path="D:/BxWorkSpace/ControlBoard" --include_path="C:/ti/TivaWare_C_Series-1.1" --include_path="C:/ti/ccsv5/tools/compiler/arm_5.0.4/include" --check_misra="1,-1.1" --gcc --define=TARGET_IS_BLIZZARD_RA1 --define=ccs="ccs" --define=PART_TM4C123GH6PM --diag_warning=225 --display_error_number --diag_wrap=off --gen_func_subsections=on --small_enum -k --cross_reference --preproc_with_compile --preproc_dependency="Middleware/debounce.pp" --obj_directory="Middleware"  "../Middleware/debounce.c"
+'Finished building: ../Middleware/debounce.c'
+' '
+'Building file: ../Middleware/eeprom.c'
+'Invoking: ARM Compiler'
+"C:/ti/ccsv5/tools/compiler/arm_5.0.4/bin/armcl" -mv7M4 --code_state=16 --float_support=FPv4SPD16 --abi=eabi -me -Ooff -g --include_path="C:/ti/TivaWare_C_Series-1.1/examples/boards/dk-tm4c123g" --include_path="D:/BxWorkSpace/ControlBoard" --include_path="C:/ti/TivaWare_C_Series-1.1" --include_path="C:/ti/ccsv5/tools/compiler/arm_5.0.4/include" --check_misra="1,-1.1" --gcc --define=TARGET_IS_BLIZZARD_RA1 --define=ccs="ccs" --define=PART_TM4C123GH6PM --diag_warning=225 --display_error_number --diag_wrap=off --gen_func_subsections=on --small_enum -k --cross_reference --preproc_with_compile --preproc_dependency="Middleware/eeprom.pp" --obj_directory="Middleware"  "../Middleware/eeprom.c"
+'Finished building: ../Middleware/eeprom.c'
+' '
+'Building file: ../Middleware/paramdatabase.c'
+'Invoking: ARM Compiler'
+"C:/ti/ccsv5/tools/compiler/arm_5.0.4/bin/armcl" -mv7M4 --code_state=16 --float_support=FPv4SPD16 --abi=eabi -me -Ooff -g --include_path="C:/ti/TivaWare_C_Series-1.1/examples/boards/dk-tm4c123g" --include_path="D:/BxWorkSpace/ControlBoard" --include_path="C:/ti/TivaWare_C_Series-1.1" --include_path="C:/ti/ccsv5/tools/compiler/arm_5.0.4/include" --check_misra="1,-1.1" --gcc --define=TARGET_IS_BLIZZARD_RA1 --define=ccs="ccs" --define=PART_TM4C123GH6PM --diag_warning=225 --display_error_number --diag_wrap=off --gen_func_subsections=on --small_enum -k --cross_reference --preproc_with_compile --preproc_dependency="Middleware/paramdatabase.pp" --obj_directory="Middleware"  "../Middleware/paramdatabase.c"
+'Finished building: ../Middleware/paramdatabase.c'
+' '
+'Building file: ../Middleware/sensorsdebounce.c'
+'Invoking: ARM Compiler'
+"C:/ti/ccsv5/tools/compiler/arm_5.0.4/bin/armcl" -mv7M4 --code_state=16 --float_support=FPv4SPD16 --abi=eabi -me -Ooff -g --include_path="C:/ti/TivaWare_C_Series-1.1/examples/boards/dk-tm4c123g" --include_path="D:/BxWorkSpace/ControlBoard" --include_path="C:/ti/TivaWare_C_Series-1.1" --include_path="C:/ti/ccsv5/tools/compiler/arm_5.0.4/include" --check_misra="1,-1.1" --gcc --define=TARGET_IS_BLIZZARD_RA1 --define=ccs="ccs" --define=PART_TM4C123GH6PM --diag_warning=225 --display_error_number --diag_wrap=off --gen_func_subsections=on --small_enum -k --cross_reference --preproc_with_compile --preproc_dependency="Middleware/sensorsdebounce.pp" --obj_directory="Middleware"  "../Middleware/sensorsdebounce.c"
+"../Middleware/sensorsdebounce.c", line 294: warning #179-D: variable "activeState" was declared but never referenced
+'Finished building: ../Middleware/sensorsdebounce.c'
+' '
+'Building file: ../Middleware/serial.c'
+'Invoking: ARM Compiler'
+"C:/ti/ccsv5/tools/compiler/arm_5.0.4/bin/armcl" -mv7M4 --code_state=16 --float_support=FPv4SPD16 --abi=eabi -me -Ooff -g --include_path="C:/ti/TivaWare_C_Series-1.1/examples/boards/dk-tm4c123g" --include_path="D:/BxWorkSpace/ControlBoard" --include_path="C:/ti/TivaWare_C_Series-1.1" --include_path="C:/ti/ccsv5/tools/compiler/arm_5.0.4/include" --check_misra="1,-1.1" --gcc --define=TARGET_IS_BLIZZARD_RA1 --define=ccs="ccs" --define=PART_TM4C123GH6PM --diag_warning=225 --display_error_number --diag_wrap=off --gen_func_subsections=on --small_enum -k --cross_reference --preproc_with_compile --preproc_dependency="Middleware/serial.pp" --obj_directory="Middleware"  "../Middleware/serial.c"
+"../Middleware/serial.c", line 817: warning #179-D: variable "luintDelay" was declared but never referenced
+'Finished building: ../Middleware/serial.c'
+' '
+'Building file: ../Application/cmdi.c'
+'Invoking: ARM Compiler'
+"C:/ti/ccsv5/tools/compiler/arm_5.0.4/bin/armcl" -mv7M4 --code_state=16 --float_support=FPv4SPD16 --abi=eabi -me -Ooff -g --include_path="C:/ti/TivaWare_C_Series-1.1/examples/boards/dk-tm4c123g" --include_path="D:/BxWorkSpace/ControlBoard" --include_path="C:/ti/TivaWare_C_Series-1.1" --include_path="C:/ti/ccsv5/tools/compiler/arm_5.0.4/include" --check_misra="1,-1.1" --gcc --define=TARGET_IS_BLIZZARD_RA1 --define=ccs="ccs" --define=PART_TM4C123GH6PM --diag_warning=225 --display_error_number --diag_wrap=off --gen_func_subsections=on --small_enum -k --cross_reference --preproc_with_compile --preproc_dependency="Application/cmdi.pp" --obj_directory="Application"  "../Application/cmdi.c"
+'Finished building: ../Application/cmdi.c'
+' '
+'Building file: ../Application/cmdr.c'
+'Invoking: ARM Compiler'
+"C:/ti/ccsv5/tools/compiler/arm_5.0.4/bin/armcl" -mv7M4 --code_state=16 --float_support=FPv4SPD16 --abi=eabi -me -Ooff -g --include_path="C:/ti/TivaWare_C_Series-1.1/examples/boards/dk-tm4c123g" --include_path="D:/BxWorkSpace/ControlBoard" --include_path="C:/ti/TivaWare_C_Series-1.1" --include_path="C:/ti/ccsv5/tools/compiler/arm_5.0.4/include" --check_misra="1,-1.1" --gcc --define=TARGET_IS_BLIZZARD_RA1 --define=ccs="ccs" --define=PART_TM4C123GH6PM --diag_warning=225 --display_error_number --diag_wrap=off --gen_func_subsections=on --small_enum -k --cross_reference --preproc_with_compile --preproc_dependency="Application/cmdr.pp" --obj_directory="Application"  "../Application/cmdr.c"
+'Finished building: ../Application/cmdr.c'
+' '
+'Building file: ../Application/dbhandler.c'
+'Invoking: ARM Compiler'
+"C:/ti/ccsv5/tools/compiler/arm_5.0.4/bin/armcl" -mv7M4 --code_state=16 --float_support=FPv4SPD16 --abi=eabi -me -Ooff -g --include_path="C:/ti/TivaWare_C_Series-1.1/examples/boards/dk-tm4c123g" --include_path="D:/BxWorkSpace/ControlBoard" --include_path="C:/ti/TivaWare_C_Series-1.1" --include_path="C:/ti/ccsv5/tools/compiler/arm_5.0.4/include" --check_misra="1,-1.1" --gcc --define=TARGET_IS_BLIZZARD_RA1 --define=ccs="ccs" --define=PART_TM4C123GH6PM --diag_warning=225 --display_error_number --diag_wrap=off --gen_func_subsections=on --small_enum -k --cross_reference --preproc_with_compile --preproc_dependency="Application/dbhandler.pp" --obj_directory="Application"  "../Application/dbhandler.c"
+'Finished building: ../Application/dbhandler.c'
+' '
+'Building file: ../Application/errormodule.c'
+'Invoking: ARM Compiler'
+"C:/ti/ccsv5/tools/compiler/arm_5.0.4/bin/armcl" -mv7M4 --code_state=16 --float_support=FPv4SPD16 --abi=eabi -me -Ooff -g --include_path="C:/ti/TivaWare_C_Series-1.1/examples/boards/dk-tm4c123g" --include_path="D:/BxWorkSpace/ControlBoard" --include_path="C:/ti/TivaWare_C_Series-1.1" --include_path="C:/ti/ccsv5/tools/compiler/arm_5.0.4/include" --check_misra="1,-1.1" --gcc --define=TARGET_IS_BLIZZARD_RA1 --define=ccs="ccs" --define=PART_TM4C123GH6PM --diag_warning=225 --display_error_number --diag_wrap=off --gen_func_subsections=on --small_enum -k --cross_reference --preproc_with_compile --preproc_dependency="Application/errormodule.pp" --obj_directory="Application"  "../Application/errormodule.c"
+"../Application/errormodule.c", line 254: warning #179-D: variable "lsucLastErrorPriority" was declared but never referenced
+'Finished building: ../Application/errormodule.c'
+' '
+'Building file: ../Application/flashmemory.c'
+'Invoking: ARM Compiler'
+"C:/ti/ccsv5/tools/compiler/arm_5.0.4/bin/armcl" -mv7M4 --code_state=16 --float_support=FPv4SPD16 --abi=eabi -me -Ooff -g --include_path="C:/ti/TivaWare_C_Series-1.1/examples/boards/dk-tm4c123g" --include_path="D:/BxWorkSpace/ControlBoard" --include_path="C:/ti/TivaWare_C_Series-1.1" --include_path="C:/ti/ccsv5/tools/compiler/arm_5.0.4/include" --check_misra="1,-1.1" --gcc --define=TARGET_IS_BLIZZARD_RA1 --define=ccs="ccs" --define=PART_TM4C123GH6PM --diag_warning=225 --display_error_number --diag_wrap=off --gen_func_subsections=on --small_enum -k --cross_reference --preproc_with_compile --preproc_dependency="Application/flashmemory.pp" --obj_directory="Application"  "../Application/flashmemory.c"
+"../Application/flashmemory.c", line 133: warning #551-D: variable "lun32TempWord" is used before its value is set
+'Finished building: ../Application/flashmemory.c'
+' '
+'Building file: ../Application/intertaskcommunication.c'
+'Invoking: ARM Compiler'
+"C:/ti/ccsv5/tools/compiler/arm_5.0.4/bin/armcl" -mv7M4 --code_state=16 --float_support=FPv4SPD16 --abi=eabi -me -Ooff -g --include_path="C:/ti/TivaWare_C_Series-1.1/examples/boards/dk-tm4c123g" --include_path="D:/BxWorkSpace/ControlBoard" --include_path="C:/ti/TivaWare_C_Series-1.1" --include_path="C:/ti/ccsv5/tools/compiler/arm_5.0.4/include" --check_misra="1,-1.1" --gcc --define=TARGET_IS_BLIZZARD_RA1 --define=ccs="ccs" --define=PART_TM4C123GH6PM --diag_warning=225 --display_error_number --diag_wrap=off --gen_func_subsections=on --small_enum -k --cross_reference --preproc_with_compile --preproc_dependency="Application/intertaskcommunication.pp" --obj_directory="Application"  "../Application/intertaskcommunication.c"
+'Finished building: ../Application/intertaskcommunication.c'
+' '
+'Building file: ../Application/logicsolver.c'
+'Invoking: ARM Compiler'
+"C:/ti/ccsv5/tools/compiler/arm_5.0.4/bin/armcl" -mv7M4 --code_state=16 --float_support=FPv4SPD16 --abi=eabi -me -Ooff -g --include_path="C:/ti/TivaWare_C_Series-1.1/examples/boards/dk-tm4c123g" --include_path="D:/BxWorkSpace/ControlBoard" --include_path="C:/ti/TivaWare_C_Series-1.1" --include_path="C:/ti/ccsv5/tools/compiler/arm_5.0.4/include" --check_misra="1,-1.1" --gcc --define=TARGET_IS_BLIZZARD_RA1 --define=ccs="ccs" --define=PART_TM4C123GH6PM --diag_warning=225 --display_error_number --diag_wrap=off --gen_func_subsections=on --small_enum -k --cross_reference --preproc_with_compile --preproc_dependency="Application/logicsolver.pp" --obj_directory="Application"  "../Application/logicsolver.c"
+"../Application/logicsolver.c", line 341: warning #179-D: variable "sHandleContinuousOperation" was declared but never referenced
+"../Application/logicsolver.c", line 344: warning #179-D: variable "suiTimeStampContinuousOperation" was declared but never referenced
+"../Application/logicsolver.c", line 345: warning #179-D: variable "suiTimeStampConfirmNonStoppedState" was declared but never referenced
+'Finished building: ../Application/logicsolver.c'
+' '
+'Building file: ../Application/main.c'
+'Invoking: ARM Compiler'
+"C:/ti/ccsv5/tools/compiler/arm_5.0.4/bin/armcl" -mv7M4 --code_state=16 --float_support=FPv4SPD16 --abi=eabi -me -Ooff -g --include_path="C:/ti/TivaWare_C_Series-1.1/examples/boards/dk-tm4c123g" --include_path="D:/BxWorkSpace/ControlBoard" --include_path="C:/ti/TivaWare_C_Series-1.1" --include_path="C:/ti/ccsv5/tools/compiler/arm_5.0.4/include" --check_misra="1,-1.1" --gcc --define=TARGET_IS_BLIZZARD_RA1 --define=ccs="ccs" --define=PART_TM4C123GH6PM --diag_warning=225 --display_error_number --diag_wrap=off --gen_func_subsections=on --small_enum -k --cross_reference --preproc_with_compile --preproc_dependency="Application/main.pp" --obj_directory="Application"  "../Application/main.c"
+'Finished building: ../Application/main.c'
+' '
+'Building file: ../Application/monitorledhandler.c'
+'Invoking: ARM Compiler'
+"C:/ti/ccsv5/tools/compiler/arm_5.0.4/bin/armcl" -mv7M4 --code_state=16 --float_support=FPv4SPD16 --abi=eabi -me -Ooff -g --include_path="C:/ti/TivaWare_C_Series-1.1/examples/boards/dk-tm4c123g" --include_path="D:/BxWorkSpace/ControlBoard" --include_path="C:/ti/TivaWare_C_Series-1.1" --include_path="C:/ti/ccsv5/tools/compiler/arm_5.0.4/include" --check_misra="1,-1.1" --gcc --define=TARGET_IS_BLIZZARD_RA1 --define=ccs="ccs" --define=PART_TM4C123GH6PM --diag_warning=225 --display_error_number --diag_wrap=off --gen_func_subsections=on --small_enum -k --cross_reference --preproc_with_compile --preproc_dependency="Application/monitorledhandler.pp" --obj_directory="Application"  "../Application/monitorledhandler.c"
+'Finished building: ../Application/monitorledhandler.c'
+' '
+'Building target: D:\BxWorkSpace\ControlBoard\Debug/Binary/ControlBoard.out'
+'Invoking: ARM Linker'
+"C:/ti/ccsv5/tools/compiler/arm_5.0.4/bin/armcl" -mv7M4 --code_state=16 --float_support=FPv4SPD16 --abi=eabi -me -Ooff -g --check_misra="1,-1.1" --gcc --define=TARGET_IS_BLIZZARD_RA1 --define=ccs="ccs" --define=PART_TM4C123GH6PM --diag_warning=225 --display_error_number --diag_wrap=off --gen_func_subsections=on --small_enum -k --cross_reference -z --stack_size=4096 -m"ControlBoard.map" --heap_size=0 -i"C:/ti/ccsv5/tools/compiler/arm_5.0.4/lib" -i"C:/ti/TivaWare_C_Series-1.1/utils" -i"C:/ti/TivaWare_C_Series-1.1" -i"C:/ti/ccsv5/tools/compiler/arm_5.0.4/include" --reread_libs --warn_sections --display_error_number --diag_wrap=off --xml_link_info="ControlBoard_linkInfo.xml" --rom_model -o "D:\BxWorkSpace\ControlBoard\Debug/Binary/ControlBoard.out"  "./Application/monitorledhandler.obj" "./Application/main.obj" "./Application/logicsolver.obj" "./Application/intertaskcommunication.obj" "./Application/flashmemory.obj" "./Application/errormodule.obj" "./Application/dbhandler.obj" "./Application/cmdr.obj" "./Application/cmdi.obj" "./Drivers/watchdogtimer.obj" "./Drivers/ustdlib.obj" "./Drivers/systicktimer.obj" "./Middleware/system.obj" "./Middleware/serial.obj" "./Middleware/sensorsdebounce.obj" "./Middleware/rtc.obj" "./Middleware/paramdatabase.obj" "./Middleware/eeprom.obj" "./Middleware/debounce.obj" "./startup_ccs.obj" -l"C:\ti\TivaWare_C_Series-1.1\driverlib\ccs\Debug\driverlib.lib" -l"C:\ti\TivaWare_C_Series-1.1\grlib\ccs\Debug\grlib.lib" -l"libc.a" "../tm4c123gh6pm.cmd" 
+<Linking>
+'Finished building target: D:\BxWorkSpace\ControlBoard\Debug/Binary/ControlBoard.out'
+' '
+"C:/ti/ccsv5/utils/tiobj2bin/tiobj2bin" "D:\BxWorkSpace\ControlBoard\Debug/Binary/ControlBoard.out" "D:\BxWorkSpace\ControlBoard\Debug/Binary/ControlBoard.bin" "C:/ti/ccsv5/tools/compiler/arm_5.0.4/bin/armofd" "C:/ti/ccsv5/tools/compiler/arm_5.0.4/bin/armhex" "C:/ti/ccsv5/utils/tiobj2bin/mkhex4bin"
+' '
+
+**** Build Finished ****

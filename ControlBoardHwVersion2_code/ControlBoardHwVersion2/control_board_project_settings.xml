@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cdtprojectproperties>
+<section name="org.eclipse.cdt.internal.ui.wizards.settingswizards.IncludePaths">
+<language name="C++ Source File">
+<includepath>C:\ti\TivaWare_C_Series-1.1\examples\boards\dk-tm4c123g</includepath>
+<includepath workspace_path="true">/${ProjName}</includepath>
+<includepath>C:\ti\TivaWare_C_Series-1.1</includepath>
+<includepath>${CG_TOOL_ROOT}/include</includepath>
+
+</language>
+<language name="C Source File">
+<includepath>C:\ti\TivaWare_C_Series-1.1\examples\boards\dk-tm4c123g</includepath>
+<includepath workspace_path="true">/${ProjName}</includepath>
+<includepath>C:\ti\TivaWare_C_Series-1.1</includepath>
+<includepath>${CG_TOOL_ROOT}/include</includepath>
+
+</language>
+<language name="Assembly Source File">
+<includepath>C:\ti\TivaWare_C_Series-1.1\examples\boards\dk-tm4c123g</includepath>
+<includepath workspace_path="true">/${ProjName}</includepath>
+<includepath>C:\ti\TivaWare_C_Series-1.1</includepath>
+<includepath>${CG_TOOL_ROOT}/include</includepath>
+
+</language>
+<language name="Assembly Source File">
+<includepath>C:\ti\TivaWare_C_Series-1.1\examples\boards\dk-tm4c123g</includepath>
+<includepath workspace_path="true">/${ProjName}</includepath>
+<includepath>C:\ti\TivaWare_C_Series-1.1</includepath>
+<includepath>${CG_TOOL_ROOT}/include</includepath>
+
+</language>
+<language name="Linker Command File">
+
+</language>
+<language name="Linker Command File">
+
+</language>
+<language name="Linker Command File">
+
+</language>
+</section>
+<section name="org.eclipse.cdt.internal.ui.wizards.settingswizards.Macros">
+<language name="C++ Source File">
+<macro>
+<name>TARGET_IS_BLIZZARD_RA1</name><value/>
+</macro>
+<macro>
+<name>ccs</name><value>"ccs"</value>
+</macro>
+<macro>
+<name>PART_TM4C123GH6PM</name><value/>
+</macro>
+
+</language>
+<language name="C Source File">
+<macro>
+<name>TARGET_IS_BLIZZARD_RA1</name><value/>
+</macro>
+<macro>
+<name>ccs</name><value>"ccs"</value>
+</macro>
+<macro>
+<name>PART_TM4C123GH6PM</name><value/>
+</macro>
+
+</language>
+<language name="Assembly Source File">
+<macro>
+<name>TARGET_IS_BLIZZARD_RA1</name><value/>
+</macro>
+<macro>
+<name>ccs</name><value>"ccs"</value>
+</macro>
+<macro>
+<name>PART_TM4C123GH6PM</name><value/>
+</macro>
+
+</language>
+<language name="Assembly Source File">
+<macro>
+<name>TARGET_IS_BLIZZARD_RA1</name><value/>
+</macro>
+<macro>
+<name>ccs</name><value>"ccs"</value>
+</macro>
+<macro>
+<name>PART_TM4C123GH6PM</name><value/>
+</macro>
+
+</language>
+<language name="Linker Command File">
+
+</language>
+<language name="Linker Command File">
+
+</language>
+<language name="Linker Command File">
+
+</language>
+</section>
+</cdtprojectproperties>

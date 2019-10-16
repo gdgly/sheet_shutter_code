@@ -1,0 +1,315 @@
+TI的ccs编译器小抄本
+（1）文本搜索   用快捷键ctrl+h
+
+
+
+Grant_BX                                                      2016年8月19日  文化提供电机驱动源程序
+    --- PowerFailFunctionalityOnDcBus CT-DR_OK                750W
+    --- DriveBLDC1500W-fixedControlOutputLimit(20160805)      1500W
+      
+Grant_Suntao                                                  2016年8月19日  孙工提供电机驱动源程序
+  --SHEET SHUTTER 20160815
+    --- sheet shutter DRIVE 20160815                          750W电机 
+        ---BEAD DRIVE 20160815                                  电机BEAD
+        ---M1 DRIVE 20160815                                    电机M1
+    --- DisplayBoardHwVersion2 20160815
+    --- ControlBoardHwVersion2 20160815
+  -- M2 DRIVE 20160817                                        1500W电机M2
+
+SHEET SHUTTER 20160822
+  --sheet shutter DRIVE 20160822                               2016年8月22日  在孙工Grant_Suntao版本上修改
+    --- BEAD_M1 DRIVE 20160822                                （1）将电机BEAD和M1通过预编译方式合并在一起
+                                                              （2）同时添加孙工代码的注释，如bug_No
+    --- M2 DRIVE 20160822                                     （1）将M2的PI的P修改为300
+                                                              （2）同时把E042 "motor cable fault" 中的检测时间修改为250
+                                                                   #define	MTR_CABLE_FAULT_MONITOR_TIME	250    
+    --- BEAD_M1_M2 DRIVE 20160822  NO                          准备想把M2也通过预编译方式合并在BEAD、M1，发现不同代码太多，只做了一部分，做到了Main文件夹    
+    
+sheet shutter DRIVE 20160823                                  2016年8月23日  在sheet shutter DRIVE 20160822版本上修改  
+    --- BEAD_M1 DRIVE 20160823                                开口高度设定时 按下闭之后马上(0.5秒以内）按下开，不上升  
+    --- DisplayBoardHwVersion2 2016082301                    （1）显示板修改驱动光电ON时LED不表示。
+                                                             （2）界面INIT参数3秒复位问题。
+    --- ControlBoardHwVersion2 2016082301                     控制板报E111错误时 禁止 1PBS及STARTUP动作   
+    
+sheet shutter DRIVE 20160824                                  2016年8月24日  在sheet shutter DRIVE 20160823版本上修改 
+    --- M2 DRIVE 20160824                                     高乔要求更改M2的默认参数 
+    
+sheet shutter DRIVE 20160825                                  2016年8月25日  在sheet shutter DRIVE 20160825版本上修改      
+    --- BEAD_M1 DRIVE 20160825                               （1）bug_No.78   修改成有光電传感器（马达板）的输入马上显示错误
+                                                             （2）bug_No.84   下降中进行停止操作、micro SW ON 就上升了，应该不允许上升
+                                                             （3）bug_No.12    ?开口高度控制时，达到补正次数 原点需要补正；
+    --- DisplayBoardHwVersion2 20160825                       与2016082301一样
+    --- ControlBoardHwVersion2 20160825                       bug_No.11  当驱动板发生不可恢复的错误时，禁止CONTROL板的 OPEN 和CLOSE
+    
+    
+sheet shutter DRIVE 20160826                                  2016年8月26日  在sheet shutter DRIVE 20160825版本上修改
+    --- BEAD_M1 DRIVE 20160826                               （1）bug_No.96  开口高度的自动模式时，BD、M2不能自动下降      
+                                                                  将A112的10变更为50就好了，原因为电机停止时速度较快，停的位置在开口范围外去了
+    --- M2 DRIVE 20160826                                    （1）将 BEAD_M1所有修正的bug修正到M2                         
+                                                             （2）闭操作后，反复操作OPEN，卷帘门速度很慢的下降，但就是不反转上升
+    --- ControlBoardHwVersion2 20160826                      （1）将状态询问指令的500ms询问一次，修改为300ms，主要解决闭操作后，马上按open，卷帘门不能反转上升，
+                                                                  高乔提示，原因是卷帘门已经收到close在开始下降，而控制板需要500ms一次询问，这500ms内控制板始终认为还在上限，这样控制板就不会响应OPEN
+                                                             （2）屏蔽check open key中的 sucCloseKeyDisplay == 0 && sucCloseKeyControl == 0 &&（暂时在1436行）
+                                                                  主要解决闭操作后，马上按open，卷帘门不能反转上升
+                                                             （3）bug_No.90   teaching停止时 起动传感器有输入 没有动作 
+    --- DisplayBoardHwVersion2 20160826                       修正bug_No.90   teaching停止时 手势有输入 没有动作                                                            
+                                                                 
+sheet shutter DRIVE 20160831                                  2016年8月31日  在sheet shutter DRIVE 20160826版本上修改
+   --- BEAD_M1 DRIVE 20160831                                （1）修正 bug_No.39 开口高度位置A130的设定 是数值输入，变更成 移动sheet位置来设定。  
+   --- ControlBoardHwVersion2 20160831                       （1）修正 bug_No.39 开口高度位置A130的设定 是数值输入，变更成 移动sheet位置来设定。
+                                                       
+sheet shutter DRIVE 20160901                                  2016年9月1日  在sheet shutter DRIVE 20160831版本上修改 
+   --- DisplayBoardHwVersion2 2016090102                     （1）修正 bug_No.39 开口高度位置A130的设定 是数值输入，变更成 移动sheet位置来设定。
+                                                             （2）修正 bug_No.36 limit设定模式 原点補正中按下停止键 不停止。
+   --- BEAD_M1 DRIVE 20160901                                （1）修正 bug_No.36 limit设定模式 原点補正中按下停止键 不停止。  
+   --- ControlBoardHwVersion2 20160901                       （1）修正 bug_No.36 limit设定模式 原点補正中按下停止键 不停止。   
+ 
+sheet shutter DRIVE 20160902                                  2016年9月2日  在sheet shutter DRIVE 20160901版本上修改 
+   --- ControlBoardHwVersion2 20160902                       （1）修正 bug_No.88 自动模式的上限停止时让 起动传感器on、上限停止时间不能复位计算。（开输入也不能复位计算。）
+                                                                  在sensorsdebounce.c 695行追加suiTimeStampForOnePBS = g_ui32TickCount;  //bug_No.88  
+                                                             （2）变更版本号
+                                                                  在paramdatabase.c  148行修改 gu32_ctrl_fwver_DEF  
+   --- BEAD_M1 DRIVE 20160902                                （1）变更版本号
+                                                                  CommandHandler.c  91行修改 drive_fw_version
+   --- M2 DRIVE 20160902                                     （1）将 BEAD_M1所有修正的bug修正到M2   
+                                                             （2）变更版本号    
+   --- DisplayBoardHwVersion2 20160902                       （1）变更版本号  1692.0                                                                                                               
+
+sheet shutter DRIVE 20160903                                  2016年9月3日  在sheet shutter DRIVE 20160902版本上修改 
+   --- DisplayBoardHwVersion2 20160903                       （1）修正bug_No.105 
+   
+sheet shutter DRIVE 20160906                                  2016年9月6日  在sheet shutter DRIVE 20160903版本上修改 
+   --- DisplayBoardHwVersion2 20160906                       （1）与20160903一样的
+   --- ControlBoardHwVersion2 20160906                       （1）修正 bug_No.79     下降中光电设定相关的光电传感器（控制板）有输入的话、有时候不反转就下降到下限位置
+                                                                                      第一次可以，试第二次就不行
+                                                             （2）修正 bug_No.87     开口高度停止时切换到手动模式进行开操作不能全开
+   --- BEAD_M1 DRIVE 20160906                                （1）修正 bug_No.87     开口高度停止时切换到手动模式进行开操作不能全开                                                           
+                                                             （2）修正 bug_No.98   开口高度需要减速    
+                                                             （3）修正 bug_No.107 ，但开口高度时，也存在close后快速光电启动，卷帘门不反转，发现是控制板没有下发OPEN指令                          
+   --- M2 DRIVE 20160906                                     （1）将 BEAD_M1所有修正的bug修正到M2
+                                                             （2）修正bug_No.97
+                                                             （3）修正 bug_No.107
+   --- ControlBoardHwVersion2 20160906_01                    （1）修正 bug_No.104 
+ 
+sheet shutter DRIVE 20160909                                  2016年9月9日  在sheet shutter DRIVE 20160906版本上修改 
+   --- ControlBoardHwVersion2 20160909                       （1）修正 bug_No.106 
+                                                             （2）变更版本号
+                                                                  在paramdatabase.c  148行修改 gu32_ctrl_fwver_DEF   
+   --- BEAD_M1 DRIVE 20160909                                （1）修正 bug_No.101
+                                                             （2）变更版本号
+                                                                  CommandHandler.c  91行修改 drive_fw_version  
+   --- M2 DRIVE 20160909                                     （1）将 BEAD_M1所有修正的bug修正到M2
+                                                             （2）追加『20160906_add over load』，也就是卷帘门上升时，用人拉住卷帘门，然后突然松开，卷帘门会跑出上限很远
+                                                             （3）文化修改  
+                                                                #define PHASE_OFFSET_CCW_MAX 9828
+                                                                MTR_CABLE_FAULT_MONITOR_TIME 500
+   --- DisplayBoardHwVersion2 20160909                       （1）修正 bug_No.101
+                                                             （2）修正 bug_No.106
+                                                             （3）变更版本号  
+                                                                   在poweon.c   153行修改 gDisplayFirmwareVersion                                                            
+ 
+sheet shutter DRIVE 20160913                                  2016年9月13日  在sheet shutter DRIVE 20160909版本上修改 
+   --- ControlBoardHwVersion2 20160913                       （1）修正 bug_No.108
+ 
+sheet shutter DRIVE 20160914                                  2016年9月14日  在sheet shutter DRIVE 20160913版本上修改 
+   --- ControlBoardHwVersion2 20160914                       （1）修正 bug_No.99 
+                                                             （2）变更版本号
+   --- DisplayBoardHwVersion2 20160914                       （1）修正 bug_No.106时，导致TEACHING MODE模式按键失效，原因为显示一直在查询stop ON标志，一直在刷新显示，这样会影响uart的正常数据通信  
+                                                             （2）变更版本号
+   --- BEAD_M1 DRIVE 20160914                                （1）修正 bug_No.99
+                                                             （2）变更版本号
+   --- M2 DRIVE 20160914                                     （1）修正 bug_No.99
+                                                             （2）变更版本号 
+                                                             （3）追加『20160906_add over load』的功能在driveInstallation 不起作用                                                                                                                                                                                  
+                                                             
+sheet shutter DRIVE 20160914_1                                2016年9月19日  在sheet shutter DRIVE 20160914版本上修改  
+   --- ControlBoardHwVersion2 20160914_1                     （1）修正 bug_No.   把A008修改为1==0.25s   2==0.5s 
+                                                             （2）变更版本号  2016914.1
+   --- DisplayBoardHwVersion2 20160914_1    （下面是软件陈工的版本号，代码是一样的）
+       DisplayBoardHwVersion2 20160919out 
+                                                             （1）修正 bug_No    把A008修改为1:0.25s   2:0.5s
+                                                             （2）上电时的显示  BXSHUTTERS　→　BX
+                                                             （3）手势感应的初始设定为无效
+                                                             （4）变更版本号  2016914.1
+   --- BEAD DRIVE 20160914_2                                 （1）文化修改   注释标注了的 20160915
+                                                             （2）变更版本号     
+   --- M1 DRIVE 20160914_1                                   （1）文化修改   注释标注了的 20160915
+                                                             （2）变更版本号   
+   --- M2 DRIVE 20160914_1                                   （1）文化修改   注释标注了的 20160915
+                                                             （2）变更版本号                                                                
+  --- ControlBoardHwVersion2 20160914_2                      （1）修正 bug_No    A008的参数没有起作用，自己在I/O地方做了SNOW防抖
+                                                             （2）变更版本号  2016914.2   
+  --- ControlBoardHwVersion2 20160914_3                      （1）修正 bug_No    将A061 A062 063初始默认值改为yes 有效
+                                                             （2）变更版本号  2016914.3                                                                
+  --- ControlBoardHwVersion2 20160914_4                      （1）修正 bug_No    将A009初始默认值改为10--》20   注释标注了的 20160930                                                                                                                                                                                                                                                                                                 
+   --- BEAD DRIVE 20160914_3                                 （1）注释标注了的       Overload, >40kg,brake ok, But pwm is not turned off
+                                                             （2）变更版本号  2016914.3
+                                                                  这个版本需要文化确认，到底要不要改，国庆后询问文化。
+  --- ControlBoardHwVersion2 20160914_5                      （1）A016  ==0, CLOSE按下就关门
+                                                                        ==1，CLOSE一直按下才关门，松开就不关门，立即停止
+                                                                注释标注了的 20161012 
+                                                             （2）变更版本号  2016914.5
+  --- DisplayBoardHwVersion2 20160914_2                      （1）A025 设置后，E32不报警
+                                                                注释标注了的 20161012 
+                                                             （2）变更版本号  2016914.2     
+                                                                                                                     
+  --- DisplayBoardHwVersion2 20160914_3                      （1）A100可以进入mode主菜单，A101、A102不能进入mode主菜单   注释为20161017
+                                                             （2）在mode主菜单，显示板不能stop    注释为20161017
+                                                             （3）变更版本号  2016914.3
+                                                             （4）M2的A522，A528修改  注释为20161018
+                                                                  A522 up　  0：1200rpm   1：1875rpm  2：24500rpm
+                                                                  A528 down　0：1200rpm   1：1875rpm  2：24500rpm
+                                                             （5）A101、A102时进入mode主菜单，然后再进入Instalation时，A101、A102显示后面多了些不明字符，追加了清屏。 注释为20161018
+  --- ControlBoardHwVersion2 20160914_6                      （1）进入start Instalation设置或者start apertureHeight设置时先停止stop电机
+                                                                注释标注了的 20161017 
+                                                             （2）变更版本号  2016914.6
+  --- BEAD DRIVE 20160914_5_20161001FINAL                    （1）文化提供的
+  --- BEAD DRIVE 20160914_6                                  （1）进入start Instalation设置或者start apertureHeight设置时先停止stop电机  注释为20161017
+                                                             （2）变更版本号  2016914.6   
+                                                             （3）SpeedController.c  第901行  将500修改为450  注释20161018
+  --- M1 DRIVE 20160914_2_20161001FINAL                      （1）文化提供
+  --- M1 DRIVE 20160914_3                                    （1）进入start Instalation设置或者start apertureHeight设置时先停止stop电机  注释为20161017
+                                                             （2）变更版本号  2016914.3
+                                                             （3）修改A103～A108   注释20161018
+  --- M2 DRIVE 20160914_2_20161001FINAL                      （1）文化提供
+  --- M2 DRIVE 20160914_3                                    （1）进入start Instalation设置或者start apertureHeight设置时先停止stop电机  注释为20161017
+                                                             （2）变更版本号  2016914.3  
+                                                             （3）修改A103～A108   注释20161018  
+                                                             
+sheet shutter DRIVE 20161018                                2016年10月18日  在以下版本上修改，将所有的版本变更为20161018.0
+                                                              DisplayBoardHwVersion2 20160914_3
+                                                              ControlBoardHwVersion2 20160914_6
+                                                              BEAD DRIVE 20160914_6.1                                                                                                                                                                                                                                              
+                                                              M1 DRIVE 20160914_3
+                                                              M2 DRIVE 20160914_3
+                                                              
+sheet shutter DRIVE 20161018_1                             2016年10月18晚于日本  2016年10月21于重庆修改
+  --- DisplayBoardHwVersion2 20161018_1                      （1）A000参数范围0～60修改为1～60                                                              
+                                                             （2）A025字符 x1K修改为x1000   注释20161018
+                                                             （3）变更版本号  20161018.1
+  --- ControlBoardHwVersion2 20161018_1                      （1）在自动模式下，自动下降时启动开关有效，卷帘门上升，此时可以按STOP键停止，按键松开后卷帘门要求继续上升
+                                                                  注释20161020
+                                                             （2）变更版本号  20161018.1
+  --- BEAD DRIVE 20161018_1                                  （1）PWM 关闭的时间修改为1000，即5秒      注释Overload, >40kg,brake ok, But pwm is not turned off
+                                                                  原来是1秒或者2秒，延长的原因是时间太短，干扰了其它功能，例如：到下限范围，刹车还没有刹，这个时间启动开关有效，卷帘门不上升了。
+                                                             （2）变更版本号  20161018.1                            
+  --- BEAD DRIVE 20161020                                    （1）文化提供的，在BEAD DRIVE 20161018_1追加原点校正                                                                                                                            
+  --- M1 DRIVE 20161019                                      （1）文化提供的，在M1 DRIVE 20161018追加原点校正  
+  --- M2 DRIVE 20161019                                      （1）文化提供的，在M2 DRIVE 20161018追加原点校正  
+ 
+  --- BEAD DRIVE 20161024                                    （1）文化提供的，在BEAD DRIVE 20161020修改以下
+                                                                  卷帘门到下限后，偶尔出现电流过大，导致电流过载报警
+  --- ControlBoardHwVersion2 20161018_2                      （1）在自动模式下，启动开关ON，到上限后关闭启动开关，然后再启动开关ON，A000设置的上限停止时间到后，卷帘门会下降一些后再反转到上限，正确的是卷帘门在上限不动。
+                                                                  检测这个问题时，A000时间最好设置长一点，如5秒以上
+                                                                  注释20161021                                                                     
+                                                             （2）变更版本号  20161018.2
+  --- ControlBoardHwVersion2 20161018_3                      （1）在自动模式下，启动开关ON，到上限后，选择为手动模式，这个时间close按下没有反应，正确的是close可以动作，因为在手动模式下，启动无效。
+                                                                  注释20161026                                                                     
+                                                             （2）变更版本号  20161018.3 
+ 
+sheet shutter DRIVE 20161128(Ver_161018.4)                    2016年11月28日,文化提供的，大致修改内容如下
+   ---BEAD DRIVE 20161018_4                                  （1）正常上升过程中，断电，然后再开电，进入teahing mode，卷帘门上升动一下，然后就不动了。
+   ---M1 DRIVE 20161018_4                                    （2）卷帘门下降到下限后，大约2秒启动开关ON，卷帘门只上升一点后就停止了。
+   ---M2 DRIVE 20161018_4                                          主要是以前修改PWM off时引起的， Overload, >40kg,brake ok, But pwm is not turned off
+                                                                  在PWM off时操作stop指令，恰好与启动开关ON指令OPEN同时出现时，这样引起的。
+ 
+sheet shutter 20161129                                        2016年11月29日,文化提供的，大致修改内容如下
+   ---BEAD DRIVE 20161129                                       把开口高度设置到距离上限位置1000mm之处，有时在上限不减速（多的时候5次中出现1次）  『大間迅ソフトのバグ』No.5
+   ---M1 DRIVE 20161129
+   ---M2 DRIVE 20161129 
+   
+   ---M2 DRIVE 20161129_1(Ver_161018.5)                        (1)自动MOD，开口高度运行，用无线进行OPEN遥控应该在开口高度位置停止，可是在大约5次中有1次会到全开位置  『大間迅ソフトのバグ』No.1
+                                                               (2)自动MOD，开口高度运行，连击D Unit的OPEN，不停到开口高度而到达上限（偶尔出现M-C通信错误）   『大間迅ソフトのバグ』No.2
+                                                               注释 20161201
+   
+   ---DisplayBoardHwVersion2 20161201(Ver_161018.2)            中間停止時電源OFF,进入teahing MOD启动后，启动开关常闭时，出现「キドウセンサON」的乱码显示   『大間迅ソフトのバグ』No.7
+                                                               注释 20161201
+   
+   ---ControlBoardHwVersion2 20161201(Ver_161018.4)            （1）自动MOD，上限停止，用无线OPEN操作时，上限停止时间不清零就下降了   『大間迅ソフトのバグ』No.3
+                                                               （2）在teahing MOD模式，用无线操作时，卷帘门无反应   『大間迅ソフトのバグ』No.14
+                                                               （3）有时会出现没有登录的送信机也能够动作。   『大間迅ソフトのバグ』No.17
+                                                                  ①从菜单选择无线登录→②按下送信機A的開按键，新规登录。→③按MOD回到Home菜单→④没有登録的送信機Ｂ的開按键连续按数次→⑤上昇。
+                                                                注释 20161201
+                                                
+   ---ControlBoardHwVersion2 20161202(Ver_161018.5)            （1）ControlBoardHwVersion2 20161201(Ver_161018.4) 的（1）问题，无线还有个1点式， 通过A078
+                                                               （2）ControlBoardHwVersion2 20161201(Ver_161018.4) 的（1）问题，无线还有个1点式， 通过A078                                                                                                                           
+                                                               （3）ControlBoardHwVersion2 20161201(Ver_161018.4) 的（1）问题，追加无线stop操作
+                                                               注释20161202
+   
+   ---ControlBoardHwVersion2 20161202_1(Ver_161018.6)          (1)自動MOD、上限停止、閉操作直後，起動开关ON不会上升。    『大間迅ソフトのバグ』No.21
+                                                               注释20161202pm
+                                                               
+   ---ControlBoardHwVersion2 20161204(Ver_161018.7)            (1)ControlBoardHwVersion2 20161202_1(Ver_161018.6)的（1）问题, 解决之后会出现通信错误，也就是   『大間迅ソフトのバグ』No.25                                                            
+                                                              （2）ControlBoardHwVersion2 20161202_1(Ver_161018.6)的（1）问题, 追加无线的闭操作
+                                                               注释20161204
+                                                               
+   ---ControlBoardHwVersion2 20161206(Ver_161018.8)           （1）上升延迟时没有动作inter lock输出继电器，卷帘门上升时该继电器需要OFF状态   『大間迅ソフトのバグ』No.28      注意这需要文化提供带延时的输出继电器表
+                                                               注释20161206 
+                                                              （2）自动卷帘门下降延迟时，延迟的时间需要A000，再加上A003. 但下降中Dropping继电器，A000时间到后需要马上输出，不进行A004的延时。    『大間迅ソフトのバグ』No.29      注意这需要文化提供带延时的输出继电器表    
+                                                               注释20161206_1
+                                                              （3）自动模式，下限停止时，启动开关输入，卷帘门上升到上限停止，此时开操作时卷帘门会下降一点后反转上升到上限     『大間迅ソフトのバグ』No.15
+                                                               注释20161205  
+                                                                
+   ---ControlBoardHwVersion2 20161208(Ver_161018.9)           （1）自动模式，下限停止，启动开关ON，卷帘门上升，上升中工作板上的3PBS stop无效，卷帘门停止，然后3PBS stop再有效，卷帘门应该上升。   『大間迅ソフトのバグ』No.13、20
+                                                               注释20161208 ，这个没有发行给文化公司和工厂
+                                                               
+   ---ControlBoardHwVersion2 20170328(Ver_161018.9)            (2) 自动模式，下限停止，A003设置为2秒，按OPEN，在2秒延时中3PBS stop无效，卷帘门停止，这个是OK的。
+                                                                   但是进行第二次操作时，即按OPEN，在2秒延时中3PBS stop无效，2秒时间到了后卷帘门上升了，这个NG的，应该是卷帘门停止。
+                                                                   注释20170328
+                                                                   A004也有相同问题，A004是设置close延迟时间的，这个没有修改，需要文化确认中。。。。
+                                                                   
+   
+   ---DisplayBoardHwVersion2 20161208(Ver_161018.3)           （1）检查到控制板的光电开关、驱动板的安全开关 ON时，显示屏显示错误代码，但异常LED灯不允许点亮      修改了表，不好注释   『大間迅ソフトのバグ』No.23
+                                                              （2）在参数reset时，长按ENTER不放 不允许出现错误ERROR SENDING CMD       『大間迅ソフトのバグ』No.24
+                                                               注释20161207
+                                                              （3）在开口高度设定菜单A130时，按ENTER后马上一直按mode不放，显示屏一直在A130进入当中死了。        『大間迅ソフトのバグ』No.9
+                                                               注释20161208 
+                                                              （4）parameter_1的A130只能设置数字，不能让电机动作和电机位置。   与parameter_2的A130不一样
+                                                                   注释20161208 
+                                                              （5）parameter_1的A131设置时在英文模式下显示了日文。     修改了表，不好注释                                                                                                                                                      
+ 
+SHEET SHUTTER 20161206 for bx 
+   ---M2 DRIVE 20161129_1(Ver_161018.5)                        （1）在开口高度开闭运行，动作计数器不计数
+   ---BEAD DRIVE 20161129_bx(Ver_161018.4)                       注释：20161202
+   ---M1 DRIVE 20161129(Ver_161018.4)                          （2）下降中，在下限要到时的减速范围 停电时，不能正常进入到学习模式
+                                                                 注释：20161202
+                                                               （3）修改为既使在原点开关附近操作也不会出现异常
+                                                                 注释：20161202
+ 
+---BEAD/M1/M2 DRIVE 20170418(Ver_1704.1)_test-Red led RA7 AND Uart     在20170418(Ver_1704.1)基础上修改，已经下发到工厂，版本就是Ver_1704.1
+
+---BEAD/M1/M2 DRIVE 20170512(Ver_1704.2)_test-Red led RA7 AND Uart_1s   在20170418(Ver_1704.1)_test-Red led RA7 AND Uart基础上修改，已经下发到文化，没有发到工厂
+
+---BEAD/M1/M2 DRIVE 20170601(Ver_1706.1) - delete_U1TXInterrupt and add_main_uartTX   在20170418(Ver_1704.1)基础上修改，已经下发到文化，没有发到工厂
+
+---BEAD/M1/M2 DRIVE 20170607(Ver_1706.2)                                在20170601(Ver_1706.1) - delete_U1TXInterrupt and add_main_uartTX基础上修改
+                                                                         No.41   M和C（ControlBoardHwVersion2 20170607(Ver_1706.1).bin）
+                                                                         No.80   C
+                                                                         No.81   M
+                                                                         No.82   M   追加了UART rx超时1秒的功能
+                                                                         No.83   M
+
+                                                                 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+1500W_750W_FORTEST_20160824                                  2016年8月24日
+                                                             将1500W的死区时间修改为2us       
+1500W_750W_FORTEST_20160912                                  2016年9月12日
+                                                             将1500W的CW CCW相位补偿变大，同时启动时相位补偿慢慢变到最大      
+1500W_750W_FORTEST_20160923                                  2016年9月23日
+                                                             文化发现bug，我觉得该bug导致某一组相位算错，从而导致我们以前1500W电机扭矩不够。
+                                                             (霍尔德中断IC1处) 
+                                                              应该是:
+                                                              if(motortype==750w)、else if(motortype==1500W) 
+                                                              被错误写成了:
+                                                              if(motortype==750w)、else if(motortype==750W)
+1500W_750W_FORTEST_20160926                                  2016年9月26日
+                                                             根据文化要求，在电机停时，要求缓慢停止，不要立即停。
+
+1500W_750W_FORTEST_20160928                                  2016年9月28日
+                                                             如果电机出现过流或过热，不能进行正反转执行电机   
