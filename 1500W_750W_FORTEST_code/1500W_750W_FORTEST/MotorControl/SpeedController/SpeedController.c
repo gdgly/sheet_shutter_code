@@ -44,14 +44,22 @@
 #ifdef USE_PHASE_INC_AND_CORRECTION
 #define PHASE_OFFSET_CW_750W 2002//1274 //measured offset is 1274*(360/65536) = 7 degrees.
 #define PHASE_OFFSET_CCW_750W 9828//9646//53 degrees
+
 //#define PHASE_OFFSET_CW_1500W 9828//6916//6006//5460//5096//4004//1820//728//364//1274 //measured offset is 1274*(360/65536) = 7 degrees.
 //#define PHASE_OFFSET_CCW_1500W 364 //5096//5460//6006//6370//6916//7280//8372//8736//9464//9828//9100//53 degrees
 
-#define PHASE_OFFSET_CW_def_1500W 6916//2366//6916//364 //measured offset is 364*(360/65536) = 2 degrees.
-#define PHASE_OFFSET_CCW_def_1500W 5460//5096//8008//9828 // Fukui result - 54 degree 10192
-#define PHASE_OFFSET_CW_MAX_1500W 10556
-#define PHASE_OFFSET_CCW_MAX_1500W 364 //5096     //2016/08/17 Down Moving after Over Current by IME
-#define PHASE_OFFSET_INC_STEP_1500W 10
+//#define PHASE_OFFSET_CW_def_1500W 6916//2366//6916//364 //measured offset is 364*(360/65536) = 2 degrees.
+//#define PHASE_OFFSET_CCW_def_1500W 5460//5096//8008//9828 // Fukui result - 54 degree 10192
+//#define PHASE_OFFSET_CW_MAX_1500W 10556
+//#define PHASE_OFFSET_CCW_MAX_1500W 364 //5096     //2016/08/17 Down Moving after Over Current by IME
+//#define PHASE_OFFSET_INC_STEP_1500W 10
+//#define PHASE_OFFSET_DEC_STEP_1500W 20
+
+#define PHASE_OFFSET_CW_def_1500W 2366//2366//6916//364 //measured offset is 364*(360/65536) = 2 degrees.
+#define PHASE_OFFSET_CCW_def_1500W 9828//5096//8008//9828 // Fukui result - 54 degree 10192
+#define PHASE_OFFSET_CW_MAX_1500W 6916
+#define PHASE_OFFSET_CCW_MAX_1500W 5096 //9828 //5096     //2016/08/17 Down Moving after Over Current by IME
+#define PHASE_OFFSET_INC_STEP_1500W 1
 #define PHASE_OFFSET_DEC_STEP_1500W 20
 
 #else
@@ -471,7 +479,7 @@ void __attribute__((interrupt, no_auto_psv)) _IC1Interrupt (void)
             //PORTAbits.RA7 = 0;
             lastSector = currentSector; /* Update last sector */
         }
-        else if(PreMotorType == MOTOR_750W)
+        else if(PreMotorType == MOTOR_1500W)
         {
             currentSectorNo = currentSector;
             if ((currentSector == SECTOR_FIVE) || (currentSector == SECTOR_TWO))
