@@ -298,6 +298,7 @@ typedef struct _safetySensors
 #endif	//	PROGRAMMABLE_DEBOUNCE
 
 EXTERN InputFlags_u inputFlags;     /* Application Input flags */
+EXTERN InputFlags_u inputFlags_Installation;
 EXTERN StatusFlags_t flags;         /* Application status flag */
 EXTERN rampStatusFlags_t rampStatusFlags;
 EXTERN rampOutputStatus_t rampOutputStatus;

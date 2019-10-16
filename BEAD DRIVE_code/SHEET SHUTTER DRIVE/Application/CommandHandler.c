@@ -959,8 +959,10 @@ VOID commandHandler(VOID)
                     if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveInstallation)
                     {
                         ShutterInstallationEnabled = TRUE;
-                        inputFlags.value = OPEN_SHUTTER_JOG_50;
-                        shutterInstall.currentState = INSTALL_SEARCH_ORG;
+                        //inputFlags.value = OPEN_SHUTTER_JOG_50;
+                        //shutterInstall.currentState = INSTALL_SEARCH_ORG;
+                        
+                        inputFlags.value = inputFlags_Installation.value;
                     }
                     break;
 					

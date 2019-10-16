@@ -175,6 +175,7 @@ SHORT sensorInactiveDebounceValue[SAFETY_SENSOR_END] =
 
 StatusFlags_t flags;
 InputFlags_u inputFlags;
+InputFlags_u inputFlags_Installation;
 
 BOOL photElecSensorFault = FALSE;
 

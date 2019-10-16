@@ -1355,6 +1355,7 @@ VOID startApertureHeight(VOID)
     shutterInstall.currentState = INSTALL_A130;  
 	// Added to overcome installation issue (A100) - RN- NOV 2015
 	//gucInstallationInitiated = INITIATED;
+    ShutterInstallationEnabled = TRUE;
 }
 VOID startInstallation(VOID)
 {
@@ -1395,7 +1396,7 @@ VOID shutterInstallation(VOID)
     SHORT positionError;
     
         
-    if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveInstallation) //&& ShutterInstallationEnabled)
+    if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveInstallation && ShutterInstallationEnabled)
     {
         if((ShutterInstallationStepNeedSave)&&(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveApertureHeight==0))   //bug_NO.43
         {
@@ -1595,6 +1596,7 @@ VOID shutterInstallation(VOID)
                         shutterInstall.osToggle = 0;
                         //Start shutter jog up movement
                         inputFlags.value = OPEN_SHUTTER_JOG_50;
+                        inputFlags_Installation.value = inputFlags.value;
                     }
                     
                     break;
@@ -1615,6 +1617,7 @@ VOID shutterInstallation(VOID)
                         shutterInstall.currentState = INSTALL_MOVE_UP_50MM;
                         //update input to ramp generator
                         inputFlags.value = OPEN_SHUTTER_JOG_50;
+                        inputFlags_Installation.value = inputFlags.value;
                     }
                     else
                     {
@@ -1630,6 +1633,7 @@ VOID shutterInstallation(VOID)
                             shutterInstall.currentState = INSTALL_STATE_END;
                             //reset input flag to ramp generator
                             inputFlags.value = STOP_SHUTTER; 
+                            inputFlags_Installation.value = inputFlags.value;
                         }
                     }
                     
@@ -1646,6 +1650,7 @@ VOID shutterInstallation(VOID)
                         shutterInstall.currentState = INSTALL_MOVE_DN_50MM;
                         //update input to ramp generator
                         inputFlags.value = CLOSE_SHUTTER_JOG_10;
+                        inputFlags_Installation.value = inputFlags.value;
                     }
                     
                     break;
@@ -1671,6 +1676,7 @@ VOID shutterInstallation(VOID)
                         shutterInstall.currentState = INSTALL_MOVE_TO_UP_LIMIT;
                         //update input to ramp generator
                         inputFlags.value = OPEN_SHUTTER_JOG_50;
+                        inputFlags_Installation.value = inputFlags.value;
                     }
                     
                     break;
@@ -1691,6 +1697,7 @@ VOID shutterInstallation(VOID)
                         shutterInstall.currentState = INSTALL_STATE_END;
                         //reset input flag to ramp generator
                         inputFlags.value = STOP_SHUTTER; 
+                        inputFlags_Installation.value = inputFlags.value;
                     }
                     
                     //if ramp has reached to final position 
@@ -1717,6 +1724,7 @@ VOID shutterInstallation(VOID)
                             ShutterInstallationStepNeedSave = FALSE;  //bug_NO.43
                             //reset input flag to ramp generator
                             inputFlags.value = STOP_SHUTTER;
+                            inputFlags_Installation.value = inputFlags.value;
                         }
                         else
                         {
@@ -1729,6 +1737,7 @@ VOID shutterInstallation(VOID)
                             ShutterInstallationStepNeedSave = FALSE;  //bug_NO.43
                             //reset input flag to ramp generator
                             inputFlags.value = STOP_SHUTTER; 
+                            inputFlags_Installation.value = inputFlags.value;
                         }
                     }
                     
@@ -1950,6 +1959,7 @@ VOID shutterInstallation(VOID)
                         shutterInstall.enterCmdRcvd = FALSE;
                         //reset the calibration state machine
                         shutterInstall.currentState = INSTALL_COMPLETE;
+                        ShutterInstallationEnabled = FALSE;
                 }
                 break;
             default:
