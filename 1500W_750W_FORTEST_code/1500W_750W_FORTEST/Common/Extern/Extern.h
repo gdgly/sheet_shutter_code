@@ -120,3 +120,7 @@ EXTERN UINT16 PhaseURAT[];
 
 EXTERN BYTE uart_motor_stop;
 EXTERN BOOL Motor_ERR_overcurrent_or_igbtOverTemp;
+
+//define IGBT type    
+//#define IGBT_LowActive_IR
+#define IGBT_HighActive_ROME
