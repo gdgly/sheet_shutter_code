@@ -133,7 +133,7 @@ UINT16 TIME_CMD_open_shutter=0;
 UINT16 TIME_CMD_close_shutter=0;
 UINT8  FLAG_CMD_open_shutter=0;
 UINT8  CMD_open_shutter=0;
-
+UINT8  FLAG_StartApertureCorrection = 0;   //bug_No.12
 /******************************************************************************
  * initApplication
  *
@@ -554,7 +554,7 @@ VOID updateDriveStatusFlags(VOID)
 		if(rampOutputStatus.shutterCurrentPosition <= (uDriveCommonBlockEEP.stEEPDriveCommonBlock.upperStoppingPos_A100 + 
                                                        uDriveApplBlockEEP.stEEPDriveApplBlock.overrunProtection_A112))
         {
-			// update drive status position to upper limit  
+			// update drive status position to upper limit
             uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterUpperLimit = TRUE; 
 		}
         else
@@ -811,7 +811,8 @@ VOID updateSytemCounters(VOID)
 					if((uDriveApplBlockEEP.stEEPDriveApplBlock.correctedFreqAperture_A126 - 1) <= uDriveApplBlockEEP.stEEPDriveApplBlock.apertureHeightOperCount_A604)    //bug_NO.12
 					{
 						//	Added to handle aperture correction when operation count is incremented at upper limit - Jan 2016
-						lsbStartApertureCorrection = TRUE;
+						//lsbStartApertureCorrection = TRUE;
+                        FLAG_StartApertureCorrection= 1;  //bug_No.12
 						//	Removed to handle aperture correction when operation count is incremented at upper limit - Jan 2016
 						/*
                         uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveReady = FALSE;

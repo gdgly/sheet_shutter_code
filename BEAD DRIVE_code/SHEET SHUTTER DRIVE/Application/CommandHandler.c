@@ -515,7 +515,6 @@ VOID commandHandler(VOID)
                             //instruct function for to not scan PE sensor - YG - Nov 2015
                             faultTrgFlag = readCurrSensorState(FALSE)
                                 |uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.powerFail;
-
                             if(faultTrgFlag == FALSE)
                             {                            
                                 if(!uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterUpperLimit)
@@ -595,7 +594,9 @@ VOID commandHandler(VOID)
                                 if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterLowerLimit ||
                                    uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterBetweenLowlmtAphgt) 
                                 {
-                                    inputFlags.value = OPEN_SHUTTER_APERTURE; 
+                                    if(FLAG_StartApertureCorrection==1){FLAG_StartApertureCorrection++;inputFlags.value = OPEN_SHUTTER; }   //bug_No.12
+                                    else if(FLAG_StartApertureCorrection>1){FLAG_StartApertureCorrection=0;inputFlags.value = OPEN_SHUTTER_APERTURE;}
+                                    else inputFlags.value = OPEN_SHUTTER_APERTURE; 
                                     TIME_CMD_open_shutter=100;
                                     bUpApertureCmdRecd = TRUE;
                                     //if shutter is moving then calculate min distance travel required.
@@ -620,7 +621,6 @@ VOID commandHandler(VOID)
                     }                    
                     break;
                 case close_shutter:
-                    FLAG_CMD_open_shutter=0;
                     //If shutter is at lower limit then do not process command    
                     if((TIME_CMD_open_shutter==0)&&(TIME_CMD_close_shutter==0))
                     { 
@@ -738,7 +738,7 @@ VOID commandHandler(VOID)
                     break;
                     
                 case close_shutter_ignoring_sensors: 
-
+                    
                     if(!uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterLowerLimit)
                     {
                         inputFlags.value = CLOSE_SHUTTER;
@@ -808,7 +808,14 @@ VOID commandHandler(VOID)
                             {
                                 parameter  = drive_fw_version;
                             }
-                           
+                           if((paramIndex == 605)&&(FLAG_StartApertureCorrection>0))
+                            {
+                               if((parameter&0x00000040)==0x00000040)
+                               {
+                                   parameter=parameter&0xFFFFFFBF;
+                                   parameter=parameter|0x00000080;
+                               }
+                            }
                             transmitParameter(parameter, paramIndex, byteCount); 
                         }
                         

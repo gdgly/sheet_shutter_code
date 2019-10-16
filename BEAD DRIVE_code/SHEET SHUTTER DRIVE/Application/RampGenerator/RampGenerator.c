@@ -1562,6 +1562,8 @@ VOID checkPhotoElecObsLevel(BOOL sts)
     //photo electic sensor is normally closed, it is triggered when opened
     if(photoElecObsSensTrigrd)
     {
+        if(rampCurrentPosition < uDriveCommonBlockEEP.stEEPDriveCommonBlock.photoElecPosMonitor_A102)     //bug_No.78
+           uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.peObstacle = TRUE;   //bug_No.78
         //If system is in ready state then process photoelectric trigger
         if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveReady)
         {
@@ -1583,7 +1585,7 @@ VOID checkPhotoElecObsLevel(BOOL sts)
                            photElecSensorFault = TRUE;
                            
                            //set fault status
-                           uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.peObstacle = TRUE;
+                           //uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.peObstacle = TRUE;   //bug_No.78
                            inputFlags.value = OPEN_SHUTTER_JOG_50;
                            rampCurrentState = RAMP_START;
                        }
@@ -1618,7 +1620,7 @@ VOID microSwSensorTiggered(BOOL sts)
             stopShutter(); //stop shutter immediately
             //set mocro switch error flag
             uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.microSwitch = TRUE;
-            if(currentRampProfileNo == RAMP_GOING_DN_PROFILE)
+            if((currentRampProfileNo == RAMP_GOING_DN_PROFILE)&&(rampOutputStatus.shutterMoving))   //bug_No.84
             {
                 inputFlags.value = OPEN_SHUTTER_JOG_50;
                 rampCurrentState = RAMP_START;
