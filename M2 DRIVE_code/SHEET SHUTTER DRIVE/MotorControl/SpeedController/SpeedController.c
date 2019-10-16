@@ -747,7 +747,7 @@ VOID measureActualSpeed(VOID)
 
 VOID speedControl(VOID)
 {
-     //***********************20160906_add over load start************************
+     //***********************20160906_add over load start************************    
     SHORT  refSpeed_80_pct;   
     refSpeed_80_pct = refSpeed*5/10;     //50%
     if((measuredSpeed < refSpeed_80_pct)&&(FLAG_overLoad == FALSE))
@@ -756,7 +756,7 @@ VOID speedControl(VOID)
         if(OverLoad_cnt>1500) FLAG_overLoad = TRUE;     //1500ms
     }
     else OverLoad_cnt = 0;
-    if(flags.motorRunning ==0) FLAG_overLoad = FALSE;
+    if((flags.motorRunning ==0)||(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveInstallation)) FLAG_overLoad = FALSE;
     if(FLAG_overLoad == TRUE)refSpeed = refSpeed/2;   //50%
     //**********************20160906_add over load end **************************   
     
