@@ -627,8 +627,12 @@ VOID initApertureProfileData(VOID)
     i = 0;
     rampApertureUpProfile[i].rampGenFlags = upBrakeRelease; //value to remove brake
     rampApertureUpProfile[i].startPosition = uDriveCommonBlockEEP.stEEPDriveCommonBlock.lowerStoppingPos_A101;
+#ifdef MOTOR_750W_BD
+    rampApertureUpProfile[i].endPosition = (uDriveCommonBlockEEP.stEEPDriveCommonBlock.apertureHeightPos_A130 + 300);//APERPOS_OFFSET);      //20160906 bug_No.98
+#else
     rampApertureUpProfile[i].endPosition = (uDriveCommonBlockEEP.stEEPDriveCommonBlock.apertureHeightPos_A130 + 200);//APERPOS_OFFSET);
-    
+#endif
+   
     rampApertureUpProfile[i].startSpeed = RAMP_START_SPEED;
     rampApertureUpProfile[i].endSpeed = uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.s1Up_A522;
     //__builtin_divud(((DWORD)uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.jogSpeed_A551 * uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.ratedSpeed_A546),100);//435
@@ -1348,7 +1352,9 @@ void __attribute__((interrupt, no_auto_psv)) _T4Interrupt (void)//10ms
 	//	Commented if statement to handle "offset at upper & lower limit"
 	//	Now executeRampState() will be called every 10mS
 	//  Reopen the logic as rising time, falling time operates five time faster than the configured value - YG - NOV 15
-    if(++ms10Cnt >= RAMP_GENERATOR_PERIOD_CNT)//50ms
+    
+//    if(++ms10Cnt >= RAMP_GENERATOR_PERIOD_CNT)//50ms
+    if(++ms10Cnt >= 3)//30ms    //20160907  bug_No.107
     {
         ms10Cnt = 0;
         checkRampCommand();

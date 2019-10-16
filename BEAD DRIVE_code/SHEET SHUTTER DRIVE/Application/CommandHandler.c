@@ -525,6 +525,7 @@ VOID commandHandler(VOID)
                                 if((!uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterUpperLimit)&&(inputFlags.value!=OPEN_SHUTTER))
                                 {
                                     inputFlags.value = OPEN_SHUTTER; 
+                                    rampStatusFlags.rampOpenInProgress = 0;   //20160906 bug_No.87
                                     TIME_CMD_open_shutter=100;
                                     //if shutter is moving then calculate min distance travel required.
                                     if(rampOutputStatus.shutterMoving)
@@ -642,7 +643,7 @@ VOID commandHandler(VOID)
                                 if(!uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterLowerLimit)
                                 {
                                     inputFlags.value = CLOSE_SHUTTER; 
-                                    TIME_CMD_close_shutter=100;
+                                    TIME_CMD_close_shutter=160;    //20160907  bug_No.107
                                     //if shutter is moving then calculate min distance travel required.
                                     if(rampOutputStatus.shutterMoving)
                                     {
@@ -722,7 +723,7 @@ VOID commandHandler(VOID)
                                     if(!uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterLowerLimit)
                                     {
                                         inputFlags.value = CLOSE_SHUTTER_APERTURE; 
-                                        TIME_CMD_close_shutter=100;
+                                        TIME_CMD_close_shutter=160;    //20160907  bug_No.107
                                         bDownApertureCmdRecd = TRUE;
                                         //if shutter is moving then calculate min distance travel required.
                                         if(rampOutputStatus.shutterMoving)
