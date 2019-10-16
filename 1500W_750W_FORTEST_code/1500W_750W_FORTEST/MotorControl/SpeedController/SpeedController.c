@@ -172,6 +172,7 @@ DWORD phaseIncPerSec = 0;
 /* assembly */
 SHORT measuredSpeed;  /* Actual speed for the PID */
 SHORT measuredSpeed_bak;
+BOOL Motor_ERR_overcurrent_or_igbtOverTemp;
 SHORT refSpeed = 200;	    /* Desired speeds for the PID */ 
 
 /* Output of PID controller, use its sign for required direction */

@@ -1827,6 +1827,7 @@ VOID igbtOverTempSensorTriggered(BOOL sts)
         if(currentRampProfileNo != RAMP_PROFILE_END)
         {
             //if emergency switch is triggered the stop shutter immediately
+            Motor_ERR_overcurrent_or_igbtOverTemp=1;
             forceStopShutter();
             //set emergency stop error flag
             uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.igbtOverTemperature = TRUE; 
@@ -1893,6 +1894,7 @@ VOID overcurrentfaultTriggered(BOOL sts)
     //emergency stop sensor is normally open, it is triggered when closed
     if(OvercurrentfaultTrigrd)
     {
+        Motor_ERR_overcurrent_or_igbtOverTemp=1;
         //Sense emergency in all the profiles
         if(currentRampProfileNo != RAMP_PROFILE_END)
         {

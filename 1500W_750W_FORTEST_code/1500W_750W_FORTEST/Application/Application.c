@@ -286,14 +286,19 @@ VOID application(VOID)
     if(MotorRunInCycle == 0)
     {
         CMDStatus = (UINT8) ((PORTDbits.RD8 << 1) | (PORTAbits.RA11));
-        if((CMDStatus == 0x00) && (!flags.motorRunning))
+        if((CMDStatus == 0x02) || (CMDStatus == 0x03))
+        {
+            Motor_ERR_overcurrent_or_igbtOverTemp=0;
+        }
+        
+        if((CMDStatus == 0x00) && (!flags.motorRunning)&&(Motor_ERR_overcurrent_or_igbtOverTemp==0))
         {
             lockRelease;
             //delayMs(100); 
             flags.RunDirection = CCW;
             startMotorCCW();
         }
-        else if((CMDStatus == 0x01) && (!flags.motorRunning))
+        else if((CMDStatus == 0x01) && (!flags.motorRunning)&&(Motor_ERR_overcurrent_or_igbtOverTemp==0))
         {
             lockRelease;
             //delayMs(100); 
