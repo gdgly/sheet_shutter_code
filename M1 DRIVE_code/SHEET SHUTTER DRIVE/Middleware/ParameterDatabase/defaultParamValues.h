@@ -104,14 +104,14 @@ CONST _EEPDriveMotorCtrlBlock uEEP_M1DriveMotorCtrlBlockDefault =
 		500,      //UINT32	accel1Up_A520; 
 		600,      //UINT32	decel1Up_A521;         
 		1450,//1600,   //UINT16  s1Up_A522; 
-		400,    //UINT16  s2Up_A523; 
-		200,      //UINT16  s3Up_A524; 
+		800,//400,    //UINT16  s2Up_A523; 
+		400,//200,      //UINT16  s3Up_A524; 
 		3,      //UINT8	upStepCount_A525; 
 		0,      //UINT32	accel1Down_A526; 
 		0,      //UINT32	decel1Down_A527;         
 		1450,//1000,   //UINT16  s1Down_A528; 
-		400,    //UINT16  s2Down_A529; 
-		200,      //UINT16  s3Down_A530; 
+		800,//400,    //UINT16  s2Down_A529; 
+		400,//200,      //UINT16  s3Down_A530; 
 		3,      //UINT8 	downStepCount_A531; 
 		0,      //UINT8 	shutterLength_A536; 
 		1,      //UINT8 	shutterType_A537;    //bug_NO.62     
@@ -153,7 +153,7 @@ CONST _EEPDriveApplBlock uDriveApplBlockEEPDefault =
     {
         0,      //UINT8 	snowModePhotoelec_A008; 
 		0,      //UINT8 	initialValSetting_A021; 
-		500,      //UINT16 	maintenanceCountLimit_A025; // to avoid error flag getting set 
+		300,//500,      //UINT16 	maintenanceCountLimit_A025; // to avoid error flag getting set 
 		0,      //UINT16 	maintenanceCountValue_A636; 	
 		0,      //UINT8 	microSensorCounter_A080; 
 		0,      //UINT8 	microSensorCountReset_A081; 
@@ -162,7 +162,7 @@ CONST _EEPDriveApplBlock uDriveApplBlockEEPDefault =
 		0,      //UINT8 	powerUpCalib_A125; 
 		//	Default value of A126 changed to 10 as its range is 10 to 9999 - Jan 2016
 		500,      //UINT8 	correctedFreqAperture_A126; //STT 20160803     //bug_NO.66
-		0,      //UINT8 	autoCorrectionEnabled_A127; 
+		1,//0,      //UINT8 	autoCorrectionEnabled_A127; 
 		0,      //UINT8 	driveFWVersion_A549;  //bug_NO.64
 		001,      //UINT8 	driveHWVersion_A550; 
 		0,      //UINT32 	operationCount_A600; 

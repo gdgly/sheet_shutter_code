@@ -55,7 +55,7 @@
 #define RAMP_STARTING_CURRENT_MAX   5000       //Limit starting current to 10A
 #define RAMP_STARTING_CURRENT_MIN   1000       //Limit starting current to 10A
 #define RAMP_STARTING_CURRENT_STEP  500         //Current change step is 200mA
-#define RAMP_STARTING_SPEED_MAX     3600        //Limit starting speed to 3600rpm
+#define RAMP_STARTING_SPEED_MAX     1800//3600        //Limit starting speed to 3600rpm
 
 #define MECHANICAL_LOCK_ACTIVATION_DELAY    100//500//1000    //Time delay required to energize mechanical lock
 #define MECHANICAL_LOCK_DEACTIVATION_DELAY  50      //Time delay required to de-energize mechanical lock
