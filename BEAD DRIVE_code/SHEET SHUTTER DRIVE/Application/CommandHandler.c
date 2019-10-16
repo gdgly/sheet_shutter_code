@@ -517,7 +517,7 @@ VOID commandHandler(VOID)
                                 |uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.powerFail;
                             if(faultTrgFlag == FALSE)
                             {                            
-                                if(!uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterUpperLimit)
+                                if((!uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterUpperLimit)&&(inputFlags.value!=OPEN_SHUTTER))
                                 {
                                     inputFlags.value = OPEN_SHUTTER; 
                                     TIME_CMD_open_shutter=100;
@@ -591,8 +591,8 @@ VOID commandHandler(VOID)
                         FLAG_CMD_open_shutter=0;
                             if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveReady)
                             {
-                                if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterLowerLimit ||
-                                   uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterBetweenLowlmtAphgt) 
+                                if(((uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterLowerLimit ||
+                                   uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterBetweenLowlmtAphgt))&&(inputFlags.value!=OPEN_SHUTTER_APERTURE)) 
                                 {
                                     if(FLAG_StartApertureCorrection==1){FLAG_StartApertureCorrection++;inputFlags.value = OPEN_SHUTTER; }   //bug_No.12
                                     else if(FLAG_StartApertureCorrection>1){FLAG_StartApertureCorrection=0;inputFlags.value = OPEN_SHUTTER_APERTURE;}
@@ -936,17 +936,17 @@ VOID commandHandler(VOID)
 				//	Added on 03 FEB 2015 to implement user control on power up calibration
 				case start_power_on_calibraion: 
 					//	Set global flag to indicate power on calibration is initiated by user from display board
-//                    if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.drivePowerOnCalibration ||
-//                            uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveRuntimeCalibration)
-//                    {
-                        powerOnCalibration = INITIATED;
-//                    }
-//                    if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveInstallation)
-//                    {
-//                        ShutterInstallationEnabled = TRUE;
-//                        inputFlags.value = OPEN_SHUTTER_JOG_50;
-//                        shutterInstall.currentState = INSTALL_SEARCH_ORG;
-//                    }
+                    if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.drivePowerOnCalibration ||
+                            uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveRuntimeCalibration)
+                    {
+                                        powerOnCalibration = INITIATED;
+                    }
+                    if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveInstallation)
+                    {
+                        ShutterInstallationEnabled = TRUE;
+                        inputFlags.value = OPEN_SHUTTER_JOG_50;
+                        shutterInstall.currentState = INSTALL_SEARCH_ORG;
+                    }
                     break;
 					
 				//	Added on 03 FEB 2015 to implement user control on power up calibration
@@ -962,7 +962,7 @@ VOID commandHandler(VOID)
                     //    status = nack;
                     //}
                     
-                    inputFlags.value = STOP_SHUTTER;
+                                    inputFlags.value = STOP_SHUTTER;
                     //If drive is ready then travel min distance before stop
                     //if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveReady)
                     //{
@@ -970,15 +970,15 @@ VOID commandHandler(VOID)
                     //}
 					
 					//	Set global flag to indicate power on calibration is terminated by user from display board
-//                    if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.drivePowerOnCalibration ||
-//                            uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveRuntimeCalibration)
-//                    {
-                        powerOnCalibration = TERMINATED;
-//                    }
-//                    if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveInstallation)
-//                    {
-//                        ShutterInstallationEnabled = FALSE;
-//                    }
+                    if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.drivePowerOnCalibration ||
+                            uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveRuntimeCalibration)
+                    {
+                                    powerOnCalibration = TERMINATED;
+                    }
+                    if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveInstallation)
+                    {
+                        ShutterInstallationEnabled = FALSE;
+                    }
                     break; 
 //added by AOYAGI_ST 20160418 for adding clean error function
                 case clean_error:

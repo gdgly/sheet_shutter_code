@@ -157,7 +157,7 @@ CONST _EEPDriveApplBlock uDriveApplBlockEEPDefault =
 		0,      //UINT16 	maintenanceCountValue_A636; 	
 		0,      //UINT8 	microSensorCounter_A080; 
 		0,      //UINT8 	microSensorCountReset_A081; 
-		10,    //UINT8 	overrunProtection_A112; 
+		50,    //UINT8 	overrunProtection_A112; 
 		0,      //UINT8 	resetToDefaultValues_A120; 
 		0,      //UINT8 	powerUpCalib_A125; 
 		//	Default value of A126 changed to 10 as its range is 10 to 9999 - Jan 2016

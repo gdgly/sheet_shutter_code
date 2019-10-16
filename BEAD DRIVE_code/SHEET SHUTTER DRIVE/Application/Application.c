@@ -134,6 +134,7 @@ UINT16 TIME_CMD_close_shutter=0;
 UINT8  FLAG_CMD_open_shutter=0;
 UINT8  CMD_open_shutter=0;
 UINT8  FLAG_StartApertureCorrection = 0;   //bug_No.12
+UINT8  FLAG_open_shutter_one = 0;
 /******************************************************************************
  * initApplication
  *
@@ -1374,7 +1375,7 @@ VOID shutterInstallation(VOID)
     SHORT positionError;
     
         
-    if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveInstallation) //&& ShutterInstallationEnabled)
+    if((uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveInstallation) && ShutterInstallationEnabled)
     {
         if(ShutterInstallationStepNeedSave)   //bug_NO.43
         {
