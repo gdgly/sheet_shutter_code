@@ -46,7 +46,7 @@
 //#define PHASE_OFFSET_CW  1092  // 6 degrees.
 #define PHASE_OFFSET_CCW 9828//5096//8008//9828 // Fukui result - 54 degree 10192
 #define PHASE_OFFSET_CW_MAX 6916
-#define PHASE_OFFSET_CCW_MAX 5096
+#define PHASE_OFFSET_CCW_MAX 9828 //5096     //2016/08/17 Down Moving after Over Current by IME
 #define PHASE_OFFSET_INC_STEP 1
 #define PHASE_OFFSET_DEC_STEP 20
 #else
@@ -172,6 +172,9 @@ SHORT nextSectorNo;
 SHORT previousSectorNo;
 SHORT phaseInc;
 
+BOOL  FLAG_overLoad =FALSE;
+WORD  OverLoad_cnt=0;
+
 /* This function is used to measure actual running speed of motor */
 VOID measureActualSpeed(VOID);
 
@@ -217,7 +220,7 @@ void __attribute__((interrupt, no_auto_psv)) _T1Interrupt (void)
 	// If user press down button when shutter is not at lower limit and motor cable has some connection issue, which result shutter to fall down wih high speed
 
 #define		MTR_CABLE_FAULT_TOP_UP_SPEED_VALUE_TO_S1_DOWN	500  // it is an top speed to S1 down speed to declare "motor cable fault" error
-#define		MTR_CABLE_FAULT_MONITOR_TIME					250         // it is an time period in msec for which "motor cable fault" error needs to monitor,
+#define		MTR_CABLE_FAULT_MONITOR_TIME					500//250         // it is an time period in msec for which "motor cable fault" error needs to monitor,
 	// before stoping the motor and declaring the error
 	// max limit = 250 msec
 
@@ -744,10 +747,22 @@ VOID measureActualSpeed(VOID)
 
 VOID speedControl(VOID)
 {
+     //***********************20160906_add over load start************************
+    SHORT  refSpeed_80_pct;   
+    refSpeed_80_pct = refSpeed*5/10;     //50%
+    if((measuredSpeed < refSpeed_80_pct)&&(FLAG_overLoad == FALSE))
+    {
+        OverLoad_cnt++;
+        if(OverLoad_cnt>1500) FLAG_overLoad = TRUE;     //1500ms
+    }
+    else OverLoad_cnt = 0;
+    if(flags.motorRunning ==0) FLAG_overLoad = FALSE;
+    if(FLAG_overLoad == TRUE)refSpeed = refSpeed/2;   //50%
+    //**********************20160906_add over load end **************************   
+    
+    
     speedPIparms.qInRef = refSpeed;
     speedPIparms.qInMeas = measuredSpeed;
-
-
 
 //    if(uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.shutterType_A537 == BEAD_SHUTTER)
 //    {
@@ -810,6 +825,10 @@ VOID speedControl(VOID)
 
         if(flags.speedControl)
             controlOutput = speedPIparms.qOut;
+        //***********************20160906_add over load start************************
+            if(FLAG_overLoad == TRUE)
+                controlOutput = controlOutput/2;    //50%
+        //**********************20160906_add over load end **************************        
     }
 
     //calculate percentage duty
