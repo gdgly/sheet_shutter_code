@@ -9,7 +9,7 @@ CONST _EEPDriveMotorCtrlBlock uEEP_BeadDriveMotorCtrlBlockDefault =
         0,      //UINT8 decelByPhotoElecBlckingLim_A011;
 		0,      //UINT8 waitForStoppage_A011;
 		//	Default parameter values changed as per request from Bx - Dec 2015
-		450,//200,    //UINT16 riseChangeGearPos1_A103; 
+		450,//200,    //UINT16 riseChangeGearPos1_A103;     //bug_NO.45
 		250,//100,    //UINT16 riseChangeGearPos2_A104; 
 		150,//0,      //UINT16 riseChangeGearPos3_A105;		
 		250,//500,    //UINT16 fallChangeGearPos1_A106; 
@@ -38,7 +38,7 @@ CONST _EEPDriveMotorCtrlBlock uEEP_BeadDriveMotorCtrlBlockDefault =
 
 		500,      //UINT32	accel1Up_A520; 
         600,      //UINT32	decel1Up_A521;
-		1750,   //1900,CHANGED BY AOYAGI_ST_20160415   //UINT16  s1Up_A522; 
+		1750,   //1900,CHANGED BY AOYAGI_ST_20160415   //UINT16  s1Up_A522;   //bug_NO.44
 		400,    //UINT16  s2Up_A523; 
 		200,      //UINT16  s3Up_A524; 
 		3,      //UINT8	upStepCount_A525; 
@@ -77,10 +77,10 @@ CONST _EEPDriveMotorCtrlBlock uEEP_M1DriveMotorCtrlBlockDefault =
 		350,    //UINT16 riseChangeGearPos1_A103; 
 		250,    //UINT16 riseChangeGearPos2_A104; 
 		150,      //UINT16 riseChangeGearPos3_A105;		
-		400,    //UINT16 fallChangeGearPos1_A106; 
+		350,//400,    //UINT16 fallChangeGearPos1_A106;20160915   
 		250,    //UINT16 fallChangeGearPos2_A107; 
 		150,      //UINT16 fallChangeGearPos3_A108;         
-		50,      //UINT8 	shtrRevOperMinLimit_A110;   
+		20,//50,      //UINT8 	shtrRevOperMinLimit_A110;20160915   
         0,      //UINT16 	PWMFreqMotorCtrl_A500; 
 		0,      //UINT8 	startupDutyCycle_A501; 
 		0,      //UINT16 	maxStartupTimeLim_A504; 
@@ -92,10 +92,10 @@ CONST _EEPDriveMotorCtrlBlock uEEP_M1DriveMotorCtrlBlockDefault =
 		0,      //UINT16	timer2Max_A509; 
 		0,      //UINT16	minDutyCycle_A510; 
 		0,      //UINT8	breakEnabled_A511; 
-		100,      //UINT16	speed_PI_KP_A512;   //STT 20160803
-		70,      //UINT8	speed_PI_KI_A513;   //STT 20160803
-		100,      //UINT16	current_PI_KP_A514;   //STT 20160803
-		40,      //UINT8	current_PI_KI_A515;   //STT 20160803     
+		100,      //UINT16	CW_PI_KP_A512;   //STT 20160803  //bug_NO.65
+		70,      //UINT8	CW_PI_KI_A513;   //STT 20160803
+		100,      //UINT16	CCW_PI_KP_A514;   //STT 20160803
+		70,//40,      //UINT8	CCW_PI_KI_A515;   //STT 20160803 2016915     
 		0,      //UINT16	outputFreq_A516;
 		9,     //UINT8	inchSpeed_A517; 
 		0,      //UINT8	driveStatus_A518; 
@@ -114,7 +114,7 @@ CONST _EEPDriveMotorCtrlBlock uEEP_M1DriveMotorCtrlBlockDefault =
 		200,      //UINT16  s3Down_A530; 
 		3,      //UINT8 	downStepCount_A531; 
 		0,      //UINT8 	shutterLength_A536; 
-		1,      //UINT8 	shutterType_A537;         
+		1,      //UINT8 	shutterType_A537;    //bug_NO.62     
 		0,      //UINT16  OVLim_A538; 
 		0,      //UINT16  OILim_A539; 
 		0,      //UINT16  OSLim_A540;   
@@ -157,13 +157,13 @@ CONST _EEPDriveApplBlock uDriveApplBlockEEPDefault =
 		0,      //UINT16 	maintenanceCountValue_A636; 	
 		0,      //UINT8 	microSensorCounter_A080; 
 		0,      //UINT8 	microSensorCountReset_A081; 
-		10,    //UINT8 	overrunProtection_A112; 
+		50,    //UINT8 	overrunProtection_A112; 
 		0,      //UINT8 	resetToDefaultValues_A120; 
 		0,      //UINT8 	powerUpCalib_A125; 
 		//	Default value of A126 changed to 10 as its range is 10 to 9999 - Jan 2016
-		500,      //UINT8 	correctedFreqAperture_A126; //STT 20160803
+		500,      //UINT8 	correctedFreqAperture_A126; //STT 20160803     //bug_NO.66
 		0,      //UINT8 	autoCorrectionEnabled_A127; 
-		0,      //UINT8 	driveFWVersion_A549; 
+		0,      //UINT8 	driveFWVersion_A549;  //bug_NO.64
 		001,      //UINT8 	driveHWVersion_A550; 
 		0,      //UINT32 	operationCount_A600; 
 		10,     //UINT8 	microSensorLimValue_A603;
@@ -198,7 +198,6 @@ CONST _DriveStatus_A605 uDriveStatusDefault =
         0,      //UINT16 shutterMovingUp			: 1;
         0,      //UINT16 shutterMovingDown		: 1;
         0,      //UINT16 shuttrMovDwnIgnoreSens	: 1;
-        
         0,      //UINT16 unused					: 3;
     }
 };
@@ -214,7 +213,8 @@ CONST _DriveInstallationStatus_A606 uDriveInstallationStatusDefault =
         0,      //UINT8 installationSuccess      : 1; // success can be flagged on completion of A102, then runtime calibration 
                 //// can be taken up separately 
         0,      //UINT8 installationFailed       : 1;
-        0,      //UINT8 unused                   : 2;
+        0,      //A130
+        0,      //UINT8 unused                   : 1;
     }
 };
 

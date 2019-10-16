@@ -893,10 +893,17 @@ VOID speedControl(VOID)
 //    }
 //    else if (uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.shutterType_A537 == M1_SHUTTER)
 //    {
-        speedPIparms.qOutMax = currentLimitClamp;
-        speedPIparms.qOutMin = -(currentLimitClamp);  
+//        speedPIparms.qOutMax = currentLimitClamp;     //bug_NO.51
+//        speedPIparms.qOutMin = -(currentLimitClamp);  
 //    }
-
+#ifdef MOTOR_750W_BD
+            speedPIparms.qOutMax = 17000;//currentLimitClamp;
+            speedPIparms.qOutMin = -(currentLimitClamp);
+#endif
+#ifdef MOTOR_750W_M1
+        speedPIparms.qOutMax = currentLimitClamp;     //bug_NO.51
+        speedPIparms.qOutMin = -(currentLimitClamp); 
+#endif
     
 	#if 1
 	//	Added on 6 Aug 2015 to enable motor rotation in no load condition for bead type shutter (while shutter go down operation)
@@ -971,7 +978,7 @@ VOID initSpeedControllerVariables(VOID)
 ////        }
 //    }
 //    else if (uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.shutterType_A537 == M1_SHUTTER)
-        controlOutput = SHUTTER_LOAD_HOLDING_DUTY;    
+        controlOutput = SHUTTER_LOAD_HOLDING_DUTY;       //bug_NO.43
     
     period = MAXPERIOD;
     periodFilter = MAXPERIOD;

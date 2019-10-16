@@ -41,6 +41,9 @@
 
 #define		MTR_CTRL_HW_TYPE		MTR_CTRL_HW_VER2	//	Motor control board version 1
 
+
+//#define     MOTOR_750W_BD
+#define     MOTOR_750W_M1
 /*********************************************************************
 					Macros for motror control board
 					hardware selection end here

@@ -93,10 +93,11 @@ typedef enum installationState
     INSTALL_MOVE_DN_50MM,
     INSTALL_MOVE_TO_UP_LIMIT,
     INSTALL_MOVE_TO_DN_LIMIT,
-    INSTALL_SUCCESSFUL,
+    INSTALL_SUCCESSFUL,  //bug_NO.35
     INSTALL_COMPLETE,
     INSTALL_RESTART,   
-    INSTALL_STATE_END
+    INSTALL_STATE_END, 
+    INSTALL_A130        
 }installationState_en;
 
 typedef struct _powerUpCalib
@@ -126,6 +127,8 @@ EXTERN UINT16 TIME_CMD_open_shutter;
 EXTERN UINT16 TIME_CMD_close_shutter;
 EXTERN UINT8  FLAG_CMD_open_shutter;
 EXTERN UINT8  CMD_open_shutter;
+EXTERN UINT8  FLAG_StartApertureCorrection ;   //bug_No.12
+EXTERN UINT8  FLAG_open_shutter_one;
 
 /* This function initializes all variables required by the Application */
 VOID initApplication(VOID); 
@@ -161,6 +164,7 @@ UINT32 getSystemTick(VOID);
 
 VOID checkShutterPosition(VOID);
 VOID powerUpCalibration(VOID);
+VOID startApertureHeight(VOID);
 VOID startInstallation(VOID);
 
 VOID checkShutterInstallation(VOID);

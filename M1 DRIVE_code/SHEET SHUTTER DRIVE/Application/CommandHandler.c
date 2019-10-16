@@ -85,9 +85,10 @@
 #define EXPECTED_CRC_START_POWER_ON_CALIBRATION				0x7792
 #define EXPECTED_CRC_STOP_POWER_ON_CALIBRATION				0x76D2
 //Added by AOYAGI_ST 20160418 for clean error
-#define EXPECTED_CRC_CLEAN_ERROR                0xB253          
+#define EXPECTED_CRC_CLEAN_ERROR                0xB253     
+#define EXPECTED_CRC_APERTUREHEIGHT                0x7292 
 
-CONST UINT32 drive_fw_version = 0x00000000;
+CONST UINT32 drive_fw_version = 0x00000301;  //bug_NO.64    20160915
 
 
 enum {
@@ -134,6 +135,7 @@ enum _CBCommand
 	stop_power_on_calibraion = 0x36,
     //Added by AOYAGI_ST 20160418 for clean error
     clean_error = 0x38,
+    start_apertureHeight =0x39,
 }enCBCommand; /* Used to identify command coming from CB */ 
 
 
@@ -253,6 +255,7 @@ const _stCBCommand constCBCommandList[NUM_OF_CONTROL_BOARD_COMMANDS] =
 	{DRIVE_BOARD_ADDRESS, CONTROL_BOARD_ADDRESS, STOP_POWER_ON_CALIBRATION_CMND_LEN,	stop_power_on_calibraion,	{(EXPECTED_CRC_STOP_POWER_ON_CALIBRATION & 0x00FF) , ((EXPECTED_CRC_STOP_POWER_ON_CALIBRATION & 0xFF00) >> 8)}, no_cmnd },
     //Added by AOYAGI_ST 20160418 for adding clean error function
     {DRIVE_BOARD_ADDRESS, CONTROL_BOARD_ADDRESS, CLEAN_ERROR_CMND_LEN,	clean_error,	{(EXPECTED_CRC_CLEAN_ERROR & 0x00FF) , ((EXPECTED_CRC_CLEAN_ERROR & 0xFF00) >> 8)}, no_cmnd },
+    {DRIVE_BOARD_ADDRESS, CONTROL_BOARD_ADDRESS, CLEAN_APERTUREHEIGHT_CMND_LEN,	start_apertureHeight,	{(EXPECTED_CRC_APERTUREHEIGHT & 0x00FF) , ((EXPECTED_CRC_APERTUREHEIGHT & 0xFF00) >> 8)}, no_cmnd },    
 	
 }; 
 
@@ -491,11 +494,20 @@ VOID commandHandler(VOID)
                         startInstallation();
                         
                     break;
-                    
+                case  start_apertureHeight:
+                       startApertureHeight();
+                    break;
                 case confirm_sub_state_install:    						
                     if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveInstallation) 
                     {
-                        shutterInstall.enterCmdRcvd = TRUE;							
+                        if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveInstallationStatus.bits.installA100 == TRUE)    /*******20160914 bug_No.99      start*********/
+                        {
+                            if(originSensorSts)
+                               shutterInstall.enterCmdRcvd = TRUE;	
+                            else status = nack;
+                        }
+                        else                                                                                                        /*******20160914 bug_No.99      end*********/  
+                          shutterInstall.enterCmdRcvd = TRUE;
                     }
                     else 
                     {
@@ -515,12 +527,12 @@ VOID commandHandler(VOID)
                             //instruct function for to not scan PE sensor - YG - Nov 2015
                             faultTrgFlag = readCurrSensorState(FALSE)
                                 |uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.powerFail;
-
                             if(faultTrgFlag == FALSE)
                             {                            
-                                if(!uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterUpperLimit)
+                                if((!uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterUpperLimit)&&(inputFlags.value!=OPEN_SHUTTER))
                                 {
                                     inputFlags.value = OPEN_SHUTTER; 
+                                    rampStatusFlags.rampOpenInProgress = 0;   //20160906 bug_No.87
                                     TIME_CMD_open_shutter=100;
                                     //if shutter is moving then calculate min distance travel required.
                                     if(rampOutputStatus.shutterMoving)
@@ -559,7 +571,10 @@ VOID commandHandler(VOID)
                         //It is a inch command. It is valid during installation only
                         if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveInstallation)
                         {
-                            inputFlags.value = OPEN_SHUTTER_JOG_10;
+                            //if((!uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterUpperLimit)&&(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveApertureHeight))
+                            //     inputFlags.value = STOP_SHUTTER;
+                            //else 
+                                inputFlags.value = OPEN_SHUTTER_JOG_10;
                         }
                         else
                         {
@@ -587,32 +602,41 @@ VOID commandHandler(VOID)
                     break;
                 case open_shutter_aperture_height:
                     //If shutter is at upper limit then do not process command
-                    if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveReady)
+                    if((TIME_CMD_open_shutter==0)&&(TIME_CMD_close_shutter==0))
                     {
-                        if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterLowerLimit ||
-                           uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterBetweenLowlmtAphgt) 
-                        {
-                            inputFlags.value = OPEN_SHUTTER_APERTURE; 
-                            bUpApertureCmdRecd = TRUE;
-                            //if shutter is moving then calculate min distance travel required.
-                            if(rampOutputStatus.shutterMoving)
+                        FLAG_CMD_open_shutter=0;
+                            if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveReady)
                             {
-                                calcShtrMinDistValue();
+                                if(((uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterLowerLimit ||
+                                   uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterBetweenLowlmtAphgt))&&(inputFlags.value!=OPEN_SHUTTER_APERTURE)) 
+                                {
+                                    if(FLAG_StartApertureCorrection==1){FLAG_StartApertureCorrection++;inputFlags.value = OPEN_SHUTTER; }   //bug_No.12
+                                    else if(FLAG_StartApertureCorrection>1){FLAG_StartApertureCorrection=0;inputFlags.value = OPEN_SHUTTER_APERTURE;}
+                                    else inputFlags.value = OPEN_SHUTTER_APERTURE; 
+                                    TIME_CMD_open_shutter=100;
+                                    bUpApertureCmdRecd = TRUE;
+                                    //if shutter is moving then calculate min distance travel required.
+                                    if(rampOutputStatus.shutterMoving)
+                                    {
+                                        calcShtrMinDistValue();
+                                    }
+                                }
+                                else
+                                {
+                                    status = nack;
+                                }
                             }
-                        }
-                        else
-                        {
-                            status = nack;
-                        }
+                            else
+                            {
+                                status = nack;
+                            }
                     }
-                    else
-                    {
-                        status = nack;
-                    }
-                    
+                    else {
+                        FLAG_CMD_open_shutter=1;
+                        CMD_open_shutter=open_shutter_aperture_height;
+                    }                    
                     break;
                 case close_shutter:
-                    FLAG_CMD_open_shutter=0;
                     //If shutter is at lower limit then do not process command    
                     if((TIME_CMD_open_shutter==0)&&(TIME_CMD_close_shutter==0))
                     { 
@@ -626,7 +650,7 @@ VOID commandHandler(VOID)
                                 if(!uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterLowerLimit)
                                 {
                                     inputFlags.value = CLOSE_SHUTTER; 
-                                    TIME_CMD_close_shutter=100;
+                                    TIME_CMD_close_shutter=160;    //20160907  bug_No.107
                                     //if shutter is moving then calculate min distance travel required.
                                     if(rampOutputStatus.shutterMoving)
                                     {
@@ -661,6 +685,9 @@ VOID commandHandler(VOID)
                         //It is a inch command. It is valid during installation only
                         if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveInstallation)
                         {
+                            //if((!uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterLowerLimit)&&(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveApertureHeight))
+                           //      inputFlags.value = STOP_SHUTTER;
+                           // else 
                             inputFlags.value = CLOSE_SHUTTER_JOG_10;
                         }
                         else
@@ -688,43 +715,49 @@ VOID commandHandler(VOID)
 
                     break;
                 case close_shutter_aperture_height:
+                    FLAG_CMD_open_shutter=0;
                     //If shutter is at upper limit then do not process command
-                    if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveReady)
-                    {                        
-						//instruct function for to not scan PE sensor - YG - Nov 2015              
-                        faultTrgFlag = readCurrSensorState(TRUE)
-                            |uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.powerFail;
-                        
-                        if(faultTrgFlag == FALSE)
-                        {
-                            if(!uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterLowerLimit)
-                            {
-                                inputFlags.value = CLOSE_SHUTTER_APERTURE; 
-                                bDownApertureCmdRecd = TRUE;
-                                //if shutter is moving then calculate min distance travel required.
-                                if(rampOutputStatus.shutterMoving)
+                    if((TIME_CMD_open_shutter==0)&&(TIME_CMD_close_shutter==0))
+                    {                     
+                            if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveReady)
+                            {                        
+                                //instruct function for to not scan PE sensor - YG - Nov 2015              
+                                faultTrgFlag = readCurrSensorState(TRUE)
+                                    |uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.powerFail;
+
+                                if(faultTrgFlag == FALSE)
                                 {
-                                    calcShtrMinDistValue();
+                                    if(!uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterLowerLimit)
+                                    {
+                                        inputFlags.value = CLOSE_SHUTTER_APERTURE; 
+                                        TIME_CMD_close_shutter=160;    //20160907  bug_No.107
+                                        bDownApertureCmdRecd = TRUE;
+                                        //if shutter is moving then calculate min distance travel required.
+                                        if(rampOutputStatus.shutterMoving)
+                                        {
+                                            calcShtrMinDistValue();
+                                        }
+                                    }
+                                    else
+                                    {
+                                        status = nack;
+                                    }
+                                }
+                                else
+                                {
+                                    status = nack;
                                 }
                             }
                             else
                             {
                                 status = nack;
                             }
-                        }
-                        else
-                        {
-                            status = nack;
-                        }
                     }
-                    else
-                    {
-                        status = nack;
-                    }                    
+                    else status =no_reply_reqd;                    
                     break;
                     
                 case close_shutter_ignoring_sensors: 
-
+                    
                     if(!uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterLowerLimit)
                     {
                         inputFlags.value = CLOSE_SHUTTER;
@@ -790,11 +823,22 @@ VOID commandHandler(VOID)
                                 parameter = uDriveCommonBlockEEP.stEEPDriveCommonBlock.lowerStoppingPos_A101 - parameter;
                             }
                             
-                            if(paramIndex == 549)
+                            if(paramIndex == 549)     //bug_NO.64
                             {
                                 parameter  = drive_fw_version;
                             }
-                           
+                           if((paramIndex == 605)&&(FLAG_StartApertureCorrection>0))
+                            {
+                               if((parameter&0x00000040)==0x00000040)
+                               {
+                                   parameter=parameter&0xFFFFFFBF;
+                                   parameter=parameter|0x00000080;
+                               }
+                            }
+                            if((paramIndex == 605)&&((parameter&0x00200008)==0x00200008))
+                            {
+                                  parameter=parameter&0xFFFFFFF7;                                  
+                            }
                             transmitParameter(parameter, paramIndex, byteCount); 
                         }
                         
@@ -915,17 +959,19 @@ VOID commandHandler(VOID)
 				//	Added on 03 FEB 2015 to implement user control on power up calibration
 				case start_power_on_calibraion: 
 					//	Set global flag to indicate power on calibration is initiated by user from display board
-//                    if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.drivePowerOnCalibration ||
-//                            uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveRuntimeCalibration)
-//                    {
-                        powerOnCalibration = INITIATED;
-//                    }
-//                    if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveInstallation)
-//                    {
-//                        ShutterInstallationEnabled = TRUE;
-//                        inputFlags.value = OPEN_SHUTTER_JOG_50;
-//                        shutterInstall.currentState = INSTALL_SEARCH_ORG;
-//                    }
+                    if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.drivePowerOnCalibration ||
+                            uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveRuntimeCalibration)
+                    {
+                                        powerOnCalibration = INITIATED;
+                    }
+                    if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveInstallation)
+                    {
+                        ShutterInstallationEnabled = TRUE;
+                        //inputFlags.value = OPEN_SHUTTER_JOG_50;
+                        //shutterInstall.currentState = INSTALL_SEARCH_ORG;
+                        
+                        inputFlags.value = inputFlags_Installation.value;
+                    }
                     break;
 					
 				//	Added on 03 FEB 2015 to implement user control on power up calibration
@@ -941,7 +987,7 @@ VOID commandHandler(VOID)
                     //    status = nack;
                     //}
                     
-                    inputFlags.value = STOP_SHUTTER;
+                                    inputFlags.value = STOP_SHUTTER;
                     //If drive is ready then travel min distance before stop
                     //if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveReady)
                     //{
@@ -949,29 +995,41 @@ VOID commandHandler(VOID)
                     //}
 					
 					//	Set global flag to indicate power on calibration is terminated by user from display board
-//                    if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.drivePowerOnCalibration ||
-//                            uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveRuntimeCalibration)
-//                    {
-                        powerOnCalibration = TERMINATED;
-//                    }
-//                    if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveInstallation)
-//                    {
-//                        ShutterInstallationEnabled = FALSE;
-//                    }
+                    if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.drivePowerOnCalibration ||
+                            uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveRuntimeCalibration)
+                    {
+                                    powerOnCalibration = TERMINATED;
+                    }
+                    if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveInstallation)
+                    {
+                        ShutterInstallationEnabled = FALSE;
+                    }
                     break; 
 //added by AOYAGI_ST 20160418 for adding clean error function
                 case clean_error:
                     if(!rampOutputStatus.shutterMoving)
                     {
-                        if((uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorStall)||          \
-                           (uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorExceedingTorque)|| \
-                           (uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorSusOC)||           \
-                           (uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorPWMCosting))
+                        if((uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorStall)||          
+                           (uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorExceedingTorque)|| 
+                           (uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorSusOC)||           
+                           (uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorPWMCosting)||    
+                                                                                                                                     
+                           (uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.osNotDetectUP)||           //bug_No.101  20160909
+                           (uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.osNotDetectDown)||     
+                           (uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.osDetectOnUp)||     
+                           (uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.osDetectOnDown)||     
+                           (uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.osFailValidation))
                         {
                             uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorStall = FALSE;
                             uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorExceedingTorque = FALSE;
                             uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorSusOC = FALSE;
-                            uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorPWMCosting = FALSE;      
+                            uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorPWMCosting = FALSE;    
+                            
+                            uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.osNotDetectUP = FALSE;      //bug_No.101  20160909
+                            uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.osNotDetectDown = FALSE;
+                            uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.osDetectOnUp = FALSE;
+                            uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.osDetectOnDown = FALSE;
+                            uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.osFailValidation = FALSE;                            
                             //initSensorList();
                             //initApplication();
                             //initRampGenerator();

@@ -247,7 +247,7 @@ VOID executePowerFailRoutine(VOID)
 	//if installation was in progress then reset shutter positions
 	if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveInstallation)
 	{
-//		uDriveCommonBlockEEP.stEEPDriveCommonBlock.upperStoppingPos_A100 = 0; 
+//		uDriveCommonBlockEEP.stEEPDriveCommonBlock.upperStoppingPos_A100 = 0;     //bug_NO.43
 //		uDriveCommonBlockEEP.stEEPDriveCommonBlock.lowerStoppingPos_A101 = 0; 
 //        uDriveCommonBlockEEP.stEEPDriveCommonBlock.photoElecPosMonitor_A102 = 0;
 		writeWORD(EEP_UPPER_STOPPING_POS, uDriveCommonBlockEEP.stEEPDriveCommonBlock.upperStoppingPos_A100); 

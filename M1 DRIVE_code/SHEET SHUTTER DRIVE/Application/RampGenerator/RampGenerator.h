@@ -37,7 +37,7 @@
 #define SHUTTER_MOVING_UP 1
 #define SHUTTER_MOVING_DOWN 2
 
-#define RAMP_GENERATOR_TIME_PERIOD      50  
+#define RAMP_GENERATOR_TIME_PERIOD      50
 
 #define MOTOR_RATED_TOP_SPEED   2900
 #define MOTOR_ZERO_SPEED        0
@@ -54,7 +54,14 @@
 #else
     #error Shutter type not defined
 #endif
-#define HOLDING_DUTY_INC    40//10//20//200 //20160809 AOYAGI EMAIL
+
+#ifdef MOTOR_750W_BD
+    #define HOLDING_DUTY_INC    10//20//200
+#endif
+#ifdef MOTOR_750W_M1
+    #define HOLDING_DUTY_INC    40//10//20//200 //20160809 AOYAGI EMAIL
+#endif
+
 #define SHUTTER_SPEED_MIN_STOP 200
 #define SHUTTER_SPEED_MIN       500
 #define SHUTTER_SPEED_MAX       3600
@@ -291,6 +298,7 @@ typedef struct _safetySensors
 #endif	//	PROGRAMMABLE_DEBOUNCE
 
 EXTERN InputFlags_u inputFlags;     /* Application Input flags */
+EXTERN InputFlags_u inputFlags_Installation;
 EXTERN StatusFlags_t flags;         /* Application status flag */
 EXTERN rampStatusFlags_t rampStatusFlags;
 EXTERN rampOutputStatus_t rampOutputStatus;

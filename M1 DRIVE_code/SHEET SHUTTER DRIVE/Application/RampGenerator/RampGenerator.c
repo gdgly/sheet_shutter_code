@@ -175,6 +175,7 @@ SHORT sensorInactiveDebounceValue[SAFETY_SENSOR_END] =
 
 StatusFlags_t flags;
 InputFlags_u inputFlags;
+InputFlags_u inputFlags_Installation;
 
 BOOL photElecSensorFault = FALSE;
 
@@ -498,7 +499,7 @@ VOID initJogProfileData(VOID)
 	
 	rampJogUpProfile[i].endPosition = \
 //		uDriveCommonBlockEEP.stEEPDriveCommonBlock.upperStoppingPos_A100 + 200;
-        uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.riseChangeGearPos2_A104;
+        uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.riseChangeGearPos2_A104;     //bug_No.27
     
     if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.drivePowerOnCalibration ||
        uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveRuntimeCalibration ||
@@ -626,8 +627,12 @@ VOID initApertureProfileData(VOID)
     i = 0;
     rampApertureUpProfile[i].rampGenFlags = upBrakeRelease; //value to remove brake
     rampApertureUpProfile[i].startPosition = uDriveCommonBlockEEP.stEEPDriveCommonBlock.lowerStoppingPos_A101;
+#ifdef MOTOR_750W_BD
+    rampApertureUpProfile[i].endPosition = (uDriveCommonBlockEEP.stEEPDriveCommonBlock.apertureHeightPos_A130 + 300);//APERPOS_OFFSET);      //20160906 bug_No.98
+#else
     rampApertureUpProfile[i].endPosition = (uDriveCommonBlockEEP.stEEPDriveCommonBlock.apertureHeightPos_A130 + 200);//APERPOS_OFFSET);
-    
+#endif
+   
     rampApertureUpProfile[i].startSpeed = RAMP_START_SPEED;
     rampApertureUpProfile[i].endSpeed = uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.s1Up_A522;
     //__builtin_divud(((DWORD)uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.jogSpeed_A551 * uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.ratedSpeed_A546),100);//435
@@ -1347,7 +1352,9 @@ void __attribute__((interrupt, no_auto_psv)) _T4Interrupt (void)//10ms
 	//	Commented if statement to handle "offset at upper & lower limit"
 	//	Now executeRampState() will be called every 10mS
 	//  Reopen the logic as rising time, falling time operates five time faster than the configured value - YG - NOV 15
-    if(++ms10Cnt >= RAMP_GENERATOR_PERIOD_CNT)//50ms
+    
+//    if(++ms10Cnt >= RAMP_GENERATOR_PERIOD_CNT)//50ms
+    if(++ms10Cnt >= 3)//30ms    //20160907  bug_No.107
     {
         ms10Cnt = 0;
         checkRampCommand();
@@ -1452,7 +1459,7 @@ void __attribute__ ((interrupt, no_auto_psv)) _INT0Interrupt(void)
         //if installation was in progress then reset shutter positions
         if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveInstallation)
         {
-//            uDriveCommonBlockEEP.stEEPDriveCommonBlock.upperStoppingPos_A100 = 0; 
+//            uDriveCommonBlockEEP.stEEPDriveCommonBlock.upperStoppingPos_A100 = 0;   //bug_NO.43
 //            uDriveCommonBlockEEP.stEEPDriveCommonBlock.lowerStoppingPos_A101 = 0; 
 //            uDriveCommonBlockEEP.stEEPDriveCommonBlock.photoElecPosMonitor_A102 = 0;
             writeWORD(EEP_UPPER_STOPPING_POS, uDriveCommonBlockEEP.stEEPDriveCommonBlock.upperStoppingPos_A100); 
@@ -1562,6 +1569,8 @@ VOID checkPhotoElecObsLevel(BOOL sts)
     //photo electic sensor is normally closed, it is triggered when opened
     if(photoElecObsSensTrigrd)
     {
+        if(rampCurrentPosition < uDriveCommonBlockEEP.stEEPDriveCommonBlock.photoElecPosMonitor_A102)     //bug_No.78
+           uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.peObstacle = TRUE;   //bug_No.78
         //If system is in ready state then process photoelectric trigger
         if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveReady)
         {
@@ -1583,7 +1592,7 @@ VOID checkPhotoElecObsLevel(BOOL sts)
                            photElecSensorFault = TRUE;
                            
                            //set fault status
-                           uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.peObstacle = TRUE;
+                           //uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.peObstacle = TRUE;   //bug_No.78
                            inputFlags.value = OPEN_SHUTTER_JOG_50;
                            rampCurrentState = RAMP_START;
                        }
@@ -1618,13 +1627,13 @@ VOID microSwSensorTiggered(BOOL sts)
             stopShutter(); //stop shutter immediately
             //set mocro switch error flag
             uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.microSwitch = TRUE;
-            if(currentRampProfileNo == RAMP_GOING_DN_PROFILE)
+            if((currentRampProfileNo == RAMP_GOING_DN_PROFILE)&&(rampOutputStatus.shutterMoving))   //bug_No.84
             {
                 inputFlags.value = OPEN_SHUTTER_JOG_50;
                 rampCurrentState = RAMP_START;
             }
             // Increment micro switch sensor count - A080 
-			uDriveApplBlockEEP.stEEPDriveApplBlock.microSensorCounter_A080++; 
+			uDriveApplBlockEEP.stEEPDriveApplBlock.microSensorCounter_A080++;    //bug_NO.61
             // if count has exceeded limit value A603 
 			if(uDriveApplBlockEEP.stEEPDriveApplBlock.microSensorCounter_A080 >= 20)//uDriveApplBlockEEP.stEEPDriveApplBlock.microSensorLimValue_A603)
 			{
@@ -1887,7 +1896,7 @@ VOID checkRampCommand(VOID)
     
     if(inputFlags.bits.shutterStop)
     {
-        if(rampOutputStatus.shutterMoving || rampStatusFlags.rampOpenInProgress || rampStatusFlags.rampCloseInProgress)
+        if(rampOutputStatus.shutterMoving || rampStatusFlags.rampOpenInProgress || rampStatusFlags.rampCloseInProgress)    //bug_No.6?8?20?22?23
         {
             rampCurrentState = RAMP_STOP;
             rampStatusFlags.rampOpenInProgress = 0;
@@ -2204,7 +2213,13 @@ VOID runShutterToReqSpeed(VOID)
 //                    if(uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.shutterType_A537 == BEAD_SHUTTER)
 //                        rampStatusFlags.rampMaintainHoldingDuty = 0;
 //                    else
-                        rampStatusFlags.rampMaintainHoldingDuty = 1;
+//                        rampStatusFlags.rampMaintainHoldingDuty = 1;
+#ifdef  MOTOR_750W_BD
+                     rampStatusFlags.rampMaintainHoldingDuty = 0;   
+#endif                     
+#ifdef  MOTOR_750W_M1
+                     rampStatusFlags.rampMaintainHoldingDuty = 1;
+#endif
                     
                     refSpeed = SHUTTER_SPEED_MIN;
                     refiTotalCurrent = RAMP_STARTING_CURRENT_MIN;
@@ -2249,7 +2264,13 @@ VOID runShutterToReqSpeed(VOID)
 //            if(uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.shutterType_A537 == BEAD_SHUTTER)
 //                rampStatusFlags.rampMaintainHoldingDuty = 0;
 //            else
-                rampStatusFlags.rampMaintainHoldingDuty = 1;
+//                rampStatusFlags.rampMaintainHoldingDuty = 1;
+#ifdef  MOTOR_750W_BD
+               rampStatusFlags.rampMaintainHoldingDuty = 0;
+#endif
+#ifdef  MOTOR_750W_M1
+               rampStatusFlags.rampMaintainHoldingDuty = 1;
+#endif               
             
             refSpeed = SHUTTER_SPEED_MIN;
             refiTotalCurrent = RAMP_STARTING_CURRENT_MIN;
@@ -2840,6 +2861,7 @@ VOID stopShutter(VOID)
     //if current speed is greater than 200 rpm then apply decelaration
     //then apply DC injection, then mechanical brake     
     else if(
+             (applyBrake == FALSE)&&  //20160915REVERSEPROTECT
 				(
 					// Logic added for safety sensor and Up/ Down button press when shutter is moving, to go in respective apposite direction after achieving safe speed - YG NOV 15
 					//	Safety sensor is triggered
@@ -2890,7 +2912,8 @@ VOID stopShutter(VOID)
 		
         refiTotalCurrent = 0;
         rampStatusFlags.rampCurrentControlRequired = 0;        
-        refSpeed -= gs16UpDecelaration;
+        //refSpeed -= gs16UpDecelaration; //20160915
+        refSpeed -= 500; //20160915
         if(refSpeed < SHUTTER_SPEED_MIN_STOP)
         {
             refSpeed = SHUTTER_SPEED_MIN_STOP;
@@ -2924,7 +2947,8 @@ VOID stopShutter(VOID)
 			speedPIparms.qKi = I_gainForStop;
 		}
 		#endif
-		
+  	  if((requiredDirection == CCW)&&(currentDirection == CW)){applyBrake = TRUE;} //20160915REVERSEPROTECT
+      if((requiredDirection == CW)&&(currentDirection == CCW)){applyBrake = TRUE;} //20160915REVERSEPROTECT	
     }
     else
     {
@@ -3040,7 +3064,13 @@ VOID executeRampProfile(VOID)
 //                    if(uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.shutterType_A537 == BEAD_SHUTTER)
 //                        rampStatusFlags.rampMaintainHoldingDuty = 0;
 //                    else
-                        rampStatusFlags.rampMaintainHoldingDuty = 1;
+//                        rampStatusFlags.rampMaintainHoldingDuty = 1;
+#ifdef  MOTOR_750W_BD
+               rampStatusFlags.rampMaintainHoldingDuty = 0;
+#endif
+#ifdef  MOTOR_750W_M1
+               rampStatusFlags.rampMaintainHoldingDuty = 1;
+#endif                        
                     refSpeed = SHUTTER_SPEED_MIN;
                     refiTotalCurrent = RAMP_STARTING_CURRENT_MIN;
                     #if (STARTUP_IN_CURRENT_MODE == 1)
@@ -3063,7 +3093,13 @@ VOID executeRampProfile(VOID)
 //            if(uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.shutterType_A537 == BEAD_SHUTTER)
 //                rampStatusFlags.rampMaintainHoldingDuty = 0;
 //            else
-                rampStatusFlags.rampMaintainHoldingDuty = 1;
+//                rampStatusFlags.rampMaintainHoldingDuty = 1;
+#ifdef  MOTOR_750W_BD
+               rampStatusFlags.rampMaintainHoldingDuty = 0;
+#endif
+#ifdef  MOTOR_750W_M1
+               rampStatusFlags.rampMaintainHoldingDuty = 1;
+#endif            
             refSpeed = SHUTTER_SPEED_MIN;
             refiTotalCurrent = RAMP_STARTING_CURRENT_MIN;
             #if (STARTUP_IN_CURRENT_MODE == 1)

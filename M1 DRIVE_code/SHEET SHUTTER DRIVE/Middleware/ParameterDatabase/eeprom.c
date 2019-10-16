@@ -35,7 +35,7 @@
 #define USE_EEPROM_PARAM_MAP TRUE
 #define EEPROM_WRITE_RETRY_CNT  3
 
-UINT32 SysCntCopy = 0;
+UINT32 SysCntCopy = 0;   //bug_NO.59
 
 /* Indexes of Drive EEPROM parameters */
 enum _DriveEEPROMData
@@ -719,8 +719,13 @@ BOOL initMotorControlBlock(VOID)
     }while((storedCRC != calculatedCRC) && (++retryCnt < EEPROM_WRITE_RETRY_CNT));
     
     if(calculatedCRC != storedCRC)
-    {
-        uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock = uEEP_M1DriveMotorCtrlBlockDefault.stEEPDriveMotorCtrlBlock;
+    {        
+#ifdef MOTOR_750W_BD
+       uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock = uEEP_BeadDriveMotorCtrlBlockDefault.stEEPDriveMotorCtrlBlock;
+#endif
+#ifdef MOTOR_750W_M1
+       uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock = uEEP_M1DriveMotorCtrlBlockDefault.stEEPDriveMotorCtrlBlock;
+#endif        
         //writeBlock(EEP_MOTOR_CTRL_BLOCK_START, uEEPDriveMotorCtrlBlock.val, DRIVE_MOTOR_BLOCK_DAT_LENGTH);
         wrBlUsingWriteByte(EEP_MOTOR_CTRL_BLOCK_START, uEEPDriveMotorCtrlBlock.val, DRIVE_MOTOR_BLOCK_DAT_LENGTH);
         updateMotorBlockCrc();
@@ -1395,12 +1400,18 @@ VOID resetAllParameters(VOID)
 //    if(uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.shutterType_A537 == BEAD_SHUTTER)
 //        uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock = uEEP_BeadDriveMotorCtrlBlockDefault.stEEPDriveMotorCtrlBlock;
 //    else if(uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.shutterType_A537 == M1_SHUTTER)
-        uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock = uEEP_M1DriveMotorCtrlBlockDefault.stEEPDriveMotorCtrlBlock;
+//        uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock = uEEP_M1DriveMotorCtrlBlockDefault.stEEPDriveMotorCtrlBlock;
+#ifdef MOTOR_750W_BD
+         uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock = uEEP_BeadDriveMotorCtrlBlockDefault.stEEPDriveMotorCtrlBlock;
+#endif
+#ifdef MOTOR_750W_M1
+         uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock = uEEP_M1DriveMotorCtrlBlockDefault.stEEPDriveMotorCtrlBlock;
+#endif    
     
     uDriveApplBlockEEP.stEEPDriveApplBlock.initialValSetting_A021 = 0;
-    SysCntCopy = uDriveApplBlockEEP.stEEPDriveApplBlock.operationCount_A600;
+    SysCntCopy = uDriveApplBlockEEP.stEEPDriveApplBlock.operationCount_A600;    //bug_NO.59
     uDriveApplBlockEEP.stEEPDriveApplBlock = uDriveApplBlockEEPDefault.stEEPDriveApplBlock;
-    uDriveApplBlockEEP.stEEPDriveApplBlock.operationCount_A600 = SysCntCopy;
+    uDriveApplBlockEEP.stEEPDriveApplBlock.operationCount_A600 = SysCntCopy;   //bug_NO.59
     uDriveCommonBlockEEP.stEEPDriveCommonBlock = uDriveCommonBlockEEPDefault.stEEPDriveCommonBlock;
     
     //INTCON2bits.GIE = 0; //Disable all interrupts
@@ -1414,8 +1425,12 @@ VOID resetAllParameters(VOID)
     wrBlUsingWriteByte(EEP_COMMON_BLOCK_START, uDriveCommonBlockEEP.val, COMMON_BLOCK_DAT_LENGTH);
     updateCommonBlockCrc();
     //INTCON2bits.GIE = 1; //Enable all interrupts
-	
+#ifdef MOTOR_750W_BD
+    currShutterType = BEAD_SHUTTER;//uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.shutterType_A537;
+#endif
+#ifdef MOTOR_750W_M1
 	currShutterType = M1_SHUTTER;//uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.shutterType_A537;
+#endif	
 
 	gucInstallationCalledFrom = 2;
     checkShutterInstallation();
