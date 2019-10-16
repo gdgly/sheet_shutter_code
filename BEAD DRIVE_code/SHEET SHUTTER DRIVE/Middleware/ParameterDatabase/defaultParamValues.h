@@ -15,7 +15,7 @@ CONST _EEPDriveMotorCtrlBlock uEEP_BeadDriveMotorCtrlBlockDefault =
 		250,//500,    //UINT16 fallChangeGearPos1_A106; 
 		150,//600,    //UINT16 fallChangeGearPos2_A107; 
 		100,//0,      //UINT16 fallChangeGearPos3_A108;         
-		50,      //UINT8 	shtrRevOperMinLimit_A110;         
+		20,//50,      //UINT8 	shtrRevOperMinLimit_A110;20160915         
 		0,      //UINT16 	PWMFreqMotorCtrl_A500; 
 		0,      //UINT8 	startupDutyCycle_A501; 
 		0,      //UINT16 	maxStartupTimeLim_A504; 

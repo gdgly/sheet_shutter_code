@@ -2861,6 +2861,7 @@ VOID stopShutter(VOID)
     //if current speed is greater than 200 rpm then apply decelaration
     //then apply DC injection, then mechanical brake     
     else if(
+             (applyBrake == FALSE)&&  //20160915REVERSEPROTECT
 				(
 					// Logic added for safety sensor and Up/ Down button press when shutter is moving, to go in respective apposite direction after achieving safe speed - YG NOV 15
 					//	Safety sensor is triggered
@@ -2911,7 +2912,8 @@ VOID stopShutter(VOID)
 		
         refiTotalCurrent = 0;
         rampStatusFlags.rampCurrentControlRequired = 0;        
-        refSpeed -= gs16UpDecelaration;
+        //refSpeed -= gs16UpDecelaration;20160915
+        refSpeed -= 500; //20160915
         if(refSpeed < SHUTTER_SPEED_MIN_STOP)
         {
             refSpeed = SHUTTER_SPEED_MIN_STOP;
@@ -2945,7 +2947,8 @@ VOID stopShutter(VOID)
 			speedPIparms.qKi = I_gainForStop;
 		}
 		#endif
-		
+	  if((requiredDirection == CCW)&&(currentDirection == CW)){applyBrake = TRUE;} //20160915REVERSEPROTECT
+      if((requiredDirection == CW)&&(currentDirection == CCW)){applyBrake = TRUE;} //20160915REVERSEPROTECT	
     }
     else
     {
