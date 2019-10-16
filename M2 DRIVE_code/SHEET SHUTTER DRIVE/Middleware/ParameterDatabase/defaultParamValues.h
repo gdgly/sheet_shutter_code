@@ -103,11 +103,11 @@ CONST _EEPDriveMotorCtrlBlock uEEP_M2DriveMotorCtrlBlockDefault =
         //20160805  AOYAGI
 #endif
 #if 1
-		600,//850,    //UINT16 riseChangeGearPos1_A103; //20160915
-		300,//450,    //UINT16 riseChangeGearPos2_A104; //20160915
+		900,//600,//850,    //UINT16 riseChangeGearPos1_A103; //20160915  //add 20161018
+		400,//300,//450,    //UINT16 riseChangeGearPos2_A104; //20160915  //add 20161018
 		200,      //UINT16 riseChangeGearPos3_A105;
-		600,//1150,    //UINT16 fallChangeGearPos1_A106; //20160915
-		300,//450,    //UINT16 fallChangeGearPos2_A107; //20160915
+		900,//600,//1150,    //UINT16 fallChangeGearPos1_A106; //20160915  //add 20161018
+		400,//300,//450,    //UINT16 fallChangeGearPos2_A107; //20160915   //add 20161018
 		200,      //UINT16 fallChangeGearPos3_A108;
 		20,//175,      //UINT8 	shtrRevOperMinLimit_A110;
         //20160824 AOYAGI_CQ ??
