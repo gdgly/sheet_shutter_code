@@ -578,7 +578,7 @@ VOID initApertureProfileData(VOID)
     i = 0;
     rampApertureUpProfile[i].rampGenFlags = upBrakeRelease; //value to remove brake
     rampApertureUpProfile[i].startPosition = uDriveCommonBlockEEP.stEEPDriveCommonBlock.lowerStoppingPos_A101;
-    rampApertureUpProfile[i].endPosition = (uDriveCommonBlockEEP.stEEPDriveCommonBlock.apertureHeightPos_A130 + 350);//APERPOS_OFFSET);
+    rampApertureUpProfile[i].endPosition = (uDriveCommonBlockEEP.stEEPDriveCommonBlock.apertureHeightPos_A130 + 550);//APERPOS_OFFSET);   //bug_No.98
     
     rampApertureUpProfile[i].startSpeed = RAMP_START_SPEED;
     rampApertureUpProfile[i].endSpeed = uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.s1Up_A522;
@@ -1535,6 +1535,9 @@ VOID checkPhotoElecObsLevel(BOOL sts)
                            //uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.peObstacle = TRUE;   //bug_No.78
                            inputFlags.value = OPEN_SHUTTER_JOG_50;
                            rampCurrentState = RAMP_START;
+                          //2016/09/03 PHOTOELECTRIC_SENSOR 2nd input after not reverce
+                          uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.peSensorStatus = photoElecObsSensTrigrd;   //bug_No.97
+                           
                        }
                    }
             }

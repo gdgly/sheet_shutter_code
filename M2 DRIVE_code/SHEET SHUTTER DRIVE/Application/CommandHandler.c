@@ -525,6 +525,7 @@ VOID commandHandler(VOID)
                             if((!uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterUpperLimit)&&(inputFlags.value!=OPEN_SHUTTER))
                             {
                                 inputFlags.value = OPEN_SHUTTER;
+                                rampStatusFlags.rampOpenInProgress = 0;   //20160906 bug_No.87
                                 TIME_CMD_open_shutter = 100;
                                 //if shutter is moving then calculate min distance travel required.
                                 if(rampOutputStatus.shutterMoving)
@@ -591,6 +592,9 @@ VOID commandHandler(VOID)
                     break;
                 case open_shutter_aperture_height:
                     //If shutter is at upper limit then do not process command
+                    if((TIME_CMD_open_shutter==0)&&(TIME_CMD_close_shutter==0))
+                    {
+                        FLAG_CMD_open_shutter=0;                    
                     if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveReady)
                     {
                         //if(!uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterApertureHeight)
@@ -600,6 +604,7 @@ VOID commandHandler(VOID)
                             if(FLAG_StartApertureCorrection==1){FLAG_StartApertureCorrection++;inputFlags.value = OPEN_SHUTTER; }   //bug_No.12
                             else if(FLAG_StartApertureCorrection>1){FLAG_StartApertureCorrection=0;inputFlags.value = OPEN_SHUTTER_APERTURE;}
                             else inputFlags.value = OPEN_SHUTTER_APERTURE; 
+                            TIME_CMD_open_shutter = 100;
                             bUpApertureCmdRecd = TRUE;
                             //if shutter is moving then calculate min distance travel required.
                             if(rampOutputStatus.shutterMoving)
@@ -616,7 +621,11 @@ VOID commandHandler(VOID)
                     {
                         status = nack;
                     }
-
+                    }
+                    else {
+                        FLAG_CMD_open_shutter=1;
+                        CMD_open_shutter=open_shutter;
+                    }
                     break;
                 case close_shutter:
                     FLAG_CMD_open_shutter=0;
@@ -634,7 +643,7 @@ VOID commandHandler(VOID)
                             if(!uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterLowerLimit)
                             {
                                 inputFlags.value = CLOSE_SHUTTER;
-                                TIME_CMD_close_shutter=100;
+                                TIME_CMD_close_shutter=160;   //20160907  bug_No.107
                                 //if shutter is moving then calculate min distance travel required.
                                 if(rampOutputStatus.shutterMoving)
                                 {
@@ -697,6 +706,9 @@ VOID commandHandler(VOID)
                     break;
                 case close_shutter_aperture_height:
                     //If shutter is at upper limit then do not process command
+                    FLAG_CMD_open_shutter=0;
+                    if((TIME_CMD_open_shutter==0)&&(TIME_CMD_close_shutter==0))
+                    {                    
                     if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveReady)
                     {
 						//instruct function for to not scan PE sensor - YG - Nov 2015
@@ -708,6 +720,7 @@ VOID commandHandler(VOID)
                             if(!uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterLowerLimit)
                             {
                                 inputFlags.value = CLOSE_SHUTTER_APERTURE;
+                                TIME_CMD_close_shutter=160;   //20160907  bug_No.107                                
                                 bDownApertureCmdRecd = TRUE;
                                 //if shutter is moving then calculate min distance travel required.
                                 if(rampOutputStatus.shutterMoving)
@@ -729,6 +742,8 @@ VOID commandHandler(VOID)
                     {
                         status = nack;
                     }
+                    }
+                    else status =no_reply_reqd;                    
                     break;
 
                 case close_shutter_ignoring_sensors:
