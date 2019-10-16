@@ -100,7 +100,9 @@ WORD phaseValue;
 
 #define POWER_FAIL_FUNCTIONALITY	CONSIDER_AC_LINE_VOLTAGE
 
-#define CONSIDER_AS_POWER_FAIL		85//IME //90
+// 2016/11/28 after power fail current Position mis. save
+//#define CONSIDER_AS_POWER_FAIL		85//IME //90
+#define CONSIDER_AS_POWER_FAIL		150
 //	5VAC offset voltage from POWER_FAIL voltage level to consider power is restored
 #define	OFFSET_VOLTAGE				5
 #define MINIMUM_WORKING_VOLTAGE		(CONSIDER_AS_POWER_FAIL + OFFSET_VOLTAGE)
@@ -244,11 +246,7 @@ VOID executePowerFailRoutine(VOID)
 	//INTCON2bits.GIE = 0; //Disable all interrupts
 	forceStopShutter();
 
-	// 2016/11/16 When Down , Missing Save Origin Position.
-	if(hallCounts_bak==0x7FFF)
-		uDriveCommonBlockEEP.stEEPDriveCommonBlock.currentValueMonitor_A129 = hallCounts;
-	else
-		uDriveCommonBlockEEP.stEEPDriveCommonBlock.currentValueMonitor_A129 = hallCounts_bak;
+	uDriveCommonBlockEEP.stEEPDriveCommonBlock.currentValueMonitor_A129 = hallCounts;
 	//if installation was in progress then reset shutter positions
 	if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveInstallation)
 	{

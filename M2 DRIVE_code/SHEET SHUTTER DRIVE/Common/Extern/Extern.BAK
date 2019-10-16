@@ -1,6 +1,6 @@
 /********************************************************************************
 * FileName: Extern.h
-* Description:  
+* Description:
 * This header file declares common variables used by different modules.
 *********************************************************************************/
 
@@ -15,9 +15,9 @@
 
 /****************************************************************************
  *  Modification History
- *  
- *  Date                  Name          Comments 
- *  09/04/2014            iGate          Initial Creation                                                               
+ *
+ *  Date                  Name          Comments
+ *  09/04/2014            iGate          Initial Creation
 *****************************************************************************/
 #include "./Common/Typedefs/Typedefs.h"
 
@@ -34,7 +34,7 @@ EXTERN SHORT phaseIncFlg;
 EXTERN WORD hallValue;
 EXTERN SHORT sector;
 EXTERN CHAR sectorTable[];
-EXTERN CONST SHORT phaseValues[];   
+EXTERN CONST SHORT phaseValues[];
 EXTERN SHORT phaseOffsetCW;
 EXTERN SHORT phaseOffsetCCW;
 EXTERN SHORT adcTrigger;
@@ -52,14 +52,14 @@ EXTERN SHORT rampCurrentPosition;
 EXTERN SHORT rampCurrentSpeed;
 EXTERN SHORT rampCurrentState;
 
-EXTERN BOOL emergencySensorTrigrd; 	
-EXTERN BOOL microSwSensorTrigrd; 	
-EXTERN BOOL airSwitchTrigrd; 		
-EXTERN BOOL wrapAroundSensor; 		
-EXTERN BOOL photoElecObsSensTrigrd; 
-EXTERN BOOL tempSensTrigrd; 
+EXTERN BOOL emergencySensorTrigrd;
+EXTERN BOOL microSwSensorTrigrd;
+EXTERN BOOL airSwitchTrigrd;
+EXTERN BOOL wrapAroundSensor;
+EXTERN BOOL photoElecObsSensTrigrd;
+EXTERN BOOL tempSensTrigrd;
 EXTERN BOOL fourPtLmtSwtchDetected;
-EXTERN BOOL originSensorDetected;       
+EXTERN BOOL originSensorDetected;
 EXTERN BOOL powerFailSensorDetected;
 EXTERN BOOL updateSenStsCmd;
 EXTERN WORD txResetCount;

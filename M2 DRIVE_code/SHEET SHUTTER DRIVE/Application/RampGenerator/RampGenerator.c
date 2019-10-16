@@ -580,7 +580,8 @@ VOID initApertureProfileData(VOID)
     i = 0;
     rampApertureUpProfile[i].rampGenFlags = upBrakeRelease; //value to remove brake
     rampApertureUpProfile[i].startPosition = uDriveCommonBlockEEP.stEEPDriveCommonBlock.lowerStoppingPos_A101;
-    rampApertureUpProfile[i].endPosition = (uDriveCommonBlockEEP.stEEPDriveCommonBlock.apertureHeightPos_A130 + 550);//APERPOS_OFFSET);   //bug_No.98
+    rampApertureUpProfile[i].endPosition = (uDriveCommonBlockEEP.stEEPDriveCommonBlock.apertureHeightPos_A130 + 900);//APERPOS_OFFSET);   //bug_No.98 //20161130add
+//  rampApertureUpProfile[i].endPosition = (uDriveCommonBlockEEP.stEEPDriveCommonBlock.apertureHeightPos_A130 + 550);//APERPOS_OFFSET);   //bug_No.98
 
     rampApertureUpProfile[i].startSpeed = RAMP_START_SPEED;
     rampApertureUpProfile[i].endSpeed = uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.s1Up_A522;
@@ -599,7 +600,8 @@ VOID initApertureProfileData(VOID)
     rampApertureUpProfile[i].startPosition = rampApertureUpProfile[i-1].endPosition;
     rampApertureUpProfile[i].endPosition = uDriveCommonBlockEEP.stEEPDriveCommonBlock.apertureHeightPos_A130;
     rampApertureUpProfile[i].startSpeed = rampApertureUpProfile[i-1].endSpeed;
-    rampApertureUpProfile[i].endSpeed = SHUTTER_SPEED_MIN_STOP;
+    rampApertureUpProfile[i].endSpeed = 600; //20161130 add
+//  rampApertureUpProfile[i].endSpeed = SHUTTER_SPEED_MIN_STOP;
     rampApertureUpProfile[i].speedChangeRate = gs16UpDecelaration;
     //Initialize Aperture down going profile
     i = 0;
@@ -1488,8 +1490,11 @@ VOID calculateDrift(BOOL sts)
                         - uDriveCommonBlockEEP.stEEPDriveCommonBlock.originSensorPosMonitor_A128;
                     rampStatusFlags.rampDriftCalculated = 1;
 */
-					hallCounts_bak = hallCounts;	// 2016/11/16 When Down , Missing Save Origin Position.
-                    hallCounts = uDriveCommonBlockEEP.stEEPDriveCommonBlock.originSensorPosMonitor_A128;
+					if(hallCounts_bak==0x7FFF)
+					{
+						hallCounts_bak = hallCounts;	// 2016/11/16 When Down , Missing Save Origin Position.
+                    	hallCounts = uDriveCommonBlockEEP.stEEPDriveCommonBlock.originSensorPosMonitor_A128;
+                    }
                 //}
             }
         }
