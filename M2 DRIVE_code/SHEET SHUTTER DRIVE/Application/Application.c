@@ -139,7 +139,8 @@ UINT16 TIME_CMD_open_shutter=0;
 UINT16 TIME_CMD_close_shutter=0;
 UINT8  FLAG_CMD_open_shutter=0;
 UINT8  CMD_open_shutter=0;
-
+UINT8  FLAG_StartApertureCorrection = 0;   //bug_No.12
+UINT8  FLAG_open_shutter_one = 0;
 /******************************************************************************
  * initApplication
  *
@@ -804,7 +805,8 @@ VOID updateSytemCounters(VOID)
 					if((uDriveApplBlockEEP.stEEPDriveApplBlock.correctedFreqAperture_A126 - 1) <= uDriveApplBlockEEP.stEEPDriveApplBlock.apertureHeightOperCount_A604)
 					{
 						//	Added to handle aperture correction when operation count is incremented at upper limit - Jan 2016
-						lsbStartApertureCorrection = TRUE;
+						//lsbStartApertureCorrection = TRUE;
+                        FLAG_StartApertureCorrection= 1;  //bug_No.12
 						//	Removed to handle aperture correction when operation count is incremented at upper limit - Jan 2016
 						/*
                         uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveReady = FALSE;

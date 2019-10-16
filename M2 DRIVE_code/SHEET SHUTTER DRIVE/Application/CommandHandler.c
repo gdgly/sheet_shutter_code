@@ -515,7 +515,7 @@ VOID commandHandler(VOID)
 
                         if(faultTrgFlag == FALSE)
                         {
-                            if(!uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterUpperLimit)
+                            if((!uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterUpperLimit)&&(inputFlags.value!=OPEN_SHUTTER))
                             {
                                 inputFlags.value = OPEN_SHUTTER;
                                 TIME_CMD_open_shutter = 100;
@@ -587,10 +587,12 @@ VOID commandHandler(VOID)
                     if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveReady)
                     {
                         //if(!uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterApertureHeight)
-                            if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterLowerLimit ||
-                           uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterBetweenLowlmtAphgt) 
+                            if(((uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterLowerLimit ||
+                           uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterBetweenLowlmtAphgt))&&(inputFlags.value!=OPEN_SHUTTER_APERTURE)) 
                         {
-                            inputFlags.value = OPEN_SHUTTER_APERTURE;
+                            if(FLAG_StartApertureCorrection==1){FLAG_StartApertureCorrection++;inputFlags.value = OPEN_SHUTTER; }   //bug_No.12
+                            else if(FLAG_StartApertureCorrection>1){FLAG_StartApertureCorrection=0;inputFlags.value = OPEN_SHUTTER_APERTURE;}
+                            else inputFlags.value = OPEN_SHUTTER_APERTURE; 
                             bUpApertureCmdRecd = TRUE;
                             //if shutter is moving then calculate min distance travel required.
                             if(rampOutputStatus.shutterMoving)
@@ -793,6 +795,14 @@ VOID commandHandler(VOID)
                             {
                                 parameter  = drive_fw_version;
                             }
+                           if((paramIndex == 605)&&(FLAG_StartApertureCorrection>0))
+                            {
+                               if((parameter&0x00000040)==0x00000040)
+                               {
+                                   parameter=parameter&0xFFFFFFBF;
+                                   parameter=parameter|0x00000080;
+                               }
+                            }                            
                             transmitParameter(parameter, paramIndex, byteCount);
                         }
 

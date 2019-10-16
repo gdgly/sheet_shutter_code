@@ -208,7 +208,7 @@ CONST _EEPDriveApplBlock uDriveApplBlockEEPDefault =
 #if 0
 		10,    //UINT8 	overrunProtection_A112;
 #else
-		20,//50,    //UINT8 	overrunProtection_A112;
+		50,//20,//50,    //UINT8 	overrunProtection_A112;
 #endif
 		0,      //UINT8 	resetToDefaultValues_A120;
 		0,      //UINT8 	powerUpCalib_A125;
