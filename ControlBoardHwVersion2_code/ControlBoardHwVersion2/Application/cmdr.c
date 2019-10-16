@@ -409,6 +409,18 @@ enum commandResponseType formCMDrCommandPacket (void)
 	return leCommandResponseType;
 }
 
+void disable_move_cyw()
+{
+	if(gstControlApplicationFault.bits.operationRestrictionTimer == 1)
+	{
+	lstCMDrInnerTaskComm.commandToDriveBoard.bits.openShutter = 0;
+	lstCMDrInnerTaskComm.commandToDriveBoard.bits.openShutterJog = 0;
+	lstCMDrInnerTaskComm.commandToDriveBoard.bits.openShutterApperture = 0;
+	lstCMDrInnerTaskComm.commandToDriveBoard.bits.closeShutter = 0;
+	lstCMDrInnerTaskComm.commandToDriveBoard.bits.closeShutterJog = 0;
+	lstCMDrInnerTaskComm.commandToDriveBoard.bits.closeShutterApperture = 0;
+	}
+}
 
 /******************************************************************************
  * handleDriveCmdResp
@@ -479,6 +491,8 @@ void handleDriveCmdResp(void)
 				//
 				// Form packet and send command
 				//
+
+				disable_move_cyw();
 				sleCommandResponseType = formCMDrCommandPacket();
 			}
 			else

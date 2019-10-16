@@ -426,6 +426,9 @@ void monitorResetParam(void) {
 		//Reset the CSH Reset Parameter
 		INIT_VALUE_PARAM = 0;
 		writeParameterUpdateInDB(INIT_VALUE_PARAM_IDX, &INIT_VALUE_PARAM);
+
+		//paramLoadDefault(A600OPRCNT);
+		//writeParameterUpdateInDB(OPRCNTRES_PARAM_IDX, &OPRCNTRES_PARAM);
 	}
 
 	if (OPRCNTRES_PARAM) {
