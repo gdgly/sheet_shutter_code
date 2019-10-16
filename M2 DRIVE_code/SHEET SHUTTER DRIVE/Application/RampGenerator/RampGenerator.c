@@ -57,7 +57,7 @@
 #define RAMP_STARTING_CURRENT_STEP  500         //Current change step is 200mA
 #define RAMP_STARTING_SPEED_MAX     3600        //Limit starting speed to 3600rpm
 
-#define MECHANICAL_LOCK_ACTIVATION_DELAY    100//500//1000    //Time delay required to energize mechanical lock
+#define MECHANICAL_LOCK_ACTIVATION_DELAY    50//100//500//1000    //Time delay required to energize mechanical lock 20160915
 #define MECHANICAL_LOCK_DEACTIVATION_DELAY  50      //Time delay required to de-energize mechanical lock
 #define MECHANICAL_LOCK_ACTIVATION_DELAY_CNT    (MECHANICAL_LOCK_ACTIVATION_DELAY/RAMP_GENERATOR_TIME_PERIOD)//10
 #define MECHANICAL_LOCK_DEACTIVATION_DELAY_CNT  (MECHANICAL_LOCK_DEACTIVATION_DELAY/RAMP_GENERATOR_TIME_PERIOD)//5
@@ -2788,24 +2788,28 @@ VOID stopShutter(VOID)
     //if current speed is greater than 200 rpm then apply descelaration
     //then apply DC injection, then mechanical brake     
     else if(
+             (applyBrake == FALSE)&&  //20160915REVERSEPROTECT
 				(
 					// Logic added for safety sensor and Up/ Down button press when shutter is moving, to go in respective apposite direction after achieving safe speed - YG NOV 15
 					//	Safety sensor is triggered
 				    (
 						!gui8StopKeyPressed && 
 						(
-							(rampCurrentSpeed > SHUTTER_SPEED_MIN_STOP) ||
-							(measuredSpeed > MIN_SPEED_BEFORE_REVERSE_ACTION)
+							//(rampCurrentSpeed > SHUTTER_SPEED_MIN_STOP) || //20160915
+                            (rampCurrentSpeed > 500) ||
+							//(measuredSpeed > MIN_SPEED_BEFORE_REVERSE_ACTION) //20160915
+                            (rampCurrentSpeed > 500) //20160915
 						)
 					) ||		
 					//	Stop key is pressed
 					(
 						(gui8StopKeyPressed) &&		
 						(
-							(rampCurrentSpeed > SHUTTER_SPEED_MIN_STOP) || 
+							(rampCurrentSpeed > 500) ||   //20160915SHUTTER_SPEED_MIN_STOP
 							( 
 								((measuredSpeed > GO_UP_MIN_SPEED_BEFORE_APPLYING_BRAKE) && (requiredDirection == CW)) ||		//	measured speed is greater than 300 while going up 
-								((measuredSpeed > GO_DOWN_MIN_SPEED_BEFORE_APPLYING_BRAKE) && (requiredDirection == CCW))		//	measured speed is greater than 450 while going down
+								//((measuredSpeed > GO_DOWN_MIN_SPEED_BEFORE_APPLYING_BRAKE) && (requiredDirection == CCW))		//	measured speed is greater than 450 while 20160915
+                                ((rampCurrentSpeed > 500) && (requiredDirection == CCW)) //20160915
 							)
 						) 
 					)
@@ -2838,7 +2842,8 @@ VOID stopShutter(VOID)
 		
         refiTotalCurrent = 0;
         rampStatusFlags.rampCurrentControlRequired = 0;        
-        refSpeed -= gs16UpDecelaration;
+        //refSpeed -= gs16UpDecelaration;20160915
+        refSpeed -= 400; //20160915
         if(refSpeed < SHUTTER_SPEED_MIN_STOP)
         {
             refSpeed = SHUTTER_SPEED_MIN_STOP;
@@ -2864,7 +2869,7 @@ VOID stopShutter(VOID)
 
 		}
 			//	dynamically increment i gain to speed up stop action
-			I_gainForStop = I_gainForStop + 200;
+			I_gainForStop = I_gainForStop + 250; //20160915 200
 			if (I_gainForStop >= lu16KiIncrementMaxValue)
 			{
 				I_gainForStop = lu16KiIncrementMaxValue;
@@ -2872,6 +2877,8 @@ VOID stopShutter(VOID)
 			speedPIparms.qKi = I_gainForStop;
 		}
 		#endif
+       if((requiredDirection == CCW)&&(currentDirection == CW)){applyBrake = TRUE;} //20160915REVERSEPROTECT
+       if((requiredDirection == CW)&&(currentDirection == CCW)){applyBrake = TRUE;} //20160915REVERSEPROTECT
 		
     }
     else

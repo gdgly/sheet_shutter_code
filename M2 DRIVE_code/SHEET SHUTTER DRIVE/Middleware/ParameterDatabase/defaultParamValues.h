@@ -103,13 +103,13 @@ CONST _EEPDriveMotorCtrlBlock uEEP_M2DriveMotorCtrlBlockDefault =
         //20160805  AOYAGI
 #endif
 #if 1
-		850,    //UINT16 riseChangeGearPos1_A103;
-		450,    //UINT16 riseChangeGearPos2_A104;
+		650,//850,    //UINT16 riseChangeGearPos1_A103; //20160915
+		400,//450,    //UINT16 riseChangeGearPos2_A104; //20160915
 		200,      //UINT16 riseChangeGearPos3_A105;
-		1150,    //UINT16 fallChangeGearPos1_A106;
-		450,    //UINT16 fallChangeGearPos2_A107;
+		650,//1150,    //UINT16 fallChangeGearPos1_A106; //20160915
+		400,//450,    //UINT16 fallChangeGearPos2_A107; //20160915
 		200,      //UINT16 fallChangeGearPos3_A108;
-		175,      //UINT8 	shtrRevOperMinLimit_A110;
+		20,//175,      //UINT8 	shtrRevOperMinLimit_A110;
         //20160824 AOYAGI_CQ ??
 #endif          
         0,      //UINT16 	PWMFreqMotorCtrl_A500;
@@ -131,9 +131,9 @@ CONST _EEPDriveMotorCtrlBlock uEEP_M2DriveMotorCtrlBlockDefault =
 #endif        
 #if 1
 		100,      //UINT16	CW_PI_KP_A512;   //20160824 AOYAGI_CQ ??
-		20,      //UINT8	CW_PI_KI_A513;
-		200,      //UINT16	CCW_PI_KP_A514;
-		12,      //UINT8	CCW_PI_KI_A515;        
+		70,//20,      //UINT8	CW_PI_KI_A513; 20160915
+		100,//200,      //UINT16	CCW_PI_KP_A514; 20160915
+		70,//12,      //UINT8	CCW_PI_KI_A515; 20160915        
 #endif 
 		0,      //UINT16	outputFreq_A516;
 #if 0
@@ -147,13 +147,13 @@ CONST _EEPDriveMotorCtrlBlock uEEP_M2DriveMotorCtrlBlockDefault =
 
 		500,      //UINT32	accel1Up_A520;
 		600,      //UINT32	decel1Up_A521;
-		2500,   //UINT16  s1Up_A522;
-		400,    //UINT16  s2Up_A523;
-		200,//200,      //UINT16  s3Up_A524;
+		2450,//2500,   //UINT16  s1Up_A522;20160915
+		500,//400,    //UINT16  s2Up_A523;20160915
+		300,//200,//200,      //UINT16  s3Up_A524;20160915
 		3,      //UINT8	upStepCount_A525;
 		0,      //UINT32	accel1Down_A526;
 		0,      //UINT32	decel1Down_A527;
-		2500,   //UINT16  s1Down_A528;
+		2450,//2500,   //UINT16  s1Down_A528;20160915
 		400,    //UINT16  s2Down_A529;
 		200,//200,      //UINT16  s3Down_A530;
 		3,      //UINT8 	downStepCount_A531;

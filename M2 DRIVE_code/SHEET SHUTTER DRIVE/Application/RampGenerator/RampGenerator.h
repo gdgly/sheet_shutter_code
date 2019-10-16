@@ -37,7 +37,7 @@
 #define SHUTTER_MOVING_UP 1
 #define SHUTTER_MOVING_DOWN 2
 
-#define RAMP_GENERATOR_TIME_PERIOD      10//50
+#define RAMP_GENERATOR_TIME_PERIOD      10//50 20160915
 
 #define MOTOR_RATED_TOP_SPEED   2900
 #define MOTOR_ZERO_SPEED        0
@@ -54,7 +54,7 @@
 #else
     #error Shutter type not defined
 #endif
-#define HOLDING_DUTY_INC    10//20//200
+#define HOLDING_DUTY_INC    40//10//20//200 20160915
 
 #define SHUTTER_SPEED_MIN       500//500//150
 #define SHUTTER_SPEED_MIN_STOP  200
