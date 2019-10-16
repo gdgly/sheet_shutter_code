@@ -1448,8 +1448,6 @@ VOID shutterInstallation(VOID)
                     //If enter buttun is pressed then set hall counts to zero and reset A100 position
                     if(shutterInstall.enterCmdRcvd)   
                     {
-//                       if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.originSensorStatus)   //20160909 bug_No.99
-//                       {
                             hallCounts = HALL_COUNTS_FOR_A100;                        
                             uDriveCommonBlockEEP.stEEPDriveCommonBlock.upperStoppingPos_A100 = hallCounts;     //bug_NO.43
                             writeWORD(EEP_UPPER_STOPPING_POS, uDriveCommonBlockEEP.stEEPDriveCommonBlock.upperStoppingPos_A100);
@@ -1463,7 +1461,6 @@ VOID shutterInstallation(VOID)
                             uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveInstallationStatus.bits.installA101 = TRUE;
                             //Set current installation state
                             shutterInstall.currentState = INSTALL_A101;   
-//                       }
                            
                     }
                     

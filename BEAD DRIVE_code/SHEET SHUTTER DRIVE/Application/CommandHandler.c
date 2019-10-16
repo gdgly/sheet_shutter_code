@@ -88,7 +88,7 @@
 #define EXPECTED_CRC_CLEAN_ERROR                0xB253     
 #define EXPECTED_CRC_APERTUREHEIGHT                0x7292 
 
-CONST UINT32 drive_fw_version = 0x00000200;  //bug_NO.64
+CONST UINT32 drive_fw_version = 0x00000300;  //bug_NO.64
 
 
 enum {
@@ -500,7 +500,14 @@ VOID commandHandler(VOID)
                 case confirm_sub_state_install:    						
                     if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveInstallation) 
                     {
-                        shutterInstall.enterCmdRcvd = TRUE;							
+                        if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveInstallationStatus.bits.installA100 == TRUE)    /*******20160914 bug_No.99      start*********/
+                        {
+                            if(originSensorSts)
+                               shutterInstall.enterCmdRcvd = TRUE;	
+                            else status = nack;
+                        }
+                        else                                                                                                        /*******20160914 bug_No.99      end*********/  
+                          shutterInstall.enterCmdRcvd = TRUE;
                     }
                     else 
                     {
