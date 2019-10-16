@@ -4,11 +4,9 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/F:/Source%20Code/bunka-s/bunka%20DriveBLDC750W/1500W_750W_FORTEST_20160928%20IGBT%20define%20IR_or_ROME%20R0.1/1500W_750W_FORTEST_20160928/Common/Extern/Extern.h</file>
-            <file>file:/F:/Source%20Code/bunka-s/bunka%20DriveBLDC750W/1500W_750W_FORTEST_20160928%20IGBT%20define%20IR_or_ROME%20R0.1/1500W_750W_FORTEST_20160928/Main/Main.c</file>
-            <file>file:/F:/Source%20Code/bunka-s/bunka%20DriveBLDC750W/1500W_750W_FORTEST_20160928%20IGBT%20define%20IR_or_ROME%20R0.1/1500W_750W_FORTEST_20160928/Drivers/GPIO/GPIO.c</file>
-            <file>file:/F:/Source%20Code/bunka-s/bunka%20DriveBLDC750W/1500W_750W_FORTEST_20160928%20IGBT%20define%20IR_or_ROME%20R0.1/1500W_750W_FORTEST_20160928/Drivers/PWM/MCPWM.c</file>
-            <file>file:/F:/Source%20Code/bunka-s/bunka%20DriveBLDC750W/1500W_750W_FORTEST_20160928%20IGBT%20define%20IR_or_ROME%20R0.1/1500W_750W_FORTEST_20160928/Common/UserDefinition/Userdef.h</file>
+            <file>file:/F:/Source%20Code/bunka-s/bunka%20DriveBLDC750W/1500W_750W_FORTEST_20160928%20IGBT%20define%20IR_or_ROME%20R0.2/1500W_750W_FORTEST_20160928/Main/Main.c</file>
+            <file>file:/F:/Source%20Code/bunka-s/bunka%20DriveBLDC750W/1500W_750W_FORTEST_20160928%20IGBT%20define%20IR_or_ROME%20R0.2/1500W_750W_FORTEST_20160928/Drivers/PWM/MCPWM.c</file>
+            <file>file:/F:/Source%20Code/bunka-s/bunka%20DriveBLDC750W/1500W_750W_FORTEST_20160928%20IGBT%20define%20IR_or_ROME%20R0.2/1500W_750W_FORTEST_20160928/Common/UserDefinition/Userdef.h</file>
         </group>
     </open-files>
 </project-private>
