@@ -44,8 +44,16 @@
 #ifdef USE_PHASE_INC_AND_CORRECTION
 #define PHASE_OFFSET_CW_750W 2002//1274 //measured offset is 1274*(360/65536) = 7 degrees.
 #define PHASE_OFFSET_CCW_750W 9828//9646//53 degrees
-#define PHASE_OFFSET_CW_1500W 9828//6916//6006//5460//5096//4004//1820//728//364//1274 //measured offset is 1274*(360/65536) = 7 degrees.
-#define PHASE_OFFSET_CCW_1500W 364 //5096//5460//6006//6370//6916//7280//8372//8736//9464//9828//9100//53 degrees
+//#define PHASE_OFFSET_CW_1500W 9828//6916//6006//5460//5096//4004//1820//728//364//1274 //measured offset is 1274*(360/65536) = 7 degrees.
+//#define PHASE_OFFSET_CCW_1500W 364 //5096//5460//6006//6370//6916//7280//8372//8736//9464//9828//9100//53 degrees
+
+#define PHASE_OFFSET_CW_def_1500W 6916//2366//6916//364 //measured offset is 364*(360/65536) = 2 degrees.
+#define PHASE_OFFSET_CCW_def_1500W 5460//5096//8008//9828 // Fukui result - 54 degree 10192
+#define PHASE_OFFSET_CW_MAX_1500W 10556
+#define PHASE_OFFSET_CCW_MAX_1500W 364 //5096     //2016/08/17 Down Moving after Over Current by IME
+#define PHASE_OFFSET_INC_STEP_1500W 10
+#define PHASE_OFFSET_DEC_STEP_1500W 20
+
 #else
 #define PHASE_OFFSET_CW 10000 
 #define PHASE_OFFSET_CCW 0
@@ -89,8 +97,8 @@
 /* In the sinewave generation algorithm we need an offset to be added to the */
 /* pointer when energizing the motor in CCW. This is done to compensate an   */
 /* asymetry of the sinewave */
-SHORT phaseOffsetCW;
-SHORT phaseOffsetCCW;
+SHORT phaseOffsetCW =PHASE_OFFSET_CW_def_1500W;
+SHORT phaseOffsetCCW =PHASE_OFFSET_CCW_def_1500W;
 
 
 #define SET_TARGET_SPEED_750W_CW    1800//1900 //Required final speed
@@ -695,8 +703,36 @@ VOID calculatePhaseValue(WORD sectorNo)
     }
     else if(PreMotorType == MOTOR_1500W)
     {
-        phaseOffsetCW = PHASE_OFFSET_CW_1500W;
-        phaseOffsetCCW = PHASE_OFFSET_CCW_1500W;
+//        phaseOffsetCW = PHASE_OFFSET_CW_1500W;
+//        phaseOffsetCCW = PHASE_OFFSET_CCW_1500W;
+            if(measuredSpeed >= 500)
+            {    
+                if(requiredDirection == CW)
+                {
+                    if(phaseOffsetCW < PHASE_OFFSET_CW_MAX_1500W)
+                        phaseOffsetCW  += PHASE_OFFSET_INC_STEP_1500W;
+                    if(phaseOffsetCW >= PHASE_OFFSET_CW_MAX_1500W)
+                        phaseOffsetCW = PHASE_OFFSET_CW_MAX_1500W;  
+                }
+                else if(requiredDirection == CCW)
+                {
+                    if(phaseOffsetCCW > PHASE_OFFSET_CCW_MAX_1500W)
+                        phaseOffsetCCW  -= PHASE_OFFSET_INC_STEP_1500W;
+                    if(phaseOffsetCCW <= PHASE_OFFSET_CCW_MAX_1500W)
+                        phaseOffsetCCW = PHASE_OFFSET_CCW_MAX_1500W;
+                }
+            }
+            else
+            {
+                if(phaseOffsetCW > PHASE_OFFSET_CW_def_1500W)
+                    phaseOffsetCW -= PHASE_OFFSET_DEC_STEP_1500W;
+                if(phaseOffsetCW <= PHASE_OFFSET_CW_def_1500W)
+                    phaseOffsetCW = PHASE_OFFSET_CW_def_1500W;
+                if(phaseOffsetCCW < PHASE_OFFSET_CCW_def_1500W)
+                    phaseOffsetCCW += PHASE_OFFSET_DEC_STEP_1500W;
+                if(phaseOffsetCCW >= PHASE_OFFSET_CCW_def_1500W)
+                    phaseOffsetCCW = PHASE_OFFSET_CCW_def_1500W;
+            }        
     }
     #if 1        
     /* Motor commutation is actually based on the required direction, not */
