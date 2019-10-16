@@ -171,6 +171,7 @@ DWORD phaseIncPerSec = 0;
 /* Used as a temporal variable to perform a fractional divide operation in */
 /* assembly */
 SHORT measuredSpeed;  /* Actual speed for the PID */
+SHORT measuredSpeed_bak;
 SHORT refSpeed = 200;	    /* Desired speeds for the PID */ 
 
 /* Output of PID controller, use its sign for required direction */
@@ -286,19 +287,31 @@ void __attribute__((interrupt, no_auto_psv)) _T1Interrupt (void)
             }
             else
             {
-                if(refSpeed > 350)
-                {            
-                    refSpeed -= 200;
-                    if(refSpeed <= 50)
-                        refSpeed = 20;
-                }  
+                if(MotorRunInCycle==1)
+                {
+                    if(refSpeed > 100)
+                    {            
+                        refSpeed -= 100;
+                        if(refSpeed <= 100)
+                            refSpeed = 20;
+                    }                    
+                }
+                else 
+                {
+                    if(refSpeed > 200)
+                    {            
+                        refSpeed -= 100;
+                        if(refSpeed <= 200)
+                            refSpeed = 200;
+                    }
+                }
             }
         }         
 	measureActualSpeed();
     
     if(++cnt_motor_stop>CNT_10MS*4)
 	{
-		measuredSpeed = 0;
+		if(MotorDecActive == 0)measuredSpeed = 0;
 		cnt_motor_stop = CNT_10MS*4;
 	}
     
@@ -855,6 +868,7 @@ VOID measureActualSpeed(VOID)
         measuredSpeed = __builtin_divud(SPEED_RPM_CALC_750W,periodFilter);
     else if(PreMotorType == MOTOR_1500W)
         measuredSpeed = __builtin_divud(SPEED_RPM_CALC_1500W,periodFilter);
+    measuredSpeed_bak=measuredSpeed;
     phaseInc = __builtin_divud(PHASE_INC_CALC,periodFilter);
 //    phaseIncPerSec = __builtin_muluu(measuredSpeed,655);
 //    phaseInc = __builtin_divud(phaseIncPerSec,1000);

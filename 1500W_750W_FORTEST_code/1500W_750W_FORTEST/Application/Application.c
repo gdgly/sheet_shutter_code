@@ -302,17 +302,19 @@ VOID application(VOID)
         }
         else if((CMDStatus == 0x01) && (flags.motorRunning) && (flags.RunDirection == CCW))
         {
-            //stopMotor();
-            MotorDecActive = 1;
-            T9CONbits.TON = 1;
-            MotorStopCount = 0;
-            while(1)
+            if(MotorDecActive==0)
             {
-                if(MotorStopCount == 20)
+                MotorDecActive = 1;
+                T9CONbits.TON = 1;
+                MotorStopCount = 0;
+            }
+                if((MotorStopCount >= 40)||(measuredSpeed_bak<200))
                 {
-                    stopMotor();                     
+                    stopMotor(); 
+                    delayMs(100);
+                    lockApply;                    
                 }
-                else if(MotorStopCount == 40)
+                else if(MotorStopCount >= 60)
                 {
                     flags.RunDirection = CW;
                     startMotorCW();
@@ -320,23 +322,24 @@ VOID application(VOID)
                     //MotorDecActive = 0;
                     MotorStopCount = 0;
                     T9CONbits.TON = 0; 
-                    break;
                 }            
-            }
+            
         }
         else if((CMDStatus == 0x00) && (flags.motorRunning) && (flags.RunDirection == CW))
         {
-            //stopMotor();
-            MotorDecActive = 1;
-            T9CONbits.TON = 1;
-            MotorStopCount = 0;
-            while(1)
+            if(MotorDecActive==0)
             {
-                if(MotorStopCount == 20)
+                MotorDecActive = 1;
+                T9CONbits.TON = 1;
+                MotorStopCount = 0;
+            }
+                if((MotorStopCount >= 40)||(measuredSpeed_bak<200))
                 {
-                    stopMotor();                     
+                    stopMotor(); 
+                    delayMs(100);
+                    lockApply;                    
                 }
-                else if(MotorStopCount == 40)
+                else if(MotorStopCount >= 60)
                 {
                     flags.RunDirection = CCW;
                     startMotorCCW();
@@ -344,21 +347,41 @@ VOID application(VOID)
                     //MotorDecActive = 0;
                     MotorStopCount = 0;
                     T9CONbits.TON = 0; 
-                    break;
                 }            
-            }
+            
         }
         else if((CMDStatus == 0x02) && (flags.motorRunning))
         {
-            stopMotor();
-            delayMs(100);
-            lockApply;
+            if(MotorDecActive==0)
+            {
+                MotorDecActive = 1;
+                T9CONbits.TON = 1;
+                MotorStopCount = 0;
+            }
+                if((MotorStopCount >= 40)||(measuredSpeed_bak<200))
+                {
+                    stopMotor(); 
+                    delayMs(100);
+                    lockApply;                    
+                }
+            //stopMotor();
+
         }
         else if((CMDStatus == 0x03) && (flags.motorRunning))
         {
-            stopMotor();
-            delayMs(100);
-            lockApply;
+            if(MotorDecActive==0)
+            {
+                MotorDecActive = 1;
+                T9CONbits.TON = 1;
+                MotorStopCount = 0;
+            }
+                if((MotorStopCount >= 40)||(measuredSpeed_bak<200))
+                {
+                    stopMotor(); 
+                    delayMs(100);
+                    lockApply;                    
+                }
+            //stopMotor();
         }
     /*if(MotorRunInCycle == 0)
     {
@@ -439,49 +462,69 @@ VOID application(VOID)
     {
         //if(flags.RunDirection == CW)
         //{
+        if(uart_motor_stop==0)
+        {
             if(MotorRunCount == 110)
             {
-                MotorDecActive = 1;
-            
+                MotorDecActive = 1;            
             }
-            else if(MotorRunCount == 125)
+            else if(MotorRunCount == 110+40)  //125
             {
                 MotorDecActive = 0;
                 //requiredDirection = CCW;
             }//1
-            else if(MotorRunCount == 235)
+            else if(MotorRunCount == 150+110) //235
             {
                 MotorDecActive = 1;
             }
-            else if(MotorRunCount == 250)
+            else if(MotorRunCount == 260+40)//250
             {
                 MotorDecActive = 0;
                 //requiredDirection = CW;
             }
-            else if(MotorRunCount == 360)
+            else if(MotorRunCount == 300+110)//360
             {
                 MotorDecActive = 1;
             }
-            else if(MotorRunCount == 375)
+            else if(MotorRunCount == 410+40)//375
             {
                 MotorDecActive = 0;
                 //requiredDirection = CCW;
             }//2
-            else if(MotorRunCount == 485)
+            else if(MotorRunCount == 450+110)//485
             {
                 MotorDecActive = 1;
             }
-            else if(MotorRunCount == 500)
+            else if(MotorRunCount == 560+40)//500
             {
                 MotorDecActive = 0;
                 //requiredDirection = CW;
             }
-            else if(MotorRunCount == 610)
+            else if(MotorRunCount >= 600+110)//610
             {
-                //MotorDecActive = 1;
-                MotorDecActive = 0;
-                stopMotor();
+                MotorDecActive = 1;
+                    if((MotorRunCount >= 710+40)||(measuredSpeed_bak<200))
+                    {
+                        stopMotor(); 
+                         MotorDecActive=0;
+                    }
+               
+                //stopMotor();
             }
+        }
+            
+        else 
+        {
+            MotorDecActive = 1;
+            if(((MotorRunCount >= 40)||(measuredSpeed_bak<200))&&(MotorDecActive==1))
+             {
+                        stopMotor(); 
+                        uart_motor_stop=0;
+                         MotorDecActive=0;
+                         delayMs(100);
+                         lockApply; 
+             }  
+        }
         //}
         /*else
         {

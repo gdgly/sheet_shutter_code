@@ -42,7 +42,7 @@
 #include "./Middleware/ParameterDatabase/spi.h"
 #include "./Common/Delay/Delay.h"
 #include "./Common/Extern/Extern.h"
-#include "CommandHandler.h"
+#include "./Application/CommandHandler.h"
 
 /******************************************************************************/
 /* Configuration bits                                                         */

@@ -23,7 +23,7 @@
 #include <p33Exxxx.h>
 #include "MCPWM.h"
 #include "./Common/UserDefinition/Userdef.h"
-#include "../Common/Extern/Extern.h"
+#include "./Common/Extern/Extern.h"
 
 /******************************************************************************
  * initMCPWM

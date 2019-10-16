@@ -157,7 +157,7 @@ BYTE redData = 0;
 
 BYTE DriveRDY = 0;
 BYTE MotorRunInCycle = 0;
-
+BYTE uart_motor_stop=0;
 //*****************************************************************************
 //
 // The CRC-16 table for the polynomial C(x) = x^16 + x^15 + x^2 + 1 (standard
@@ -492,9 +492,13 @@ VOID commandHandler(VOID)
                     //MotorRunCount = 0;
 //                    PORTAbits.RA7 = 0;
 //                    PORTCbits.RC0 = 0;
-                    stopMotor();
-                    delayMs(100);
-                    lockApply;   
+                    
+                    MotorRunInCycle=1;
+                    MotorRunCount = 0;
+                    uart_motor_stop=1;
+                    //stopMotor();
+                    //delayMs(100);
+                    //lockApply;   
                     break; 
                     
                 case change_motor_type_750w:

@@ -23,6 +23,7 @@
 
 EXTERN SHORT refSpeed;
 EXTERN SHORT measuredSpeed;
+EXTERN SHORT measuredSpeed_bak;
 EXTERN DWORD period;
 EXTERN SHORT controlOutput;
 EXTERN SHORT ctrlOpPercent;
@@ -116,3 +117,5 @@ EXTERN UINT16 PhaseAdvance;
 EXTERN UINT16 DutyCycle;
 EXTERN UINT16 DutyCycleSet;
 EXTERN UINT16 PhaseURAT[];
+
+EXTERN BYTE uart_motor_stop;

@@ -39,7 +39,7 @@
 #include "./DMCI/RtdmInterface.h"
 #include "./Application/RampGenerator/RampGenerator.h"
 #include "./MotorControl/SpeedController/SpeedController.h"
-#include "../CommandHandler.h"
+#include "./Application/CommandHandler.h"
 
 /************************************************************************/
 /* These are the definitions for various angles used in the SVM */

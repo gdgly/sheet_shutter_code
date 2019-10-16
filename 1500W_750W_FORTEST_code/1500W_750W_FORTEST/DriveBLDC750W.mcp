@@ -268,7 +268,7 @@ Post-Build=
 Post-BuildEnabled=1
 [TOOL_LOCKING]
 ToolsAreLocked=1
-T{C6E07232-414F-4A0C-AF99-CD44E2B71960}=C:\Program Files\Microchip\xc16\v1.21\bin\xc16-as.exe
-T{B1442D91-FF1F-4E60-9714-C39C1BA9DB62}=C:\Program Files\Microchip\xc16\v1.21\bin\xc16-gcc.exe
-T{6836D8CA-42BB-48FB-9E77-3F0AA8005073}=C:\Program Files\Microchip\xc16\v1.21\bin\xc16-ld.exe
-T{E60A4887-34FE-4D4F-81A8-A80F1E936E0D}=C:\Program Files\Microchip\xc16\v1.21\bin\xc16-ar.exe
+T{C6E07232-414F-4A0C-AF99-CD44E2B71960}=D:\Program Files (x86)\Microchip\xc16\v1.21\bin\xc16-as.exe
+T{B1442D91-FF1F-4E60-9714-C39C1BA9DB62}=D:\Program Files (x86)\Microchip\xc16\v1.21\bin\xc16-gcc.exe
+T{6836D8CA-42BB-48FB-9E77-3F0AA8005073}=D:\Program Files (x86)\Microchip\xc16\v1.21\bin\xc16-ld.exe
+T{E60A4887-34FE-4D4F-81A8-A80F1E936E0D}=D:\Program Files (x86)\Microchip\xc16\v1.21\bin\xc16-ar.exe
