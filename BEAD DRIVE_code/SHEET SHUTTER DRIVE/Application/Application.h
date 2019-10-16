@@ -129,6 +129,8 @@ EXTERN UINT8  FLAG_CMD_open_shutter;
 EXTERN UINT8  CMD_open_shutter;
 EXTERN UINT8  FLAG_StartApertureCorrection ;   //bug_No.12
 EXTERN UINT8  FLAG_open_shutter_one;
+EXTERN UINT16 TIME_shutterUpperLimit_STOP;
+EXTERN UINT8  FLAG_shutterUpperLimit_STOP;
 
 /* This function initializes all variables required by the Application */
 VOID initApplication(VOID); 
