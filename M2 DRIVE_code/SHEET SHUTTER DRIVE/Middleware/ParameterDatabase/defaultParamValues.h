@@ -90,7 +90,8 @@ CONST _EEPDriveMotorCtrlBlock uEEP_M2DriveMotorCtrlBlockDefault =
 		600,    //UINT16 fallChangeGearPos2_A107;
 		0,      //UINT16 fallChangeGearPos3_A108;
 		50,      //UINT8 	shtrRevOperMinLimit_A110;
-#else
+#endif        
+#if 0
         //20160805  AOYAGI
 		750,//400,//500,    //UINT16 riseChangeGearPos1_A103;
 		450,//300,//450,    //UINT16 riseChangeGearPos2_A104;
@@ -101,6 +102,16 @@ CONST _EEPDriveMotorCtrlBlock uEEP_M2DriveMotorCtrlBlockDefault =
 		175,      //UINT8 	shtrRevOperMinLimit_A110;
         //20160805  AOYAGI
 #endif
+#if 1
+		850,    //UINT16 riseChangeGearPos1_A103;
+		450,    //UINT16 riseChangeGearPos2_A104;
+		200,      //UINT16 riseChangeGearPos3_A105;
+		1150,    //UINT16 fallChangeGearPos1_A106;
+		450,    //UINT16 fallChangeGearPos2_A107;
+		200,      //UINT16 fallChangeGearPos3_A108;
+		175,      //UINT8 	shtrRevOperMinLimit_A110;
+        //20160824 AOYAGI_CQ ??
+#endif          
         0,      //UINT16 	PWMFreqMotorCtrl_A500;
 		0,      //UINT8 	startupDutyCycle_A501;
 		0,      //UINT16 	maxStartupTimeLim_A504;
@@ -112,12 +123,25 @@ CONST _EEPDriveMotorCtrlBlock uEEP_M2DriveMotorCtrlBlockDefault =
 		0,      //UINT16	timer2Max_A509;
 		0,      //UINT16	minDutyCycle_A510;
 		0,      //UINT8	breakEnabled_A511;
-		100,      //UINT16	speed_PI_KP_A512;
-		70,      //UINT8	speed_PI_KI_A513;
-		300,      //UINT16	current_PI_KP_A514;
-		40,      //UINT8	current_PI_KI_A515;
+#if 0
+		100,      //UINT16	CW_PI_KP_A512;
+		70,      //UINT8	CW_PI_KI_A513;
+		300,      //UINT16	CCW_PI_KP_A514;
+		40,      //UINT8	CCW_PI_KI_A515;        
+#endif        
+#if 1
+		100,      //UINT16	CW_PI_KP_A512;   //20160824 AOYAGI_CQ ??
+		20,      //UINT8	CW_PI_KI_A513;
+		200,      //UINT16	CCW_PI_KP_A514;
+		12,      //UINT8	CCW_PI_KI_A515;        
+#endif 
 		0,      //UINT16	outputFreq_A516;
-		9,     //UINT8	inchSpeed_A517;
+#if 0
+        9,     //UINT8	inchSpeed_A517;
+#endif
+#if 1
+        15,     //UINT8	inchSpeed_A517;   //20160824 AOYAGI_CQ ??
+#endif         
 		0,      //UINT8	driveStatus_A518;
 		0,      //UINT8	currentError_A519;
 
