@@ -88,7 +88,7 @@
 #define EXPECTED_CRC_CLEAN_ERROR                0xB253
 #define EXPECTED_CRC_APERTUREHEIGHT                0x7292
 
-CONST UINT32 drive_fw_version = 0x00000301;  //bug_NO.64
+CONST UINT32 drive_fw_version = 0x00000306;  //bug_NO.64
 
 
 enum {
@@ -492,10 +492,21 @@ VOID commandHandler(VOID)
 
                 case start_install:
                         startInstallation();
-
+                        /*************add 20161017 start************************/
+                            inputFlags.value = STOP_SHUTTER;
+                            rampCurrentState = RAMP_STOP;
+                            gui8StopKeyPressed = 1;
+                            stopShutter();  
+                        /*************add 20161017 end************************/    
                     break;
                 case  start_apertureHeight:
                        startApertureHeight();
+                       /*************add 20161017 start************************/
+                            inputFlags.value = STOP_SHUTTER;
+                            rampCurrentState = RAMP_STOP;
+                            gui8StopKeyPressed = 1;
+                            stopShutter();      
+                       /*************add 20161017 end************************/     
                     break;
                 case confirm_sub_state_install:
                     if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveInstallation)
