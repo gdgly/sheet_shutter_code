@@ -54,7 +54,14 @@
 #else
     #error Shutter type not defined
 #endif
-#define HOLDING_DUTY_INC    10//20//200
+
+#ifdef MOTOR_750W_BD
+    #define HOLDING_DUTY_INC    10//20//200
+#endif
+#ifdef MOTOR_750W_M1
+    #define HOLDING_DUTY_INC    40//10//20//200 //20160809 AOYAGI EMAIL
+#endif
+
 #define SHUTTER_SPEED_MIN_STOP 200
 #define SHUTTER_SPEED_MIN       500
 #define SHUTTER_SPEED_MAX       3600

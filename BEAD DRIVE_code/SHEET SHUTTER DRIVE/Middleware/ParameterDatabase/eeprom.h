@@ -370,7 +370,7 @@
 								+ DRIVE_MOTOR_BLOCK_DAT_LENGTH \
 								+ EEP_MOTOR_CTRL_BLOCK_LENGTH) - 8)
 
-#define EEP_SHUTTER_INSTALLATION_STEP_LENGTH   sizeof(BYTE)
+#define EEP_SHUTTER_INSTALLATION_STEP_LENGTH   sizeof(BYTE)    //bug_NO.43
 
 #define EEP_SHUTTER_INSTALLATION_STEP   (EEP_MOTOR_CTRL_BLOCK_LENGTH + BLOCK_SEPERATION_LEN + BLOCK_SEPERATION_LEN + EEP_SHUTTER_INSTALLATION_STEP_LENGTH)
 
@@ -556,8 +556,8 @@ typedef union // Drive status register
 			UINT32 peSensorStatus		    : 1;            
 
             UINT32 driveBoardBootloader		: 1;
-            UINT32 shutterBetweenUplmtAphgt	: 1;	//STT  shutter position between upperlimit and ApertureHeight
-            UINT32 shutterBetweenLowlmtAphgt	: 1;	//STT  shutter position between lowerlimit and ApertureHeight
+            UINT32 shutterBetweenUplmtAphgt	: 1;	//STT  shutter position between upperlimit and ApertureHeight     //bug_NO.12?13?14?15
+            UINT32 shutterBetweenLowlmtAphgt	: 1;	//STT  shutter position between lowerlimit and ApertureHeight  //bug_NO.12?13?14?15
             UINT32 unused						: 11;
 
 	   } bits;

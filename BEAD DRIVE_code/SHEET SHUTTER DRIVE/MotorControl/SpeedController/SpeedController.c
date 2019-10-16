@@ -205,7 +205,7 @@ void __attribute__((interrupt, no_auto_psv)) _T1Interrupt (void)
 	// If user press down button when shutter is not at lower limit and motor cable has some connection issue, which result shutter to fall down wih high speed
 	
 #define		MTR_CABLE_FAULT_TOP_UP_SPEED_VALUE_TO_S1_DOWN	500  // it is an top speed to S1 down speed to declare "motor cable fault" error
-#define		MTR_CABLE_FAULT_MONITOR_TIME					250         // it is an time period in msec for which "motor cable fault" error needs to monitor,
+#define		MTR_CABLE_FAULT_MONITOR_TIME					250// DEFAULT 100         // it is an time period in msec for which "motor cable fault" error needs to monitor,
 	// before stoping the motor and declaring the error
 	// max limit = 250 msec
 	
@@ -238,7 +238,7 @@ void __attribute__((interrupt, no_auto_psv)) _T1Interrupt (void)
 				lsCnt1ms++; // increment timer
 				
 				// monitor timer whether same cross the set limit
-				if (lsCnt1ms >= MTR_CABLE_FAULT_MONITOR_TIME)
+				if (lsCnt1ms >= MTR_CABLE_FAULT_MONITOR_TIME )
 				{
 					uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.motorCableFault = TRUE;
 					forceStopShutter(); // stop motor by applying mechanical brake
@@ -880,23 +880,30 @@ VOID speedControl(VOID)
 	
 //    if(uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.shutterType_A537 == BEAD_SHUTTER)
 //    {
-//        if(requiredDirection == CW)
-//        {
-            speedPIparms.qOutMax = 17000;//currentLimitClamp;
-            speedPIparms.qOutMin = -(currentLimitClamp);  
-//        }
-//        else
-//        {
-//            speedPIparms.qOutMax = 5000;
+////        if(requiredDirection == CW)
+////        {
+//            speedPIparms.qOutMax = 17000;//currentLimitClamp;
 //            speedPIparms.qOutMin = -(currentLimitClamp);  
-//        }
+////        }
+////        else
+////        {
+////            speedPIparms.qOutMax = 5000;
+////            speedPIparms.qOutMin = -(currentLimitClamp);  
+////        }
 //    }
 //    else if (uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.shutterType_A537 == M1_SHUTTER)
 //    {
-//        speedPIparms.qOutMax = currentLimitClamp;
+//        speedPIparms.qOutMax = currentLimitClamp;     //bug_NO.51
 //        speedPIparms.qOutMin = -(currentLimitClamp);  
 //    }
-
+#ifdef MOTOR_750W_BD
+            speedPIparms.qOutMax = 17000;//currentLimitClamp;
+            speedPIparms.qOutMin = -(currentLimitClamp);
+#endif
+#ifdef MOTOR_750W_M1
+        speedPIparms.qOutMax = currentLimitClamp;     //bug_NO.51
+        speedPIparms.qOutMin = -(currentLimitClamp); 
+#endif
     
 	#if 1
 	//	Added on 6 Aug 2015 to enable motor rotation in no load condition for bead type shutter (while shutter go down operation)
@@ -961,17 +968,17 @@ VOID initSpeedControllerVariables(VOID)
     measuredSpeed = 0; 
 //    if(uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.shutterType_A537 == BEAD_SHUTTER)
 //    {
-//        if(requiredDirection == CW)
-//        {
-            controlOutput = SHUTTER_LOAD_HOLDING_DUTY; 
-//        }
-//        else
-//        {
-//            controlOutput = 0;
-//        }
+////        if(requiredDirection == CW)
+////        {
+//            controlOutput = SHUTTER_LOAD_HOLDING_DUTY; 
+////        }
+////        else
+////        {
+////            controlOutput = 0;
+////        }
 //    }
 //    else if (uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.shutterType_A537 == M1_SHUTTER)
-//        controlOutput = SHUTTER_LOAD_HOLDING_DUTY;    
+        controlOutput = SHUTTER_LOAD_HOLDING_DUTY;       //bug_NO.43
     
     period = MAXPERIOD;
     periodFilter = MAXPERIOD;
@@ -1035,12 +1042,12 @@ VOID initSpeedControllerVariables(VOID)
         
 //		if(uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.shutterType_A537 == BEAD_SHUTTER)
 //		{
-        initPiNew(&speedPIparms,P_gain,I_gain,C_SPEED_PI,currentLimitClamp,-(currentLimitClamp),0);
-		//initPiNew(&speedPIparms,P_gain,I_gain,C_SPEED_PI,lshCurrentLimitClampNew,-(lshCurrentLimitClampNew),0);
+//        initPiNew(&speedPIparms,P_gain,I_gain,C_SPEED_PI,currentLimitClamp,-(currentLimitClamp),0);
+//		//initPiNew(&speedPIparms,P_gain,I_gain,C_SPEED_PI,lshCurrentLimitClampNew,-(lshCurrentLimitClampNew),0);
 //		}
 //		else if (uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.shutterType_A537 == M1_SHUTTER)
 //		{
-//        initPiNew(&speedPIparms,P_gain,I_gain,C_SPEED_PI,currentLimitClamp,-(currentLimitClamp),0);
+        initPiNew(&speedPIparms,P_gain,I_gain,C_SPEED_PI,currentLimitClamp,-(currentLimitClamp),0);
 //		}
     }
     else
@@ -1050,14 +1057,14 @@ VOID initSpeedControllerVariables(VOID)
         
 //        if(uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.shutterType_A537 == BEAD_SHUTTER)
 //        {
-            //initPiNew(&speedPIparms,P_SPEED_PI_CCW,I_SPEED_PI_CCW,C_SPEED_PI,5000,-(currentLimitClamp),0);
-			initPiNew(&speedPIparms,P_gain,I_gain,C_SPEED_PI,5000,-(currentLimitClamp),0);
-			//initPiNew(&speedPIparms,P_gain,I_gain,C_SPEED_PI,lshCurrentLimitClampNew,-(lshCurrentLimitClampNew),0);
+//            //initPiNew(&speedPIparms,P_SPEED_PI_CCW,I_SPEED_PI_CCW,C_SPEED_PI,5000,-(currentLimitClamp),0);
+//			initPiNew(&speedPIparms,P_gain,I_gain,C_SPEED_PI,5000,-(currentLimitClamp),0);
+//			//initPiNew(&speedPIparms,P_gain,I_gain,C_SPEED_PI,lshCurrentLimitClampNew,-(lshCurrentLimitClampNew),0);
 //        }
 //        else if (uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.shutterType_A537 == M1_SHUTTER)
 //        {
-//            initPiNew(&speedPIparms,P_gain,I_gain,C_SPEED_PI,5000,-(currentLimitClamp),0);
-//			//initPiNew(&speedPIparms,P_gain,I_gain,C_SPEED_PI,lshCurrentLimitClampNew,-(lshCurrentLimitClampNew),0);
+            initPiNew(&speedPIparms,P_gain,I_gain,C_SPEED_PI,5000,-(currentLimitClamp),0);
+			//initPiNew(&speedPIparms,P_gain,I_gain,C_SPEED_PI,lshCurrentLimitClampNew,-(lshCurrentLimitClampNew),0);
 //        }
     }
 }

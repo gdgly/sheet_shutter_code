@@ -93,10 +93,10 @@ typedef enum installationState
     INSTALL_MOVE_DN_50MM,
     INSTALL_MOVE_TO_UP_LIMIT,
     INSTALL_MOVE_TO_DN_LIMIT,
-    INSTALL_SUCCESSFUL,
+    INSTALL_SUCCESSFUL,  //bug_NO.35
     INSTALL_COMPLETE,
     INSTALL_RESTART,   
-    INSTALL_STATE_END
+    INSTALL_STATE_END      
 }installationState_en;
 
 typedef struct _powerUpCalib
