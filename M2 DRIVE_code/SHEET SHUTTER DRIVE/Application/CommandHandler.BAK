@@ -16,9 +16,9 @@
 
 /****************************************************************************
  *  Modification History
- *  
- *  Date                  Name          Comments 
- *  22/04/2014            iGate          Initial Creation                                                               
+ *
+ *  Date                  Name          Comments
+ *  22/04/2014            iGate          Initial Creation
 *****************************************************************************/
 #include <p33Exxxx.h>
 #include <string.h>
@@ -33,16 +33,16 @@
 
 
 
-#define FOUR_BYTE_PARAM_FRAME_DATA_LEN 	(6 + 4 + DRIVE_BLOCK_CRC_DAT_LENGTH) // dest ID + source ID + data len + command ID + 16 bit param index + 4 byte data + crc 
-#define TWO_BYTE_PARAM_FRAME_DATA_LEN 	(6 + 2 + DRIVE_BLOCK_CRC_DAT_LENGTH) // dest ID + source ID + data len + command ID + 16 bit param index + 2 byte data + crc 
-#define ONE_BYTE_PARAM_FRAME_DATA_LEN 	(6 + 1 + DRIVE_BLOCK_CRC_DAT_LENGTH) // dest ID + source ID + data len + command ID + 16 bit param index + 1 byte data + crc 
+#define FOUR_BYTE_PARAM_FRAME_DATA_LEN 	(6 + 4 + DRIVE_BLOCK_CRC_DAT_LENGTH) // dest ID + source ID + data len + command ID + 16 bit param index + 4 byte data + crc
+#define TWO_BYTE_PARAM_FRAME_DATA_LEN 	(6 + 2 + DRIVE_BLOCK_CRC_DAT_LENGTH) // dest ID + source ID + data len + command ID + 16 bit param index + 2 byte data + crc
+#define ONE_BYTE_PARAM_FRAME_DATA_LEN 	(6 + 1 + DRIVE_BLOCK_CRC_DAT_LENGTH) // dest ID + source ID + data len + command ID + 16 bit param index + 1 byte data + crc
 
 #define PARAM_INDEX_MSB_LOCATION	0
-#define PARAM_INDEX_LSB_LOCATION 	1 
+#define PARAM_INDEX_LSB_LOCATION 	1
 #define PARAM_DATA_START_INDEX		2
 
 #define POC 1
-#define DEBUG_UART 
+#define DEBUG_UART
 
 //*****************************************************************************
 //
@@ -55,8 +55,8 @@
 
 // TBD - Expected CRCs below are not used except for debugging, to be removed later
 
-// Constants defining the CRC of the commands from CB 
-//Following CRCs are to be updated. this is just arbitrary data 
+// Constants defining the CRC of the commands from CB
+//Following CRCs are to be updated. this is just arbitrary data
 #define EXPECTED_CRC_RUN_DRIVE					0xA093
 #define EXPECTED_CRC_STOP_DRIVE 				0xA103
 #define EXPECTED_CRC_STOPPING_COMM 				0x6112
@@ -64,76 +64,84 @@
 #define EXPECTED_CRC_CONFIRM_SUBSTATE_INST 		0x6392
 
 #define EXPECTED_CRC_OPEN_SHTER 				0x62D2
-#define EXPECTED_CRC_OPEN_SHTER_JOG_10 			0xCD73  
+#define EXPECTED_CRC_OPEN_SHTER_JOG_10 			0xCD73
 #define EXPECTED_CRC_OPEN_SHTER_JOG_50			0xCC33
 #define EXPECTED_CRC_OPEN_SHTER_APER_HT 		0xA653
 
 #define EXPECTED_CRC_CLOSE_SHTER 				0x6692
-#define EXPECTED_CRC_CLOSE_SHTER_JOG_10			0x5D77 
-#define EXPECTED_CRC_CLOSE_SHTER_JOG_50			0x5C37 
+#define EXPECTED_CRC_CLOSE_SHTER_JOG_10			0x5D77
+#define EXPECTED_CRC_CLOSE_SHTER_JOG_50			0x5C37
 #define EXPECTED_CRC_CLOSE_SHTER_APER_HT 		0xA713
 #define EXPECTED_CRC_CLOSE_SHTER_IGNORE_SENS 	0x6552
 
 #define EXPECTED_CRC_STOP_SHUTTER				0xA593
-#define EXPECTED_CRC_GET_PARAM					0xA4D3 // TBD - cannot generalize CRC for commands containing data 
-#define EXPECTED_CRC_SET_PARAM					0x6412 // TBD - cannot generalize CRC for commands containing data 
+#define EXPECTED_CRC_GET_PARAM					0xA4D3 // TBD - cannot generalize CRC for commands containing data
+#define EXPECTED_CRC_SET_PARAM					0x6412 // TBD - cannot generalize CRC for commands containing data
 
 #define EXPECTED_CRC_GET_ERROR_LIST				0x6C92
-#define EXPECTED_CRC_FIRMWARE_UPGRADE			0xBB93 // Command yet to be defined 
+#define EXPECTED_CRC_FIRMWARE_UPGRADE			0xBB93 // Command yet to be defined
 
 #define EXPECTED_CRC_START_POWER_ON_CALIBRATION				0x7792
 #define EXPECTED_CRC_STOP_POWER_ON_CALIBRATION				0x76D2
+//Added by AOYAGI_ST 20160418 for clean error
+#define EXPECTED_CRC_CLEAN_ERROR                0xB253
+#define EXPECTED_CRC_APERTUREHEIGHT                0x7292
+
+CONST UINT32 drive_fw_version = 0x00000403;
 
 enum {
-	no_error = 0, 
+	no_error = 0,
 	UART_channel_disabled,
-	invalid_UART_channel, 
-	UART_busy, 
-	receive_buffer_is_empty, 
+	invalid_UART_channel,
+	UART_busy,
+	receive_buffer_is_empty,
 	number_of_channel_errors
-}eUARTChannelCheck_cmd; // error list - used when checking if UART channel number is valid 
+}eUARTChannelCheck_cmd; // error list - used when checking if UART channel number is valid
 
 
 
 enum{
-	no_command = number_of_channel_errors, 
-	command_recv_in_progress, 
+	no_command = number_of_channel_errors,
+	command_recv_in_progress,
 	new_command_recd
-}eUARTCommandRxStatus_cmd;   // used by - stTxRxBuffer[].uchCommandRXStatus 
+}eUARTCommandRxStatus_cmd;   // used by - stTxRxBuffer[].uchCommandRXStatus
 
 
 /* Command names */
 enum _CBCommand
 {
-	run_drive = 1, 
-	stop_drive, 
-	stopping_drive_comm, 
-	start_install, 
-	confirm_sub_state_install, 
-	open_shutter, 
-	open_shutter_jog, 
-	open_shutter_aperture_height, 
-	close_shutter, 
-	close_shutter_jog, 
-	close_shutter_aperture_height, 
-	close_shutter_ignoring_sensors, 
-	stop_shutter, 
-	get_parameter, 
-	set_parameter, 
-	firmware_upgrade, // firmware upgrade and get error list are interchanged to sync with CB 
+	run_drive = 1,
+	stop_drive,
+	stopping_drive_comm,
+	start_install,
+	confirm_sub_state_install,
+	open_shutter,
+	open_shutter_jog,
+	open_shutter_aperture_height,
+	close_shutter,
+	close_shutter_jog,
+	close_shutter_aperture_height,
+	close_shutter_ignoring_sensors,
+	stop_shutter,
+	get_parameter,
+	set_parameter,
+	firmware_upgrade, // firmware upgrade and get error list are interchanged to sync with CB
     system_init_complete,
 	get_error_list,
 	//	Added on 03 FEB 2015 to implement user control on power up calibration
 	start_power_on_calibraion = 0x35,
 	stop_power_on_calibraion = 0x36,
-}enCBCommand; /* Used to identify command coming from CB */ 
+    //Added by AOYAGI_ST 20160418 for clean error
+    clean_error = 0x38,
+    start_apertureHeight =0x39,
+}enCBCommand; /* Used to identify command coming from CB */
 
 
 ///* Jog percentage */
 //enum _jogPercentage
 //{
 //	no_jog = 0,
-//	ten_percent_jog, 
+//	ten_percent_jog,
 //	fifty_percent_jog
 //}enCmdJogPercentage;
 
@@ -143,25 +151,25 @@ enum _CBCommand
 /* Reply to CB - None, ACK, NACK */
 enum _ackToCB
 {
-	no_reply_reqd = 0, 
+	no_reply_reqd = 0,
 	ack,
 	nack
-}ackToCB; 
+}ackToCB;
 
 enum _commandState
 {
 	no_cmnd = 0,
-	new_cmd, 
-	invalid, 
+	new_cmd,
+	invalid,
 	processing,
 	complete
-}commandState; 
+}commandState;
 
-_uCBCommand uCBCommand; /* CB Command under process */ 
+_uCBCommand uCBCommand; /* CB Command under process */
 
-BOOL txAnomalyHistInProgress; 
+BOOL txAnomalyHistInProgress;
 
-BOOL txInProgress; 
+BOOL txInProgress;
 WORD txResetCount;
 
 //	Added this flag to handle issue related to stop action (stopping was not smooth) when stop key is pressed
@@ -210,155 +218,157 @@ static const UINT16 g_pui16Crc16[256] =
 
 
 // Create const structure containing definitions for all incoming commands,
-// reply - ACK/ NACK and the command from drive to Restart communication 
+// reply - ACK/ NACK and the command from drive to Restart communication
 
 
-// TBD - Expected CRC in below const is not used, to be removed 
+// TBD - Expected CRC in below const is not used, to be removed
 
 //Destination Address,   Source Address,   Length in Bytes including CRC,   Command,   Data,   CRC 16 Byte 1,   CRC 16 Byte 2
-// List of commands from Control board - this constant is required for validating commands received from the CB 
-const _stCBCommand constCBCommandList[NUM_OF_CONTROL_BOARD_COMMANDS] = 
+// List of commands from Control board - this constant is required for validating commands received from the CB
+const _stCBCommand constCBCommandList[NUM_OF_CONTROL_BOARD_COMMANDS] =
 {
-	{DRIVE_BOARD_ADDRESS, CONTROL_BOARD_ADDRESS, RUN_DRIVE_CMND_LEN, 			run_drive, 				{(EXPECTED_CRC_RUN_DRIVE & 0x00FF) , ((EXPECTED_CRC_RUN_DRIVE & 0xFF00) >> 8)}, no_cmnd }, 
-	{DRIVE_BOARD_ADDRESS, CONTROL_BOARD_ADDRESS, STOP_DRIVE_CMND_LEN, 			stop_drive,				{(EXPECTED_CRC_STOP_DRIVE & 0x00FF) , ((EXPECTED_CRC_STOP_DRIVE & 0xFF00) >> 8)}, no_cmnd }, 
-	{DRIVE_BOARD_ADDRESS, CONTROL_BOARD_ADDRESS, STOPPING_COMM_CMND_LEN, 		stopping_drive_comm,	{(EXPECTED_CRC_STOPPING_COMM & 0x00FF) , ((EXPECTED_CRC_STOPPING_COMM & 0xFF00) >> 8)}, no_cmnd }, 
+	{DRIVE_BOARD_ADDRESS, CONTROL_BOARD_ADDRESS, RUN_DRIVE_CMND_LEN, 			run_drive, 				{(EXPECTED_CRC_RUN_DRIVE & 0x00FF) , ((EXPECTED_CRC_RUN_DRIVE & 0xFF00) >> 8)}, no_cmnd },
+	{DRIVE_BOARD_ADDRESS, CONTROL_BOARD_ADDRESS, STOP_DRIVE_CMND_LEN, 			stop_drive,				{(EXPECTED_CRC_STOP_DRIVE & 0x00FF) , ((EXPECTED_CRC_STOP_DRIVE & 0xFF00) >> 8)}, no_cmnd },
+	{DRIVE_BOARD_ADDRESS, CONTROL_BOARD_ADDRESS, STOPPING_COMM_CMND_LEN, 		stopping_drive_comm,	{(EXPECTED_CRC_STOPPING_COMM & 0x00FF) , ((EXPECTED_CRC_STOPPING_COMM & 0xFF00) >> 8)}, no_cmnd },
 
-	{DRIVE_BOARD_ADDRESS, CONTROL_BOARD_ADDRESS, START_INSTALL_CMND_LEN, 			start_install, 				{(EXPECTED_CRC_START_INSTALL & 0x00FF) , ((EXPECTED_CRC_START_INSTALL & 0xFF00) >> 8)}, no_cmnd }, 
-	{DRIVE_BOARD_ADDRESS, CONTROL_BOARD_ADDRESS, CONFIRM_SUBSTATE_INST_CMND_LEN,	confirm_sub_state_install,	{(EXPECTED_CRC_CONFIRM_SUBSTATE_INST & 0x00FF) , ((EXPECTED_CRC_CONFIRM_SUBSTATE_INST & 0xFF00) >> 8)}, no_cmnd }, 
+	{DRIVE_BOARD_ADDRESS, CONTROL_BOARD_ADDRESS, START_INSTALL_CMND_LEN, 			start_install, 				{(EXPECTED_CRC_START_INSTALL & 0x00FF) , ((EXPECTED_CRC_START_INSTALL & 0xFF00) >> 8)}, no_cmnd },
+	{DRIVE_BOARD_ADDRESS, CONTROL_BOARD_ADDRESS, CONFIRM_SUBSTATE_INST_CMND_LEN,	confirm_sub_state_install,	{(EXPECTED_CRC_CONFIRM_SUBSTATE_INST & 0x00FF) , ((EXPECTED_CRC_CONFIRM_SUBSTATE_INST & 0xFF00) >> 8)}, no_cmnd },
 
-	{DRIVE_BOARD_ADDRESS, CONTROL_BOARD_ADDRESS, OPEN_SHTER_CMND_LEN, 			open_shutter, 					{(EXPECTED_CRC_OPEN_SHTER & 0x00FF) , ((EXPECTED_CRC_OPEN_SHTER & 0xFF00) >> 8)}, no_cmnd }, 
-	{DRIVE_BOARD_ADDRESS, CONTROL_BOARD_ADDRESS, OPEN_SHTER_JOG_CMND_LEN, 		open_shutter_jog,				{(EXPECTED_CRC_OPEN_SHTER_JOG_10 & 0x00FF) , ((EXPECTED_CRC_OPEN_SHTER_JOG_10 & 0xFF00) >> 8)}, no_cmnd }, 
-	{DRIVE_BOARD_ADDRESS, CONTROL_BOARD_ADDRESS, OPEN_SHTER_APER_HT_CMND_LEN, 	open_shutter_aperture_height,	{(EXPECTED_CRC_OPEN_SHTER_APER_HT & 0x00FF) , ((EXPECTED_CRC_OPEN_SHTER_APER_HT & 0xFF00) >> 8)}, no_cmnd }, 
+	{DRIVE_BOARD_ADDRESS, CONTROL_BOARD_ADDRESS, OPEN_SHTER_CMND_LEN, 			open_shutter, 					{(EXPECTED_CRC_OPEN_SHTER & 0x00FF) , ((EXPECTED_CRC_OPEN_SHTER & 0xFF00) >> 8)}, no_cmnd },
+	{DRIVE_BOARD_ADDRESS, CONTROL_BOARD_ADDRESS, OPEN_SHTER_JOG_CMND_LEN, 		open_shutter_jog,				{(EXPECTED_CRC_OPEN_SHTER_JOG_10 & 0x00FF) , ((EXPECTED_CRC_OPEN_SHTER_JOG_10 & 0xFF00) >> 8)}, no_cmnd },
+	{DRIVE_BOARD_ADDRESS, CONTROL_BOARD_ADDRESS, OPEN_SHTER_APER_HT_CMND_LEN, 	open_shutter_aperture_height,	{(EXPECTED_CRC_OPEN_SHTER_APER_HT & 0x00FF) , ((EXPECTED_CRC_OPEN_SHTER_APER_HT & 0xFF00) >> 8)}, no_cmnd },
 
-	{DRIVE_BOARD_ADDRESS, CONTROL_BOARD_ADDRESS, CLOSE_SHTER_CMND_LEN, 				close_shutter,					{(EXPECTED_CRC_CLOSE_SHTER & 0x00FF) , ((EXPECTED_CRC_CLOSE_SHTER & 0xFF00) >> 8)}, no_cmnd }, 
-	{DRIVE_BOARD_ADDRESS, CONTROL_BOARD_ADDRESS, CLOSE_SHTER_JOG_CMND_LEN, 			close_shutter_jog,				{(EXPECTED_CRC_CLOSE_SHTER_JOG_10 & 0x00FF) , ((EXPECTED_CRC_CLOSE_SHTER_JOG_10 & 0xFF00) >> 8)}, no_cmnd }, 
-	{DRIVE_BOARD_ADDRESS, CONTROL_BOARD_ADDRESS, CLOSE_SHTER_APER_HT_CMND_LEN, 		close_shutter_aperture_height,	{(EXPECTED_CRC_CLOSE_SHTER_APER_HT & 0x00FF) , ((EXPECTED_CRC_CLOSE_SHTER_APER_HT & 0xFF00) >> 8)}, no_cmnd }, 
-	{DRIVE_BOARD_ADDRESS, CONTROL_BOARD_ADDRESS, CLOSE_SHTER_IGNORE_SENS_CMND_LEN, 	close_shutter_ignoring_sensors,	{(EXPECTED_CRC_CLOSE_SHTER_IGNORE_SENS & 0x00FF) , ((EXPECTED_CRC_CLOSE_SHTER_IGNORE_SENS & 0xFF00) >> 8)}, no_cmnd }, 
+	{DRIVE_BOARD_ADDRESS, CONTROL_BOARD_ADDRESS, CLOSE_SHTER_CMND_LEN, 				close_shutter,					{(EXPECTED_CRC_CLOSE_SHTER & 0x00FF) , ((EXPECTED_CRC_CLOSE_SHTER & 0xFF00) >> 8)}, no_cmnd },
+	{DRIVE_BOARD_ADDRESS, CONTROL_BOARD_ADDRESS, CLOSE_SHTER_JOG_CMND_LEN, 			close_shutter_jog,				{(EXPECTED_CRC_CLOSE_SHTER_JOG_10 & 0x00FF) , ((EXPECTED_CRC_CLOSE_SHTER_JOG_10 & 0xFF00) >> 8)}, no_cmnd },
+	{DRIVE_BOARD_ADDRESS, CONTROL_BOARD_ADDRESS, CLOSE_SHTER_APER_HT_CMND_LEN, 		close_shutter_aperture_height,	{(EXPECTED_CRC_CLOSE_SHTER_APER_HT & 0x00FF) , ((EXPECTED_CRC_CLOSE_SHTER_APER_HT & 0xFF00) >> 8)}, no_cmnd },
+	{DRIVE_BOARD_ADDRESS, CONTROL_BOARD_ADDRESS, CLOSE_SHTER_IGNORE_SENS_CMND_LEN, 	close_shutter_ignoring_sensors,	{(EXPECTED_CRC_CLOSE_SHTER_IGNORE_SENS & 0x00FF) , ((EXPECTED_CRC_CLOSE_SHTER_IGNORE_SENS & 0xFF00) >> 8)}, no_cmnd },
 
-	{DRIVE_BOARD_ADDRESS, CONTROL_BOARD_ADDRESS, STOP_SHUTTER_CMND_LEN, 	stop_shutter,		{(EXPECTED_CRC_STOP_SHUTTER & 0x00FF) , ((EXPECTED_CRC_STOP_SHUTTER & 0xFF00) >> 8)}, no_cmnd }, 
-	{DRIVE_BOARD_ADDRESS, CONTROL_BOARD_ADDRESS, GET_PARAM_CMND_LEN, 		get_parameter,		{(EXPECTED_CRC_GET_PARAM & 0x00FF) , ((EXPECTED_CRC_GET_PARAM & 0xFF00) >> 8)}, no_cmnd }, 
-	{DRIVE_BOARD_ADDRESS, CONTROL_BOARD_ADDRESS, SET_PARAM_CMND_LEN, 		set_parameter,		{(EXPECTED_CRC_SET_PARAM & 0x00FF) , ((EXPECTED_CRC_SET_PARAM & 0xFF00) >> 8)}, no_cmnd }, 
-	{DRIVE_BOARD_ADDRESS, CONTROL_BOARD_ADDRESS, FIRMWARE_UPGRADE_CMND_LEN,	firmware_upgrade,	{(EXPECTED_CRC_FIRMWARE_UPGRADE & 0x00FF) , ((EXPECTED_CRC_FIRMWARE_UPGRADE & 0xFF00) >> 8)}, no_cmnd }, 
+	{DRIVE_BOARD_ADDRESS, CONTROL_BOARD_ADDRESS, STOP_SHUTTER_CMND_LEN, 	stop_shutter,		{(EXPECTED_CRC_STOP_SHUTTER & 0x00FF) , ((EXPECTED_CRC_STOP_SHUTTER & 0xFF00) >> 8)}, no_cmnd },
+	{DRIVE_BOARD_ADDRESS, CONTROL_BOARD_ADDRESS, GET_PARAM_CMND_LEN, 		get_parameter,		{(EXPECTED_CRC_GET_PARAM & 0x00FF) , ((EXPECTED_CRC_GET_PARAM & 0xFF00) >> 8)}, no_cmnd },
+	{DRIVE_BOARD_ADDRESS, CONTROL_BOARD_ADDRESS, SET_PARAM_CMND_LEN, 		set_parameter,		{(EXPECTED_CRC_SET_PARAM & 0x00FF) , ((EXPECTED_CRC_SET_PARAM & 0xFF00) >> 8)}, no_cmnd },
+	{DRIVE_BOARD_ADDRESS, CONTROL_BOARD_ADDRESS, FIRMWARE_UPGRADE_CMND_LEN,	firmware_upgrade,	{(EXPECTED_CRC_FIRMWARE_UPGRADE & 0x00FF) , ((EXPECTED_CRC_FIRMWARE_UPGRADE & 0xFF00) >> 8)}, no_cmnd },
 	{DRIVE_BOARD_ADDRESS, CONTROL_BOARD_ADDRESS, GET_ERROR_LIST_CMND_LEN, 	get_error_list,		{(EXPECTED_CRC_GET_ERROR_LIST & 0x00FF) , ((EXPECTED_CRC_GET_ERROR_LIST & 0xFF00) >> 8)}, no_cmnd },
 	//	Added on 03 FEB 2015 to implement user control on power up calibration
 	{DRIVE_BOARD_ADDRESS, CONTROL_BOARD_ADDRESS, START_POWER_ON_CALIBRATION_CMND_LEN,	start_power_on_calibraion,	{(EXPECTED_CRC_START_POWER_ON_CALIBRATION & 0x00FF) , ((EXPECTED_CRC_START_POWER_ON_CALIBRATION & 0xFF00) >> 8)}, no_cmnd },
 	{DRIVE_BOARD_ADDRESS, CONTROL_BOARD_ADDRESS, STOP_POWER_ON_CALIBRATION_CMND_LEN,	stop_power_on_calibraion,	{(EXPECTED_CRC_STOP_POWER_ON_CALIBRATION & 0x00FF) , ((EXPECTED_CRC_STOP_POWER_ON_CALIBRATION & 0xFF00) >> 8)}, no_cmnd },
-	
-}; 
+//Added by AOYAGI_ST 20160418 for adding clean error function
+    {DRIVE_BOARD_ADDRESS, CONTROL_BOARD_ADDRESS, CLEAN_ERROR_CMND_LEN,	clean_error,	{(EXPECTED_CRC_CLEAN_ERROR & 0x00FF) , ((EXPECTED_CRC_CLEAN_ERROR & 0xFF00) >> 8)}, no_cmnd },
+    {DRIVE_BOARD_ADDRESS, CONTROL_BOARD_ADDRESS, CLEAN_APERTUREHEIGHT_CMND_LEN,	start_apertureHeight,	{(EXPECTED_CRC_APERTUREHEIGHT & 0x00FF) , ((EXPECTED_CRC_APERTUREHEIGHT & 0xFF00) >> 8)}, no_cmnd },
+};
 
 /******************************************************************************
  * readCmndFromCommBuffer
  *
- * This function reads the command from Control board (if any) in communication buffer  
- * Validation of the command also comes within the scope of this function. 
+ * This function reads the command from Control board (if any) in communication buffer
+ * Validation of the command also comes within the scope of this function.
  *
- * PARAMETER REQ:  none 
+ * PARAMETER REQ:  none
  *
- * RETURNS: TRUE if command received is valid 
+ * RETURNS: TRUE if command received is valid
  *
  * ERRNO: none
  ********************************************************************************/
 BOOL readCmndFromCommBuffer(VOID)
 {
-	UINT8 readData[COMMAND_RX_BUFFER_SIZE]; 
-	UINT8 dataLength = 0; 
-	
-	BOOL bCommandValid = FALSE; 
+	UINT8 readData[COMMAND_RX_BUFFER_SIZE];
+	UINT8 dataLength = 0;
+
+	BOOL bCommandValid = FALSE;
 	if(new_command_recd == uartCheckNewCommandReceived(APPL_ASSIGNED_UART_CHANNEL))
-	{		
-		if(processing != uCBCommand.stCBCommand.recdCmdState) // if currently a command is being processed, then return from here, wait 
+	{
+		if(processing != uCBCommand.stCBCommand.recdCmdState) // if currently a command is being processed, then return from here, wait
 		{
-			if(no_error == uartGetCommand(APPL_ASSIGNED_UART_CHANNEL, readData, &dataLength)) // this function call has read and erased the command from UART RX buffer 
+			if(no_error == uartGetCommand(APPL_ASSIGNED_UART_CHANNEL, readData, &dataLength)) // this function call has read and erased the command from UART RX buffer
 			{
-                bCommandValid = processCMDFromCB(readData, dataLength); 
+                bCommandValid = processCMDFromCB(readData, dataLength);
 			}
-		}		
+		}
 	}
 
-	return bCommandValid; 	
+	return bCommandValid;
 }
 
 BOOL processCMDFromCB(UINT8* readData, UINT8 dataLength)
 {
-	BOOL bCommandValid = FALSE; 
+	BOOL bCommandValid = FALSE;
 	UINT16 calculatedCRC = 0;
-	UINT8 index; 
-	BOOL bCommandFound = FALSE; 
-	
-	// save the command into local buffer, read command of byteCountRxBuffer bytes 
-	memcpy((char *)&uCBCommand.command[0], (char *)&readData[0], dataLength); 
-		
-	uCBCommand.stCBCommand.recdCmdState = new_cmd; 
-	calculatedCRC = crc16(readData, (uCBCommand.stCBCommand.dataLength-CRC_LENGTH), CRC_SEED); 
+	UINT8 index;
+	BOOL bCommandFound = FALSE;
 
-	// TBD - validate if we already read this command in the previous cycle, ->>>  this should not be done 
-	// we may receive back to back OPEN_SHUTTER_JOG for example 
+	// save the command into local buffer, read command of byteCountRxBuffer bytes
+	memcpy((char *)&uCBCommand.command[0], (char *)&readData[0], dataLength);
+
+	uCBCommand.stCBCommand.recdCmdState = new_cmd;
+	calculatedCRC = crc16(readData, (uCBCommand.stCBCommand.dataLength-CRC_LENGTH), CRC_SEED);
+
+	// TBD - validate if we already read this command in the previous cycle, ->>>  this should not be done
+	// we may receive back to back OPEN_SHUTTER_JOG for example
 
 
-	// also validate if command is as expected wrt byte sequences, and it's CRC 
+	// also validate if command is as expected wrt byte sequences, and it's CRC
 	for(index = 0; index < NUM_OF_CONTROL_BOARD_COMMANDS; index++)
 	{
 		if(uCBCommand.stCBCommand.commandName == constCBCommandList[index].commandName)
-		{	
-			bCommandFound = TRUE; 
+		{
+			bCommandFound = TRUE;
 
 			if((uCBCommand.stCBCommand.sourceAddr == constCBCommandList[index].sourceAddr)
 				&& (uCBCommand.stCBCommand.destAddr == constCBCommandList[index].destAddr)
-				&& (uCBCommand.stCBCommand.dataLength == constCBCommandList[index].dataLength)				
+				&& (uCBCommand.stCBCommand.dataLength == constCBCommandList[index].dataLength)
 				&& ((uCBCommand.command[uCBCommand.stCBCommand.dataLength - 2]) == ((calculatedCRC & 0xFF00) >> 8)) // CRC MSB
 				&& ((uCBCommand.command[uCBCommand.stCBCommand.dataLength - 1]) == (calculatedCRC & 0x00FF)) // CRC LSB
 				)
 			{
-				bCommandValid = TRUE; 	
-				// Clear Drive communication fault - CRC error 
+				bCommandValid = TRUE;
+				// Clear Drive communication fault - CRC error
 				uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveCommunicationFault.bits.crcError = FALSE;
-				break; 
+				break;
 			}
 
-			// this is required while testing with Hyperterm, not necc while testing with control board 
+			// this is required while testing with Hyperterm, not necc while testing with control board
 			// TBD start of debug code, to be removed later!!!!!!!!!!!!
 			// for POC, stop command CRC is not checked
 			// only for stop command, even if packet is transmitted correctly, it is recd with wrong CRC
 			//else if(uCBCommand.stCBCommand.commandName == stop_shutter)
 			//{
-			//	bCommandValid = TRUE; 	
+			//	bCommandValid = TRUE;
 			//	break;
 			//}
-			// end of debug code !!!!!		
+			// end of debug code !!!!!
 
-			else // command received is not valid 
+			else // command received is not valid
 			{
 				if(!(((uCBCommand.command[uCBCommand.stCBCommand.dataLength - 2]) == ((calculatedCRC & 0xFF00) >> 8)) // CRC MSB
 					&& ((uCBCommand.command[uCBCommand.stCBCommand.dataLength - 1]) == (calculatedCRC & 0x00FF))))
 				{
-					// Log Drive communication fault - CRC error 
-					uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveCommunicationFault.bits.crcError = TRUE;	
-					uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.crcCheckFailedCountA803++; 
+					// Log Drive communication fault - CRC error
+					uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveCommunicationFault.bits.crcError = TRUE;
+					uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.crcCheckFailedCountA803++;
 				}
-				else // invalid destination address and/ or data length 
+				else // invalid destination address and/ or data length
 				{
-					// Log Drive communication fault - command frame error 
+					// Log Drive communication fault - command frame error
 					uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveCommunicationFault.bits.commandFrameError = TRUE;
 				}
 
-				uCBCommand.stCBCommand.recdCmdState = invalid; 
-				break; 
+				uCBCommand.stCBCommand.recdCmdState = invalid;
+				break;
 			}
 		}
 	}
 
-	if(!bCommandFound) // invalid command 
+	if(!bCommandFound) // invalid command
 	{
 		uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveCommunicationFault.bits.commandFrameError = TRUE;
-		uCBCommand.stCBCommand.recdCmdState = invalid; 
+		uCBCommand.stCBCommand.recdCmdState = invalid;
 	}
-	else 
+	else
 	{
-		// Clear Drive communication fault - command frame error 
+		// Clear Drive communication fault - command frame error
 		uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveCommunicationFault.bits.commandFrameError = FALSE;
 	}
 
-	return bCommandValid; 
+	return bCommandValid;
 
 }
 
@@ -367,7 +377,7 @@ BOOL processCMDFromCB(UINT8* readData, UINT8 dataLength)
 /******************************************************************************
  * initCommandHandler
  *
- * This function initializes globals used by the command handler 
+ * This function initializes globals used by the command handler
  *
  * PARAMETER REQ: none
  *
@@ -377,25 +387,25 @@ BOOL processCMDFromCB(UINT8* readData, UINT8 dataLength)
  ********************************************************************************/
 VOID initCommandHandler(VOID)
 {
-	UINT8 index; 
+	UINT8 index;
 
-    txInProgress = FALSE; 
-    
-	// initialize the current command to all zero 
+    txInProgress = FALSE;
+
+	// initialize the current command to all zero
 	for(index = 0; index < (COMMAND_RX_BUFFER_SIZE + CMD_STATE_SIZE); index++)
 	{
-		uCBCommand.command[index] = 0; 
+		uCBCommand.command[index] = 0;
 	}
 
-	initUARTBuffers(); 
+	initUARTBuffers();
 
     PORTCbits.RC4 = 0;
-    
-	configureUART(APPL_ASSIGNED_UART_CHANNEL); 
 
-	txAnomalyHistInProgress = FALSE; 
+	configureUART(APPL_ASSIGNED_UART_CHANNEL);
 
-		
+	txAnomalyHistInProgress = FALSE;
+
+
 }
 
 VOID checkSerialTxCompleted(VOID)
@@ -412,7 +422,7 @@ VOID checkSerialTxCompleted(VOID)
 /******************************************************************************
  * CommandHandler
  *
- * This function implements the command handler 
+ * This function implements the command handler
  *
  * PARAMETER REQ: none
  *
@@ -422,15 +432,17 @@ VOID checkSerialTxCompleted(VOID)
  ********************************************************************************/
 VOID commandHandler(VOID)
 {
-	unsigned char status = no_reply_reqd; 
-	UINT32 parameter = 0; 
+	unsigned char status = no_reply_reqd;
+	UINT32 parameter = 0;
     UINT32 rdParameter = 0;
-	UINT16 paramIndex = 0; 
-	BOOL result = FALSE; 
-	UINT8 byteCount = 0; 
+	UINT16 paramIndex = 0;
+	BOOL result = FALSE;
+	UINT8 byteCount = 0;
     BOOL faultTrgFlag = FALSE;
+    UINT8 uart_cmd=0;
+    BOOL flag_uart_cmd=FALSE;
     //DWORD delayCnt = 0x2492; //2ms delay
-	
+
 	//if((txInProgress == TRUE) && (stTxRxBuffer[0].uchTxBufferByteCount == 0))
     //{
     //    while(delayCnt--);
@@ -438,71 +450,101 @@ VOID commandHandler(VOID)
     //    txInProgress = FALSE;
     //}
 
-    //if(!readCmndFromCommBuffer()) // command is invalid 
+    //if(!readCmndFromCommBuffer()) // command is invalid
     //{
     //    if(invalid == uCBCommand.stCBCommand.recdCmdState)
     //    {
     //        // what do we do with invalid commands? we have already raised CRC/ UART fault, so we do nothing here
     //        // simply reply with ACK, and then overwrite this command when next one comes
-    //        status = nack; 
+    //        status = nack;
     //    }
     //}
-    
-    if(readCmndFromCommBuffer())
+
+   flag_uart_cmd=readCmndFromCommBuffer();
+    if((flag_uart_cmd)||((FLAG_CMD_open_shutter==1)&&(TIME_CMD_open_shutter==0)&&(TIME_CMD_close_shutter==0)))
     {
-        if(new_cmd == uCBCommand.stCBCommand.recdCmdState)
+        if((new_cmd == uCBCommand.stCBCommand.recdCmdState)||((FLAG_CMD_open_shutter==1)&&(TIME_CMD_open_shutter==0)&&(TIME_CMD_close_shutter==0)))
         {
             status = ack;
-            switch(uCBCommand.stCBCommand.commandName)
+            if(flag_uart_cmd==TRUE)uart_cmd=uCBCommand.stCBCommand.commandName;
+            else uart_cmd=CMD_open_shutter;
+            switch(uart_cmd)
             {
-                case run_drive:  
+                case run_drive:
                     // This command is for future usage, no implementation as of now
                     status = nack;
-                    
-                    break; 
-                    
+
+                    break;
+
                 case stop_drive:
                     // This command is for future usage, no implementation as of now
                     status = nack;
-                    
-                    break; 
-                    
-                case stopping_drive_comm: 
+
+                    break;
+
+                case stopping_drive_comm:
                         //This command is not required
                         status = nack;
-                        
-                    break; 
-                    
+
+                    break;
+
                 case start_install:
                         startInstallation();
-                        
+                        /*************add 20161017 start************************/
+                            inputFlags.value = STOP_SHUTTER;
+                            rampCurrentState = RAMP_STOP;
+                            gui8StopKeyPressed = 1;
+                            stopShutter();
+                        /*************add 20161017 end************************/
                     break;
-                    
-                case confirm_sub_state_install:    						
-                    if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveInstallation) 
+                case  start_apertureHeight:
+                       startApertureHeight();
+                        /*************add 20161017 start************************/
+                            inputFlags.value = STOP_SHUTTER;
+                            rampCurrentState = RAMP_STOP;
+                            gui8StopKeyPressed = 1;
+                            stopShutter();
+                        /*************add 20161017 end************************/
+                    break;
+
+                case confirm_sub_state_install:
+                    if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveInstallation)
                     {
-                        shutterInstall.enterCmdRcvd = TRUE;							
+                        if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveInstallationStatus.bits.installA100 == TRUE)    /*******20160914 bug_No.99      start*********/
+                        {
+                            if(originSensorSts)
+                               shutterInstall.enterCmdRcvd = TRUE;
+                            else status = nack;
+                        }
+                        else                                                                                                        /*******20160914 bug_No.99      end*********/
+                        shutterInstall.enterCmdRcvd = TRUE;
                     }
-                    else 
+                    else
                     {
-                        
+
                         status = nack;
-                    }	
-                    
+                    }
+
                     break;
-                    
+
                 case open_shutter:
                     //If is at upper limit then do not process command
+                    if((TIME_CMD_open_shutter==0)&&(TIME_CMD_close_shutter==0))
+                    {
+                        FLAG_CMD_open_shutter=0;
                     if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveReady)
                     {
 						//instruct function for to not scan PE sensor - YG - Nov 2015
-                        faultTrgFlag = readCurrSensorState(FALSE);
-                        
+                        faultTrgFlag = readCurrSensorState(FALSE)
+                        				| uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.powerFail;
+
                         if(faultTrgFlag == FALSE)
-                        {                            
-                            if(!uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterUpperLimit)
+                        {
+                            if((!uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterUpperLimit)&&(inputFlags.value!=OPEN_SHUTTER))
                             {
-                                inputFlags.value = OPEN_SHUTTER; 
+                                inputFlags.value = OPEN_SHUTTER;
+                                rampStatusFlags.rampOpenInProgress = 0;   //20160906 bug_No.87
+                                TIME_CMD_open_shutter = 100;
                                 //if shutter is moving then calculate min distance travel required.
                                 if(rampOutputStatus.shutterMoving)
                                 {
@@ -521,13 +563,17 @@ VOID commandHandler(VOID)
                         else
                         {
                             status = nack;
-                        }                        
+                        }
                     }
                     else
                     {
                         status = nack;
                     }
-                    
+                    }
+                    else {
+                        FLAG_CMD_open_shutter=1;
+                        CMD_open_shutter=open_shutter;
+                    }
                     break;
                 case open_shutter_jog:
                     //Check if we have received Jog or inch command
@@ -564,11 +610,19 @@ VOID commandHandler(VOID)
                     break;
                 case open_shutter_aperture_height:
                     //If shutter is at upper limit then do not process command
+                    if((TIME_CMD_open_shutter==0)&&(TIME_CMD_close_shutter==0))
+                    {
+                        FLAG_CMD_open_shutter=0;
                     if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveReady)
                     {
-                        if(!uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterApertureHeight)
+                        //if(!uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterApertureHeight)
+                            if(((uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterLowerLimit ||
+                           uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterBetweenLowlmtAphgt))&&(inputFlags.value!=OPEN_SHUTTER_APERTURE))
                         {
-                            inputFlags.value = OPEN_SHUTTER_APERTURE; 
+                            if(FLAG_StartApertureCorrection==1){FLAG_StartApertureCorrection++;inputFlags.value = OPEN_SHUTTER; }   //bug_No.12
+                            else if(FLAG_StartApertureCorrection>1){FLAG_StartApertureCorrection=0;inputFlags.value = OPEN_SHUTTER_APERTURE;}
+                            else inputFlags.value = OPEN_SHUTTER_APERTURE;
+                            TIME_CMD_open_shutter = 100;
                             bUpApertureCmdRecd = TRUE;
                             //if shutter is moving then calculate min distance travel required.
                             if(rampOutputStatus.shutterMoving)
@@ -585,20 +639,30 @@ VOID commandHandler(VOID)
                     {
                         status = nack;
                     }
-                    
+                    }
+                    else {
+                        FLAG_CMD_open_shutter=1;
+                        CMD_open_shutter=open_shutter;
+                    }
                     break;
                 case close_shutter:
+                case close_shutter_aperture_height:			// 2016/11/28 ADD close aperture height NG
+                    FLAG_CMD_open_shutter=0;
+                    if((TIME_CMD_open_shutter==0)&&(TIME_CMD_close_shutter==0))
+                    {
                     //If shutter is at lower limit then do not process command
                     if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveReady)
                     {
 						//instruct function for to not scan PE sensor - YG - Nov 2015
-                        faultTrgFlag = readCurrSensorState(TRUE);
-                        
+                        faultTrgFlag = readCurrSensorState(TRUE)
+                        				| uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.powerFail;
+
                         if(faultTrgFlag == FALSE)
                         {
                             if(!uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterLowerLimit)
                             {
-                                inputFlags.value = CLOSE_SHUTTER; 
+                                inputFlags.value = CLOSE_SHUTTER;
+                                TIME_CMD_close_shutter=160;   //20160907  bug_No.107
                                 //if shutter is moving then calculate min distance travel required.
                                 if(rampOutputStatus.shutterMoving)
                                 {
@@ -623,7 +687,8 @@ VOID commandHandler(VOID)
                     {
                         status = nack;
                     }
-
+                    }
+                    else status =no_reply_reqd;
                     break;
                 case close_shutter_jog:
                     //Check if we have received Jog or inch command
@@ -658,18 +723,24 @@ VOID commandHandler(VOID)
                     }
 
                     break;
+/* 2016/11/28 close aperture height NG
                 case close_shutter_aperture_height:
                     //If shutter is at upper limit then do not process command
+                    FLAG_CMD_open_shutter=0;
+                    if((TIME_CMD_open_shutter==0)&&(TIME_CMD_close_shutter==0))
+                    {
                     if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveReady)
-                    {                        
-						//instruct function for to not scan PE sensor - YG - Nov 2015              
-                        faultTrgFlag = readCurrSensorState(TRUE);
-                        
+                    {
+						//instruct function for to not scan PE sensor - YG - Nov 2015
+                        faultTrgFlag = readCurrSensorState(TRUE)
+                        				| uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.powerFail;
+
                         if(faultTrgFlag == FALSE)
                         {
                             if(!uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterLowerLimit)
                             {
-                                inputFlags.value = CLOSE_SHUTTER_APERTURE; 
+                                inputFlags.value = CLOSE_SHUTTER_APERTURE;
+                                TIME_CMD_close_shutter=160;   //20160907  bug_No.107
                                 bDownApertureCmdRecd = TRUE;
                                 //if shutter is moving then calculate min distance travel required.
                                 if(rampOutputStatus.shutterMoving)
@@ -690,10 +761,12 @@ VOID commandHandler(VOID)
                     else
                     {
                         status = nack;
-                    }                    
+                    }
+                    }
+                    else status =no_reply_reqd;
                     break;
-                    
-                case close_shutter_ignoring_sensors: 
+*/
+                case close_shutter_ignoring_sensors:
 
                     if(!uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterLowerLimit)
                     {
@@ -703,9 +776,9 @@ VOID commandHandler(VOID)
                     {
                         status = nack;
                     }
-                    
-                    break; 
-                    
+
+                    break;
+
                 case stop_shutter:
                     //if shutter is already stopped then do not process the command
                     //if(!uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterStopped)
@@ -716,7 +789,7 @@ VOID commandHandler(VOID)
                     //{
                     //    status = nack;
                     //}
-                    
+                    FLAG_CMD_open_shutter=0;
                     inputFlags.value = STOP_SHUTTER;
                     //If drive is ready then travel min distance before stop
                     if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveReady)
@@ -726,30 +799,30 @@ VOID commandHandler(VOID)
 
 						// Minimum distance travel before reverse action is required open key press during down operation and vice versa
 						// The same is not required for stop operation as it increase delay while stoping action
-						// For same 'calcShtrMinDistValue' is commented - YG - NOV 15						
+						// For same 'calcShtrMinDistValue' is commented - YG - NOV 15
 						//calcShtrMinDistValue();
 
 						//	Set flag to indicate user has pressed stop key
 						gui8StopKeyPressed = 1;
-						stopShutter(); 
+						stopShutter();
                     }
-                        
-                    break; 
-                    
-                case get_parameter: 
-                        // Validation of parameter will take place, accordingly status can return with ACK or NACK 
+
+                    break;
+
+                case get_parameter:
+                        // Validation of parameter will take place, accordingly status can return with ACK or NACK
                         // NACK if i) Invalid parameter
                         //ii) Parameter read error from eeprom
-                        
+
                         paramIndex = (UINT16)(((UINT16)(uCBCommand.stCBCommand.commandDataWithCRC[PARAM_INDEX_MSB_LOCATION]) << 8)
                                         | (uCBCommand.stCBCommand.commandDataWithCRC[PARAM_INDEX_LSB_LOCATION]));
-                    
-                        result = getParameter(paramIndex, &parameter, &byteCount); 
+
+                        result = getParameter(paramIndex, &parameter, &byteCount);
                         if(!result)
                         {
                             status = nack;  // Invalid parameter
-                            // TBD set appropriate error flag 
-                            
+                            // TBD set appropriate error flag
+
                         }
                         else
                         {
@@ -759,10 +832,26 @@ VOID commandHandler(VOID)
                             {
                                 parameter = uDriveCommonBlockEEP.stEEPDriveCommonBlock.lowerStoppingPos_A101 - parameter;
                             }
-                            
-                            transmitParameter(parameter, paramIndex, byteCount); 
+
+                            if(paramIndex == 549)
+                            {
+                                parameter  = drive_fw_version;
+                            }
+                           if((paramIndex == 605)&&(FLAG_StartApertureCorrection>0))
+                            {
+                               if((parameter&0x00000040)==0x00000040)
+                               {
+                                   parameter=parameter&0xFFFFFFBF;
+                                   parameter=parameter|0x00000080;
+                               }
+                            }
+                            if((paramIndex == 605)&&((parameter&0x00200008)==0x00200008))
+                            {
+                                  parameter=parameter&0xFFFFFFF7;
+                            }
+                            transmitParameter(parameter, paramIndex, byteCount);
                         }
-                        
+
                         //if it is a status poll then reset sensor status
                         if(paramIndex == 610)
                         {
@@ -771,120 +860,132 @@ VOID commandHandler(VOID)
                                 resetSensorStatus();
                             }
                         }
-                        
-                    break; 
-                    
-                case set_parameter: 
-                        // Validation of parameter will take place, accordingly status can return with ACK or NACK 
 
-                        // NACK conditions are: 
+                    break;
+
+                case set_parameter:
+                        // Validation of parameter will take place, accordingly status can return with ACK or NACK
+
+                        // NACK conditions are:
                         // i) Invalid parameter
                         // ii) Parameter write error in eeprom
                         // iii) System is in 'Run' mode
                         if(!rampOutputStatus.shutterMoving)
                         {
                             paramIndex = (((UINT16)(uCBCommand.stCBCommand.commandDataWithCRC[PARAM_INDEX_MSB_LOCATION]) << 8)
-                                            | (UINT16)(uCBCommand.stCBCommand.commandDataWithCRC[PARAM_INDEX_LSB_LOCATION])); 
+                                            | (UINT16)(uCBCommand.stCBCommand.commandDataWithCRC[PARAM_INDEX_LSB_LOCATION]));
 
                             if(FOUR_BYTE_PARAM_FRAME_DATA_LEN == uCBCommand.stCBCommand.dataLength)
                             {
                                 parameter = (UINT32)(((UINT32)(uCBCommand.stCBCommand.commandDataWithCRC[PARAM_DATA_START_INDEX]) << 24)
                                             | ((UINT32)(uCBCommand.stCBCommand.commandDataWithCRC[PARAM_DATA_START_INDEX+1]) << 16)
-                                            | ((UINT32)(uCBCommand.stCBCommand.commandDataWithCRC[PARAM_DATA_START_INDEX+2]) << 8)	
+                                            | ((UINT32)(uCBCommand.stCBCommand.commandDataWithCRC[PARAM_DATA_START_INDEX+2]) << 8)
                                             | ((UINT32)(uCBCommand.stCBCommand.commandDataWithCRC[PARAM_DATA_START_INDEX+3]))
-                                            ); 
+                                            );
                             }
                             else if(TWO_BYTE_PARAM_FRAME_DATA_LEN == uCBCommand.stCBCommand.dataLength)
                             {
                                 parameter = (UINT16) (((UINT16)(uCBCommand.stCBCommand.commandDataWithCRC[PARAM_DATA_START_INDEX]) << 8)
                                             | (uCBCommand.stCBCommand.commandDataWithCRC[PARAM_DATA_START_INDEX+1])
-                                            ); 
+                                            );
                             }
-                            else if(ONE_BYTE_PARAM_FRAME_DATA_LEN == uCBCommand.stCBCommand.dataLength)	
+                            else if(ONE_BYTE_PARAM_FRAME_DATA_LEN == uCBCommand.stCBCommand.dataLength)
                             {
-                                parameter = (UINT8)(uCBCommand.stCBCommand.commandDataWithCRC[PARAM_DATA_START_INDEX]); 
-                            }	
-                            else // data length is incorrect 
+                                parameter = (UINT8)(uCBCommand.stCBCommand.commandDataWithCRC[PARAM_DATA_START_INDEX]);
+                            }
+                            else // data length is incorrect
                             {
-                                status = nack; 
-                                // TBD set appropriate error flag - none defined, upto CB to recover  
+                                status = nack;
+                                // TBD set appropriate error flag - none defined, upto CB to recover
 
-                                break; 
+                                break;
                             }
-                            
+
                             //if shutter parameter A106, A107 and A108 are requested then calculate it from
                             //lower limit
                             if((paramIndex == 106) || (paramIndex == 107) || (paramIndex == 108))
                             {
                                 parameter = uDriveCommonBlockEEP.stEEPDriveCommonBlock.lowerStoppingPos_A101 - parameter;
                             }
-                            
+
                             //Read the parameter and if the value is changed then only update in EEPROM
-                            result = getParameter(paramIndex, &rdParameter, &byteCount); 
+                            result = getParameter(paramIndex, &rdParameter, &byteCount);
                             if(rdParameter != parameter)
                             {
-                                result = setParameter(paramIndex, parameter); 
+                                result = setParameter(paramIndex, parameter);
                             }
                             else
                             {
                                 result = TRUE;
-                            }                           
-                            
+                            }
+
                             if(!result)
                             {
                                 status = nack;  // Invalid parameter
-                                // TBD set appropriate error flag - none defined, upto CB to recover 
-                                
+                                // TBD set appropriate error flag - none defined, upto CB to recover
+
                             }
                             else
                             {
-                                status = ack; // ACK to be sent to CB 
-                                
+                                status = ack; // ACK to be sent to CB
+
                                 //check if shutter type is changed if shutter type is changed then reset all parameters
                                 if(currShutterType != uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.shutterType_A537)
 								{
                                     uDriveApplBlockEEP.stEEPDriveApplBlock.initialValSetting_A021 = 1;
 								}
-                                
+
                                 //if snow mode time is changed then update sensor debounce time
                                 if(paramIndex == 8)
                                 {
                                     updatePhotoElectricDebounceTime();
                                 }
-                            }	
+                            }
                         }
-                        else 
+                        else
                         {
-                            status = nack; // shutter is moving 
+                            status = nack; // shutter is moving
                         }
-                    break; 
-                    
-                case firmware_upgrade: 
-                        // Validation of parameter will take place, accordingly status can return with ACK or NACK 
-                    break; 
-                    
-                case get_error_list: 
-                        // Validation of parameter will take place, accordingly status can return with ACK or NACK 
+                    break;
+
+                case firmware_upgrade:
+                        // Validation of parameter will take place, accordingly status can return with ACK or NACK
+                    break;
+
+                case get_error_list:
+                        // Validation of parameter will take place, accordingly status can return with ACK or NACK
                         // NACK if i) Empty error list
                         //ii) Read error from eeprom
-                        txAnomalyHistInProgress = TRUE;  
-                        
-                    break; 
-                    
-                case system_init_complete: 
+                        txAnomalyHistInProgress = TRUE;
+
+                    break;
+
+                case system_init_complete:
                         //This command is received when display and control board initialization gets completed
                         //Set the flag to set system initialization completed
                         sysInitCompleted = TRUE;
-                    break; 
-					
-				//	Added on 03 FEB 2015 to implement user control on power up calibration
-				case start_power_on_calibraion: 
-					//	Set global flag to indicate power on calibration is initiated by user from display board
-					powerOnCalibration = INITIATED;
                     break;
-					
+
 				//	Added on 03 FEB 2015 to implement user control on power up calibration
-				case stop_power_on_calibraion: 
+				case start_power_on_calibraion:
+					//	Set global flag to indicate power on calibration is initiated by user from display board
+                    if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.drivePowerOnCalibration ||
+                            uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveRuntimeCalibration)
+                    {
+                                        powerOnCalibration = INITIATED;
+                    }
+                    if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveInstallation)
+                    {
+                        ShutterInstallationEnabled = TRUE;
+                        //inputFlags.value = OPEN_SHUTTER_JOG_50;
+                        //shutterInstall.currentState = INSTALL_SEARCH_ORG;
+
+                        inputFlags.value = inputFlags_Installation.value;
+                    }
+                    break;
+
+				//	Added on 03 FEB 2015 to implement user control on power up calibration
+				case stop_power_on_calibraion:
 					//	Clear global flag to indicate power on calibration is cancelled by user from display board
 					//if shutter is already stopped then do not process the command
                     //if(!uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterStopped)
@@ -895,41 +996,107 @@ VOID commandHandler(VOID)
                     //{
                     //    status = nack;
                     //}
-                    
-                    inputFlags.value = STOP_SHUTTER;
+
+                                    inputFlags.value = STOP_SHUTTER;
                     //If drive is ready then travel min distance before stop
                     //if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveReady)
                     //{
                     //    calcShtrMinDistValue();
                     //}
-					
+
 					//	Set global flag to indicate power on calibration is terminated by user from display board
-					powerOnCalibration = TERMINATED;
+                    if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.drivePowerOnCalibration ||
+                            uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveRuntimeCalibration)
+                    {
+                                    powerOnCalibration = TERMINATED;
+                    }
+                    if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveInstallation)
+                    {
+                        ShutterInstallationEnabled = FALSE;
+                    }
                     break;
-                    
-                default: 
-                        // could not recognise the command, hence reply with NACK - code is not expected to come here 
-                        status = nack; // NACK to be sent to CB   
-                    break; 
+                    //added by AOYAGI_ST 20160418 for adding clean error function
+                case clean_error:
+                    if(!rampOutputStatus.shutterMoving)
+                    {
+                        if((uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorStall)||
+                           (uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorExceedingTorque)||
+                           (uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorSusOC)||
+                           (uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorPWMCosting)||
+
+                           (uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.osNotDetectUP)||           //bug_No.101  20160909
+                           (uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.osNotDetectDown)||
+                           (uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.osDetectOnUp)||
+                           (uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.osDetectOnDown)||
+                           (uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.osFailValidation))
+                        {
+                            uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorStall = FALSE;
+                            uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorExceedingTorque = FALSE;
+                            uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorSusOC = FALSE;
+                            uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorPWMCosting = FALSE;
+
+                            uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.osNotDetectUP = FALSE;      //bug_No.101  20160909
+                            uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.osNotDetectDown = FALSE;
+                            uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.osDetectOnUp = FALSE;
+                            uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.osDetectOnDown = FALSE;
+                            uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.osFailValidation = FALSE;
+                            //initSensorList();
+                            //initApplication();
+                            //initRampGenerator();
+                            //startRampGenerator();
+                            //transmitRestartComm();
+                            status = ack;
+                        }
+                        else
+                        {
+                            status = nack;
+                        }
+                    }
+                    /*if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorStall)
+                    {
+                        uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorStall = FALSE;
+                    }
+                    else if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorExceedingTorque)
+                    {
+                        uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorExceedingTorque = FALSE;
+                    }
+                    else if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorSusOC)
+                    {
+                        uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorSusOC = FALSE;
+                    }
+                    else if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorPWMCosting)
+                    {
+                        uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorPWMCosting = FALSE;
+                    }*/
+                    else
+                    {
+                        status = nack;
+                    }
+                    break;
+
+                default:
+                        // could not recognise the command, hence reply with NACK - code is not expected to come here
+                        status = nack; // NACK to be sent to CB
+                    break;
             }
 
 
-            // mark the command read and processing complete 
-            uCBCommand.stCBCommand.recdCmdState = complete; 
+            // mark the command read and processing complete
+            uCBCommand.stCBCommand.recdCmdState = complete;
 
-            // TBD - since the command processing is completed, we can now erase the same? - not necc, 
-            // as of now commented as this is handy for debugging 
-            //memcpy((UINT8 *)&uCBCommand.command[0], '\0', (COMMAND_RX_BUFFER_SIZE + CMD_STATE_SIZE)); 
+            // TBD - since the command processing is completed, we can now erase the same? - not necc,
+            // as of now commented as this is handy for debugging
+            //memcpy((UINT8 *)&uCBCommand.command[0], '\0', (COMMAND_RX_BUFFER_SIZE + CMD_STATE_SIZE));
 
-            if(ack == status)	// transmit ACK 
+            if(ack == status)	// transmit ACK
             {
-                transmitACK(TRUE); 
+                transmitACK(TRUE);
             }
-            else if(nack == status) // transmit NACK 
+            else if(nack == status) // transmit NACK
             {
-                transmitACK(FALSE); 
+                transmitACK(FALSE);
             }
-			
+
             //check parameter reset
             checkResetParameter();
         }
@@ -945,44 +1112,44 @@ VOID commandHandler(VOID)
 BOOL readCurrSensorState(BOOL scanPE_Sensor)
 {
     BOOL sts = FALSE;
-    
+
     if(microSwSensorTrigrd)
     {
         uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.microSwitch = TRUE;
         sts = TRUE;
     }
-    
+
 
     if(photoElecObsSensTrigrd && scanPE_Sensor == TRUE)
     {
         uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.peObstacle = TRUE;
         sts = TRUE;
     }
-    
+
     if(tempSensTrigrd)
     {
-        uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorOverheat = TRUE;  
+        uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorOverheat = TRUE;
         sts = TRUE;
     }
-    
+
     if(emergencySensorTrigrd)
     {
-        uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.emergencyStop = TRUE; 
+        uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.emergencyStop = TRUE;
         sts = TRUE;
     }
-    
+
     //if(OvercurrentfaultTrigrd)
     //{
-    //    uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorOverCurrent = TRUE; 
+    //    uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorOverCurrent = TRUE;
     //    sts = TRUE;
     //}
-    
+
     if(!originSensorDetected && uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterUpperLimit)
     {
         uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.osDetectOnUp = TRUE;
         sts = TRUE;
     }
-    
+
     if(originSensorDetected && uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterLowerLimit)
     {
         uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.osDetectOnDown = TRUE;
@@ -995,10 +1162,10 @@ BOOL readCurrSensorState(BOOL scanPE_Sensor)
 
 VOID transmitRestartComm(VOID)
 {
-	UINT16 crc = 0; 
-	UINT8 buffer[RESTART_DRIVE_COMM_CMND_LEN]; 
-	
-	buffer[0] = CONTROL_BOARD_ADDRESS; 
+	UINT16 crc = 0;
+	UINT8 buffer[RESTART_DRIVE_COMM_CMND_LEN];
+
+	buffer[0] = CONTROL_BOARD_ADDRESS;
 	buffer[1] = DRIVE_BOARD_ADDRESS;
 	buffer[2] = RESTART_DRIVE_COMM_CMND_LEN;
 	buffer[3] = RESTART_DRIVE_COMM_COMMAND;
@@ -1013,9 +1180,9 @@ VOID transmitRestartComm(VOID)
 /******************************************************************************
  * transmitACK
  *
- * This function implements ACK/ NACK replies from the Drive to the Control board  
+ * This function implements ACK/ NACK replies from the Drive to the Control board
  *
- * PARAMETER REQ: bReply - TRUE for ACK, FALSE for NACK 
+ * PARAMETER REQ: bReply - TRUE for ACK, FALSE for NACK
  *
  * RETURNS: none
  *
@@ -1025,12 +1192,12 @@ VOID transmitRestartComm(VOID)
 VOID transmitACK(BOOL bReply)
 {
 	// Call the serial function to send out ACK/ NACK
-	// Create a buffer with x bytes and pass to lower layer 
+	// Create a buffer with x bytes and pass to lower layer
 	UINT8 transmitBuf[LENGTH_OF_ACK_PACKET];
-	
+
 	if(bReply)
 	{
-		transmitBuf[0] = ASCII_ACK; 
+		transmitBuf[0] = ASCII_ACK;
 	}
 	else
 	{
@@ -1039,16 +1206,16 @@ VOID transmitACK(BOOL bReply)
 
 	uartSendTxBuffer(APPL_ASSIGNED_UART_CHANNEL, transmitBuf, LENGTH_OF_ACK_PACKET);
 
-	
+
 }
 
 
 VOID transmitDat(BYTE data)
 {
 	// Call the serial function to send out ACK/ NACK
-	// Create a buffer with x bytes and pass to lower layer 
+	// Create a buffer with x bytes and pass to lower layer
 	UINT8 transmitBuf[LENGTH_OF_ACK_PACKET];
-	
+
     transmitBuf[0] = data;
     uartSendTxBuffer(APPL_ASSIGNED_UART_CHANNEL, transmitBuf, LENGTH_OF_ACK_PACKET);
 }
@@ -1056,14 +1223,14 @@ VOID transmitDat(BYTE data)
 
 VOID transmitParameter(UINT32 data, UINT16 paramNumber, UINT8 byteCount)
 {
-	UINT8 replyPacket[MAX_GET_PARAMETER_REPLY_LENGTH]; 
-	UINT16 crc = 0; 
-	UINT8 index = 0; 
-	
-	//crc = crc16((UINT8*)&data, byteCount, CRC_SEED); 
-	replyPacket[index] = CONTROL_BOARD_ADDRESS; 
-	replyPacket[++index] = DRIVE_BOARD_ADDRESS; 
-	replyPacket[++index] = DATA_BYTE_COUNT + FRAME_HEADER_FOOTER_LENGTH; // + PARAM_OVERHEADS; 
+	UINT8 replyPacket[MAX_GET_PARAMETER_REPLY_LENGTH];
+	UINT16 crc = 0;
+	UINT8 index = 0;
+
+	//crc = crc16((UINT8*)&data, byteCount, CRC_SEED);
+	replyPacket[index] = CONTROL_BOARD_ADDRESS;
+	replyPacket[++index] = DRIVE_BOARD_ADDRESS;
+	replyPacket[++index] = DATA_BYTE_COUNT + FRAME_HEADER_FOOTER_LENGTH; // + PARAM_OVERHEADS;
 
 	//replyPacket[++index] = (UINT8)(paramNumber >> 8); // msb
 	//replyPacket[++index] = (UINT8)(paramNumber); // lsb;
@@ -1072,41 +1239,41 @@ VOID transmitParameter(UINT32 data, UINT16 paramNumber, UINT8 byteCount)
 
 	switch(byteCount)
 	{
-		case (sizeof(BYTE)): 
+		case (sizeof(BYTE)):
 			{
 				replyPacket[++index] = 0x00; // buffer
 				replyPacket[++index] = 0x00; // buffer
 				replyPacket[++index] = 0x00; // buffer
 				replyPacket[++index] = (UINT8)data;
 			}
-			break; 
-		case (sizeof(WORD)): 
+			break;
+		case (sizeof(WORD)):
 			{
 				replyPacket[++index] = 0x00; // buffer
 				replyPacket[++index] = 0x00; // buffer
 				replyPacket[++index] = (UINT8)(data >> 8); // msb
 				replyPacket[++index] = (UINT8)(data); // lsb;
 			}
-			break;  
-		case (sizeof(DWORD)): 
+			break;
+		case (sizeof(DWORD)):
 			{
 				replyPacket[++index] = (UINT8)(data >> 24);// msb
 				replyPacket[++index] = (UINT8)(data >> 16);
-				replyPacket[++index] = (UINT8)(data >> 8); 
+				replyPacket[++index] = (UINT8)(data >> 8);
 				replyPacket[++index] = (UINT8)(data); // lsb;
 			}
-			break; 
-		default: 
-			break; 
-	}; 
+			break;
+		default:
+			break;
+	};
 
-    crc = crc16(replyPacket, (index+1), CRC_SEED); 
-    
+    crc = crc16(replyPacket, (index+1), CRC_SEED);
+
 	replyPacket[++index] = (UINT8)(crc >> 8); // msb
 	replyPacket[++index] = (UINT8)(crc); // lsb
 
-    uartSendTxBuffer(APPL_ASSIGNED_UART_CHANNEL, replyPacket, (index+1));	
-	
+    uartSendTxBuffer(APPL_ASSIGNED_UART_CHANNEL, replyPacket, (index+1));
+
 }
 
 //*****************************************************************************

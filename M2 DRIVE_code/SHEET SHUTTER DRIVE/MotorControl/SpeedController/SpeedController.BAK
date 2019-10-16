@@ -42,13 +42,24 @@
 //#define PHASE_OFFSET_CCW 9840 //182 counts for 1 degree
 
 #ifdef USE_PHASE_INC_AND_CORRECTION
-#define PHASE_OFFSET_CW 364 //measured offset is 364*(360/65536) = 2 degrees.
+#define PHASE_OFFSET_CW 2366//2366//6916//364 //measured offset is 364*(360/65536) = 2 degrees.
 //#define PHASE_OFFSET_CW  1092  // 6 degrees.
-#define PHASE_OFFSET_CCW 9828 // Fukui result - 54 degree 10192
+#define PHASE_OFFSET_CCW 9828//5096//8008//9828 // Fukui result - 54 degree 10192
+#define PHASE_OFFSET_CW_MAX 6916
+#define PHASE_OFFSET_CCW_MAX 9828 //5096     //2016/08/17 Down Moving after Over Current by IME
+#define PHASE_OFFSET_INC_STEP 1
+#define PHASE_OFFSET_DEC_STEP 20
 #else
 #define PHASE_OFFSET_CW 10000
 #define PHASE_OFFSET_CCW 0
 #endif
+
+#define SPD_CAL_FOR_PHASEADVANCE    (int)((float)((((float)(measuredSpeed / 60) * NO_POLEPAIRS) * 360) / 1000))
+#define MAX_PH_ADV_DEG      1
+#define MAX_PH_ADV 		(int)(((float)MAX_PH_ADV_DEG / 360.0) * 65536.0)
+UINT16 PhaseAdvance;
+
+
 /*******************************************************************************/
 /* These Phase values represent the base Phase value of the sinewave for each  */
 /* one of the sectors (each sector is a translation of the hall effect sensors */
@@ -66,7 +77,8 @@
                             /* transitions and Forcing steps according to the */
                             /* actual position of the motor */
 
-#define MS_500T 5000         /* after this time has elapsed, the motor is    */
+// 2016/3/3 Motor Stal & PWM Cost
+#define MS_500T 10000//5000//1000//300//500          /* after this time has elapsed, the motor is    */
                             /* consider stalled and it's stopped    */
 
 /* PI parameters */
@@ -85,6 +97,7 @@ SHORT phaseOffsetCCW = PHASE_OFFSET_CCW;
 
 /* Period filter for speed measurement */
 DWORD periodFilter;
+// 2016/3/3 Motor Stal & PWM Cost
 int	cnt_motor_stop = 0;
 
 /* Constants used for properly energizing the motor depending on the rotor's position */
@@ -159,6 +172,9 @@ SHORT nextSectorNo;
 SHORT previousSectorNo;
 SHORT phaseInc;
 
+BOOL  FLAG_overLoad =FALSE;
+WORD  OverLoad_cnt=0;
+
 /* This function is used to measure actual running speed of motor */
 VOID measureActualSpeed(VOID);
 
@@ -192,11 +208,10 @@ void __attribute__((interrupt, no_auto_psv)) _T1Interrupt (void)
 	measureActualSpeed();
 
 // 2016/3/3 Motor Stal & PWM Cost
-	if(++cnt_motor_stop>CNT_10MS*4)
-	{
-		measuredSpeed = 0;
-		cnt_motor_stop = CNT_10MS*4;
-	}
+ if(cnt_motor_stop>10)
+ {
+    measuredSpeed = 0;
+ }
 
 #ifdef ENABLE_MOTOR_CABLE_FAULT
 	// **********************************************************************************************************************************************************
@@ -205,7 +220,7 @@ void __attribute__((interrupt, no_auto_psv)) _T1Interrupt (void)
 	// If user press down button when shutter is not at lower limit and motor cable has some connection issue, which result shutter to fall down wih high speed
 
 #define		MTR_CABLE_FAULT_TOP_UP_SPEED_VALUE_TO_S1_DOWN	500  // it is an top speed to S1 down speed to declare "motor cable fault" error
-#define		MTR_CABLE_FAULT_MONITOR_TIME					100         // it is an time period in msec for which "motor cable fault" error needs to monitor,
+#define		MTR_CABLE_FAULT_MONITOR_TIME					500//250         // it is an time period in msec for which "motor cable fault" error needs to monitor,
 	// before stoping the motor and declaring the error
 	// max limit = 250 msec
 
@@ -488,6 +503,9 @@ void __attribute__((interrupt, no_auto_psv)) _IC2Interrupt (void)
 
     IFS0bits.IC2IF = 0;
 
+	// 2016/3/3 Motor Stal & PWM Cost
+	cnt_motor_stop = 0;
+
     currentSector = getCurrentSectorNo();
 
     /* This MUST be done for getting around the HW slow rate */
@@ -606,16 +624,49 @@ void __attribute__((interrupt, no_auto_psv)) _IC3Interrupt (void)
 #ifdef USE_PHASE_INC_AND_CORRECTION
 VOID calculatePhaseValue(WORD sectorNo)
 {
+    if(measuredSpeed >= 500)
+    {    
+        if(requiredDirection == CW)
+        {
+            if(phaseOffsetCW < PHASE_OFFSET_CW_MAX)
+                phaseOffsetCW  += PHASE_OFFSET_INC_STEP;
+            if(phaseOffsetCW >= PHASE_OFFSET_CW_MAX)
+                phaseOffsetCW = PHASE_OFFSET_CW_MAX;  
+        }
+        else if(requiredDirection == CCW)
+        {
+            if(phaseOffsetCCW > PHASE_OFFSET_CCW_MAX)
+                phaseOffsetCCW  -= PHASE_OFFSET_INC_STEP;
+            if(phaseOffsetCCW <= PHASE_OFFSET_CCW_MAX)
+                phaseOffsetCCW = PHASE_OFFSET_CCW_MAX;
+        }
+    }
+    else
+    {
+        if(phaseOffsetCW > PHASE_OFFSET_CW)
+            phaseOffsetCW -= PHASE_OFFSET_DEC_STEP;
+        if(phaseOffsetCW <= PHASE_OFFSET_CW)
+            phaseOffsetCW = PHASE_OFFSET_CW;
+        if(phaseOffsetCCW < PHASE_OFFSET_CCW)
+            phaseOffsetCCW += PHASE_OFFSET_DEC_STEP;
+        if(phaseOffsetCCW >= PHASE_OFFSET_CCW)
+            phaseOffsetCCW = PHASE_OFFSET_CCW;
+    }
+    
     /* Motor commutation is actually based on the required direction, not */
     /* the current dir. This allows driving the motor in four quadrants */
     if(((controlOutput >= 0) && (requiredDirection == CW)) || ((controlOutput < 0) && (requiredDirection == CCW)))
     {
-        tmpQu = __builtin_divmodud((DWORD)sector, (WORD)SECTOR_END, &tmpRe);
+        tmpQu = __builtin_divmodud((DWORD)sectorNo, (WORD)SECTOR_END, &tmpRe);
         //Use phase offset calculation only when shutter moving up and DC injection not applied
+//        if((requiredDirection == CW) && (!rampStatusFlags.rampDcInjectionOn))
+//            phaseCopy = phase = phaseValues[tmpRe] + (phaseOffsetCW + phaseValue);
+//        else
+//			phaseCopy = phase = phaseValues[tmpRe] + phaseOffsetCW;
         if((requiredDirection == CW) && (!rampStatusFlags.rampDcInjectionOn))
-            phaseCopy = phase = phaseValues[tmpRe] + (phaseOffsetCW + phaseValue);
+            phaseCopy = phase = phaseValues[tmpRe] + phaseOffsetCW;
         else
-			phaseCopy = phase = phaseValues[tmpRe] + phaseOffsetCW;
+			phaseCopy = phase = phaseValues[tmpRe] + phaseOffsetCW;// + phaseValue;
 
         phaseIncFlg = PHASE_INCREMENT_FLAG;
     }
@@ -623,13 +674,16 @@ VOID calculatePhaseValue(WORD sectorNo)
     {
         /* For CCW an offset must be added to compensate difference in */
         /* symmetry of the sine table used for CW and CCW */
-        tmpQu = __builtin_divmodud((DWORD)(sector + SECTOR_THREE), (WORD)SECTOR_END, &tmpRe);
+        tmpQu = __builtin_divmodud((DWORD)(sectorNo + SECTOR_THREE), (WORD)SECTOR_END, &tmpRe);
         //Use phase offset calculation only when shutter moving up
+//        if((requiredDirection == CW) && (!rampStatusFlags.rampDcInjectionOn))
+//            phaseCopy = phase = phaseValues[tmpRe]+ (phaseOffsetCCW - phaseValue);
+//        else
+//            phaseCopy = phase = phaseValues[tmpRe]+ phaseOffsetCCW;
         if((requiredDirection == CW) && (!rampStatusFlags.rampDcInjectionOn))
             phaseCopy = phase = phaseValues[tmpRe]+ (phaseOffsetCCW - phaseValue);
         else
-            phaseCopy = phase = phaseValues[tmpRe]+ phaseOffsetCCW;
-
+            phaseCopy = phase = phaseValues[tmpRe] + phaseOffsetCCW;// + phaseValue;
         phaseIncFlg = PHASE_DECREMENT_FLAG;
     }
 }
@@ -683,17 +737,35 @@ VOID measureActualSpeed(VOID)
 	periodFilter = periodStateVar>>15;
 	measuredSpeed = __builtin_divud(SPEED_RPM_CALC,periodFilter);
     phaseInc = __builtin_divud(PHASE_INC_CALC,periodFilter);
+    
+    register int a_reg asm("A");
+    a_reg = __builtin_mpy(MAX_PH_ADV,SPD_CAL_FOR_PHASEADVANCE , 0,0,0,0,0,0);//SPD_CAL_FOR_PHASEADVANCE
+    PhaseAdvance = __builtin_sac(a_reg,0);
+    if(requiredDirection == CCW)
+        PhaseAdvance = -PhaseAdvance;  
 }
 
 VOID speedControl(VOID)
 {
+     //***********************20160906_add over load start************************    
+    SHORT  refSpeed_80_pct;   
+    refSpeed_80_pct = refSpeed*5/10;     //50%
+    if((measuredSpeed < refSpeed_80_pct)&&(FLAG_overLoad == FALSE))
+    {
+        OverLoad_cnt++;
+        if(OverLoad_cnt>1500) FLAG_overLoad = TRUE;     //1500ms
+    }
+    else OverLoad_cnt = 0;
+    if((flags.motorRunning ==0)||(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveInstallation)) FLAG_overLoad = FALSE;
+    if(FLAG_overLoad == TRUE)refSpeed = refSpeed/2;   //50%
+    //**********************20160906_add over load end **************************   
+    
+    
     speedPIparms.qInRef = refSpeed;
     speedPIparms.qInMeas = measuredSpeed;
 
-
-
-    if(uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.shutterType_A537 == BEAD_SHUTTER)
-    {
+//    if(uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.shutterType_A537 == BEAD_SHUTTER)
+//    {
         if(requiredDirection == CW)
         {
             speedPIparms.qOutMax = currentLimitClamp;
@@ -701,12 +773,12 @@ VOID speedControl(VOID)
         }
         else
         {
-            speedPIparms.qOutMax = 5000;
+            speedPIparms.qOutMax = currentLimitClamp;
             speedPIparms.qOutMin = -(currentLimitClamp);
         }
-    }
-    else if (uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.shutterType_A537 == M1_SHUTTER)
-    {
+//    }
+//    else if (uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.shutterType_A537 == M1_SHUTTER)
+//    {
 
 		//if(requiredDirection == CW)
         //{
@@ -716,7 +788,7 @@ VOID speedControl(VOID)
 
         //speedPIparms.qOutMax = currentLimitClamp;
         //speedPIparms.qOutMin = -(currentLimitClamp);
-    }
+//    }
 
 
 	#if 1
@@ -730,7 +802,7 @@ VOID speedControl(VOID)
 
     if(rampStatusFlags.rampMaintainHoldingDuty)
     {
-        if(measuredSpeed < SHUTTER_SPEED_MIN)
+        if(measuredSpeed < SHUTTER_SPEED_MIN_STOP)
         {
             controlOutput += HOLDING_DUTY_INC;
         }
@@ -753,6 +825,10 @@ VOID speedControl(VOID)
 
         if(flags.speedControl)
             controlOutput = speedPIparms.qOut;
+        //***********************20160906_add over load start************************
+            if(FLAG_overLoad == TRUE)
+                controlOutput = controlOutput/2;    //50%
+        //**********************20160906_add over load end **************************        
     }
 
     //calculate percentage duty
@@ -781,18 +857,18 @@ VOID initSpeedControllerVariables(VOID)
     hall2Triggered = 0;
     totalTimePeriod = 0;
     measuredSpeed = 0;
-    if(uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.shutterType_A537 == BEAD_SHUTTER)
-    {
-        if(requiredDirection == CW)
-        {
-            controlOutput = SHUTTER_LOAD_HOLDING_DUTY;
-        }
-        else
-        {
-            controlOutput = 0;
-        }
-    }
-    else if (uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.shutterType_A537 == M1_SHUTTER)
+//    if(uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.shutterType_A537 == BEAD_SHUTTER)
+//    {
+//        if(requiredDirection == CW)
+//        {
+//            controlOutput = SHUTTER_LOAD_HOLDING_DUTY;
+//        }
+//        else
+//        {
+//            controlOutput = 0;
+//        }
+//    }
+//    else if (uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.shutterType_A537 == M2_SHUTTER)
         controlOutput = SHUTTER_LOAD_HOLDING_DUTY;
 
     period = MAXPERIOD;
@@ -844,13 +920,13 @@ VOID initSpeedControllerVariables(VOID)
         P_gain = uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.current_PI_KP_A514 * 100;
         I_gain = uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.current_PI_KI_A515 * 10;
 
-        if(uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.shutterType_A537 == BEAD_SHUTTER)
-        {
-            //initPiNew(&speedPIparms,P_SPEED_PI_CCW,I_SPEED_PI_CCW,C_SPEED_PI,5000,-(currentLimitClamp),0);
-            initPiNew(&speedPIparms,P_gain,I_gain,C_SPEED_PI,5000,-(currentLimitClamp),0);
-        }
-        else if (uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.shutterType_A537 == M1_SHUTTER)
-        {
+//        if(uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.shutterType_A537 == BEAD_SHUTTER)
+//        {
+//            //initPiNew(&speedPIparms,P_SPEED_PI_CCW,I_SPEED_PI_CCW,C_SPEED_PI,5000,-(currentLimitClamp),0);
+//            initPiNew(&speedPIparms,P_gain,I_gain,C_SPEED_PI,5000,-(currentLimitClamp),0);
+//        }
+//        else if (uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.shutterType_A537 == M2_SHUTTER)
+//        {
             //initPiNew(&speedPIparms,P_SPEED_PI_CCW,I_SPEED_PI_CCW,C_SPEED_PI,5000,-(currentLimitClamp),0);
             //initPiNew(&speedPIparms,P_gain,I_gain,C_SPEED_PI,currentLimitClamp,-(currentLimitClamp),0);
 
@@ -866,7 +942,7 @@ VOID initSpeedControllerVariables(VOID)
 
 			 // initPiNew(&speedPIparms,P_gain,I_gain,C_SPEED_PI,5000,-(currentLimitClamp),0);
 			 initPiNew(&speedPIparms,P_gain,I_gain,C_SPEED_PI,lshcurrentLimitClampNew,-(lshcurrentLimitClampNew),0);
-        }
+//        }
     }
 }
 

@@ -84,10 +84,10 @@
 #define EXPECTED_CRC_START_POWER_ON_CALIBRATION				0x7792
 #define EXPECTED_CRC_STOP_POWER_ON_CALIBRATION				0x76D2
 //Added by AOYAGI_ST 20160418 for clean error
-#define EXPECTED_CRC_CLEAN_ERROR                0xB253   
-#define EXPECTED_CRC_APERTUREHEIGHT                0x7292 
+#define EXPECTED_CRC_CLEAN_ERROR                0xB253
+#define EXPECTED_CRC_APERTUREHEIGHT                0x7292
 
-CONST UINT32 drive_fw_version = 0x00000400;
+CONST UINT32 drive_fw_version = 0x00000404;
 
 enum {
 	no_error = 0,
@@ -253,7 +253,7 @@ const _stCBCommand constCBCommandList[NUM_OF_CONTROL_BOARD_COMMANDS] =
 	{DRIVE_BOARD_ADDRESS, CONTROL_BOARD_ADDRESS, STOP_POWER_ON_CALIBRATION_CMND_LEN,	stop_power_on_calibraion,	{(EXPECTED_CRC_STOP_POWER_ON_CALIBRATION & 0x00FF) , ((EXPECTED_CRC_STOP_POWER_ON_CALIBRATION & 0xFF00) >> 8)}, no_cmnd },
 //Added by AOYAGI_ST 20160418 for adding clean error function
     {DRIVE_BOARD_ADDRESS, CONTROL_BOARD_ADDRESS, CLEAN_ERROR_CMND_LEN,	clean_error,	{(EXPECTED_CRC_CLEAN_ERROR & 0x00FF) , ((EXPECTED_CRC_CLEAN_ERROR & 0xFF00) >> 8)}, no_cmnd },
-    {DRIVE_BOARD_ADDRESS, CONTROL_BOARD_ADDRESS, CLEAN_APERTUREHEIGHT_CMND_LEN,	start_apertureHeight,	{(EXPECTED_CRC_APERTUREHEIGHT & 0x00FF) , ((EXPECTED_CRC_APERTUREHEIGHT & 0xFF00) >> 8)}, no_cmnd },     
+    {DRIVE_BOARD_ADDRESS, CONTROL_BOARD_ADDRESS, CLEAN_APERTUREHEIGHT_CMND_LEN,	start_apertureHeight,	{(EXPECTED_CRC_APERTUREHEIGHT & 0x00FF) , ((EXPECTED_CRC_APERTUREHEIGHT & 0xFF00) >> 8)}, no_cmnd },
 };
 
 /******************************************************************************
@@ -494,8 +494,8 @@ VOID commandHandler(VOID)
                             inputFlags.value = STOP_SHUTTER;
                             rampCurrentState = RAMP_STOP;
                             gui8StopKeyPressed = 1;
-                            stopShutter();  
-                        /*************add 20161017 end************************/ 
+                            stopShutter();
+                        /*************add 20161017 end************************/
                     break;
                 case  start_apertureHeight:
                        startApertureHeight();
@@ -503,20 +503,20 @@ VOID commandHandler(VOID)
                             inputFlags.value = STOP_SHUTTER;
                             rampCurrentState = RAMP_STOP;
                             gui8StopKeyPressed = 1;
-                            stopShutter();  
-                        /*************add 20161017 end************************/                        
+                            stopShutter();
+                        /*************add 20161017 end************************/
                     break;
-                    
+
                 case confirm_sub_state_install:
                     if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveInstallation)
                     {
                         if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveInstallationStatus.bits.installA100 == TRUE)    /*******20160914 bug_No.99      start*********/
                         {
                             if(originSensorSts)
-                               shutterInstall.enterCmdRcvd = TRUE;	
+                               shutterInstall.enterCmdRcvd = TRUE;
                             else status = nack;
                         }
-                        else                                                                                                        /*******20160914 bug_No.99      end*********/                        
+                        else                                                                                                        /*******20160914 bug_No.99      end*********/
                         shutterInstall.enterCmdRcvd = TRUE;
                     }
                     else
@@ -612,16 +612,16 @@ VOID commandHandler(VOID)
                     //If shutter is at upper limit then do not process command
                     if((TIME_CMD_open_shutter==0)&&(TIME_CMD_close_shutter==0))
                     {
-                        FLAG_CMD_open_shutter=0;                    
+                        FLAG_CMD_open_shutter=0;
                     if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveReady)
                     {
                         //if(!uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterApertureHeight)
                             if(((uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterLowerLimit ||
-                           uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterBetweenLowlmtAphgt))&&(inputFlags.value!=OPEN_SHUTTER_APERTURE)) 
+                           uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterBetweenLowlmtAphgt))&&(inputFlags.value!=OPEN_SHUTTER_APERTURE))
                         {
                             if(FLAG_StartApertureCorrection==1){FLAG_StartApertureCorrection++;inputFlags.value = OPEN_SHUTTER; }   //bug_No.12
                             else if(FLAG_StartApertureCorrection>1){FLAG_StartApertureCorrection=0;inputFlags.value = OPEN_SHUTTER_APERTURE;}
-                            else inputFlags.value = OPEN_SHUTTER_APERTURE; 
+                            else inputFlags.value = OPEN_SHUTTER_APERTURE;
                             TIME_CMD_open_shutter = 100;
                             bUpApertureCmdRecd = TRUE;
                             //if shutter is moving then calculate min distance travel required.
@@ -646,6 +646,7 @@ VOID commandHandler(VOID)
                     }
                     break;
                 case close_shutter:
+                case close_shutter_aperture_height:			// 2016/11/28 ADD close aperture height NG
                     FLAG_CMD_open_shutter=0;
                     if((TIME_CMD_open_shutter==0)&&(TIME_CMD_close_shutter==0))
                     {
@@ -722,11 +723,12 @@ VOID commandHandler(VOID)
                     }
 
                     break;
+/* 2016/11/28 close aperture height NG
                 case close_shutter_aperture_height:
                     //If shutter is at upper limit then do not process command
                     FLAG_CMD_open_shutter=0;
                     if((TIME_CMD_open_shutter==0)&&(TIME_CMD_close_shutter==0))
-                    {                    
+                    {
                     if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveReady)
                     {
 						//instruct function for to not scan PE sensor - YG - Nov 2015
@@ -738,7 +740,7 @@ VOID commandHandler(VOID)
                             if(!uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterLowerLimit)
                             {
                                 inputFlags.value = CLOSE_SHUTTER_APERTURE;
-                                TIME_CMD_close_shutter=160;   //20160907  bug_No.107                                
+                                TIME_CMD_close_shutter=160;   //20160907  bug_No.107
                                 bDownApertureCmdRecd = TRUE;
                                 //if shutter is moving then calculate min distance travel required.
                                 if(rampOutputStatus.shutterMoving)
@@ -761,9 +763,9 @@ VOID commandHandler(VOID)
                         status = nack;
                     }
                     }
-                    else status =no_reply_reqd;                    
+                    else status =no_reply_reqd;
                     break;
-
+*/
                 case close_shutter_ignoring_sensors:
 
                     if(!uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterLowerLimit)
@@ -845,8 +847,8 @@ VOID commandHandler(VOID)
                             }
                             if((paramIndex == 605)&&((parameter&0x00200008)==0x00200008))
                             {
-                                  parameter=parameter&0xFFFFFFF7;                                  
-                            }                            
+                                  parameter=parameter&0xFFFFFFF7;
+                            }
                             transmitParameter(parameter, paramIndex, byteCount);
                         }
 
@@ -977,7 +979,7 @@ VOID commandHandler(VOID)
                         ShutterInstallationEnabled = TRUE;
                         //inputFlags.value = OPEN_SHUTTER_JOG_50;
                         //shutterInstall.currentState = INSTALL_SEARCH_ORG;
-                        
+
                         inputFlags.value = inputFlags_Installation.value;
                     }
                     break;
@@ -1001,7 +1003,7 @@ VOID commandHandler(VOID)
                     //{
                     //    calcShtrMinDistValue();
                     //}
-					
+
 					//	Set global flag to indicate power on calibration is terminated by user from display board
                     if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.drivePowerOnCalibration ||
                             uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveRuntimeCalibration)
@@ -1012,32 +1014,32 @@ VOID commandHandler(VOID)
                     {
                         ShutterInstallationEnabled = FALSE;
                     }
-                    break; 
+                    break;
                     //added by AOYAGI_ST 20160418 for adding clean error function
                 case clean_error:
                     if(!rampOutputStatus.shutterMoving)
                     {
-                        if((uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorStall)||          
-                           (uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorExceedingTorque)|| 
-                           (uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorSusOC)||           
-                           (uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorPWMCosting)||    
-                                                                                                                                     
+                        if((uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorStall)||
+                           (uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorExceedingTorque)||
+                           (uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorSusOC)||
+                           (uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorPWMCosting)||
+
                            (uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.osNotDetectUP)||           //bug_No.101  20160909
-                           (uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.osNotDetectDown)||     
-                           (uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.osDetectOnUp)||     
-                           (uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.osDetectOnDown)||     
+                           (uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.osNotDetectDown)||
+                           (uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.osDetectOnUp)||
+                           (uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.osDetectOnDown)||
                            (uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.osFailValidation))
                         {
                             uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorStall = FALSE;
                             uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorExceedingTorque = FALSE;
                             uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorSusOC = FALSE;
-                            uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorPWMCosting = FALSE;    
-                            
+                            uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorPWMCosting = FALSE;
+
                             uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.osNotDetectUP = FALSE;      //bug_No.101  20160909
                             uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.osNotDetectDown = FALSE;
                             uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.osDetectOnUp = FALSE;
                             uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.osDetectOnDown = FALSE;
-                            uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.osFailValidation = FALSE;     
+                            uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.osFailValidation = FALSE;
                             //initSensorList();
                             //initApplication();
                             //initRampGenerator();
@@ -1050,7 +1052,7 @@ VOID commandHandler(VOID)
                             status = nack;
                         }
                     }
-                    /*if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorStall) 
+                    /*if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorStall)
                     {
                         uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorStall = FALSE;
                     }
@@ -1064,7 +1066,7 @@ VOID commandHandler(VOID)
                     }
                     else if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorPWMCosting)
                     {
-                        uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorPWMCosting = FALSE;      
+                        uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorPWMCosting = FALSE;
                     }*/
                     else
                     {

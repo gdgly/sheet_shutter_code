@@ -244,7 +244,11 @@ VOID executePowerFailRoutine(VOID)
 	//INTCON2bits.GIE = 0; //Disable all interrupts
 	forceStopShutter();
 
-	uDriveCommonBlockEEP.stEEPDriveCommonBlock.currentValueMonitor_A129 = hallCounts;
+	// 2016/11/16 When Down , Missing Save Origin Position.
+	if(hallCounts_bak==0x7FFF)
+		uDriveCommonBlockEEP.stEEPDriveCommonBlock.currentValueMonitor_A129 = hallCounts;
+	else
+		uDriveCommonBlockEEP.stEEPDriveCommonBlock.currentValueMonitor_A129 = hallCounts_bak;
 	//if installation was in progress then reset shutter positions
 	if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveInstallation)
 	{
@@ -499,7 +503,7 @@ VOID measureADCOffset(VOID)
     PDC1 = PHASE1 / 2;	/* Initialize as 0 voltage */
 	PDC2 = PHASE2 / 2;
 	PDC3 = PHASE3 / 2;
-    //    TMR7 = 0; 
+    //    TMR7 = 0;
 //    IFS3bits.T7IF = 0;
 //    IEC3bits.T7IE = 1;
 //    T7CONbits.TON = 1;

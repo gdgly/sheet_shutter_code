@@ -100,12 +100,12 @@ WORD phaseValue;
 
 #define POWER_FAIL_FUNCTIONALITY	CONSIDER_AC_LINE_VOLTAGE
 
-#define CONSIDER_AS_POWER_FAIL		85
+#define CONSIDER_AS_POWER_FAIL		85//IME //90
 //	5VAC offset voltage from POWER_FAIL voltage level to consider power is restored
 #define	OFFSET_VOLTAGE				5
 #define MINIMUM_WORKING_VOLTAGE		(CONSIDER_AS_POWER_FAIL + OFFSET_VOLTAGE)
 //	Added to consider a delay specified by "TIME_TO_UPDATE_POWER_STATUS" before executing power fail routine - Feb 2016
-#define	TIME_TO_UPDATE_POWER_STATUS		10000	//	Time in mS
+#define	TIME_TO_UPDATE_POWER_STATUS		10000//IME //3000	//	Time in mS
 
 #if	(POWER_FAIL_FUNCTIONALITY == CONSIDER_AC_LINE_VOLTAGE)
 //	Dc Bus voltage = 1.41 * AC line voltage
@@ -248,8 +248,8 @@ VOID executePowerFailRoutine(VOID)
 	//if installation was in progress then reset shutter positions
 	if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveInstallation)
 	{
-		uDriveCommonBlockEEP.stEEPDriveCommonBlock.upperStoppingPos_A100 = 0;
-		uDriveCommonBlockEEP.stEEPDriveCommonBlock.lowerStoppingPos_A101 = 0;
+//		uDriveCommonBlockEEP.stEEPDriveCommonBlock.upperStoppingPos_A100 = 0;
+//		uDriveCommonBlockEEP.stEEPDriveCommonBlock.lowerStoppingPos_A101 = 0;
 		writeWORD(EEP_UPPER_STOPPING_POS, uDriveCommonBlockEEP.stEEPDriveCommonBlock.upperStoppingPos_A100);
 		writeWORD(EEP_LOWER_STOPPING_POS, uDriveCommonBlockEEP.stEEPDriveCommonBlock.lowerStoppingPos_A101);
 		writeWORD(EEP_PHOTOELEC_POS, uDriveCommonBlockEEP.stEEPDriveCommonBlock.photoElecPosMonitor_A102);
@@ -439,7 +439,7 @@ VOID currentControl(VOID)
 
     if(rampStatusFlags.rampMaintainHoldingDuty)
     {
-        if(measuredSpeed < (SHUTTER_SPEED_MIN + 100))
+        if(measuredSpeed < (SHUTTER_SPEED_MIN_STOP + 100))
         {
             controlOutput += HOLDING_DUTY_INC;
         }
@@ -499,10 +499,12 @@ VOID measureADCOffset(VOID)
     PDC1 = PHASE1 / 2;	/* Initialize as 0 voltage */
 	PDC2 = PHASE2 / 2;
 	PDC3 = PHASE3 / 2;
-    TMR7 = 0;
-    IFS3bits.T7IF = 0;
-    IEC3bits.T7IE = 1;
-    T7CONbits.TON = 1;
+    //    TMR7 = 0; 
+//    IFS3bits.T7IF = 0;
+//    IEC3bits.T7IE = 1;
+//    T7CONbits.TON = 1;
+    IFS5bits.PWM1IF = 0;
+    IEC5bits.PWM1IE = 1;
     PTCONbits.PTEN = 1;	    // start PWM
     //pwmBufferControl(ENABLE);
 	AD1CON1bits.ADON = 1;   //turn ON ADC module

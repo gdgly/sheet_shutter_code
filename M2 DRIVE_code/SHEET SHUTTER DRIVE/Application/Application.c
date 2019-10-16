@@ -528,6 +528,9 @@ VOID updateDriveStatusFlags(VOID)
         if(rampOutputStatus.shutterCurrentPosition >= (uDriveCommonBlockEEP.stEEPDriveCommonBlock.lowerStoppingPos_A101 -
                                                        uDriveApplBlockEEP.stEEPDriveApplBlock.overrunProtection_A112))
 		{
+			// 2016/11/16 When Down , Missing Save Origin Position.
+			hallCounts_bak = 0x7FFF;
+
 			// update drive status position to lower limit
             uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterLowerLimit = TRUE;
 		}

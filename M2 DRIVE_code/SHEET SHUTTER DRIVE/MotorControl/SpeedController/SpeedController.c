@@ -158,6 +158,7 @@ DWORD periodStateVar;
 
 //Observed hall counts for one hall sensor (IC2) is 155, 148, 151
 SHORT hallCounts = 0;
+SHORT hallCounts_bak = 0x7FFF;
 
 /* Variable used by inbuilt division function */
 UINT tmpQu = 0;
@@ -257,6 +258,8 @@ void __attribute__((interrupt, no_auto_psv)) _T1Interrupt (void)
 				{
 					uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.motorCableFault = TRUE;
 					forceStopShutter(); // stop motor by applying mechanical brake
+					// 2016/11/16 When Down , Missing Save Origin Position.
+					hallCounts_bak = 0x7FFF;
 				}
 			}
 		} //else if (1 == lsCnt1msStarted) // timer started
@@ -625,13 +628,13 @@ void __attribute__((interrupt, no_auto_psv)) _IC3Interrupt (void)
 VOID calculatePhaseValue(WORD sectorNo)
 {
     if(measuredSpeed >= 500)
-    {    
+    {
         if(requiredDirection == CW)
         {
             if(phaseOffsetCW < PHASE_OFFSET_CW_MAX)
                 phaseOffsetCW  += PHASE_OFFSET_INC_STEP;
             if(phaseOffsetCW >= PHASE_OFFSET_CW_MAX)
-                phaseOffsetCW = PHASE_OFFSET_CW_MAX;  
+                phaseOffsetCW = PHASE_OFFSET_CW_MAX;
         }
         else if(requiredDirection == CCW)
         {
@@ -652,7 +655,7 @@ VOID calculatePhaseValue(WORD sectorNo)
         if(phaseOffsetCCW >= PHASE_OFFSET_CCW)
             phaseOffsetCCW = PHASE_OFFSET_CCW;
     }
-    
+
     /* Motor commutation is actually based on the required direction, not */
     /* the current dir. This allows driving the motor in four quadrants */
     if(((controlOutput >= 0) && (requiredDirection == CW)) || ((controlOutput < 0) && (requiredDirection == CCW)))
@@ -737,18 +740,18 @@ VOID measureActualSpeed(VOID)
 	periodFilter = periodStateVar>>15;
 	measuredSpeed = __builtin_divud(SPEED_RPM_CALC,periodFilter);
     phaseInc = __builtin_divud(PHASE_INC_CALC,periodFilter);
-    
+
     register int a_reg asm("A");
     a_reg = __builtin_mpy(MAX_PH_ADV,SPD_CAL_FOR_PHASEADVANCE , 0,0,0,0,0,0);//SPD_CAL_FOR_PHASEADVANCE
     PhaseAdvance = __builtin_sac(a_reg,0);
     if(requiredDirection == CCW)
-        PhaseAdvance = -PhaseAdvance;  
+        PhaseAdvance = -PhaseAdvance;
 }
 
 VOID speedControl(VOID)
 {
-     //***********************20160906_add over load start************************    
-    SHORT  refSpeed_80_pct;   
+     //***********************20160906_add over load start************************
+    SHORT  refSpeed_80_pct;
     refSpeed_80_pct = refSpeed*5/10;     //50%
     if((measuredSpeed < refSpeed_80_pct)&&(FLAG_overLoad == FALSE))
     {
@@ -758,9 +761,9 @@ VOID speedControl(VOID)
     else OverLoad_cnt = 0;
     if((flags.motorRunning ==0)||(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveInstallation)) FLAG_overLoad = FALSE;
     if(FLAG_overLoad == TRUE)refSpeed = refSpeed/2;   //50%
-    //**********************20160906_add over load end **************************   
-    
-    
+    //**********************20160906_add over load end **************************
+
+
     speedPIparms.qInRef = refSpeed;
     speedPIparms.qInMeas = measuredSpeed;
 
@@ -828,7 +831,7 @@ VOID speedControl(VOID)
         //***********************20160906_add over load start************************
             if(FLAG_overLoad == TRUE)
                 controlOutput = controlOutput/2;    //50%
-        //**********************20160906_add over load end **************************        
+        //**********************20160906_add over load end **************************
     }
 
     //calculate percentage duty
