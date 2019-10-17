@@ -1175,6 +1175,11 @@ VOID monitorSafetySensors(VOID)
 			else if(sensorList[i].sensorCurrVal == LOW)
 			{
 				sensorList[i].sensorLowDebounceCnt++;
+                
+                //Clear photo electric fault
+                if((i==2)&&(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.peObstacle)&&(sensorList[i].sensorLowDebounceCnt >=550))    //20170418  201703_No.15                  
+                    uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.peObstacle = FALSE;                
+                
 				if(sensorList[i].sensorLowDebounceCnt >= sensorInactiveDebounceValue[i])
 				{
 					//sensorList[i].sensorLowDebounceCnt = sensorInactiveDebounceValue[i];
@@ -1516,7 +1521,7 @@ void __attribute__ ((interrupt, no_auto_psv)) _INT1Interrupt(void)
     if(PWMCON1bits.FLTSTAT)
 		overcurrentfaultTriggered(TRUE);
 #if 1
-    else
+    else 
         igbtOverTempSensorTriggered(TRUE);
 #endif
 }
@@ -1616,7 +1621,7 @@ VOID checkPhotoElecObsLevel(BOOL sts)
         }
     }
     else
-    {
+    {        
         photElecSensorFault = FALSE; //clear the photo electric fault
         updateSenStsCmd = TRUE;
     }
