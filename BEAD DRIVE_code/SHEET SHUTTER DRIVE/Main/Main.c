@@ -171,9 +171,6 @@ INT main(VOID)
 	for(;;)
 	{
         ClrWdt();   // clear the WDT to inhibit the device reset
-        
-        if(applyBrake_bake==TRUE) PORTAbits.RA7=0;
-        else PORTAbits.RA7=1;
 #if 0
 		//	For motor over current indication
 		if(PWMCON1bits.FLTSTAT)

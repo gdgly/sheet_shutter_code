@@ -118,8 +118,6 @@ EXTERN UINT8 Power_ON_igbtOverTemp;
 EXTERN UINT16 Time_uart_count; 
 EXTERN UINT8 Flag_powerUpCalib_osToggle;
 
-EXTERN BOOL applyBrake_bake;
-
 //define Correction No.
 #define  BUG_No41_microSwSensorTrigrd             //20170606  201703_No.41
 #define  BUG_No81_microSwSensor_PowerON          //20170605  201703_No.81
@@ -132,7 +130,7 @@ EXTERN BOOL applyBrake_bake;
 #define  BUG_No87_upperStoppingPos_Limit         //20170626  201703_No.87
 #define  BUG_NoCQ07_Limit_enterCmdRcvd           //20170627  201703_No.CQ07
 #define  BUG_No89_PHOTOELECTRIC_SENSOR        //priority5   //20171016  201703_No.89
-#define  BUG_No88_M2overcurrentfault          //priority2    //20171029  201703_No.88
+//#define  BUG_No88_M2overcurrentfault          //priority2    //20171029  201703_No.88
 #define  BUG_CQxx_BD_IGBTdamage               //priority1   //20171029  BD IGBT damage
 
 

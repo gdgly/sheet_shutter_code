@@ -784,7 +784,7 @@ VOID calculatePhaseValue(WORD sectorNo)
 {
 	if(controlOutput < 0)
 	{
-		//LED_RED = 0;
+		LED_RED = 0;
 	}
 
 
