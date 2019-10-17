@@ -113,5 +113,3 @@ EXTERN BOOL ShutterInstallationEnabled;
 
 // When the regenerative resistance dose not work,the voltage. By IME 2016/12/19
 #define MAXIMUM_DURATION	25		// *20ms=1s
-
-EXTERN UINT8 Power_ON_igbtOverTemp;

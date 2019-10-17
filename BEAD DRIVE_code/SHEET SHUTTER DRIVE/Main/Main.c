@@ -143,7 +143,6 @@ INT main(VOID)
 	PORTGbits.RG8 = 0;
 	delayUs(1);
 	PORTGbits.RG8 = 1;			//	1uS pulse generated on MCU_LATCH_CTRL pin
-    Power_ON_igbtOverTemp=1;
 	/**************************************************/
 
 	// For testing only (Added on 27 Jan 2015 to enable fault input)

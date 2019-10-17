@@ -254,7 +254,8 @@ configureUART(UINT8 lucUartNumber)
 
 // gets the index of the buffer array which is in use by the specified UART 
 UINT8 getBufferIndex(UINT8 lucUartNumber)
-{
+{
+
 	UINT8 status = NOT_FOUND; 
 	UINT8 index = 0; 	
 
@@ -808,6 +809,7 @@ void genericTXInterruptHandler(UINT8 channelNumber)
     
     UINT8 index = getBufferIndex(channelNumber); 
     
+    LED_RED=0;
     if(stTxRxBuffer[index].uchTxBufferByteCount)
     {
         stTxRxBuffer[index].uchTxBufferByteCount--;  //Decremented for byte sent previously
@@ -849,6 +851,8 @@ void genericTXInterruptHandler(UINT8 channelNumber)
             break; 
             
     }
+    
+    LED_RED=1;
 }
 
 

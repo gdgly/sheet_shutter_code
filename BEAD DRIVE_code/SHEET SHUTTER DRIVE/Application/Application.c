@@ -138,8 +138,6 @@ UINT8  FLAG_open_shutter_one = 0;
 UINT16 TIME_shutterLowerLimit_STOP=0;
 UINT8  FLAG_shutterLowerLimit_STOP=0;
 
-UINT8 Power_ON_igbtOverTemp=0;
-
 /******************************************************************************
  * initApplication
  *
