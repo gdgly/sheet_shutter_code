@@ -130,6 +130,9 @@ INT main(VOID)
     measureADCOffset();
 	ClrWdt();   // clear the WDT to inhibit the device reset
 	startRampGenerator();
+#ifdef BUG_No81_microSwSensor_PowerON     //20170605  201703_No.81
+    microSwSensor_PowerON();
+#endif
     
     uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorOverCurrent = FALSE;
     
@@ -145,7 +148,10 @@ INT main(VOID)
 	delayUs(1);
 	PORTGbits.RG8 = 1;			//	1uS pulse generated on MCU_LATCH_CTRL pin
 	/**************************************************/
-
+#ifdef BUG_No83_igbtOverTemp     //20170606  201703_No.83
+     Power_ON_igbtOverTemp=1;
+#endif 
+    
 	// For testing only (Added on 27 Jan 2015 to enable fault input)
 	// These lines were disabled in initMCPWM() function called above
 	// in MCPWM.c file.

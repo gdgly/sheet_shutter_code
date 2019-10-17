@@ -351,6 +351,7 @@ VOID reAdjustRampPositions(VOID);
 VOID initProfileData(VOID);
 VOID checkPhotoElecObsLevel(BOOL);
 VOID microSwSensorTiggered(BOOL);
+VOID microSwSensor_PowerON(VOID);
 VOID tempSensorTriggered(BOOL);
 //	Added on 20Feb2015 for IGBT over temperature fault
 VOID igbtOverTempSensorTriggered(BOOL sts);

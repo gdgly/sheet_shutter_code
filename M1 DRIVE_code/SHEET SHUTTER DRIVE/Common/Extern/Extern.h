@@ -109,3 +109,12 @@ EXTERN int cnt_motor_stop;
 EXTERN UINT8  ShutterInstallationStep;
 EXTERN BOOL ShutterInstallationEnabled;
 
+EXTERN UINT8 Power_ON_igbtOverTemp;
+EXTERN UINT16 Time_uart_count; 
+
+//define Correction No.
+#define  BUG_No41_microSwSensorTrigrd             //20170606  201703_No.41
+#define  BUG_No81_microSwSensor_PowerON          //20170605  201703_No.81
+#define  BUG_No82_UartRxTimeOut1S                //20170606  201703_No.82
+#define  BUG_No83_igbtOverTemp                   //20170606  201703_No.83
+#define  BUG_No76_powerUpCalib_osToggle          //20170607  201703_No.76
