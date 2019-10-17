@@ -544,11 +544,11 @@ uint8_t SDUpParamDRVCTRLRunTime(void)
 		}
 		else //Check also if all Parameters are fetched //if(gstUMtoCMdatabase.commandRequestStatus == eACTIVE)
 		{
-			//
-			if(gu8_language == Japanese_IDX)
+			displayText("               ", 2, 48, false, false, false, false, false, false);   //20161207
+			/*if(gu8_language == Japanese_IDX)
 			displayText("コマンドソ ウシンエラー", 2, 48, false, false, false, false,false,false);
 			else
-			displayText("ERROR SENDING CMD", 2, 48, false, false, false, false,false,true);
+			displayText("ERROR SENDING CMD", 2, 48, false, false, false, false,false,true);*/
 		}
 	}
 	else
@@ -646,11 +646,11 @@ uint8_t SDUpParamDRVEnter(void)
 		}
 		else
 		{
-			//displayText("ERROR SENDING CMD", 2, 48, false, false, false, false,false,true);
-			if(gu8_language == Japanese_IDX)
+			displayText("               ", 2, 48, false, false, false, false, false, false);   //20161207
+			/*if(gu8_language == Japanese_IDX)
 			displayText("コマンドソ ウシンエラー", 2, 48, false, false, false, false,false,false);
 			else
-			displayText("ERROR SENDING CMD", 2, 48, false, false, false, false,false,true);
+			displayText("ERROR SENDING CMD", 2, 48, false, false, false, false,false,true);*/
 		}
 		}
 		else
@@ -706,11 +706,11 @@ uint8_t SDUpParamCTRLEnter(void)
 		}
 		else
 		{
-			//displayText("ERROR SENDING CMD", 2, 48, false, false, false, false, false, true);
-			if(gu8_language == Japanese_IDX)
+			displayText("               ", 2, 48, false, false, false, false, false, false);   //20161207
+			/*if(gu8_language == Japanese_IDX)
 			displayText("コマンドソ ウシンエラー", 2, 48, false, false, false, false, false, false);
 			else
-			displayText("ERROR SENDING CMD", 2, 48, false, false, false, false, false, true);
+			displayText("ERROR SENDING CMD", 2, 48, false, false, false, false, false, true);*/
 		}
 		}
 		else

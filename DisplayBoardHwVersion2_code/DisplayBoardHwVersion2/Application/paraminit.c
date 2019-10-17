@@ -235,11 +235,12 @@ uint8_t paramInitRunTime(void) {
 				gstUMtoCMdatabase.dataToControlBoard.commandData.setParameterValue =
 						1;
 			} else {
-				if(gu8_language == Japanese_IDX)
+				displayText("               ", 2, 48, false, false, false, false, false, false);   //20161207
+				/*if(gu8_language == Japanese_IDX)
 				//
 				displayText("コマンドソ ウシンエラー", 2, 48, false, false, false, false,false,false);
 				else
-				displayText("ERROR SENDING CMD", 2, 48, false, false, false, false,false,true);
+				displayText("ERROR SENDING CMD", 2, 48, false, false, false, false,false,true);*/
 			}
 		}
 

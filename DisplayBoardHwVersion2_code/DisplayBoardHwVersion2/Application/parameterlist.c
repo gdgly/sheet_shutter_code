@@ -257,7 +257,7 @@ const stParamDatabase gsParamDatabase[TOTAL_PARAMETERS] =
 		{	11	,	 true	,	 false	,	 false	,	eDestDisplayBoard	,	"A041 テカザシ_センサ"		    ,	eSTATE		,	37	,	{	0	,	0	,	0										}	,	{	(unsigned char *)cucEnable_Disable_State		,	2,(unsigned char *)cucEnable_Disable_State_english	},"A041 EN GESTURE"	 }	,
 		{	12	,	 true	,	 false	,	 false	,	eDestDisplayBoard	,	"A042 ゲンゴ"		            ,	eSTATE		,	38	,	{	0	,	0	,	0										}	,	{	(unsigned char *)language_Mode_State		    ,	2,(unsigned char *)language_Mode_State	},"A042 LANGUAGE"	 }	,
 		{	13	,	 true	,	 false	,	 false	,	eDestDriveBoard		,	"A130 ハンカイ セットイチ"			,	eVAL_INT	,	130	,	{	0	,	9000	,	0									}	,	{	0												,	0	},"A130 APR HGT POS"	 }	,
-		{	14	,	 true	,	 false	,	 false	,	eDestControlBoard	,	"A131 ハンカイ ON/OFF"		    ,	eSTATE		,	131	,	{	0	,	0	,	0										}	,	{	(unsigned char *)cucYES_NO_State				,	2,(unsigned char *)cucYES_NO_State	},"A131 EN APERT HEIGHT"	 }	,
+		{	14	,	 true	,	 false	,	 false	,	eDestControlBoard	,	"A131 ハンカイ ON/OFF"		    ,	eSTATE		,	131	,	{	0	,	0	,	0										}	,	{	(unsigned char *)cucYES_NO_State				,	2,(unsigned char *)cucYES_NO_State_english	},"A131 EN APERT HEIGHT"	 }	,
 		{	15	,	 true	,	 false	,	 false	,	eDestDriveBoard		,	"A522 ジョウショウ ソ クド"	        ,	eSTATE      ,	522	,	{	0	,	0	,	0										}	,	{	(unsigned char *)cucHigh_Low_Normal				,	3,(unsigned char *)cucHigh_Low_Normal_english	},"A522 S1 UP"	 }	,
 		{	16	,	 true	,	 false	,	 false	,	eDestDriveBoard		,	"A528 カコウ ソ クド"	            ,	eSTATE      ,	528	,	{	0	,	0	,	0										}	,	{	(unsigned char *)cucHigh_Low_Normal				,	3,(unsigned char *)cucHigh_Low_Normal_english	},"A528 S1 DOWN"	 }	,
 

@@ -161,11 +161,11 @@ uint8_t paramResetRunTime(char *paramStr, uint16_t paramno)
 	 			}
 	 			else
 	 			{
-	 				if(gu8_language == Japanese_IDX)
-
+	 				displayText("               ", 2, 48, false, false, false, false, false, false);   //20161207
+	 				/*if(gu8_language == Japanese_IDX)
 	 				displayText("コマンドソ ウシンエラー", 2, 48, false, false, false, false, false, false);
 	 				else
-	 				displayText("ERR SENDING CMD", 2, 48, false, false, false, false, false, true);
+	 				displayText("ERR SENDING CMD", 2, 48, false, false, false, false, false, true);*/
 	 			}
 	 		}
 

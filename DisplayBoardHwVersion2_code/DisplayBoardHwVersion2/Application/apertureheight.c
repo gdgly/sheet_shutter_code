@@ -1691,7 +1691,8 @@ uint8_t apertureheightDown(void)
 
 uint8_t apertureheightMode(void)
 {
-	if(gKeysStatus.bits.Key_Mode_pressed)
+	//if(gKeysStatus.bits.Key_Mode_pressed)
+	if((gKeysStatus.bits.Key_Mode_pressed)&&(gstDriveBoardStatus.bits.driveApertureheight == 1))    //20161208
 	{
 				gKeysStatus.bits.Key_Mode_pressed = 0;
 				//psActiveFunctionalBlock = psActiveFunctionalBlock->parentInternalFunctions;
