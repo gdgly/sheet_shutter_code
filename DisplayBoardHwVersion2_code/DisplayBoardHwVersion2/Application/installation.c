@@ -1898,8 +1898,8 @@ uint8_t installationEnter(void)
 		// Added below code to handle installation stage confirm using only 3PBS (no enter button)
 		else if(
 				(gKeysStatus.bits.Keys2_3secStpOpn_pressed && gstDriveInstallation.bits.installA100 == 1) ||
-				(gKeysStatus.bits.Keys2_3secStpCls_pressed && gstDriveInstallation.bits.installA101 == 1)||
-				(gKeysStatus.bits.Key_3secStp_pressed && gstDriveInstallation.bits.installA102 == 1)
+				(gKeysStatus.bits.Keys2_3secStpCls_pressed && gstDriveInstallation.bits.installA101 == 1)
+				//||(gKeysStatus.bits.Key_3secStp_pressed && gstDriveInstallation.bits.installA102 == 1)     //Bug_201806_No.48
 		)
 		{
 

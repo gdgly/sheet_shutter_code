@@ -156,7 +156,7 @@ extern uint8_t  LCD_DISP_GUESTURE;
 // third byte = Major Version 	fourth byte = Minor version
 //uint32_t gDisplayFirmwareVersion = 0x00000003;
 //uint32_t gDisplayFirmwareVersion = 0x00000501;//20170414      201703_No.29
-uint32_t gDisplayFirmwareVersion = 18064;//20170414      201703_No.29
+uint32_t gDisplayFirmwareVersion = 18066;//20170414      201703_No.29
 
 const uint8_t display_fw[][3]={{16,8,15},{16,9,02},{16,9,9},{16,9,14},{16,10,18},{17,04,14}};
 const uint8_t control_fw[][3]={{16,8,15},{16,9,02},{16,9,9},{16,9,14},{16,10,18}};
@@ -1266,8 +1266,10 @@ uint8_t powerOnRunTime()
 
 			gUserModuleState = WAIT_FOR_SYS_INIT_CMD_RESPONSE;
 			//Set_lcdlightON();
+			break;
 		}
 
+		operationKeysHandler();    //Bug_201806_No.44
 		break;
 	}
 
@@ -1285,7 +1287,7 @@ uint8_t powerOnRunTime()
 				//
 				// Change state
 				//
-				gUserModuleState = CHECK_POWER_ON_CALLIBRATION;
+		//		gUserModuleState = CHECK_POWER_ON_CALLIBRATION;
 
 				// Added on 28 April to check Run mode or Installtion mode
 				gUserModuleState = CHECK_INSTALLATION_OR_HOMESCREEN;
@@ -1559,7 +1561,8 @@ uint8_t powerOnRunTime()
 			// Change states
 			//
 			gUserModuleState = DELAY_3_SECONDS;
-			gNextUMState = CHECK_INSTALLATION_OR_HOMESCREEN;
+			gTickCount3Seconds = g_ui32TickCount;            //Bug_201806_No.44
+	//		gNextUMState = CHECK_INSTALLATION_OR_HOMESCREEN;
 
 			// Added on 28 April to send System Init Command to control
 			// move to the state for sending system init command
