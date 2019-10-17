@@ -149,7 +149,7 @@ uint8_t apertureheightPaint(void)
 //
 //						gstUMtoCMdatabase.commandRequestStatus = eACTIVE;
 //		}
-//		APERT_TIME = g_ui32TickCount;
+		APERT_TIME = g_ui32TickCount;
 
 		if(gstControlBoardStatus.bits.s3PBS_stoppressd == 1)
 		{
