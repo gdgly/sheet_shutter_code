@@ -689,10 +689,28 @@ void logicSolver(void) {
 			DEACTIVATE_MULTI_FUNC_OUT_5;
 			RELAY_OPEN;
 
+			/**************************add 20161017 start***********************************/
+			    gstLStoCMDr.commandRequestStatus = eACTIVE;
+			    gstLStoCMDr.commandToDriveBoard.val = 0;
+			    gstLStoCMDr.commandToDriveBoard.bits.stopShutter = 1;
+
+			    // Update last command sent
+			    sstLStoCMDrCmdSent.commandToDriveBoard.val = gstLStoCMDr.commandToDriveBoard.val;
+			/**************************add 20161017 end***********************************/
+
 		}
 		else if (gstDriveStatus.bits.drive_apertureHeight && gucSystemInitComplete == 2)
 		{
 			eLogic_Solver_State = Logic_Solver_Drive_apertureHeight;
+
+			/**************************add 20161017 start***********************************/
+			    gstLStoCMDr.commandRequestStatus = eACTIVE;
+			    gstLStoCMDr.commandToDriveBoard.val = 0;
+			    gstLStoCMDr.commandToDriveBoard.bits.stopShutter = 1;
+
+			    // Update last command sent
+			    sstLStoCMDrCmdSent.commandToDriveBoard.val = gstLStoCMDr.commandToDriveBoard.val;
+			/**************************add 20161017 end***********************************/
 		}
 		else if (gstDriveStatus.bits.driveReady && gucSystemInitComplete == 2)
 		{
