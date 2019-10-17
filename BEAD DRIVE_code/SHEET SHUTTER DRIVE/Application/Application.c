@@ -140,6 +140,7 @@ UINT8  FLAG_shutterLowerLimit_STOP=0;
 
 UINT8 Power_ON_igbtOverTemp=0;
 UINT16 Time_uart_count=0;  
+UINT8 Flag_powerUpCalib_osToggle=0;
 /******************************************************************************
  * initApplication
  *

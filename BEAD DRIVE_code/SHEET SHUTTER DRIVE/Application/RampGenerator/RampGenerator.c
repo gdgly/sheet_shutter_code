@@ -1199,7 +1199,12 @@ VOID monitorSafetySensors(VOID)
 VOID updatePhotoElectricDebounceTime(VOID)
 {
 #ifdef PROGRAMMABLE_DEBOUNCE
+  #ifdef BUG_No51_SnowA008    //20170612  201703_No.51
+    if(uDriveApplBlockEEP.stEEPDriveApplBlock.snowModePhotoelec_A008 !=0)
+      sensorActiveDebounceValue[PHOTOELECTRIC_SENSOR] = uDriveApplBlockEEP.stEEPDriveApplBlock.snowModePhotoelec_A008 *250;
+  #else
     sensorActiveDebounceValue[PHOTOELECTRIC_SENSOR] = uDriveApplBlockEEP.stEEPDriveApplBlock.snowModePhotoelec_A008;
+  #endif
 #endif
 }
 
@@ -1285,6 +1290,9 @@ VOID initSensorList(VOID)
     photoElecObsSensTrigrd = sensorList[PHOTOELECTRIC_SENSOR].sensorCurrSteadyVal;
     tempSensTrigrd = sensorList[TEMPERATURE_SENSOR].sensorCurrSteadyVal;
     originSensorDetected = sensorList[ORIGIN_SENSOR].sensorCurrSteadyVal;
+#ifdef  BUG_No51_SnowA008  //20170612  201703_No.51
+    updatePhotoElectricDebounceTime();    
+#endif     
 }
 #endif	//	PROGRAMMABLE_DEBOUNCE
 
@@ -1607,18 +1615,31 @@ VOID checkPhotoElecObsLevel(BOOL sts)
                        //if current shutter position is above ignore PE level then only trigger stop shutter
                        if(rampCurrentPosition < uDriveCommonBlockEEP.stEEPDriveCommonBlock.photoElecPosMonitor_A102)
                        {
+#ifdef BUG_No57_checkPhotoElecObsLevel   //20170608  201703_No.57
+                    //       rampCurrentState = RAMP_STOP; //Set the current state to ramp stop
+                    //       calcShtrMinDistValue();
+						   //	Stop shutter initiated by safety sensor
+						   //	Clear flag so as to stop the shutter immediately
+						   gui8StopKeyPressed = 0;
+                    //       stopShutter(); //stop shutter immediately                           
+#else
                            rampCurrentState = RAMP_STOP; //Set the current state to ramp stop
                            calcShtrMinDistValue();
 						   //	Stop shutter initiated by safety sensor
 						   //	Clear flag so as to stop the shutter immediately
 						   gui8StopKeyPressed = 0;
-                           stopShutter(); //stop shutter immediately
+                           stopShutter(); //stop shutter immediately                           
+#endif                           
                            photElecSensorFault = TRUE;
 
                            //set fault status
                            //uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.peObstacle = TRUE;   //bug_No.78
                            inputFlags.value = OPEN_SHUTTER_JOG_50;
                            rampCurrentState = RAMP_START;
+#ifdef BUG_No57_checkPhotoElecObsLevel         //20170608  201703_No.57                   
+                          //2016/09/03 PHOTOELECTRIC_SENSOR 2nd input after not reverce
+                          uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.peSensorStatus = photoElecObsSensTrigrd;   //bug_No.97       
+#endif                          
                        }
                    }
             }
