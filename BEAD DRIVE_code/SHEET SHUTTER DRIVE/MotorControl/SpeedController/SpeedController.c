@@ -60,6 +60,7 @@
 #define MAX_PH_ADV 		(int)(((float)MAX_PH_ADV_DEG / 360.0) * 65536.0)
 UINT16 PhaseAdvance;
 extern SHORT currentRampProfileNo;
+extern BOOL shtrMinDistReqFlg;		//20180704 201806_Bug_No66
 
 /*******************************************************************************/
 /* These Phase values represent the base Phase value of the sinewave for each  */
@@ -1229,6 +1230,7 @@ SHORT PhaseCurrentPosition;
 					rampStatusFlags.shutterOperationStart = 0;
 					rampStatusFlags.shutterOperationComplete = 1;
 					rampStatusFlags.rampBrakeOn = 1;
+		            shtrMinDistReqFlg = FALSE;		//20180704 201806_Bug_No66
 				}
 			}
 			if(measuredSpeed < 300)
