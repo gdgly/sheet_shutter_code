@@ -73,12 +73,8 @@
                                                 //50% of S1UP speed.
 
 //	Maximum count allowed if shutter is moving in wrong direction
-#ifdef BUG_japan_xx
-#define	MAX_FALSE_MOVEMENT_COUNT_LIMIT		162
-#else
 #define	MAX_FALSE_MOVEMENT_COUNT_LIMIT		54  // Number of hall pulses / mechanical revolution  X allowed false revolution
 												// 18 (750W motor) X 3
-#endif
 
 
 /* Enumaration for ramp profile */
@@ -4053,26 +4049,16 @@ VOID executeRampProfile(VOID)
 VOID brakingRequired(VOID)
 {
     BOOL applyBrake = FALSE;
-    static BOOL applyBrake_bake = FALSE;
 
     rampCurrentSpeed = refSpeed;
     rampCurrentPosition = hallCounts;
 
     if(requiredDirection == CW)
     {
-#ifdef BUG_japan_xx
-        if((rampCurrentPosition <= currentRampProfile.endPosition)||
-        (rampCurrentPosition <= currentRampProfile.endPosition + uDriveApplBlockEEP.stEEPDriveApplBlock.overrunProtection_A112)&&(applyBrake_bake==TRUE))
-        {
-            applyBrake = TRUE;
-        }
-        applyBrake_bake=applyBrake;        
-#else
         if(rampCurrentPosition <= currentRampProfile.endPosition)
         {
             applyBrake = TRUE;
-        }        
-#endif        
+        }
     }
     else
     {
@@ -4113,11 +4099,8 @@ VOID brakingRequired(VOID)
             if(++lockActivationDelayCnt >= MECHANICAL_LOCK_ACTIVATION_DELAY_CNT)
             {
                 //Turn ON mechanical brake
-                lockApply;               
+                lockApply;
                 rampStatusFlags.rampBrakeOn = 1;
-#ifdef BUG_japan_xx
-                applyBrake_bake = FALSE;
-#endif                 
             }
 
             //If mechanical brake is ON decrement DC injection duty.
@@ -4134,9 +4117,6 @@ VOID brakingRequired(VOID)
                 DCInjectionOFF();
                 rampStatusFlags.rampDcInjectionOn = 0;
                 stopMotor();
-#ifdef BUG_japan_xx
-                applyBrake_bake = FALSE;
-#endif                 
 
                 if(++rampCurrentStep < rampTotalStates)
                 {
