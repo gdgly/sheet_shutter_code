@@ -1674,8 +1674,8 @@ void logicSolver(void) {
 				(gstDriveApplicationFault.bits.emergencyStop == 0) 	&&
 
 				// Check intelock input
-			//	(ValidateInterlockInput() == 1) &&
-				((ValidateInterlockInput() == 1)||((ValidateInterlockInput() == 0) && (gKeysStatus.bits.Key_Open_pressed==1 || gstCMDitoLS.commandDisplayBoardLS.bits.openPressed==1))) &&   //20170407   201703_No.11
+				(ValidateInterlockInput() == 1) &&
+			//	((ValidateInterlockInput() == 1)||((ValidateInterlockInput() == 0) && (gKeysStatus.bits.Key_Open_pressed==1 || gstCMDitoLS.commandDisplayBoardLS.bits.openPressed==1))) &&   //20170407   201703_No.11
 
 				//	Added this check to implement "disable shutter functionality while we are in settings mode" -RN - Dec 2015
 				(guiSettingsModeStatus == 0) &&
