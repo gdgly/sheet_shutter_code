@@ -2176,6 +2176,8 @@ void keysProcessFlags(uint8_t keyState, uint8_t keyChanged)
 	{
 		if(BUTTON_PRESSED(KEY_3PBS_STOP_WIRELESS, keyState, keyChanged))
 		{
+		   if (gu8_wireless_1pbs_3pbs_o == 1)    //Bug_201806_No.59
+		   {
 			if(!gKeysStatus.bits.Wireless_Stop_pressed)
 			{
 				gKeysStatus.bits.Wireless_Stop_pressed = true;
@@ -2184,6 +2186,7 @@ void keysProcessFlags(uint8_t keyState, uint8_t keyChanged)
 				gstDriveStatusMenu.bits.Wireless_Stop_Status = 1;
 				currentTickCount = 0;
 			}
+		   }
 		}
 	}
 
@@ -2192,6 +2195,8 @@ void keysProcessFlags(uint8_t keyState, uint8_t keyChanged)
 
 		if(BUTTON_RELEASED(KEY_3PBS_STOP_WIRELESS, keyState, keyChanged))
 		{
+		   if (gu8_wireless_1pbs_3pbs_o == 1)   //Bug_201806_No.59
+		   {
 			if(!gKeysStatus.bits.Wireless_Stop_released)
 			{
 				gKeysStatus.bits.Wireless_Stop_released = true;
@@ -2208,6 +2213,7 @@ void keysProcessFlags(uint8_t keyState, uint8_t keyChanged)
 
 				suiTimeStampForOnePBS = g_ui32TickCount; //20161202
 			}
+		   }
 		}
 
 	// Logic added to Latch the wireless signals for specific period of time after released 13 Jan 2015
@@ -2230,6 +2236,8 @@ void keysProcessFlags(uint8_t keyState, uint8_t keyChanged)
 	{
 		if(BUTTON_PRESSED(KEY_3PBS_CLOSE_WIRELESS, keyState, keyChanged))
 		{
+		   if (gu8_wireless_1pbs_3pbs_o == 1)   //Bug_201806_No.59
+		   {
 			if(!gKeysStatus.bits.Wireless_Close_pressed)
 			{
 				currentTickCount = 0;
@@ -2240,6 +2248,7 @@ void keysProcessFlags(uint8_t keyState, uint8_t keyChanged)
 
 				uartSendTxBuffer(UART_debug,"C",1);
 			}
+		   }
 		}
 	}
 
@@ -2248,6 +2257,8 @@ void keysProcessFlags(uint8_t keyState, uint8_t keyChanged)
 
 		if(BUTTON_RELEASED(KEY_3PBS_CLOSE_WIRELESS, keyState, keyChanged))
 		{
+		   if (gu8_wireless_1pbs_3pbs_o == 1)   //Bug_201806_No.59
+		   {
 			if(!gKeysStatus.bits.Wireless_Close_released)
 			{
 				gKeysStatus.bits.Wireless_Close_released = true;
@@ -2262,6 +2273,7 @@ void keysProcessFlags(uint8_t keyState, uint8_t keyChanged)
 
 				uartSendTxBuffer(UART_debug,"c",1);
 			}
+		   }
 		}
 
 

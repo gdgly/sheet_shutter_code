@@ -123,7 +123,7 @@ const uint8_t gu8_en_oprdelay_DEF = 2;   //20171114   0--->2
 const uint8_t gu8_modefix_DEF = 0;
 const uint8_t gu8_en_switchpan_DEF = 0;
 const uint8_t gu8_opr_rsrttmr_DEF = 20;//20160930 modify 10 to 20
-const uint8_t gu32_intlck_deltmr_DEF = 2; //version 0.7D
+const uint8_t gu32_intlck_deltmr_DEF = 1; //version 0.7D
 const uint8_t gu8_close_oprset_DEF = 0;
 const uint8_t gu8_opr_cntres_DEF = 0;
 const uint8_t gu8_init_valueset_DEF = 0;
@@ -146,7 +146,7 @@ const uint8_t gu8_en_apheight_ctl_DEF = 0;
 // First byte = Not used, 		Second Byte = Not used
 // Third byte = Major Version, 	Fourth byte = Minor version
 //const uint32_t gu32_ctrl_fwver_DEF = 0x00000409; //Read Default Firmware Version
-const uint32_t gu32_ctrl_fwver_DEF = 18060;   //xxxx.x   ﾀ�逎ｺ 17041   17ﾄ�ﾔﾂ ｵﾚ1ｰ豎ｾ
+const uint32_t gu32_ctrl_fwver_DEF = 18066;   //xxxx.x   ﾀ�逎ｺ 17041   17ﾄ�ﾔﾂ ｵﾚ1ｰ豎ｾ
 
 // In dbhandler.c the gu32_ctrl_fwver_DEF variable is used to send response to the display board for version information
 //*******************************************

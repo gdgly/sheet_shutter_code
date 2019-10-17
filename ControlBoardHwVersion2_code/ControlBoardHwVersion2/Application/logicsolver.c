@@ -95,6 +95,8 @@ uint8_t select_apertureHeight_Instalation=0;
 //20160906 item104
 uint8_t season_cyw=0;
 static unsigned int time_ObstacleSensor;   //add 20161020
+uint8_t Delay_Type_A0012345=0;   //Bug_201806_No.67
+uint32_t  define_TIME_interlock_prior=500;   //1ms time base
 /****************************************************************************
  *  Global variables for other files:
  ****************************************************************************/
@@ -1713,7 +1715,7 @@ void logicSolver(void) {
 										gstCMDitoLS.commandDisplayBoardLS.bits.stopReleased
 								)
 						) ||
-						(
+						((
 						 gKeysStatus.bits.Key_Open_pressed 			||
 						 gKeysStatus.bits.Key_Open_released 		||
 						 gKeysStatus.bits.Key_Close_pressed 		||
@@ -1737,7 +1739,7 @@ void logicSolver(void) {
 						 gSensorStatus.bits.Sensor_Wireless_1PBS_active		||
 						 gSensorStatus.bits.Sensor_Wireless_1PBS_inactive
 
-						 )
+						 )&& (guiSettingsModeStatus == 0))   //Bug_201806_No.27
 				) &&
 				(gstLStoCMDr.commandRequestStatus == eINACTIVE) 	&&
 				(gstDriveStatus.bits.driveReady)					&&
@@ -1751,7 +1753,7 @@ void logicSolver(void) {
 			//	((ValidateInterlockInput() == 1)||((ValidateInterlockInput() == 0) && (gKeysStatus.bits.Key_Open_pressed==1 || gstCMDitoLS.commandDisplayBoardLS.bits.openPressed==1))) &&   //20170407   201703_No.11
 
 				//	Added this check to implement "disable shutter functionality while we are in settings mode" -RN - Dec 2015
-				(guiSettingsModeStatus == 0) &&
+				//(guiSettingsModeStatus == 0) &&    //Bug_201806_No.27
 				//
 				//	Added check to see whether system is in healthy state. If a fatal error has occurred then
 				//	then don't process operation keys - Jan 2016
@@ -1980,7 +1982,8 @@ void logicSolver(void) {
 						{
 							season_cyw = 1;
 						}
-						else if(gstDriveStatus.bits.shutterBetweenUplmtAphgt)
+						//else if(gstDriveStatus.bits.shutterBetweenUplmtAphgt)
+						else if(!((gstDriveStatus.bits.shutterLowerLimit)||(gstDriveStatus.bits.shutterBetweenLowlmtAphgt) ||(gstDriveStatus.bits.shutterApertureHeight) ))  //Bug_201806_No.41
 						{
 							sstLStoCMDrCmdToBeSent.commandToDriveBoard.val = 0;
 							sstLStoCMDrCmdToBeSent.commandToDriveBoard.bits.openShutter = 1;
@@ -2007,14 +2010,40 @@ void logicSolver(void) {
 
 					// Check whether Go up operation delay need to start or not. Also check operating mode to activate Go up operation delay.
 					// A005 - Mode setting for enabling the Go-up and Go-Down delay timers = 0: Enabled only in auto mode, 1: Enabled only in manual mode,2: Enabled in both auto and manual modes
+//					if (
+//							(
+//									((gu8_en_oprdelay == 0 || gu8_en_oprdelay == 2) && gstControlBoardStatus.bits.autoManual == 1) ||
+//									((gu8_en_oprdelay == 1 || gu8_en_oprdelay == 2) && gstControlBoardStatus.bits.autoManual == 0)) &&
+//									//gu8_goup_oprdelay != 0 	&& gstDriveStatus.bits.shutterLowerLimit
+//									(gu8_goup_oprdelay != 0 ||(gu8_goup_oprdelay==0 && gu8_intlck_valid==0 && gu8_intlck_prior == 1))	&& gstDriveStatus.bits.shutterLowerLimit    //20170406   201703_No.9
+//							)
+
 					if (
 							(
-									((gu8_en_oprdelay == 0 || gu8_en_oprdelay == 2) && gstControlBoardStatus.bits.autoManual == 1) ||
-									((gu8_en_oprdelay == 1 || gu8_en_oprdelay == 2) && gstControlBoardStatus.bits.autoManual == 0)) &&
-									//gu8_goup_oprdelay != 0 	&& gstDriveStatus.bits.shutterLowerLimit
-									(gu8_goup_oprdelay != 0 ||(gu8_goup_oprdelay==0 && gu8_intlck_valid==0 && gu8_intlck_prior == 1))	&& gstDriveStatus.bits.shutterLowerLimit    //20170406   201703_No.9
+							     ((((gu8_en_oprdelay == 0 || gu8_en_oprdelay == 2) && gstControlBoardStatus.bits.autoManual == 1) ||
+							       ((gu8_en_oprdelay == 1 || gu8_en_oprdelay == 2) && gstControlBoardStatus.bits.autoManual == 0)) &&  gu8_goup_oprdelay != 0)||
+							     ((((gu8_en_oprdelay == 0 || gu8_en_oprdelay == 2) && gstControlBoardStatus.bits.autoManual == 1) ||
+							       ((gu8_en_oprdelay == 1 || gu8_en_oprdelay == 2) && gstControlBoardStatus.bits.autoManual == 0)) &&  gu8_goup_oprdelay == 0 && gu8_intlck_valid==0 && gu8_intlck_prior == 1)||
+							      (((gu8_en_oprdelay == 1 && gstControlBoardStatus.bits.autoManual == 1) ||
+							        (gu8_en_oprdelay == 0 && gstControlBoardStatus.bits.autoManual == 0)) &&  gu8_intlck_valid==0 && gu8_intlck_prior == 1)
 							)
+							&& gstDriveStatus.bits.shutterLowerLimit
+						)  //Bug_201806_No.67
 					{
+
+						if((((gu8_en_oprdelay == 0 || gu8_en_oprdelay == 2) && gstControlBoardStatus.bits.autoManual == 1) ||
+							((gu8_en_oprdelay == 1 || gu8_en_oprdelay == 2) && gstControlBoardStatus.bits.autoManual == 0)) &&  gu8_goup_oprdelay != 0)
+						{
+							if(gu8_intlck_valid==0 && gu8_intlck_prior == 0)
+						       Delay_Type_A0012345=10;
+							else Delay_Type_A0012345=11;
+						}
+						if((((gu8_en_oprdelay == 0 || gu8_en_oprdelay == 2) && gstControlBoardStatus.bits.autoManual == 1) ||
+							((gu8_en_oprdelay == 1 || gu8_en_oprdelay == 2) && gstControlBoardStatus.bits.autoManual == 0)) &&  gu8_goup_oprdelay == 0 && gu8_intlck_valid==0 && gu8_intlck_prior == 1)
+							Delay_Type_A0012345=11;
+						if(((gu8_en_oprdelay == 1 && gstControlBoardStatus.bits.autoManual == 1) ||
+						    (gu8_en_oprdelay == 0 && gstControlBoardStatus.bits.autoManual == 0)) &&  gu8_intlck_valid==0 && gu8_intlck_prior == 1)
+						  Delay_Type_A0012345=20;
 
 						seShutterOpenCloseCmdState = CmdUpDetectedWaitUpDelay;
 						suiTimeStamp = g_ui32TickCount;
@@ -2097,16 +2126,16 @@ void logicSolver(void) {
 					{
 						gKeysStatus.bits.Wireless_Open_pressed = 0;
 					}
-					                            //20170627   201703_No.CQ05
-//					if (gSensorStatus.bits.Sensor_1PBS_active)
-//					{
-//					    gSensorStatus.bits.Sensor_1PBS_active = 0;
-//					}
-//
-//					if (gSensorStatus.bits.Sensor_Wireless_1PBS_active)
-//					{
-//						gSensorStatus.bits.Sensor_Wireless_1PBS_active = 0;
-//					}
+					                            //20170627   201703_No.CQ05    //Bug_201806_No.21
+					if ((gSensorStatus.bits.Sensor_1PBS_active)&&((sucStopKeyDisplay==1)||(sucStopKeyControl==1)))
+					{
+					    gSensorStatus.bits.Sensor_1PBS_active = 0;
+					}
+
+					if ((gSensorStatus.bits.Sensor_Wireless_1PBS_active)&&((sucStopKeyDisplay==1)||(sucStopKeyControl==1)))
+					{
+						gSensorStatus.bits.Sensor_Wireless_1PBS_active = 0;
+					}
 
 				} //
 
@@ -2201,6 +2230,7 @@ void logicSolver(void) {
 										gstDriveApplicationFault.bits.peObstacle == 0 &&
 										gstControlApplicationFault.bits.startupSafetySensor == 0
 										&& gstControlApplicationFault.bits.ObstacleSensor ==0        //20170621   201703_No.CQ01
+										&& gSensorStatus.bits.Sensor_Safety_active == 0
 										//(gstDriveStatus.bits.shutterUpperLimit == 1 && gSensorStatus.bits.Sensor_Safety_active == true))
 								) ||
 								 (
@@ -2285,18 +2315,45 @@ void logicSolver(void) {
 					// A005 - Mode setting for enabling the Go-up and Go-Down delay timers = 0: Enabled only in auto mode, 1: Enabled only in manual mode,2: Enabled in both auto and manual modes
 
 					// Also check the condition of go down operation delay command to drive is applicable only for command "Close Shutter" and not "Close Shutter Jog"
+//					if (
+//							(
+//									((gu8_en_oprdelay == 0 || gu8_en_oprdelay == 2) && gstControlBoardStatus.bits.autoManual == 1) ||
+//									((gu8_en_oprdelay == 1 || gu8_en_oprdelay == 2) && gstControlBoardStatus.bits.autoManual == 0)
+//							) &&
+//							(gu8_godn_oprdelay != 0) &&
+//							/*(gstDriveStatus.bits.shutterUpperLimit) &&
+//							(sstLStoCMDrCmdToBeSent.commandToDriveBoard.bits.closeShutter == 1)*/
+//							(gstDriveStatus.bits.shutterUpperLimit==1 || gstDriveStatus.bits.shutterApertureHeight==1) &&    //20170613  201703_No.53
+//							(sstLStoCMDrCmdToBeSent.commandToDriveBoard.bits.closeShutter == 1 || sstLStoCMDrCmdToBeSent.commandToDriveBoard.bits.closeShutterApperture==1)    //20170613  201703_No.53
+//					  )
+
 					if (
-							(
-									((gu8_en_oprdelay == 0 || gu8_en_oprdelay == 2) && gstControlBoardStatus.bits.autoManual == 1) ||
-									((gu8_en_oprdelay == 1 || gu8_en_oprdelay == 2) && gstControlBoardStatus.bits.autoManual == 0)
-							) &&
-							(gu8_godn_oprdelay != 0) &&
-							/*(gstDriveStatus.bits.shutterUpperLimit) &&
-							(sstLStoCMDrCmdToBeSent.commandToDriveBoard.bits.closeShutter == 1)*/
-							(gstDriveStatus.bits.shutterUpperLimit==1 || gstDriveStatus.bits.shutterApertureHeight==1) &&    //20170613  201703_No.53
-							(sstLStoCMDrCmdToBeSent.commandToDriveBoard.bits.closeShutter == 1 || sstLStoCMDrCmdToBeSent.commandToDriveBoard.bits.closeShutterApperture==1)    //20170613  201703_No.53
-					  )
+								(
+								     ((((gu8_en_oprdelay == 0 || gu8_en_oprdelay == 2) && gstControlBoardStatus.bits.autoManual == 1) ||
+								       ((gu8_en_oprdelay == 1 || gu8_en_oprdelay == 2) && gstControlBoardStatus.bits.autoManual == 0)) &&  gu8_godn_oprdelay != 0)||
+								       ((((gu8_en_oprdelay == 0 || gu8_en_oprdelay == 2) && gstControlBoardStatus.bits.autoManual == 1) ||
+								       	 ((gu8_en_oprdelay == 1 || gu8_en_oprdelay == 2) && gstControlBoardStatus.bits.autoManual == 0)) &&  gu8_godn_oprdelay == 0 &&  gu8_intlck_valid==0 && gu8_intlck_prior == 1)||
+								      (((gu8_en_oprdelay == 1 && gstControlBoardStatus.bits.autoManual == 1) ||
+								        (gu8_en_oprdelay == 0 && gstControlBoardStatus.bits.autoManual == 0)) &&  gu8_intlck_valid==0 && gu8_intlck_prior == 1)
+								)
+								&& (gstDriveStatus.bits.shutterUpperLimit==1 || gstDriveStatus.bits.shutterApertureHeight==1) &&
+								(sstLStoCMDrCmdToBeSent.commandToDriveBoard.bits.closeShutter == 1 || sstLStoCMDrCmdToBeSent.commandToDriveBoard.bits.closeShutterApperture==1)
+						)  //Bug_201806_No.67
 					{
+
+						if((((gu8_en_oprdelay == 0 || gu8_en_oprdelay == 2) && gstControlBoardStatus.bits.autoManual == 1) ||
+							((gu8_en_oprdelay == 1 || gu8_en_oprdelay == 2) && gstControlBoardStatus.bits.autoManual == 0)) &&  gu8_godn_oprdelay != 0)
+						{
+							if(gu8_intlck_valid==0 && gu8_intlck_prior == 0)
+						       Delay_Type_A0012345=30;
+							else Delay_Type_A0012345=31;
+						}
+						if((((gu8_en_oprdelay == 0 || gu8_en_oprdelay == 2) && gstControlBoardStatus.bits.autoManual == 1) ||
+						    ((gu8_en_oprdelay == 1 || gu8_en_oprdelay == 2) && gstControlBoardStatus.bits.autoManual == 0)) &&  gu8_godn_oprdelay == 0 &&  gu8_intlck_valid==0 && gu8_intlck_prior == 1)
+							Delay_Type_A0012345=31;
+						if(((gu8_en_oprdelay == 1 && gstControlBoardStatus.bits.autoManual == 1) ||
+						    (gu8_en_oprdelay == 0 && gstControlBoardStatus.bits.autoManual == 0)) &&  gu8_intlck_valid==0 && gu8_intlck_prior == 1)
+						  Delay_Type_A0012345=40;
 
 						seShutterOpenCloseCmdState = CmdDownDetectedWaitDownDelay;
 						suiTimeStamp = g_ui32TickCount;
@@ -2371,15 +2428,15 @@ void logicSolver(void) {
 					{
 						gKeysStatus.bits.Wireless_Close_pressed = 0;
 					}
-                                                                    //20170627   201703_No.CQ05
-//					if (gSensorStatus.bits.Sensor_1PBS_active)
-//					{
-//						gSensorStatus.bits.Sensor_1PBS_active = 0;
-//					}
-//					if (gSensorStatus.bits.Sensor_Wireless_1PBS_active)
-//					{
-//						gSensorStatus.bits.Sensor_Wireless_1PBS_active = 0;
-//					}
+                                                                    //20170627   201703_No.CQ05    //Bug_201806_No.21
+					if ((gSensorStatus.bits.Sensor_1PBS_active)&&((sucStopKeyDisplay==1)||(sucStopKeyControl==1)))
+					{
+						gSensorStatus.bits.Sensor_1PBS_active = 0;
+					}
+					if ((gSensorStatus.bits.Sensor_Wireless_1PBS_active)&&((sucStopKeyDisplay==1)||(sucStopKeyControl==1)))
+					{
+						gSensorStatus.bits.Sensor_Wireless_1PBS_active = 0;
+					}
 
 				} //
 
@@ -2671,15 +2728,34 @@ void logicSolver(void) {
 				   }
 				}
 
-			else if (((seShutterOpenCloseCmdState == CmdUpDetectedWaitUpDelay
-//					&& (get_timego( suiTimeStamp) >= ((uint32_t) gu8_goup_oprdelay * 1000)))
+//			else if (((seShutterOpenCloseCmdState == CmdUpDetectedWaitUpDelay
+//					//&& (get_timego( suiTimeStamp) >= ((uint32_t) gu8_goup_oprdelay * 1000)))
+//
+//					&& ((gu8_goup_oprdelay!=0 && (get_timego( suiTimeStamp) >= ((uint32_t) gu8_goup_oprdelay * 1000))) ||                  //20170406    201703_No.9
+//							(gu8_goup_oprdelay==0 && gu8_intlck_valid==0 && gu8_intlck_prior == 1 &&(get_timego( suiTimeStamp) >= ((uint32_t) 500)))  ))
+//
+//					|| (seShutterOpenCloseCmdState == CmdDownDetectedWaitDownDelay
+//							&& (get_timego( suiTimeStamp) >= ((uint32_t) gu8_godn_oprdelay * 1000))))
+//					&& gstLStoCMDr.commandRequestStatus == eINACTIVE)
 
-					&& ((gu8_goup_oprdelay!=0 && (get_timego( suiTimeStamp) >= ((uint32_t) gu8_goup_oprdelay * 1000))) ||                  //20170406    201703_No.9
-							(gu8_goup_oprdelay==0 && gu8_intlck_valid==0 && gu8_intlck_prior == 1 &&(get_timego( suiTimeStamp) >= ((uint32_t) 500)))  ))
+                   //Bug_201806_No.67
+			else if ((
+					(seShutterOpenCloseCmdState == CmdUpDetectedWaitUpDelay &&
+						(
+							(Delay_Type_A0012345==10 && (get_timego( suiTimeStamp) >= ((uint32_t) gu8_goup_oprdelay * 1000))) ||
+							(Delay_Type_A0012345==11 && (get_timego( suiTimeStamp) >= ((uint32_t) (gu8_goup_oprdelay * 1000 +define_TIME_interlock_prior)))) ||
+							(Delay_Type_A0012345==20  &&(get_timego( suiTimeStamp) >= ((uint32_t) define_TIME_interlock_prior)))
+					    )
+					)||
+					(seShutterOpenCloseCmdState == CmdDownDetectedWaitDownDelay &&
+						(
+							(Delay_Type_A0012345==30 && (get_timego( suiTimeStamp) >= ((uint32_t) gu8_godn_oprdelay * 1000))) ||
+							(Delay_Type_A0012345==31 && (get_timego( suiTimeStamp) >= ((uint32_t) (gu8_godn_oprdelay * 1000 +define_TIME_interlock_prior)))) ||
+							(Delay_Type_A0012345==40  &&(get_timego( suiTimeStamp) >= ((uint32_t) define_TIME_interlock_prior)))
+						)
+					)
+					)&& gstLStoCMDr.commandRequestStatus == eINACTIVE)
 
-					|| (seShutterOpenCloseCmdState == CmdDownDetectedWaitDownDelay
-							&& (get_timego( suiTimeStamp) >= ((uint32_t) gu8_godn_oprdelay * 1000))))
-					&& gstLStoCMDr.commandRequestStatus == eINACTIVE)
 			{
 				gstLStoCMDr.commandRequestStatus = eACTIVE;
 				gstLStoCMDr.commandToDriveBoard.val = sstLStoCMDrCmdToBeSent.commandToDriveBoard.val;
@@ -2972,7 +3048,8 @@ void logicSolver(void) {
 
 		} //else if (gstControlBoardStatus.bits.runStop == 0)
 		//	Added to handle display screen hang issue at "INSTALLATION SUCCESSFUL" when a key is pressed during installation success - Dec 2015
-		else if(
+		//else if(    //Bug_201806_No.7   Bug_201806_No.8
+		if(
 				(gstCMDitoLS.commandRequestStatus == eACTIVE && gstCMDitoLS.commandResponseStatus == eNO_STATUS) &&
 				(
 						gstCMDitoLS.commandDisplayBoardLS.bits.upPressed ||
@@ -3255,6 +3332,9 @@ void logicSolver(void) {
 									//Check for Emergency Signal Not Trigger
 									(gstDriveApplicationFault.bits.emergencyStop == 0)
 
+									&&sucStopKeyDisplay == 0 &&     //Bug_201806_No.33
+									sucStopKeyControl == 0
+
 									//Check other fault bits are reset
 
 									)
@@ -3315,6 +3395,8 @@ void logicSolver(void) {
 				//Check for Emergency Signal Not Trigger
 				(gstDriveApplicationFault.bits.emergencyStop == 0)
 
+				&&sucStopKeyDisplay == 0 &&     //Bug_201806_No.33
+				sucStopKeyControl == 0
 				//Check other fault bits are reset
 
 				)
