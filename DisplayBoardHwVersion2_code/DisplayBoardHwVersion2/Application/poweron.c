@@ -133,7 +133,7 @@ uint32_t gControlFirmwareVersion = 0;
 uint32_t gDriveHardwareVersion = 0;
 uint32_t gDriveFirmwareVersion = 0;
 
-
+uint32_t stop_on_time_cyw;
 //******************************************************************************
 // HARDWARE VERSION FOR DISPLAY BOARD WILL READ FROM PORT PINS AND WILL UPDATE IN
 // BELOW MENTIONED VARIABLE IN POWER ON SEQUENCE
@@ -150,11 +150,11 @@ extern uint8_t  LCD_DISP_GUESTURE;
 // first byte = Not used, 		second byte = Not used,
 // third byte = Major Version 	fourth byte = Minor version
 //uint32_t gDisplayFirmwareVersion = 0x00000003;
-uint32_t gDisplayFirmwareVersion = 0x00000200;
+uint32_t gDisplayFirmwareVersion = 0x00000300;
 
-const uint8_t display_fw[][3]={{16,8,15},{16,9,02},{16,9,9}};
-const uint8_t control_fw[][3]={{16,8,15},{16,9,02},{16,9,9}};
-const uint8_t drive_fw[][3]={{16,8,15},{16,9,02},{16,9,9}};
+const uint8_t display_fw[][3]={{16,8,15},{16,9,02},{16,9,9},{16,9,14}};
+const uint8_t control_fw[][3]={{16,8,15},{16,9,02},{16,9,9},{16,9,14}};
+const uint8_t drive_fw[][3]={{16,8,15},{16,9,02},{16,9,9},{16,9,14}};
 
 /*******************************************************
 Version 3 details
@@ -1230,6 +1230,8 @@ uint8_t powerOnRunTime()
 			gUserModuleState = DELAY_3_SECONDS;
 			gNextUMState = WAIT_FOR_CALLIBRATION_TO_OVER;
 
+			stop_on_time_cyw = g_ui32TickCount ;
+
 			//
 			// Blink LEDs with 100 msec blink rate
 			//
@@ -1290,7 +1292,9 @@ uint8_t powerOnRunTime()
 		//
 		operationKeysHandler();
 
-
+		if(get_timego(stop_on_time_cyw)>100)
+		{
+			stop_on_time_cyw = g_ui32TickCount ;
 		if(gstControlBoardStatus.bits.s3PBS_stoppressd == 1)
 		{
 				if(gu8_language == Japanese_IDX)
@@ -1306,6 +1310,7 @@ uint8_t powerOnRunTime()
 		else
 		{
 				displayText("         ", 2, 48, false, false, false, false, false, false);
+		}
 		}
 
 		//
