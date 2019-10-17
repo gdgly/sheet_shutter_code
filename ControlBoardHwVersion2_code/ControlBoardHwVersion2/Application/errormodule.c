@@ -42,7 +42,11 @@
 #include "Middleware/serial.h"
 #include "Middleware/sensorsdebounce.h"
 #include "Drivers/extern.h"
-
+#include "Drivers/systicktimer.h"
+uint32_t snow_timer_cyw = 0;//modify 20160920 snow mode
+const uint16_t para_snow_timer_cyw[3]={0,250,500};//modify 20160920 snow mode
+extern uint8_t gu8_snow_mode;//modify 2016092 snow mode
+uint32_t get_timego(uint32_t x_data_his);//modify 20160920 snow mode
 /****************************************************************************/
 
 /****************************************************************************
@@ -531,14 +535,18 @@ void updateControlBoardApplicationFaults(void)
 	//gstControlApplicationFault.bits.obstacleSensor = gSensorStatus.bits.Sensor_Safety_active;//add cyw
 	if(OB_Status == 0)
 	{
+
 		gSensorStatus.bits.Sensor_Safety_active = true;
 		gSensorStatus.bits.Sensor_Safety_inactive = false;
+
 		// Set drive status menu parameter
 		gstDriveStatusMenu.bits.Startup_Safety_Status = 1;
 	}
 	else
 	{
+		snow_timer_cyw = g_ui32TickCount;//modify 20160920 snow mode
 		gSensorStatus.bits.Sensor_Safety_active = false;
+
 		gSensorStatus.bits.Sensor_Safety_active = false;
 		// Reset drive status menu parameter
 		gstDriveStatusMenu.bits.Startup_Safety_Status = 0;
@@ -557,9 +565,12 @@ void updateControlBoardApplicationFaults(void)
 
 	  )
 	{
+		if(get_timego(snow_timer_cyw)  > para_snow_timer_cyw[gu8_snow_mode])//modify 20160920 snow mode
+		{
 		gstControlApplicationFault.bits.startupSafetySensor = 1;
 		gstControlBoardFault.bits.controlApplication = 1;
 		gstControlBoardStatus.bits.controlFault = 1;
+		}
 	}
 	else if(gSensorStatus.bits.Sensor_Safety_active == false)
 	{

@@ -2891,6 +2891,11 @@ uint32_t ValidateDebounce(uint32_t luintDelta,uint32_t luintLastState,uint8_t *l
 	luiRetDelta = 0;
 	luiScanBits = 1;
 
+
+	//if(gSensorStatus.bits.Sensor_Safety_active == false)
+	//{
+	//		luiCounter = 0;
+	//}
 	// Scan 'luintDelta' for variable debounce time elapsed for press and release events
 	for (lucLoop = 0 ; lucLoop < 8; lucLoop++)
 	{
@@ -2918,11 +2923,11 @@ uint32_t ValidateDebounce(uint32_t luintDelta,uint32_t luintLastState,uint8_t *l
 			{
 				if (gu8_snow_mode == 1)
 				{
-					luiSnowModeTiming = 250; // 0.25 sec    20160919 bug_No
+					luiSnowModeTiming =250;// 600;//250; // 0.25 sec    20160919 bug_No
 				}
 				else
 				{
-					luiSnowModeTiming = 500; //0.5 sec     20160919 bug_No
+					luiSnowModeTiming = 500;//2000;//500; //0.5 sec     20160919 bug_No
 				}
 
 			}
@@ -3038,6 +3043,8 @@ void CheckTempReleaseAndResetClock (uint8_t cucTempReleaseMaxLimit, uint8_t *lpC
 	uint16_t luiCounter;
 
 	static uint8_t ui8TempReleaseCounter[3] = {0,0,0}; // 0 = MSB ....2 = LSB
+
+
 
 	if (cucTempReleaseMaxLimit == 0)
 	{
