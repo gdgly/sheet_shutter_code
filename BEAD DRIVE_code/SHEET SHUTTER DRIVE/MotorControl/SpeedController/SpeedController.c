@@ -74,7 +74,7 @@ UINT16 PhaseAdvance;
                             /* actual position of the motor */
 //2017/2/6 by IME
 //#define MS_500T 10000//1000//300//500          /* after this time has elapsed, the motor is    */ //20160804
-#define MS_500T 500          /* after this time has elapsed, the motor is    */ //20160804
+#define MS_500T 10000          /* after this time has elapsed, the motor is    */ //20160804
                             /* consider stalled and it's stopped    */
 
 /* PI parameters */
