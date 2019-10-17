@@ -74,6 +74,8 @@ UINT8  ShutterInstallationStep;
 
 BOOL ShutterInstallationEnabled = FALSE;
 
+BOOL applyBrake_bake=FALSE;
+
 //	Added on 3 Feb 2015 to implement user control on power on calibration
 
 //	Global flag to indicate state of power on calibration command

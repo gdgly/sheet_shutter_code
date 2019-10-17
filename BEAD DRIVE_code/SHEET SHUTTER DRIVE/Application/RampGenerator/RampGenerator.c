@@ -4055,10 +4055,17 @@ VOID brakingRequired(VOID)
 
     if(requiredDirection == CW)
     {
-        if(rampCurrentPosition <= currentRampProfile.endPosition)
+        if((rampCurrentPosition <= currentRampProfile.endPosition)||
+        (rampCurrentPosition <= currentRampProfile.endPosition + uDriveApplBlockEEP.stEEPDriveApplBlock.overrunProtection_A112)&&(applyBrake_bake==TRUE))
         {
             applyBrake = TRUE;
         }
+        applyBrake_bake=applyBrake;
+       
+//        if(rampCurrentPosition <= currentRampProfile.endPosition)
+//        {
+//            applyBrake = TRUE;
+//        }        
     }
     else
     {
@@ -4083,7 +4090,7 @@ VOID brakingRequired(VOID)
 
         if(!rampStatusFlags.rampDcInjectionOn)
         {
-            controlOutput = currentRampProfile.dcInjectionDuty;//comment
+            controlOutput = 2000;//currentRampProfile.dcInjectionDuty;//comment
             rampStatusFlags.rampDcInjectionOn = 1;
             DCInjectionON();            //comment
             rampOutputStatus.shutterMoving = 0; //indicate shutter stopped
@@ -4096,10 +4103,11 @@ VOID brakingRequired(VOID)
         }
         else
         {
-            if(++lockActivationDelayCnt >= MECHANICAL_LOCK_ACTIVATION_DELAY_CNT)
+            if(++lockActivationDelayCnt >= 100)//MECHANICAL_LOCK_ACTIVATION_DELAY_CNT)
             {
                 //Turn ON mechanical brake
                 lockApply;
+                applyBrake_bake=FALSE;
                 rampStatusFlags.rampBrakeOn = 1;
             }
 
@@ -4112,11 +4120,12 @@ VOID brakingRequired(VOID)
             }
 
             //Change the state after dc injection apply timer overflow
-            if(++rampDcInjectionOnCounter >= currentRampProfile.dcInjectionTime)
+            if(++rampDcInjectionOnCounter >= 1000)//currentRampProfile.dcInjectionTime)
             {
                 DCInjectionOFF();
                 rampStatusFlags.rampDcInjectionOn = 0;
                 stopMotor();
+                applyBrake_bake=FALSE;
 
                 if(++rampCurrentStep < rampTotalStates)
                 {
