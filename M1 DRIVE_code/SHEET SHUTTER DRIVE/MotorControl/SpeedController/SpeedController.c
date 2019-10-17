@@ -194,11 +194,13 @@ void __attribute__((interrupt, no_auto_psv)) _T1Interrupt (void)
 
     IFS0bits.T1IF = 0;
 	measureActualSpeed();
-    // 2016/3/3 Motor Stal & PWM Cost
-	if(++cnt_motor_stop>CNT_10MS*4)
-	{
-		measuredSpeed = 0;
-	}
+
+// 2016/3/3 Motor Stal & PWM Cost
+ if(cnt_motor_stop>10)
+ {
+    measuredSpeed = 0;
+ }
+
 #ifdef ENABLE_MOTOR_CABLE_FAULT
 	// **********************************************************************************************************************************************************
 	// code to monitor "Motor cable fault" Error and stop the motor
@@ -542,6 +544,8 @@ void __attribute__((interrupt, no_auto_psv)) _IC2Interrupt (void)
 	unsigned char lucSectorDiffrence = 0;
 
     IFS0bits.IC2IF = 0;
+
+	// 2016/3/3 Motor Stal & PWM Cost
     cnt_motor_stop = 0;
     currentSector = getCurrentSectorNo();
 
@@ -856,6 +860,8 @@ VOID measureActualSpeed(VOID)
         period = totalTimePeriod;
         totalTimePeriod = 0;
         hall2Triggered = 0;
+// 2016/3/3 Motor Stal & PWM Cost
+		cnt_motor_stop = 0;
     }
 	if (period < MINPERIOD)
 		period = MINPERIOD;

@@ -55,8 +55,7 @@
 #define RAMP_STARTING_CURRENT_MAX   5000       //Limit starting current to 10A
 #define RAMP_STARTING_CURRENT_MIN   1000       //Limit starting current to 10A
 #define RAMP_STARTING_CURRENT_STEP  500         //Current change step is 200mA
-//2016/09/27 Overun
-#define RAMP_STARTING_SPEED_MAX     1600//3600        //Limit starting speed to 3600rpm
+#define RAMP_STARTING_SPEED_MAX     1800//3600        //Limit starting speed to 3600rpm
 
 #define MECHANICAL_LOCK_ACTIVATION_DELAY    100//500//1000    //Time delay required to energize mechanical lock
 #define MECHANICAL_LOCK_DEACTIVATION_DELAY  50      //Time delay required to de-energize mechanical lock
@@ -1600,19 +1599,18 @@ VOID checkPhotoElecObsLevel(BOOL sts)
                        //if current shutter position is above ignore PE level then only trigger stop shutter
                        if(rampCurrentPosition < uDriveCommonBlockEEP.stEEPDriveCommonBlock.photoElecPosMonitor_A102)
                        {
-//                           rampCurrentState = RAMP_STOP; //Set the current state to ramp stop
-//                           calcShtrMinDistValue();
+                           rampCurrentState = RAMP_STOP; //Set the current state to ramp stop
+                           calcShtrMinDistValue();
 						   //	Stop shutter initiated by safety sensor
 						   //	Clear flag so as to stop the shutter immediately
 						   gui8StopKeyPressed = 0;
-//                           stopShutter(); //stop shutter immediately
+                           stopShutter(); //stop shutter immediately
                            photElecSensorFault = TRUE;
+
                            //set fault status
                            //uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.peObstacle = TRUE;   //bug_No.78
                            inputFlags.value = OPEN_SHUTTER_JOG_50;
                            rampCurrentState = RAMP_START;
-                          //2016/09/03 PHOTOELECTRIC_SENSOR 2nd input after not reverce
-                          uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.peSensorStatus = photoElecObsSensTrigrd;   //bug_No.97
                        }
                    }
             }
@@ -2899,23 +2897,18 @@ VOID stopShutter(VOID)
 				    (
 						!gui8StopKeyPressed &&
 						(
-//							(rampCurrentSpeed > SHUTTER_SPEED_MIN_STOP) ||
-//							(measuredSpeed > MIN_SPEED_BEFORE_REVERSE_ACTION)
-                            (measuredSpeed > 600) //20170106
+							(rampCurrentSpeed > SHUTTER_SPEED_MIN_STOP) ||
+							(measuredSpeed > MIN_SPEED_BEFORE_REVERSE_ACTION)
 						)
 					) ||
 					//	Stop key is pressed
 					(
 						(gui8StopKeyPressed) &&
 						(
-//							(rampCurrentSpeed > SHUTTER_SPEED_MIN_STOP) ||
-//							(
-//								((measuredSpeed > GO_UP_MIN_SPEED_BEFORE_APPLYING_BRAKE) && (requiredDirection == CW)) ||		//	measured speed is greater than 300 while going up
-//								((measuredSpeed > GO_DOWN_MIN_SPEED_BEFORE_APPLYING_BRAKE) && (requiredDirection == CCW))		//	measured speed is greater than 450 while going down
-//							)
-							(measuredSpeed > 600) ||   //20170106 SHUTTER_SPEED_MIN_STOP
+							(rampCurrentSpeed > SHUTTER_SPEED_MIN_STOP) ||
 							(
-								((measuredSpeed > GO_UP_MIN_SPEED_BEFORE_APPLYING_BRAKE) && (requiredDirection == CW))		//	measured speed is greater than 300 while going up
+								((measuredSpeed > GO_UP_MIN_SPEED_BEFORE_APPLYING_BRAKE) && (requiredDirection == CW)) ||		//	measured speed is greater than 300 while going up
+								((measuredSpeed > GO_DOWN_MIN_SPEED_BEFORE_APPLYING_BRAKE) && (requiredDirection == CCW))		//	measured speed is greater than 450 while going down
 							)
 						)
 					)

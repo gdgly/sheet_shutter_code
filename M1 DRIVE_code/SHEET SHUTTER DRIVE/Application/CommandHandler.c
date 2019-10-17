@@ -88,7 +88,7 @@
 #define EXPECTED_CRC_CLEAN_ERROR                0xB253
 #define EXPECTED_CRC_APERTUREHEIGHT                0x7292
 
-CONST UINT32 drive_fw_version = 0x00000404;  //bug_NO.64
+CONST UINT32 drive_fw_version = 0x00000405;  //bug_NO.64
 
 
 enum {
@@ -616,31 +616,31 @@ VOID commandHandler(VOID)
                     if((TIME_CMD_open_shutter==0)&&(TIME_CMD_close_shutter==0))
                     {
                         FLAG_CMD_open_shutter=0;
-                            if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveReady)
+                        if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveReady)
+                        {
+                            if(((uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterLowerLimit ||
+                               uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterBetweenLowlmtAphgt))&&(inputFlags.value!=OPEN_SHUTTER_APERTURE))
                             {
-                                if(((uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterLowerLimit ||
-                                   uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterBetweenLowlmtAphgt))&&(inputFlags.value!=OPEN_SHUTTER_APERTURE))
+                                if(FLAG_StartApertureCorrection==1){FLAG_StartApertureCorrection++;inputFlags.value = OPEN_SHUTTER; }   //bug_No.12
+                                else if(FLAG_StartApertureCorrection>1){FLAG_StartApertureCorrection=0;inputFlags.value = OPEN_SHUTTER_APERTURE;}
+                                else inputFlags.value = OPEN_SHUTTER_APERTURE;
+                                TIME_CMD_open_shutter=100;
+                                bUpApertureCmdRecd = TRUE;
+                                //if shutter is moving then calculate min distance travel required.
+                                if(rampOutputStatus.shutterMoving)
                                 {
-                                    if(FLAG_StartApertureCorrection==1){FLAG_StartApertureCorrection++;inputFlags.value = OPEN_SHUTTER; }   //bug_No.12
-                                    else if(FLAG_StartApertureCorrection>1){FLAG_StartApertureCorrection=0;inputFlags.value = OPEN_SHUTTER_APERTURE;}
-                                    else inputFlags.value = OPEN_SHUTTER_APERTURE;
-                                    TIME_CMD_open_shutter=100;
-                                    bUpApertureCmdRecd = TRUE;
-                                    //if shutter is moving then calculate min distance travel required.
-                                    if(rampOutputStatus.shutterMoving)
-                                    {
-                                        calcShtrMinDistValue();
-                                    }
-                                }
-                                else
-                                {
-                                    status = nack;
+                                    calcShtrMinDistValue();
                                 }
                             }
                             else
                             {
                                 status = nack;
                             }
+                        }
+                        else
+                        {
+                            status = nack;
+                        }
                     }
                     else {
                         FLAG_CMD_open_shutter=1;
@@ -649,6 +649,7 @@ VOID commandHandler(VOID)
                     break;
                 case close_shutter:
                 case close_shutter_aperture_height:			// 2016/11/28 ADD close aperture height NG
+                    FLAG_CMD_open_shutter=0;
                     //If shutter is at lower limit then do not process command
                     if((TIME_CMD_open_shutter==0)&&(TIME_CMD_close_shutter==0))
                     {
