@@ -533,7 +533,9 @@ void updateControlBoardApplicationFaults(void)
 {
 	OB_Status = MAP_GPIOPinRead(0x40007000, GPIO_INT_PIN_2) >> 2;
 	//gstControlApplicationFault.bits.obstacleSensor = gSensorStatus.bits.Sensor_Safety_active;//add cyw
-	if(OB_Status == 0)
+
+	//if(OB_Status == 0)
+	if((OB_Status == 0)&&(gstDriveStatus.bits.ignPhotoElecSensLimRchd == 0))  //Bug_201806_No.75
 	{
 
 		gSensorStatus.bits.Sensor_Safety_active = true;

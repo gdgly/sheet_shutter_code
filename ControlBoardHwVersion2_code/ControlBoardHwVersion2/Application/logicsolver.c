@@ -97,6 +97,8 @@ uint8_t season_cyw=0;
 static unsigned int time_ObstacleSensor;   //add 20161020
 uint8_t Delay_Type_A0012345=0;   //Bug_201806_No.67
 uint32_t  define_TIME_interlock_prior=500;   //1ms time base
+uint8_t Flag_PowerON_control_delay=0;
+uint32_t PowerON_control_delay=0;
 /****************************************************************************
  *  Global variables for other files:
  ****************************************************************************/
@@ -784,6 +786,9 @@ void logicSolver(void) {
 				gSensorStatus.bits.Sensor_Obstacle_active=1;
 			}
 			eLogic_Solver_State = Logic_Solver_Drive_Run;
+			                                         //Bug_201806_No.78
+			Flag_PowerON_control_delay=1;
+			PowerON_control_delay = g_ui32TickCount;
 		}
 
 		break; //case Logic_Solver_Power_ON_Init:
@@ -1390,9 +1395,9 @@ void logicSolver(void) {
 						(gstCMDitoLS.commandRequestStatus == eACTIVE && gstCMDitoLS.commandDisplayBoardLS.bits.enterPressed) 	||
 						(
 								(gstDriveInstallation.bits.installA100 && gKeysStatus.bits.Keys2_3secStpOpn_pressed) 			||
-								(gstDriveInstallation.bits.installA101 && gKeysStatus.bits.Keys2_3secStpCls_pressed) 			||
-								(gstDriveInstallation.bits.installA102 && gKeysStatus.bits.Key_3secStp_pressed) 				||
-								(gstDriveInstallation.bits.installationSuccess && gKeysStatus.bits.Key_3secStp_pressed)
+								(gstDriveInstallation.bits.installA101 && gKeysStatus.bits.Keys2_3secStpCls_pressed)
+								//||(gstDriveInstallation.bits.installA102 && gKeysStatus.bits.Key_3secStp_pressed) 				||    //Bug_201806_No.46
+								//(gstDriveInstallation.bits.installationSuccess && gKeysStatus.bits.Key_3secStp_pressed)
 						)
 						)
 				{
@@ -1432,7 +1437,7 @@ void logicSolver(void) {
 						(gstCMDitoLS.commandRequestStatus == eACTIVE &&
 						    (gstCMDitoLS.commandDisplayBoardLS.bits.closePressed || gstCMDitoLS.commandDisplayBoardLS.bits.openPressed || gstCMDitoLS.commandDisplayBoardLS.bits.upPressed || gstCMDitoLS.commandDisplayBoardLS.bits.downPressed)
 					    )|| gKeysStatus.bits.Key_Open_pressed || gKeysStatus.bits.Key_Close_pressed)
-					  && gstDriveInstallation.bits.installationValid  && gstDriveStatus.bits.shutterStopped)
+					  && gstDriveInstallation.bits.installationValid  && gstDriveStatus.bits.shutterStopped )
 				{
 					/*gstLStoCMDr.commandRequestStatus = eACTIVE;
 					gstLStoCMDr.commandToDriveBoard.val = 0;
@@ -1441,6 +1446,7 @@ void logicSolver(void) {
 
 					// Update last command sent
 					sstLStoCMDrCmdSent.commandToDriveBoard.val = gstLStoCMDr.commandToDriveBoard.val;*/
+
 					gstLStoCMDr.commandRequestStatus = eACTIVE;
 					gstLStoCMDr.commandToDriveBoard.val = 0;
 					gstLStoCMDr.commandToDriveBoard.bits.startPowerOnCalibration = 1;
@@ -1448,6 +1454,12 @@ void logicSolver(void) {
 					// Update last command sent
 					sstLStoCMDrCmdSent.commandToDriveBoard.val = gstLStoCMDr.commandToDriveBoard.val;
 
+				}
+				else if (gstCMDitoLS.commandRequestStatus == eACTIVE)    //Bug_201806_No.47
+				{
+				// For not acceptable key input from display board for installation, send NACK to display board
+				gstCMDitoLS.commandResponseStatus = eSUCCESS;
+				gstCMDitoLS.acknowledgementReceived = eNACK;
 				}
 
 
@@ -1673,7 +1685,6 @@ void logicSolver(void) {
 
 #endif
 
-
 		// *********************************************************************************************
 		// Start for sub-state 'disable shutter operations while in settings mode' of 'Logic_Solver_Drive_Run'
 		//	RN - DEC 2015
@@ -1695,6 +1706,10 @@ void logicSolver(void) {
 			gstCMDitoLS.acknowledgementReceived = eACK;
 
 		}
+		                                                      //Bug_201806_No.78
+		if((Flag_PowerON_control_delay==1)&&(get_timego(PowerON_control_delay)>80))
+			Flag_PowerON_control_delay=0;
+
 		// *********************************************************************************************
 		// End for sub-state 'disable shutter operations while in settings mode' of 'Logic_Solver_Drive_Run'
 		// *********************************************************************************************
@@ -1720,8 +1735,6 @@ void logicSolver(void) {
 						 gKeysStatus.bits.Key_Open_released 		||
 						 gKeysStatus.bits.Key_Close_pressed 		||
 						 gKeysStatus.bits.Key_Close_released 		||
-						 gKeysStatus.bits.Key_Stop_pressed 			||
-						 gKeysStatus.bits.Key_Stop_released 		||
 						 gSensorStatus.bits.Sensor_1PBS_active		||
 						 gSensorStatus.bits.Sensor_1PBS_inactive	||
 						 // 20 Oct Added check for auto mode for startup sensor by yogesh
@@ -1740,6 +1753,10 @@ void logicSolver(void) {
 						 gSensorStatus.bits.Sensor_Wireless_1PBS_inactive
 
 						 )&& (guiSettingsModeStatus == 0))   //Bug_201806_No.27
+						 ||(
+								 gKeysStatus.bits.Key_Stop_pressed 			||
+								 gKeysStatus.bits.Key_Stop_released
+							)
 				) &&
 				(gstLStoCMDr.commandRequestStatus == eINACTIVE) 	&&
 				(gstDriveStatus.bits.driveReady)					&&
@@ -1936,6 +1953,7 @@ void logicSolver(void) {
 						((gstControlBoardStatus.bits.controlFault == 0) || (gstControlBoardStatus.bits.controlFaultUnrecoverable == 0))
 						//&&   //20170505  201703_No.41 No.email
 
+						&& (Flag_PowerON_control_delay==0)         //Bug_201806_No.78
 						//(gstControlApplicationFault.bits.operationRestrictionTimer == 0) &&
 						// Check none of the safety signal is triggered
 						//(gstDriveApplicationFault.bits.microSwitch == 0 && gstDriveApplicationFault.bits.peObstacle == 0 /*&& gstControlApplicationFault.bits.startupSafetySensor == 0*/)  //20160906 item 104	  //20170505  201703_No.41  No.email
