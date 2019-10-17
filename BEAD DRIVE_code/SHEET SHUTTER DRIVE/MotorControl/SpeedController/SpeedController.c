@@ -349,10 +349,14 @@ VOID monitorSectorRotation(VOID)
         //check if we have crossed the sector rotation time required then immediately stop motor.
         if(monitorSectorRoatCnt > MS_500T)
         {
-            rampCurrentState = RAMP_PWM_COASTING;
-            pwmCostingReq = TRUE;
-            currentLimitClamp = controlOutput;
-            outputDecRate = __builtin_divud(currentLimitClamp, PWM_COASTING_TIME);
+//            rampCurrentState = RAMP_PWM_COASTING;
+//            pwmCostingReq = TRUE;
+//            currentLimitClamp = controlOutput;
+//            outputDecRate = __builtin_divud(currentLimitClamp, PWM_COASTING_TIME);
+                        //if emergency switch is triggered the stop shutter immediately
+            forceStopShutter();
+			// 2016/11/16 When Down , Missing Save Origin Position.
+			hallCounts_bak = 0x7FFF;
             uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorStall = TRUE;
         }
         else
