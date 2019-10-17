@@ -29,7 +29,7 @@
 /****************************************************************************
  *  Macro definitions:
 ****************************************************************************/
-#define STATUS_FAULT_POLL_TIMEOUT		500		// 500 ms
+#define STATUS_FAULT_POLL_TIMEOUT		300		// 500 ms
 #define MIN_COMMAND_RESPONSE_LENGTH		9
 #define MAX_COMMAND_RESPONSE_LENGTH		9
 

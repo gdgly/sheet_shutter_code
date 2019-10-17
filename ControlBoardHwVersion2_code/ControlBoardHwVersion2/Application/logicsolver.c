@@ -494,7 +494,7 @@ void logicSolver(void) {
 						 			 gstCMDitoLS.commandDisplayBoardLS.bits.closePressed == 1
 						 	 )
 						 ) ||
-						 (gKeysStatus.bits.Key_Open_pressed == 1 || gKeysStatus.bits.Key_Close_pressed == 1 || gSensorStatus.bits.Sensor_1PBS_active == 1)
+						 (gKeysStatus.bits.Key_Open_pressed == 1 || gKeysStatus.bits.Key_Close_pressed == 1 || gSensorStatus.bits.Sensor_1PBS_active == 1 ||(gSensorStatus.bits.Sensor_Obstacle_active && gstControlBoardStatus.bits.autoManual == 1))
 				) &&
 				(gstLStoCMDr.commandRequestStatus == eINACTIVE) &&
 				(sHandlePowerON_Init == HandlePowerOnInit_Home) &&
@@ -948,10 +948,10 @@ void logicSolver(void) {
 
 				}
 				// add by st aoyagi 20160812  START
-				//else if(//gstCMDitoLS.commandRequestStatus == eACTIVE &&
-						//gstDriveInstallation.bits.installationValid &&
-						//gstCMDitoLS.commandDisplayBoardLS.bits.stopPressed)
-				//{
+				else if(//gstCMDitoLS.commandRequestStatus == eACTIVE &&
+						gstDriveInstallation.bits.installationValid &&
+						gstCMDitoLS.commandDisplayBoardLS.bits.stopPressed)
+				{
 					/*gstLStoCMDr.commandRequestStatus = eACTIVE;
 					gstLStoCMDr.commandToDriveBoard.val = 0;
 					gstLStoCMDr.commandToDriveBoard.bits.stopShutter = 1;
@@ -959,18 +959,18 @@ void logicSolver(void) {
 					// Update last command sent
 					sstLStoCMDrCmdSent.commandToDriveBoard.val = gstLStoCMDr.commandToDriveBoard.val;*/
 
-					//gstLStoCMDr.commandRequestStatus = eACTIVE;
-					//gstLStoCMDr.commandToDriveBoard.val = 0;
-					//gstLStoCMDr.commandToDriveBoard.bits.stopPowerOnCalibration = 1;
+					gstLStoCMDr.commandRequestStatus = eACTIVE;
+					gstLStoCMDr.commandToDriveBoard.val = 0;
+					gstLStoCMDr.commandToDriveBoard.bits.stopPowerOnCalibration = 1;
 
 					// Update last command sent
-					//sstLStoCMDrCmdSent.commandToDriveBoard.val = gstLStoCMDr.commandToDriveBoard.val;
+					sstLStoCMDrCmdSent.commandToDriveBoard.val = gstLStoCMDr.commandToDriveBoard.val;
 
-				//}
-				//else if(gstCMDitoLS.commandRequestStatus == eACTIVE && gstDriveInstallation.bits.installationValid &&
-						//gstDriveStatus.bits.shutterStopped &&
-							//(gstCMDitoLS.commandDisplayBoardLS.bits.closePressed || gstCMDitoLS.commandDisplayBoardLS.bits.openPressed))
-				//{
+				}
+				else if(gstCMDitoLS.commandRequestStatus == eACTIVE && gstDriveInstallation.bits.installationValid &&
+						gstDriveStatus.bits.shutterStopped &&
+							(gstCMDitoLS.commandDisplayBoardLS.bits.closePressed || gstCMDitoLS.commandDisplayBoardLS.bits.openPressed))
+				{
 					/*gstLStoCMDr.commandRequestStatus = eACTIVE;
 					gstLStoCMDr.commandToDriveBoard.val = 0;
 					gstLStoCMDr.commandToDriveBoard.bits.openShutterJog = 1;
@@ -978,14 +978,14 @@ void logicSolver(void) {
 
 					// Update last command sent
 					sstLStoCMDrCmdSent.commandToDriveBoard.val = gstLStoCMDr.commandToDriveBoard.val;*/
-					//gstLStoCMDr.commandRequestStatus = eACTIVE;
-					//gstLStoCMDr.commandToDriveBoard.val = 0;
-					//gstLStoCMDr.commandToDriveBoard.bits.startPowerOnCalibration = 1;
+					gstLStoCMDr.commandRequestStatus = eACTIVE;
+					gstLStoCMDr.commandToDriveBoard.val = 0;
+					gstLStoCMDr.commandToDriveBoard.bits.startPowerOnCalibration = 1;
 
 					// Update last command sent
-					//sstLStoCMDrCmdSent.commandToDriveBoard.val = gstLStoCMDr.commandToDriveBoard.val;
+					sstLStoCMDrCmdSent.commandToDriveBoard.val = gstLStoCMDr.commandToDriveBoard.val;
 
-				//}
+				}
 
 
 
@@ -1433,7 +1433,7 @@ void logicSolver(void) {
 
 						// Stop and close keys are not pressed
 						(
-								sucCloseKeyDisplay == 0 && sucCloseKeyControl == 0 	&&
+//								sucCloseKeyDisplay == 0 && sucCloseKeyControl == 0 	&&
 								sucStopKeyDisplay == 0 && sucStopKeyControl == 0   	&&
 								sucWirelessCloseKeyControl == 0
 						) &&
