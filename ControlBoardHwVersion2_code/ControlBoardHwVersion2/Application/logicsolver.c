@@ -2840,7 +2840,7 @@ void logicSolver(void) {
 				// Check shutter is at upper limit
 				//static unsigned char sucLastOpenCommandType = 0; // 0 == Open command,1 == Open Aperture height command
 				(
-						(gstDriveStatus.bits.shutterUpperLimit == 1 && sucLastOpenCommandType == 0) ||
+						(gstDriveStatus.bits.shutterUpperLimit == 1 /*&& sucLastOpenCommandType == 0*/) ||    //20160913   bug_No。108
 						(gstDriveStatus.bits.shutterApertureHeight == 1 && sucLastOpenCommandType == 1)
 				) &&
 
