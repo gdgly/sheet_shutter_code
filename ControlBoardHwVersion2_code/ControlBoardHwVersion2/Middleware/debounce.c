@@ -1812,6 +1812,7 @@ void keysProcessFlags(uint8_t keyState, uint8_t keyChanged)
 				//}
 
 				keyPressedEvent |= KEY_3PBS_STOP;
+				gstControlBoardStatus.bits.s3PBS_stoppress = 1;//for item bug_No.106 20160909
 			}
 		}
 
@@ -1826,6 +1827,7 @@ void keysProcessFlags(uint8_t keyState, uint8_t keyChanged)
 				//}
 
 				keyReleasedEvent |= KEY_3PBS_STOP;
+				gstControlBoardStatus.bits.s3PBS_stoppress = 0;//for item bug_No.106 20160909
 			}
 
 

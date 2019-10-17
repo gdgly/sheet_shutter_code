@@ -335,7 +335,7 @@ typedef union unControlBoardStatus
 		uint8_t driveCommunicationStatus	: 1;
 		uint8_t controlBoardBootLoader		: 1;	//	This bit is one when control board bootloader is running
 		uint8_t wirelessMonitor				: 1;	//	Added on 04 Dec 2014
-		uint8_t unused						: 1;
+		uint8_t s3PBS_stoppress				: 1;    // for item 106 20160909
 	} bits;
 } _ControlBoardStatus;
 
