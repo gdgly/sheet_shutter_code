@@ -44,7 +44,7 @@
 #define PHASE_OFFSET_CW_MAX 6734
 #define PHASE_OFFSET_CCW_MAX 9828 //20180627 10556 -> 9828 No57
 #define PHASE_OFFSET_INC_STEP 30 //20 20180627 No56 motorlock
-#define PHASE_OFFSET_DEC_STEP 50
+#define PHASE_OFFSET_DEC_STEP 10    //201808 Bug_No.101    50-->10
 
 EXTERN tPIParm speedPIparms;
 /* This function initializes all the variables used by speed controller */
