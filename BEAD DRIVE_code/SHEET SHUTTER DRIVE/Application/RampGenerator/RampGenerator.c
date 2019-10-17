@@ -1521,7 +1521,11 @@ void __attribute__ ((interrupt, no_auto_psv)) _INT1Interrupt(void)
     if(PWMCON1bits.FLTSTAT)
 		overcurrentfaultTriggered(TRUE);
 #if 1
-    else
+    #ifdef BUG_No83_igbtOverTemp     //20170606  201703_No.83
+      else if(Power_ON_igbtOverTemp==1)
+    #else      
+      else
+    #endif 
         igbtOverTempSensorTriggered(TRUE);
 #endif
 }
@@ -1683,6 +1687,21 @@ VOID microSwSensorTiggered(BOOL sts)
         updateSenStsCmd = TRUE;
     }
 }
+
+#ifdef BUG_No81_microSwSensor_PowerON     //20170605  201703_No.81
+VOID microSwSensor_PowerON(VOID)
+{
+			if(uDriveApplBlockEEP.stEEPDriveApplBlock.microSensorCounter_A080 >= 20)
+			{
+                uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.microSwitchSensorLimit = TRUE;
+			}
+            else
+            {
+                //reset max microSwitchSensorLimit error flag
+                uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.microSwitchSensorLimit = FALSE;
+            }    
+}
+#endif
 
 VOID tempSensorTriggered(BOOL sts)
 {

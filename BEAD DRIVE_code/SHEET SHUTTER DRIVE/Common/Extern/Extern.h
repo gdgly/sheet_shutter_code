@@ -113,3 +113,13 @@ EXTERN BOOL ShutterInstallationEnabled;
 
 // When the regenerative resistance dose not work,the voltage. By IME 2016/12/19
 #define MAXIMUM_DURATION	25		// *20ms=1s
+
+EXTERN UINT8 Power_ON_igbtOverTemp;
+EXTERN UINT16 Time_uart_count; 
+
+//define Correction No.
+#define  BUG_No41_microSwSensorTrigrd             //20170606  201703_No.41
+#define  BUG_No81_microSwSensor_PowerON          //20170605  201703_No.81
+#define  BUG_No82_UartRxTimeOut1S                //20170606  201703_No.82
+#define  BUG_No83_igbtOverTemp                   //20170606  201703_No.83
+#define  BUG_No76_powerUpCalib_osToggle          //20170607  201703_No.76
