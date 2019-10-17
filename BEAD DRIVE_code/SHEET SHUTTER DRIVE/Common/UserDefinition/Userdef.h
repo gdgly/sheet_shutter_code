@@ -22,7 +22,6 @@
 #ifndef USERDEF_H
 #define USERDEF_H
 #include "./Common/Typedefs/Typedefs.h"
-#include "./Common/Extern/Extern.h"
 
 #define USE_PHASE_INC_AND_CORRECTION
 #define PICOMO_MOTOR        1//not use
@@ -106,12 +105,7 @@
 //#define PHASE_INC_CALC 5000000UL  //((DWORD)(FCY/((DWORD)PDIV*2*FPWM))*65536) 
 
 /* Half of the PWM Deadtime; The effective deadtime written in ALTDTR registers is 2*ALTDTR_DIV2 */
-#ifdef IGBT_HighActive_ROME
-   #define	ALTDTR_DIV2	196  //2.8us
-#endif
-#ifdef IGBT_LowActive_IR
    #define	ALTDTR_DIV2	140//120
-#endif
 //#define	ALTDTR_DIV2	280//(70*4)      //5us
 //#define	ALTDTR_DIV2	147//(70*2.1)      //2.1us
 //#define	ALTDTR_DIV2	210//(70*3)      //3us
