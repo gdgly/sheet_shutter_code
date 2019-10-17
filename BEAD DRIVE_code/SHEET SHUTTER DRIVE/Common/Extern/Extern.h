@@ -132,5 +132,6 @@ EXTERN UINT8 Flag_powerUpCalib_osToggle;
 #define  BUG_No89_PHOTOELECTRIC_SENSOR        //priority5   //20171016  201703_No.89
 #define  BUG_No88_M2overcurrentfault          //priority2    //20171029  201703_No.88
 #define  BUG_CQxx_BD_IGBTdamage               //priority1   //20171029  BD IGBT damage
+#define  BUG_japan_xx                           //20171110  
 
 
