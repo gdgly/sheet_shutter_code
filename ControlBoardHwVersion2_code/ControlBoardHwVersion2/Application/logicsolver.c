@@ -1122,6 +1122,14 @@ void logicSolver(void) {
 
 #endif
 
+		if(gstDriveStatus.bits.driveInstallation==1 &&	  //20170330_2    201703_No.34
+				(gKeysStatus.bits.Key_Open_pressed==1 || gKeysStatus.bits.Key_Open_released==1 || gKeysStatus.bits.Key_Close_pressed==1 || gKeysStatus.bits.Key_Close_released==1))
+		{
+			gKeysStatus.bits.Key_Open_pressed=0;
+			gKeysStatus.bits.Key_Open_released=0;
+			gKeysStatus.bits.Key_Close_pressed=0;
+			gKeysStatus.bits.Key_Close_released=0;
+		}
 
 		if (
 
@@ -2555,17 +2563,17 @@ void logicSolver(void) {
 
 				   if (sucOpenKeyControl==0)          //  201703_No.11
 				   {
-//           			                 time_ObstacleSensor = g_ui32TickCount;
-//								gstLStoCMDr.commandRequestStatus = eACTIVE;
-//								gstLStoCMDr.commandToDriveBoard.val = 0;
-//								gstLStoCMDr.commandToDriveBoard.bits.stopShutter = 1;
-//								          OpenCmdForDistinguish = 0;
-//								seHandleKeysStartupState = CmdSentWaitingForReply;
+           			                 time_ObstacleSensor = g_ui32TickCount;
+								gstLStoCMDr.commandRequestStatus = eACTIVE;
+								gstLStoCMDr.commandToDriveBoard.val = 0;
+								gstLStoCMDr.commandToDriveBoard.bits.stopShutter = 1;
+								          OpenCmdForDistinguish = 0;
+								seHandleKeysStartupState = CmdSentWaitingForReply;
 
 								// Update last command sent
-//								sstLStoCMDrCmdSent.commandToDriveBoard.val =
+								sstLStoCMDrCmdSent.commandToDriveBoard.val =
 
-//										gstLStoCMDr.commandToDriveBoard.val;
+										gstLStoCMDr.commandToDriveBoard.val;
 
 								// Reset the "UP or Down command detected and wait for delay before sending actual command" flag
 								seShutterOpenCloseCmdState = CmdNotDetected;
