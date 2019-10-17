@@ -73,9 +73,10 @@
                                                 //50% of S1UP speed.
 
 //	Maximum count allowed if shutter is moving in wrong direction
-#define	MAX_FALSE_MOVEMENT_COUNT_LIMIT		54  // Number of hall pulses / mechanical revolution  X allowed false revolution
+// Measures against overcurrent error 20180330 by IME
+//#define	MAX_FALSE_MOVEMENT_COUNT_LIMIT		54  // Number of hall pulses / mechanical revolution  X allowed false revolution
 												// 18 (750W motor) X 3
-
+#define	MAX_FALSE_MOVEMENT_COUNT_LIMIT		162
 
 /* Enumaration for ramp profile */
 typedef enum rampProfileNo
@@ -941,7 +942,7 @@ VOID chargeBootstraps(VOID)
     IOCON1 = 0xC000;    
     IOCON2 = 0xC000;
     IOCON3 = 0xC000;    
-#endif        
+#endif 
     PTCONbits.PTEN = 0;
 
     PDC1 = PHASE1 / 2;	// initialise as 0 volts
@@ -1188,19 +1189,19 @@ VOID monitorSafetySensors(VOID)
                     else if((i==2)&&(sensorList[i].sensorPrevSteadyVal==sensorList[i].sensorCurrSteadyVal)&&(photElecSensorFault ==FALSE))
                     {
 						sensorList[i].sensorFuncPtr(sensorList[i].sensorCurrSteadyVal);
-						sensorList[i].sensorPrevSteadyVal = sensorList[i].sensorCurrSteadyVal;                        
+						sensorList[i].sensorPrevSteadyVal = sensorList[i].sensorCurrSteadyVal;
                     }
-#endif                    
+#endif
 				}
 			}
 			else if(sensorList[i].sensorCurrVal == LOW)
 			{
 				sensorList[i].sensorLowDebounceCnt++;
-                
+
                 //Clear photo electric fault
-                if((i==2)&&(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.peObstacle)&&(sensorList[i].sensorLowDebounceCnt >=550))    //20170418  201703_No.15                  
-                    uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.peObstacle = FALSE;                
-                
+                if((i==2)&&(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.peObstacle)&&(sensorList[i].sensorLowDebounceCnt >=550))    //20170418  201703_No.15
+                    uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.peObstacle = FALSE;
+
 				if(sensorList[i].sensorLowDebounceCnt >= sensorInactiveDebounceValue[i])
 				{
 					//sensorList[i].sensorLowDebounceCnt = sensorInactiveDebounceValue[i];
@@ -1313,8 +1314,8 @@ VOID initSensorList(VOID)
     tempSensTrigrd = sensorList[TEMPERATURE_SENSOR].sensorCurrSteadyVal;
     originSensorDetected = sensorList[ORIGIN_SENSOR].sensorCurrSteadyVal;
 #ifdef  BUG_No51_SnowA008  //20170612  201703_No.51
-    updatePhotoElectricDebounceTime();    
-#endif     
+    updatePhotoElectricDebounceTime();
+#endif
 }
 #endif	//	PROGRAMMABLE_DEBOUNCE
 
@@ -1553,9 +1554,9 @@ void __attribute__ ((interrupt, no_auto_psv)) _INT1Interrupt(void)
 #if 1
     #ifdef BUG_No83_igbtOverTemp     //20170606  201703_No.83
       else if(Power_ON_igbtOverTemp==1)
-    #else      
+    #else
       else
-    #endif 
+    #endif
         igbtOverTempSensorTriggered(TRUE);
 #endif
 }
@@ -1639,7 +1640,7 @@ VOID checkPhotoElecObsLevel(BOOL sts)
                     if((rampCurrentPosition < uDriveCommonBlockEEP.stEEPDriveCommonBlock.photoElecPosMonitor_A102)&&
                         //(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterUpperLimit == FALSE))
                         (rampOutputStatus.shutterCurrentPosition > (uDriveCommonBlockEEP.stEEPDriveCommonBlock.upperStoppingPos_A100 +
-                                                       uDriveApplBlockEEP.stEEPDriveApplBlock.overrunProtection_A112)))    
+                                                       uDriveApplBlockEEP.stEEPDriveApplBlock.overrunProtection_A112)))
 #else
                     if(rampCurrentPosition < uDriveCommonBlockEEP.stEEPDriveCommonBlock.photoElecPosMonitor_A102)
 #endif
@@ -1650,32 +1651,32 @@ VOID checkPhotoElecObsLevel(BOOL sts)
 						   //	Stop shutter initiated by safety sensor
 						   //	Clear flag so as to stop the shutter immediately
 						   gui8StopKeyPressed = 0;
-                    //       stopShutter(); //stop shutter immediately                           
+                    //       stopShutter(); //stop shutter immediately
 #else
                            rampCurrentState = RAMP_STOP; //Set the current state to ramp stop
                            calcShtrMinDistValue();
 						   //	Stop shutter initiated by safety sensor
 						   //	Clear flag so as to stop the shutter immediately
 						   gui8StopKeyPressed = 0;
-                           stopShutter(); //stop shutter immediately                           
-#endif                           
+                           stopShutter(); //stop shutter immediately
+#endif
                            photElecSensorFault = TRUE;
 
                            //set fault status
                            //uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.peObstacle = TRUE;   //bug_No.78
                            inputFlags.value = OPEN_SHUTTER_JOG_50;
                            rampCurrentState = RAMP_START;
-#ifdef BUG_No57_checkPhotoElecObsLevel         //20170608  201703_No.57                   
+#ifdef BUG_No57_checkPhotoElecObsLevel         //20170608  201703_No.57
                           //2016/09/03 PHOTOELECTRIC_SENSOR 2nd input after not reverce
-                          uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.peSensorStatus = photoElecObsSensTrigrd;   //bug_No.97       
-#endif                          
+                          uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.peSensorStatus = photoElecObsSensTrigrd;   //bug_No.97
+#endif
                        }
                    }
             }
         }
     }
     else
-    {        
+    {
         photElecSensorFault = FALSE; //clear the photo electric fault
         updateSenStsCmd = TRUE;
     }
@@ -1749,7 +1750,7 @@ VOID microSwSensor_PowerON(VOID)
             {
                 //reset max microSwitchSensorLimit error flag
                 uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.microSwitchSensorLimit = FALSE;
-            }    
+            }
 }
 #endif
 
@@ -3688,7 +3689,8 @@ VOID executeRampProfile(VOID)
                         rampStatusFlags.rampCurrentControlRequired = 0;
                         //set the speed reference
 
-						refSpeed -= currentRampProfile.speedChangeRate;
+//						refSpeed -= currentRampProfile.speedChangeRate;
+						refSpeed -= 100;
 #if 0
 						refSpeed -= lshSpeedChangeRate;
 #endif
@@ -4063,23 +4065,39 @@ VOID executeRampProfile(VOID)
 VOID brakingRequired(VOID)
 {
     BOOL applyBrake = FALSE;
+// Measures against overcurrent error 20180330 by IME
+    static BOOL applyBrake_bake = FALSE;
 
     rampCurrentSpeed = refSpeed;
     rampCurrentPosition = hallCounts;
 
     if(requiredDirection == CW)
     {
-        if(rampCurrentPosition <= currentRampProfile.endPosition)
+// Measures against overcurrent error 20180330 by IME
+//        if(rampCurrentPosition <= currentRampProfile.endPosition)
+//        {
+//            applyBrake = TRUE;
+//        }
+        if((rampCurrentPosition <= currentRampProfile.endPosition)||
+        (rampCurrentPosition <= currentRampProfile.endPosition + uDriveApplBlockEEP.stEEPDriveApplBlock.overrunProtection_A112)&&(applyBrake_bake==TRUE))
         {
             applyBrake = TRUE;
         }
+        applyBrake_bake=applyBrake;
     }
     else
     {
-         if(rampCurrentPosition >= currentRampProfile.endPosition)
-         {
-             applyBrake = TRUE;
-         }
+// Measures against overcurrent error 20180330 by IME
+//         if(rampCurrentPosition >= currentRampProfile.endPosition)
+//         {
+//             applyBrake = TRUE;
+//         }
+        if((rampCurrentPosition >= currentRampProfile.endPosition)||
+        (rampCurrentPosition >= currentRampProfile.endPosition - uDriveApplBlockEEP.stEEPDriveApplBlock.overrunProtection_A112)&&(applyBrake_bake==TRUE))
+        {
+            applyBrake = TRUE;
+        }
+        applyBrake_bake=applyBrake;
 		 //	Commented to handle "offset at upper & lower limit"
 		 //	Shutter used to stop above lower limit because of this.
 #if 0
@@ -4115,6 +4133,8 @@ VOID brakingRequired(VOID)
                 //Turn ON mechanical brake
                 lockApply;
                 rampStatusFlags.rampBrakeOn = 1;
+// Measures against overcurrent error 20180330 by IME
+                applyBrake_bake = FALSE;
             }
 
             //If mechanical brake is ON decrement DC injection duty.
@@ -4131,6 +4151,8 @@ VOID brakingRequired(VOID)
                 DCInjectionOFF();
                 rampStatusFlags.rampDcInjectionOn = 0;
                 stopMotor();
+// Measures against overcurrent error 20180330 by IME
+                applyBrake_bake = FALSE;
 
                 if(++rampCurrentStep < rampTotalStates)
                 {

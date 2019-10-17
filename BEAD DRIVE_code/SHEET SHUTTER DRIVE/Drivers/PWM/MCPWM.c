@@ -42,7 +42,7 @@ VOID initMCPWM(VOID)
 	PHASE2 = (FCY/FPWM - 1);
 	PHASE3 = (FCY/FPWM - 1);
     PTPER = 2*(FCY/FPWM - 1)+1;
-
+    
 #ifdef IGBT_LowActive_IR
     IOCON1 = 0xF000;
 	IOCON2 = 0xF000;

@@ -77,7 +77,7 @@
 #define MIN_RPM         50//10//100
 
 #define FCY  70000000UL	 // xtal = 8Mhz; with PLL -> 70 MIPS
-#define FPWM 5000//12000        //20000		 // 20 kHz, so that no audible noise is present.
+#define FPWM 12000        //20000		 // 20 kHz, so that no audible noise is present.
 
 #define PDIV_256        256  //Timer3 configuration for using prescalar 256 (1ms) Tcy/256
 #define PDIV_64         64   //Timer3 configuration for using prescalar 64 (1us)  Tcy/64 
