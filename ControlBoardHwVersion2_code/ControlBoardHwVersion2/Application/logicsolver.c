@@ -1960,7 +1960,8 @@ void logicSolver(void) {
 					} else
 					{
 						//if(gstControlApplicationFault.bits.startupSafetySensor == 1)  //20160906 item104
-						if((gstControlApplicationFault.bits.startupSafetySensor == 1)&&(gstDriveStatus.bits.shutterUpperLimit != 1))  //20161205
+						//if((gstControlApplicationFault.bits.startupSafetySensor == 1)&&(gstDriveStatus.bits.shutterUpperLimit != 1))  //20161205
+						if((gstControlApplicationFault.bits.startupSafetySensor == 1)&&(gstDriveStatus.bits.shutterUpperLimit != 1)&&(gstDriveStatus.bits.shutterLowerLimit != 1))  //20170623   201703_No.CQ04
 						{
 							season_cyw = 1;
 						}
@@ -1976,7 +1977,16 @@ void logicSolver(void) {
 							sstLStoCMDrCmdToBeSent.commandToDriveBoard.val = 0;
 							sstLStoCMDrCmdToBeSent.commandToDriveBoard.bits.openShutterApperture = 1;
 							sucLastOpenCommandType = 1;
-							OpenCmdForDistinguish = 1;    //20170622    201703_No.CQ02
+							//OpenCmdForDistinguish = 0;
+							                            ///***********start 20170622    201703_No.CQ02 No.CQ06***********************/
+							if(
+									(gstCMDitoLS.commandRequestStatus == eACTIVE && gstCMDitoLS.commandDisplayBoardLS.bits.stopPressed) ||
+									(gKeysStatus.bits.Key_Stop_pressed)																	||
+									(gKeysStatus.bits.Wireless_Stop_pressed)
+							 )
+								OpenCmdForDistinguish = 1;
+							else OpenCmdForDistinguish = 0;
+							                          ///***********end 20170622    201703_No.CQ02 No.CQ06***********************/
 						}
 					}
 
