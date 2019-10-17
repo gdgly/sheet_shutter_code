@@ -4784,8 +4784,9 @@ void logicSolver(void) {
 					gstBitwiseMultifuncOutput.bits.Rising = 0;
 
 					//if(gstDriveStatus.bits.shutterLowerLimit == 1)gstBitwiseMultifuncOutput.bits.InterlockOutput = 1;	//20161206
-					if((gstDriveStatus.bits.shutterLowerLimit == 1)&&(sucInterlockOutputStatus == 0)&&(gstDriveStatus.bits.shutterMovingDown==0))gstBitwiseMultifuncOutput.bits.InterlockOutput = 1;	//20170330   201703_No.10
+					//if((gstDriveStatus.bits.shutterLowerLimit == 1)&&(sucInterlockOutputStatus == 0)&&(gstDriveStatus.bits.shutterMovingDown==0))gstBitwiseMultifuncOutput.bits.InterlockOutput = 1;	//20170330   201703_No.10
 				}
+		       if((gstDriveStatus.bits.shutterLowerLimit == 1)&&(gstBitwiseMultifuncOutput.bits.Rising == 0)&&(sucInterlockOutputStatus == 0)&&(gstDriveStatus.bits.shutterMovingDown==0))gstBitwiseMultifuncOutput.bits.InterlockOutput = 1;	//20170412  201703_No.16-①
 
 		// Dropping
 		if ((gstDriveStatus.bits.shutterMovingDown == 1)||(seShutterOpenCloseCmdState == CmdDownDetectedWaitDownDelay)||(droping_count_cyw<relay_delay_cyw)
