@@ -1368,6 +1368,10 @@ void __attribute__((interrupt, no_auto_psv)) _T4Interrupt (void)//10ms
 		)
 		{
 			forceStopShutter();
+
+			// 2016/11/16 When Down , Missing Save Origin Position.
+			hallCounts_bak = 0x7FFF;
+
 			// Added for displaying errors on display screen in case of false movement - RN - NOV 2015
 			if(gucShutterFalseUpMovementCount)
 			{
@@ -1541,6 +1545,7 @@ VOID calculateDrift(BOOL sts)
                         - uDriveCommonBlockEEP.stEEPDriveCommonBlock.originSensorPosMonitor_A128;
                     rampStatusFlags.rampDriftCalculated = 1;
 */
+					hallCounts_bak = hallCounts;	// 2016/11/16 When Down , Missing Save Origin Position.
                     hallCounts = uDriveCommonBlockEEP.stEEPDriveCommonBlock.originSensorPosMonitor_A128;
                 //}
             }
@@ -1705,6 +1710,9 @@ VOID igbtOverTempSensorTriggered(BOOL sts)
         {
             //if emergency switch is triggered the stop shutter immediately
             forceStopShutter();
+			// 2016/11/16 When Down , Missing Save Origin Position.
+			hallCounts_bak = 0x7FFF;
+
             //set emergency stop error flag
             uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.igbtOverTemperature = TRUE;
         }
@@ -1775,6 +1783,9 @@ VOID overcurrentfaultTriggered(BOOL sts)
         {
             //if emergency switch is triggered the stop shutter immediately
             forceStopShutter();
+			// 2016/11/16 When Down , Missing Save Origin Position.
+			hallCounts_bak = 0x7FFF;
+
             //set emergency stop error flag
             uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorOverCurrent = TRUE;
         }
@@ -1802,6 +1813,9 @@ VOID checkPwmCoastingRequired(VOID)
                 currentLimitClamp = 0;
                 pwmCostingReq = FALSE;
                 forceStopShutter();
+				// 2016/11/16 When Down , Missing Save Origin Position.
+				hallCounts_bak = 0x7FFF;
+
                 uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorPWMCosting = TRUE;
             }
         }
@@ -2838,10 +2852,12 @@ VOID stopShutter(VOID)
 	UINT16 lu16KiIncrementMaxValue;
 	#endif
 
+	// 2016/11/16 When Down , Missing Save Origin Position.
+	hallCounts_bak = 0x7FFF;
+
     BOOL applyBrake = FALSE;
     rampCurrentPosition = hallCounts;
     rampCurrentSpeed = refSpeed;
-
 
   	//Check if minimum travel before reverse is required
     if(shtrMinDistReqFlg)
