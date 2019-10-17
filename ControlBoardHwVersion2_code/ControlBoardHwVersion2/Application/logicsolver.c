@@ -89,6 +89,7 @@ typedef union unMultifunctionOutput
 uint8_t runing_a009_dir_cyw=0;
 
 uint8_t OpenCmdForDistinguish = 0;//20160808 AOYAGI STT ; 1-open cmd、0-other cmd
+uint8_t select_apertureHeight_Instalation=0;
 /****************************************************************************/
 
 /****************************************************************************
@@ -136,6 +137,7 @@ enum Logic_Solver_State {
 	Logic_Solver_Init_Delay,
 	Logic_Solver_Power_ON_Init,
 	Logic_Solver_Drive_Instalation,
+	Logic_Solver_Drive_apertureHeight,
 	Logic_Solver_Drive_Run
 
 };
@@ -484,6 +486,26 @@ void logicSolver(void) {
 			sHandlePowerON_Init = HandlePowerOnInit_InstallationCmdSentToDrive;
 
 		}
+//		else if (
+//						(
+//						 gstCMDitoLS.commandRequestStatus == eACTIVE && gstCMDitoLS.commandResponseStatus == eNO_STATUS &&
+//						 gstCMDitoLS.commandDisplayBoardLS.bits.start_apertureHeight == 1/*gstCMDitoLS.commandDisplayBoardLS.val == START_APERTUREHEIGHT_CMD_FROM_DISPLAY*/
+//						 ) &&
+//				gstLStoCMDr.commandRequestStatus == eINACTIVE //&&
+//				//sHandlePowerON_Init == HandlePowerOnInit_Home
+//			)
+//		{
+//
+//			gstLStoCMDr.commandRequestStatus = eACTIVE;
+//			gstLStoCMDr.commandToDriveBoard.val = 0;
+//			gstLStoCMDr.commandToDriveBoard.bits.start_apertureHeight = 1;
+//
+//			// Update last command sent
+//			sstLStoCMDrCmdSent.commandToDriveBoard.val = gstLStoCMDr.commandToDriveBoard.val;
+//
+//			//sHandlePowerON_Init = HandlePowerOnInit_InstallationCmdSentToDrive;
+//
+//		}
 		else if (
 				(
 						(
@@ -665,14 +687,323 @@ void logicSolver(void) {
 			DEACTIVATE_MULTI_FUNC_OUT_5;
 			RELAY_OPEN;
 
-		} else if (gstDriveStatus.bits.driveReady && gucSystemInitComplete == 2)
+		}
+		else if (gstDriveStatus.bits.drive_apertureHeight && gucSystemInitComplete == 2)
+		{
+			eLogic_Solver_State = Logic_Solver_Drive_apertureHeight;
+		}
+		else if (gstDriveStatus.bits.driveReady && gucSystemInitComplete == 2)
 		{
 			eLogic_Solver_State = Logic_Solver_Drive_Run;
 		}
 
 		break; //case Logic_Solver_Power_ON_Init:
 
+
+
+	case Logic_Solver_Drive_apertureHeight:
+		if (
+
+				(gstCMDitoLS.commandRequestStatus == eACTIVE)     &&
+				(gstCMDitoLS.commandResponseStatus == eNO_STATUS) &&
+				(gstCMDitoLS.commandDisplayBoardLS.bits.settingsModeStatus)
+
+		)
+		{
+			guiSettingsModeStatus = gstCMDitoLS.additionalCommandData;
+
+			gstCMDitoLS.commandDisplayBoardLS.val = 0;
+
+			gstCMDitoLS.commandResponseStatus = eSUCCESS;
+			gstCMDitoLS.acknowledgementReceived = eACK;
+
+		}
+		// *********************************************************************************************
+		// End for sub-state 'disable shutter operations while in settings mode' of 'Logic_Solver_Drive_Run'
+		// *********************************************************************************************
+
+
+		if (
+
+			(
+
+				 (gstCMDitoLS.commandRequestStatus == eACTIVE  && gstCMDitoLS.commandResponseStatus == eNO_STATUS) ||
+
+						 (gKeysStatus.bits.Key_Open_pressed) 		||
+						 (gKeysStatus.bits.Key_Open_released) 		||
+						 (gKeysStatus.bits.Key_Close_pressed) 		||
+						 (gKeysStatus.bits.Key_Close_released) 		||
+						 (gKeysStatus.bits.Wireless_Stop_pressed)
+
+			 )
+
+			 && (gstLStoCMDr.commandRequestStatus == eINACTIVE) &&
+			 //
+			 //	Added check to see whether system is in healthy state. If a fatal error has occurred then
+			 //	don't process operation keys - Jan 2016
+			 //
+			 //(gstDriveStatus.bits.driveInstallation) &&
+			 (gstDriveStatus.bits.driveFaultUnrecoverable == 0) &&
+			 (gstControlBoardStatus.bits.controlFaultUnrecoverable == 0)
+
+			)
+		{
+
+			// Validate the acceptable key input from display board for installation
+			if (
+					(
+							(gstCMDitoLS.commandRequestStatus == eACTIVE &&
+
+									(
+												(
+														gstCMDitoLS.commandDisplayBoardLS.bits.upPressed 		||
+														gstCMDitoLS.commandDisplayBoardLS.bits.upReleased 		||
+														gstCMDitoLS.commandDisplayBoardLS.bits.downPressed 		||
+														gstCMDitoLS.commandDisplayBoardLS.bits.downReleased 	||
+														gstCMDitoLS.commandDisplayBoardLS.bits.openPressed 		||
+														gstCMDitoLS.commandDisplayBoardLS.bits.openReleased 	||
+														gstCMDitoLS.commandDisplayBoardLS.bits.closePressed 	||
+														gstCMDitoLS.commandDisplayBoardLS.bits.closeReleased	||
+														gstCMDitoLS.commandDisplayBoardLS.bits.stopPressed
+												) ||
+
+//#if ENTER_CMD_ONLY_ONCE_PER_INSTALLATION_STATE
+//											(gstCMDitoLS.commandDisplayBoardLS.bits.enterPressed && sucConfSubStateCmdAllowedFlag != 0)
+//#else
+											gstCMDitoLS.commandDisplayBoardLS.bits.enterPressed
+//#endif
+
+											/*gstCMDitoLS.commandDisplayBoardLS.bits.enterReleased*/
+									)
+
+							)
+
+					) && //(gstDriveStatus.bits.driveInstallation) &&
+					(
+							gstDriveStatus.bits.driveFaultUnrecoverable == 0 &&
+							gstControlBoardStatus.bits.controlFaultUnrecoverable == 0
+					)
+			)
+			{
+
+				// Process Up key Pressed, Open key Pressed from Display board and Open Key Pressed from Control board
+				if (
+						(
+								gstCMDitoLS.commandRequestStatus == eACTIVE &&
+								(gstCMDitoLS.commandDisplayBoardLS.bits.upPressed || gstCMDitoLS.commandDisplayBoardLS.bits.openPressed)
+						)
+						|| gKeysStatus.bits.Key_Open_pressed
+					) //&& (gstDriveInstallation.bits.installA100 == 1 || gstDriveInstallation.bits.installA101 == 1 || gstDriveInstallation.bits.installA102 == 1))
+				{
+					gstLStoCMDr.commandRequestStatus = eACTIVE;
+					gstLStoCMDr.commandToDriveBoard.val = 0;
+					gstLStoCMDr.commandToDriveBoard.bits.openShutterJog = 1;
+					gstLStoCMDr.additionalCommandData = 10;
+
+					// Update last command sent
+					sstLStoCMDrCmdSent.commandToDriveBoard.val = gstLStoCMDr.commandToDriveBoard.val;
+
+				}
+				// Process Down key Pressed, Close key Pressed from Display board and Close Key Pressed from Control board
+				else if (
+							(
+							gstCMDitoLS.commandRequestStatus == eACTIVE &&
+							(gstCMDitoLS.commandDisplayBoardLS.bits.downPressed || gstCMDitoLS.commandDisplayBoardLS.bits.closePressed)
+							)
+							|| gKeysStatus.bits.Key_Close_pressed)
+						 //&& (gstDriveInstallation.bits.installA100 == 1 || gstDriveInstallation.bits.installA101 == 1 || gstDriveInstallation.bits.installA102 == 1))
+				{
+					gstLStoCMDr.commandRequestStatus = eACTIVE;
+					gstLStoCMDr.commandToDriveBoard.val = 0;
+					gstLStoCMDr.commandToDriveBoard.bits.closeShutterJog = 1;
+					gstLStoCMDr.additionalCommandData = 10;
+
+					// Update last command sent
+					sstLStoCMDrCmdSent.commandToDriveBoard.val = gstLStoCMDr.commandToDriveBoard.val;
+
+				}
+				// Process Up key Released, Open key Released,Down key Released, Close key Released from Display board and Open Key Released, Close key Released from Control board
+				else if (
+							(
+							 gstCMDitoLS.commandRequestStatus == eACTIVE &&
+							(gstCMDitoLS.commandDisplayBoardLS.bits.upReleased || gstCMDitoLS.commandDisplayBoardLS.bits.openReleased || gstCMDitoLS.commandDisplayBoardLS.bits.downReleased || gstCMDitoLS.commandDisplayBoardLS.bits.closeReleased || gstCMDitoLS.commandDisplayBoardLS.bits.stopPressed)
+							) ||
+							(gKeysStatus.bits.Key_Open_released || gKeysStatus.bits.Key_Close_released || gKeysStatus.bits.Key_Stop_pressed)
+						) //&& (gstDriveInstallation.bits.installA100 == 1 || gstDriveInstallation.bits.installA101 == 1 || gstDriveInstallation.bits.installA102 == 1))
+				{
+					gstLStoCMDr.commandRequestStatus = eACTIVE;
+					gstLStoCMDr.commandToDriveBoard.val = 0;
+					gstLStoCMDr.commandToDriveBoard.bits.stopShutter = 1;
+
+					// Update last command sent
+					sstLStoCMDrCmdSent.commandToDriveBoard.val = gstLStoCMDr.commandToDriveBoard.val;
+
+				}
+				// Process Enter key Pressed from Display board and Control board
+				else if (gstCMDitoLS.commandRequestStatus == eACTIVE && gstCMDitoLS.commandDisplayBoardLS.bits.enterPressed)
+						 //&& (gstDriveInstallation.bits.installA100 == 1 || gstDriveInstallation.bits.installA101 == 1 || gstDriveInstallation.bits.installA102 == 1))
+				{
+					gstLStoCMDr.commandRequestStatus = eACTIVE;
+					gstLStoCMDr.commandToDriveBoard.val = 0;
+					gstLStoCMDr.commandToDriveBoard.bits.confirmSubstateInstallation = 1;
+
+					// Update last command sent
+					sstLStoCMDrCmdSent.commandToDriveBoard.val = gstLStoCMDr.commandToDriveBoard.val;
+
+					#if ENTER_CMD_ONLY_ONCE_PER_INSTALLATION_STATE
+					sucConfSubStateCmdAllowedFlag = 0;
+					#endif
+
+				}
+
+			} // Validate the acceptable key input from display board for installation
+			else
+			{
+
+				if (gstCMDitoLS.commandRequestStatus == eACTIVE)
+				{
+				// For not acceptable key input from display board for installation, send NACK to display board
+				gstCMDitoLS.commandResponseStatus = eSUCCESS;
+				gstCMDitoLS.acknowledgementReceived = eNACK;
+				}
+
+				if (gKeysStatus.bits.Key_Open_pressed)
+				{
+					gKeysStatus.bits.Key_Open_pressed = 0;
+				}
+
+				if (gKeysStatus.bits.Key_Close_pressed)
+				{
+					gKeysStatus.bits.Key_Close_pressed = 0;
+				}
+
+				if (gKeysStatus.bits.Key_Open_released)
+				{
+					gKeysStatus.bits.Key_Open_released = 0;
+				}
+
+				if (gKeysStatus.bits.Key_Close_released)
+				{
+					gKeysStatus.bits.Key_Close_released = 0;
+				}
+
+				if (gKeysStatus.bits.Key_Stop_pressed)
+				{
+					gKeysStatus.bits.Key_Stop_pressed = 0;
+				}
+
+			}
+
+		} // Scan key input from display and control board
+		else if (gstLStoCMDr.commandRequestStatus == eACTIVE)
+		{
+			if (gstLStoCMDr.commandResponseStatus == eSUCCESS || gstLStoCMDr.commandResponseStatus == eTIME_OUT || gstLStoCMDr.commandResponseStatus == eFAIL)
+			{
+				if (gstLStoCMDr.commandResponseStatus == eSUCCESS)
+				{
+
+					if (gstCMDitoLS.commandRequestStatus == eACTIVE)
+					{
+
+						gstCMDitoLS.commandResponseStatus = eSUCCESS;
+						gstCMDitoLS.acknowledgementReceived = eACK;
+
+					} //if (gstCMDitoLS.commandRequestStatus == eACTIVE)
+
+				} //if (gstLStoCMDr.commandResponseStatus == eSUCCESS)
+				else if (gstLStoCMDr.commandResponseStatus == eTIME_OUT || gstLStoCMDr.commandResponseStatus == eFAIL)
+				{
+
+					if (gstCMDitoLS.commandRequestStatus == eACTIVE)
+					{
+
+						gstCMDitoLS.commandResponseStatus = eSUCCESS;
+						gstCMDitoLS.acknowledgementReceived = eNACK;
+
+					} //if (gstCMDitoLS.commandRequestStatus == eACTIVE)
+
+				} //else if (gstLStoCMDr.commandResponseStatus == eTIME_OUT || gstLStoCMDr.commandResponseStatus == eFAIL)
+
+				// Release Control board key pressed or released basis the command sent
+				if (gstLStoCMDr.commandToDriveBoard.bits.openShutterJog)
+				{
+
+					if (gKeysStatus.bits.Key_Open_pressed)
+					{
+						gKeysStatus.bits.Key_Open_pressed = 0;
+					}
+
+				} //if (gstLStoCMDr.commandToDriveBoard.bits.openShutterJog)
+				else if (gstLStoCMDr.commandToDriveBoard.bits.closeShutterJog)
+				{
+
+					if (gKeysStatus.bits.Key_Close_pressed)
+					{
+						gKeysStatus.bits.Key_Close_pressed = 0;
+					}
+
+				} //else if (gstLStoCMDr.commandToDriveBoard.bits.closeShutterJog)
+				else if (gstLStoCMDr.commandToDriveBoard.bits.stopShutter)
+				{
+
+					if (gKeysStatus.bits.Key_Open_released)
+					{
+						gKeysStatus.bits.Key_Open_released = 0;
+					}
+
+					if (gKeysStatus.bits.Key_Close_released)
+					{
+						gKeysStatus.bits.Key_Close_released = 0;
+					}
+
+					if (gKeysStatus.bits.Key_Stop_pressed)
+					{
+						gKeysStatus.bits.Key_Stop_pressed = 0;
+					}
+
+				} //else if (gstLStoCMDr.commandToDriveBoard.bits.stopShutter)
+				else if (gstLStoCMDr.commandToDriveBoard.bits.confirmSubstateInstallation)
+				{
+
+					if (gKeysStatus.bits.Keys2_3secStpOpn_pressed)
+					{
+						gKeysStatus.bits.Keys2_3secStpOpn_pressed = 0;
+					}
+
+					if (gKeysStatus.bits.Keys2_3secStpCls_pressed)
+					{
+						gKeysStatus.bits.Keys2_3secStpCls_pressed = 0;
+					}
+
+					if (gKeysStatus.bits.Key_3secStp_pressed)
+					{
+						gKeysStatus.bits.Key_3secStp_pressed = 0;
+					}
+
+				} // else if (gstLStoCMDr.commandToDriveBoard.bits.confirmSubstateInstallation)
+
+				// Release CMDr Block
+				gstLStoCMDr.commandRequestStatus = eINACTIVE;
+				gstLStoCMDr.commandToDriveBoard.val = 0;
+				gstLStoCMDr.commandResponseStatus = eNO_STATUS;
+
+			} // if (gstLStoCMDr.commandResponseStatus == eSUCCESS || gstLStoCMDr.commandResponseStatus == eTIME_OUT || gstLStoCMDr.commandResponseStatus == eFAIL)
+
+		} //else if (gstLStoCMDr.commandRequestStatus == eACTIVE)
+		else if (gstDriveStatus.bits.driveReady == 1)
+		{
+			eLogic_Solver_State = Logic_Solver_Drive_Run;
+
+			sucConfSubStateCmdAllowedFlag = 0;
+			sucConfSubStateCmdAllowedFlagCopy = 0;
+		}
+
+		break; //case Logic_Solver_Drive_apertureHeight:
+
+
+
 	case Logic_Solver_Drive_Instalation:
+
 
 		// *********************************************************************************************
 		// Start for sub-state 'disable shutter operations while in settings mode' of 'Logic_Solver_Drive_Run'
@@ -3160,6 +3491,7 @@ void logicSolver(void) {
 			gstLStoCMDr.commandToDriveBoard.val = 0;
 
 			gstLStoCMDr.commandToDriveBoard.bits.startInstallation = 1;
+			select_apertureHeight_Instalation=0;
 
 			// Update last command sent
 			sstLStoCMDrCmdSent.commandToDriveBoard.val = gstLStoCMDr.commandToDriveBoard.val;
@@ -3167,6 +3499,29 @@ void logicSolver(void) {
 			seHandleInstallation = HandleInstallationWaitingReply;
 
 		} // Keep on monitoring the Installation triggered by the User Interface
+		else if (
+				//(seHandleInstallation == HandleInstallationInit) &&
+
+				((gstCMDitoLS.commandRequestStatus == eACTIVE && gstCMDitoLS.commandResponseStatus == eNO_STATUS) && (gstCMDitoLS.commandDisplayBoardLS.bits.start_apertureHeight)) &&
+
+				// Check LS to CMDr block is Free
+				(gstLStoCMDr.commandRequestStatus == eINACTIVE)
+
+				)
+		{
+
+			gstLStoCMDr.commandRequestStatus = eACTIVE;
+			gstLStoCMDr.commandToDriveBoard.val = 0;
+
+			gstLStoCMDr.commandToDriveBoard.bits.start_apertureHeight = 1;
+			select_apertureHeight_Instalation=1;
+
+			// Update last command sent
+			sstLStoCMDrCmdSent.commandToDriveBoard.val = gstLStoCMDr.commandToDriveBoard.val;
+
+			seHandleInstallation = HandleInstallationWaitingReply;
+
+		}
 		  // Handle the response for command sent through 'Handle Installation'
 		else if (gstLStoCMDr.commandRequestStatus == eACTIVE && seHandleInstallation == HandleInstallationWaitingReply)
 		{
@@ -3204,7 +3559,7 @@ void logicSolver(void) {
 		else if (seHandleInstallation == HandleInstallationWaitingShutterStateInstallation)
 		{
 
-			if (gstDriveStatus.bits.driveInstallation == 1)
+			if ((gstDriveStatus.bits.driveInstallation == 1)||(gstDriveStatus.bits.drive_apertureHeight == 1))
 			{
 
 				// commented on 9 Sep
@@ -3218,7 +3573,7 @@ void logicSolver(void) {
 
 		} // Waiting for shutter change its state to Installation
 		  // Check for drive board directly entered into Installation
-		else if (seHandleInstallation == HandleInstallationInit && gstDriveStatus.bits.driveInstallation == 1)
+		else if ((seHandleInstallation == HandleInstallationInit) && ((gstDriveStatus.bits.driveInstallation == 1)||(gstDriveStatus.bits.drive_apertureHeight == 1)))
 		{
 
 			// commented on 9 Sep
@@ -3272,7 +3627,8 @@ void logicSolver(void) {
 
 					seHandleInstallation = HandleInstallationInit;
 
-					eLogic_Solver_State = Logic_Solver_Drive_Instalation;
+                    if(select_apertureHeight_Instalation==1)eLogic_Solver_State = Logic_Solver_Drive_apertureHeight;
+                    else eLogic_Solver_State = Logic_Solver_Drive_Instalation;
 #if 0
 					//	Commented on 3 Nov 2014 to avoid control board going into stop mode after
 					//	installation

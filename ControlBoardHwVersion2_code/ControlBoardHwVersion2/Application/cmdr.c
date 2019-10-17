@@ -332,6 +332,10 @@ enum commandResponseType insertCommandIDandData (uint8_t * commandBuffer, uint8_
 		*commandBuffer = RECOVER_ANMOLY;
 		leCommandResponseType = eResponseACK_NACK;
 		break;
+	case 0x80000:
+		*commandBuffer = START_APERTUREHEIGHT_CMD_FROM_CONTROL;
+		leCommandResponseType = eResponseACK_NACK;
+		break;
 	default:
 		*commandBuffer = INVALID_COMMAND_ID;
 		break;
@@ -1581,6 +1585,10 @@ void handleCommandFromLS_EM_CMDi(void)
 				else if (gstLStoCMDr.commandToDriveBoard.bits.startInstallation)
 				{
 					lstCMDrInnerTaskComm.commandToDriveBoard.bits.startInstallation = 1;
+				}
+				else if (gstLStoCMDr.commandToDriveBoard.bits.start_apertureHeight)
+				{
+					lstCMDrInnerTaskComm.commandToDriveBoard.bits.start_apertureHeight = 1;
 				}
 				else if (gstLStoCMDr.commandToDriveBoard.bits.confirmSubstateInstallation)
 				{

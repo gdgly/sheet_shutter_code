@@ -77,6 +77,7 @@
 
 //	Added this commands to implement "disable shutter functionality while we are in settings mode" -RN - Dec 2015
 #define SETTINGS_MODE_STATUS				0x37
+#define START_APERTUREHEIGHT_CMD_FROM_DISPLAY    0x38
 #define ADD_LOGIN                           0X55
 #define NEW_LOGIN                           0X56
 

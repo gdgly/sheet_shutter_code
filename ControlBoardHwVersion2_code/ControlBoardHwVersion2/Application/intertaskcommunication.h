@@ -189,7 +189,8 @@ typedef union unDriveStatus
 		uint32_t driveBoardBootloader		: 1;
 		uint32_t shutterBetweenUplmtAphgt	: 1;	//STT  shutter position between upperlimit and ApertureHeight
 		uint32_t shutterBetweenLowlmtAphgt	: 1;	//STT  shutter position between lowerlimit and ApertureHeight
-		uint32_t unused						: 11;
+		uint32_t drive_apertureHeight			: 1;
+		uint32_t unused						: 10;
 	} bits;
 } _DriveStatus;
 
@@ -590,7 +591,8 @@ typedef struct stLStoCMDr
 			uint32_t startPowerOnCalibration		: 1;
 			uint32_t stopPowerOnCalibration			: 1;
 			uint32_t setParameter					: 1;	//	Added to implement setParameter command for setting snow mode, on 10APR2015
-			uint32_t unused							: 15;
+			uint32_t start_apertureHeight 			: 1;
+			uint32_t unused							: 14;
 		} bits;
 	}commandToDriveBoard;
 
@@ -688,8 +690,8 @@ typedef struct stCMDitoLS
 
 			//	Added this commands to implement "disable shutter functionality while we are in settings mode" -RN - Dec 2015
 			uint32_t settingsModeStatus	: 1;
-
-			uint32_t unused				: 13;
+			uint32_t start_apertureHeight	: 1;
+			uint32_t unused				: 12;
 		} bits;
 	} commandDisplayBoardLS;
 

@@ -553,6 +553,12 @@ void communicationModuleDisplay(void)
 								gstCMDitoLS.commandRequestStatus = eACTIVE;
 
 								break;
+							case START_APERTUREHEIGHT_CMD_FROM_DISPLAY:
+								gstCMDitoLS.commandDisplayBoardLS.bits.start_apertureHeight = 1;
+
+								gstCMDitoLS.commandRequestStatus = eACTIVE;
+
+								break;
 							case MONITOR_LED_CONTROL:
 								gstCMDitoMLH.commandDisplayBoardMLH.bits.monitorLEDControl = 1;
 								gstCMDitoMLH.additionalCommandData = sucaCommandBuffer[COMMAND_ID_POSITION+1];

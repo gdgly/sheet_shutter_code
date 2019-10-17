@@ -68,6 +68,7 @@
 #define START_POWER_ON_CALIBRATION		0x35	//	Added on 30 Jan 2015 to implement power on calibration control
 #define STOP_POWER_ON_CALIBRATION		0x36	//	Added on 30 Jan 2015 to implement power on calibration control
 #define RECOVER_ANMOLY                  0X38
+#define START_APERTUREHEIGHT_CMD_FROM_CONTROL 				0x39
 /*********************************************
  * Drive board parameter numbers
 **********************************************/
@@ -233,7 +234,8 @@ typedef struct stCMDrInnerTaskComm
 			uint32_t startPowerOnCalibration		: 1;
 			uint32_t stopPowerOnCalibration			: 1;
 			uint32_t recoveranmoly                  : 1;
-			uint32_t unused							: 14;
+			uint32_t start_apertureHeight 			: 1;
+			uint32_t unused							: 13;
 		} bits;
 	}commandToDriveBoard;
 
