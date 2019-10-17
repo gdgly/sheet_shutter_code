@@ -89,7 +89,7 @@
 #define EXPECTED_CRC_APERTUREHEIGHT                0x7292
 
 //CONST UINT32 drive_fw_version = 0x00000406;  //bug_NO.64
-CONST UINT32 drive_fw_version = 17064;    //Drive version 1704.1        20170418   201703_No.29
+CONST UINT32 drive_fw_version = 17065;    //Drive version 1704.1        20170418   201703_No.29
 
 enum {
 	no_error = 0,
@@ -522,7 +522,13 @@ VOID commandHandler(VOID)
                                shutterInstall.enterCmdRcvd = TRUE;
                             else status = nack;
                         }
-                        else                                                                                                        /*******20160914 bug_No.99      end*********/
+#ifdef BUG_NoCQ07_Limit_enterCmdRcvd    //20170627  201703_No.CQ07
+                        else if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveInstallationStatus.bits.installationValidation == TRUE)   
+                            shutterInstall.enterCmdRcvd = FALSE;
+                        else 
+#else
+                        else                                                                                                        /*******20160914 bug_No.99      end*********/                        
+#endif                  
                           shutterInstall.enterCmdRcvd = TRUE;
                     }
                     else

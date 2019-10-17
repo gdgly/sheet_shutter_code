@@ -121,3 +121,4 @@ EXTERN UINT8 Flag_powerUpCalib_osToggle;
 #define  BUG_No76or73_powerUpCalib_osToggle      //20170607  201703_No.76 or 73
 #define  BUG_No79_FaultPeObstacle                //20170608  201703_No.79
 #define  BUG_No51_SnowA008                       //20170612  201703_No.51
+#define  BUG_NoCQ07_Limit_enterCmdRcvd           //20170627  201703_No.CQ07
