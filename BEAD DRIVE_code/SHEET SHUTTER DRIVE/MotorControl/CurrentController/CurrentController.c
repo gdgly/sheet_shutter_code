@@ -41,8 +41,6 @@
 
 #define MAX_ADC_COUNT       1024 /* ADC configured in 10 bit mode */
 
-#define CALCULATE_ADC_OFFSET_CNT    100  /* Number of samples taken for ADC offset calculation */
-
 #define P_CURRENT_PI 13000
 #define I_CURRENT_PI 900
 #define C_CURRENT_PI 0x7FFF
