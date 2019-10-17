@@ -1726,46 +1726,12 @@ uint8_t installationMode(void)
 			//if((gstDriveInstallation.bits.installA100 == 1) && (gstUMtoCMdatabase.commandRequestStatus == eINACTIVE) && (gucShutterTypeChangedFlag == 0))
 			if(gstDriveInstallation.bits.installA100 == 1)
 			{
-				/*if ((gShutterType + 1) == gsParamDatabase[60].stateTypeEntities.paramStateCount)
-				{
-					lucNewShutterType = 0;
-				}
-				else
-				{
-					lucNewShutterType = gShutterType + 1;
-				}
 
-				gstUMtoCMdatabase.commandToControlBoard.val = 0;
-				gstUMtoCMdatabase.commandToControlBoard.bits.setParameter = 1;
-				gstUMtoCMdatabase.dataToControlBoard.parameterNumber = PARAM_SHUTTER_TYPE;
-				gstUMtoCMdatabase.dataToControlBoard.commandData.setParameterValue = lucNewShutterType;
-				gstUMtoCMdatabase.destination = eDestDriveBoard;
-
-				//
-				// Set command request status as active
-				//
-				gstUMtoCMdatabase.commandRequestStatus = eACTIVE;
-*/
 				if(psActiveFunctionalBlock == NULL)
 							return 1;
 
-						//
-						// Reset Home screen variables
-						//
-						//gTickCount1Seconds = 0;
-						//gTickCount3Seconds = 0;
-						//gDelay1SecStart = 0;
-						//gDelay3SecStart = 0;
-					//	gHomeScreenState = GET_OPERATION_COUNT;
-	//					gNextHSState = 0xFF;
 
-						#ifdef GET_OPERATION_COUNT_LOWER_LIMIT
-						gOperationCountCommandState = CHECK_FOR_LOWER_LIMIT;
-						#endif
 
-						#ifdef GET_OPERATION_COUNT_UPPER_APERTURE_LIMIT
-						gucSentOperationCountCmd = 0;
-						#endif
 
 						//gAnomalyIndex = 0;
 
@@ -1805,65 +1771,7 @@ uint8_t installationMode(void)
 
 	}
 
-	//
-	// Handle command response
-	//
-//	if(
-//			(gstUMtoCMdatabase.commandRequestStatus == eACTIVE) &&
-//			(gstUMtoCMdatabase.dataToControlBoard.parameterNumber == PARAM_SHUTTER_TYPE)
-//	)
-//	{
-//		if (gstUMtoCMdatabase.commandResponseStatus == eSUCCESS)
-//		{
-//			gstUMtoCMdatabase.commandRequestStatus = eINACTIVE;
-//			gstUMtoCMdatabase.commandResponseStatus = eNO_STATUS;
-//
-//				if (gstUMtoCMdatabase.acknowledgementReceived == eACK)
-//				{
-//
-//					gucShutterTypeChangedFlag = 1;
-//
-//					// New variable 'gucStopErrorsDisplay' used to inform error module to stop displaying the error - YG - NOV 15
-//					gucStopErrorsDisplay = 1;
-//
-//					gShutterType = lucNewShutterType;
-//
-////					if ((gShutterType + 1) == gsParamDatabase[58].stateTypeEntities.paramStateCount)
-////					{
-////						gShutterType = 0;
-////					}
-////					else
-////					{
-////						gShutterType = gShutterType + 1;
-////					}
-//
-//				}
-//
-//		}
-//
-//		else if( (gstUMtoCMdatabase.commandResponseStatus == eTIME_OUT) ||
-//				 (gstUMtoCMdatabase.commandResponseStatus == eFAIL)
-//				)
-//		{
-//			//
-//			// Set communication fault flag
-//			//
-//			if(gstUMtoCMdatabase.commandResponseStatus == eTIME_OUT)
-//			{
-//				gstDisplayBoardFault.bits.displayCommunication = 1;
-//				gstDisplayCommunicationFault.bits.commFailControl = 1;
-//			}
-//
-//			if(gstUMtoCMdatabase.commandResponseStatus == eFAIL)
-//			{
-//				gstDisplayBoardFault.bits.displayCommunication = 1;
-//				gstDisplayCommunicationFault.bits.crcError = 1;
-//			}
-//
-//			gstUMtoCMdatabase.commandRequestStatus = eINACTIVE;
-//			gstUMtoCMdatabase.commandResponseStatus = eNO_STATUS;
-//		}
-//	}
+
 
 	return 0;
 }
@@ -1899,30 +1807,7 @@ uint8_t installationEnter(void)
 		)
 		{
 			setting_flag = 1;
-#ifdef TEST_MODULE_ON
 
-			if(gstDriveInstallation.bits.installA100 == 1)
-			{
-				gstDriveInstallation.bits.installA101 = 1;
-				gstDriveInstallation.bits.installA100 = 0;
-			}
-			else if(gstDriveInstallation.bits.installA101 == 1)
-			{
-				gstDriveInstallation.bits.installA102 = 1;
-				gstDriveInstallation.bits.installA101 = 0;
-			}
-			else if(gstDriveInstallation.bits.installA102 == 1)
-			{
-				gstDriveInstallation.bits.installA102 = 0;
-				gstDriveInstallation.bits.installationValid = 1;
-			}
-
-			else //if(gInstallationState == WAIT_FOR_COMMIT_INSTALLATION)
-			{
-				gstDriveBoardStatus.bits.driveInstallation = 0;
-				gstControlBoardStatus.bits.runStop = 1;
-			}
-#endif
 			//
 			// Initiate ENTER_PRESSED command
 			//
@@ -2010,22 +1895,7 @@ uint8_t installationEnter(void)
 				 (gstUMtoCMoperational.commandResponseStatus == eFAIL)
 				)
 		{
-#if 0
-			//
-			// Set communication fault flag
-			//
-			if(gstUMtoCMoperational.commandResponseStatus == eTIME_OUT)
-			{
-				gstDisplayBoardFault.bits.displayCommunication = 1;
-				gstDisplayCommunicationFault.bits.commFailControl = 1;
-			}
 
-			if(gstUMtoCMoperational.commandResponseStatus == eFAIL)
-			{
-				gstDisplayBoardFault.bits.displayCommunication = 1;
-				gstDisplayCommunicationFault.bits.crcError = 1;
-			}
-#endif
 			if(gstUMtoCMoperational.commandToControlBoard.bits.enterPressed == 1)
 			{
 				gstUMtoCMoperational.commandToControlBoard.bits.enterPressed = 0;
@@ -2089,7 +1959,7 @@ uint8_t installationUp(void)
 			}
 		}
 
-		if(gKeysStatus.bits.Key_Up_released)
+		else if(gKeysStatus.bits.Key_Up_released)
 		{
 			//
 			// Initiate UP_PRESSED command
@@ -2210,7 +2080,7 @@ uint8_t installationDown(void)
 			}
 		}
 
-		if(gKeysStatus.bits.Key_Down_released)
+		else if(gKeysStatus.bits.Key_Down_released)
 		{
 			//
 			// Initiate DOWN_PRESSED command

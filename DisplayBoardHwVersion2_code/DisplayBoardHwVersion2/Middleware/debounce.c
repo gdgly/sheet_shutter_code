@@ -270,16 +270,33 @@ void keysPoll(uint8_t *pui8Delta, uint8_t *pui8RawState)
     //
     ui32Data = (MAP_GPIOPinRead(BUTTONS_GPIO_BASE, ALL_BUTTONS));
 
-   // ui32Data_cyw =~ui32Data;//  priority  stop>open>close  cear low
-  //     if(ui32Data_cyw&0x04)
-   //   {
-   //   	ui32Data_cyw&=~(0xa);
-   //   }
-   //   if(ui32Data_cyw&0x02)
-   //   {
-    // 	ui32Data_cyw&=~(0x8);
-   //   }
-   //   ui32Data=~ui32Data_cyw;
+//    ui32Data_cyw =~ui32Data;//  priority  stop>open>close  cear low   up>down>mode>enter
+//       if(ui32Data_cyw&0x04)
+//      {
+//      	ui32Data_cyw&=~(0xa);
+//      }
+//      if(ui32Data_cyw&0x02)
+//      {
+//     	ui32Data_cyw&=~(0x8);
+//      }
+//      if(ui32Data_cyw&0x10)
+//      {
+//    	 ui32Data_cyw&=~(0xe0);
+//      }
+//      if(ui32Data_cyw&0x20)
+//      {
+//         ui32Data_cyw&=~(0xd0);
+//      }
+//      if(ui32Data_cyw&0x40)
+//      {
+//         ui32Data_cyw&=~(0xb0);
+//      }
+//      if(ui32Data_cyw&0x80)
+//      {
+//         ui32Data_cyw&=~(0x70);
+//      }
+//    ui32Data=~ui32Data_cyw;
+
 
     //uint8_t ltempdebug = (uint8_t)ui32Data;
     //uartSendTxBuffer(UART_debug,&ltempdebug,1);
@@ -1016,7 +1033,7 @@ void keysProcessFlags(uint8_t keyState, uint8_t keyChanged)
 		}
 	}
 
-	if(!pressedState)
+	//if(!pressedState)//for item105   20160903
 		if(BUTTON_RELEASED(KEY_UP, keyState, keyChanged)) {
 			if(!gKeysStatus.bits.Key_Up_released) {
 				gKeysStatus.bits.Key_Up_released = true;
@@ -1035,7 +1052,7 @@ void keysProcessFlags(uint8_t keyState, uint8_t keyChanged)
 		}
 	}
 
-	if(!pressedState)
+	//if(!pressedState)////for item105  20160903
 		if(BUTTON_RELEASED(KEY_DOWN, keyState, keyChanged)) {
 			if(!gKeysStatus.bits.Key_Down_released) {
 				gKeysStatus.bits.Key_Down_released = true;
