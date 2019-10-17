@@ -2123,6 +2123,8 @@ void keysProcessFlags(uint8_t keyState, uint8_t keyChanged)
 					suiTimeStmpWireles1pbsReleased = g_ui32TickCount;
 					sucWireles1pbsReleasedFlag = 1;
 
+					suiTimeStampForOnePBS = g_ui32TickCount; //20161202
+
 				}
 
 			}
@@ -2192,6 +2194,8 @@ void keysProcessFlags(uint8_t keyState, uint8_t keyChanged)
 				sucWirelesStpReleasedFlag = 1;
 
 				keyStpPressedFirst = 0;
+
+				suiTimeStampForOnePBS = g_ui32TickCount; //20161202
 			}
 		}
 

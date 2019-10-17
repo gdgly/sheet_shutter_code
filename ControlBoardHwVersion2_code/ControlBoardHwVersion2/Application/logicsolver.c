@@ -522,6 +522,7 @@ void logicSolver(void) {
 						 ) ||
 						 (gKeysStatus.bits.Key_Open_pressed == 1 || gKeysStatus.bits.Key_Close_pressed == 1 ||
 						  gKeysStatus.bits.Wireless_Open_pressed == 1 || gKeysStatus.bits.Wireless_Close_pressed == 1 ||     //20161201
+						  gSensorStatus.bits.Sensor_Wireless_1PBS_active == 1 ||   //20161202
 						  gSensorStatus.bits.Sensor_1PBS_active == 1 ||(gSensorStatus.bits.Sensor_Obstacle_active && gstControlBoardStatus.bits.autoManual == 1))
 				) &&
 				(gstLStoCMDr.commandRequestStatus == eINACTIVE) &&
