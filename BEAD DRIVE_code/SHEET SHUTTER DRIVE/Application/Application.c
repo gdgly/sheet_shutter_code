@@ -535,25 +535,25 @@ VOID updateDriveStatusFlags(VOID)
 			// update drive status position to lower limit 
             uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterLowerLimit = TRUE; 
 
-//            /***********20160930 start    Overload, >40kg,brake ok, But pwm is not turned off************/
-//            if((++TIME_shutterLowerLimit_STOP>200)&&(FLAG_shutterLowerLimit_STOP==0))
-//            {
-//                FLAG_shutterLowerLimit_STOP=1;
-//                inputFlags.value = STOP_SHUTTER;
-//                rampCurrentState = RAMP_STOP;
-//                gui8StopKeyPressed = 1;
-//                stopShutter();
-//            }
-//            /***********20160930 end    Overload, >40kg,brake ok, But pwm is not turned off************/              
+            /***********20160930 start    Overload, >40kg,brake ok, But pwm is not turned off************/
+            if((++TIME_shutterLowerLimit_STOP>1000)&&(FLAG_shutterLowerLimit_STOP==0))
+            {
+                FLAG_shutterLowerLimit_STOP=1;
+                inputFlags.value = STOP_SHUTTER;
+                rampCurrentState = RAMP_STOP;
+                gui8StopKeyPressed = 1;
+                stopShutter();
+            }
+            /***********20160930 end    Overload, >40kg,brake ok, But pwm is not turned off************/              
 		}
         else
         {
             uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterLowerLimit = FALSE; 
 
-//            /***********20160930 end    Overload, >40kg,brake ok, But pwm is not turned off************/
-//            TIME_shutterLowerLimit_STOP=0;
-//            FLAG_shutterLowerLimit_STOP=0;
-//            /***********20160930 start    Overload, >40kg,brake ok, But pwm is not turned off************/            
+            /***********20160930 end    Overload, >40kg,brake ok, But pwm is not turned off************/
+            TIME_shutterLowerLimit_STOP=0;
+            FLAG_shutterLowerLimit_STOP=0;
+            /***********20160930 start    Overload, >40kg,brake ok, But pwm is not turned off************/            
         }
         
 		//if(uDriveCommonBlockEEP.stEEPDriveCommonBlock.apertureHeightPos_A130 >= rampOutputStatus.shutterCurrentPosition)
