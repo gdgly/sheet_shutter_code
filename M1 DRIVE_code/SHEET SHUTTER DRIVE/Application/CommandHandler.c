@@ -404,30 +404,7 @@ VOID initCommandHandler(VOID)
 
     PORTCbits.RC4 = 0;
 
-    configureUART2(RTDM_ASSIGNED_UART_CHANNEL);   //20170527 test
 	configureUART(APPL_ASSIGNED_UART_CHANNEL);
-
-	txAnomalyHistInProgress = FALSE;
-
-
-}
-VOID initCommandHandler_1(VOID)
-{
-	UINT8 index;
-
-    txInProgress = FALSE;
-
-	// initialize the current command to all zero
-	for(index = 0; index < (COMMAND_RX_BUFFER_SIZE + CMD_STATE_SIZE); index++)
-	{
-		uCBCommand.command[index] = 0;
-	}
-
-	initUARTBuffers();
-
-    PORTCbits.RC4 = 0;
-
-	//configureUART(APPL_ASSIGNED_UART_CHANNEL);
 
 	txAnomalyHistInProgress = FALSE;
 
@@ -436,19 +413,14 @@ VOID initCommandHandler_1(VOID)
 
 VOID checkSerialTxCompleted(VOID)
 {
-    UINT8 index;
-    
-    //if((txInProgress == TRUE) && (stTxRxBuffer[0].uchTxBufferByteCount == 0))
-    if(txInProgress == TRUE)
+    if((txInProgress == TRUE) && (stTxRxBuffer[0].uchTxBufferByteCount == 0))
     {
         if(++txResetCount > 2)
         {
-            txResetCount=0;
-            //initCommandHandler();
-            initCommandHandler_1();
+            PORTCbits.RC4 = 0;
+            txInProgress = FALSE;
         }
     }
-    
 }
 /******************************************************************************
  * CommandHandler
@@ -491,6 +463,10 @@ VOID commandHandler(VOID)
     //    }
     //}
     flag_uart_cmd=readCmndFromCommBuffer();
+    
+    if(flag_uart_cmd){Time_uart_count=0; LED_YELLOW=1; }              //20170502  201703_No.xx
+    else if(Time_uart_count>=200){initCommandHandler();Time_uart_count=0; LED_YELLOW=0;}   
+    
     if((flag_uart_cmd)||((FLAG_CMD_open_shutter==1)&&(TIME_CMD_open_shutter==0)&&(TIME_CMD_close_shutter==0)))
     {
         if((new_cmd == uCBCommand.stCBCommand.recdCmdState)||((FLAG_CMD_open_shutter==1)&&(TIME_CMD_open_shutter==0)&&(TIME_CMD_close_shutter==0)))
