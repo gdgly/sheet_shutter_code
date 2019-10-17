@@ -211,6 +211,7 @@ void logicSolver(void) {
 	};
 	static enum ShutterOpenCloseCmdState seShutterOpenCloseCmdState =
 			CmdNotDetected;
+	static enum ShutterOpenCloseCmdState seShutterOpenCloseCmdState_backup = CmdNotDetected;   //20170330_1
 
 	// Following variable hold the command to be sent
 	// The variable mainly used in situation like "Open Shutter, Open Shutter Aperture like command"
@@ -1931,10 +1932,10 @@ void logicSolver(void) {
 
 						}
 
-//						if (gKeysStatus.bits.Key_Open_pressed)   //20170331
-//						{
-//							gKeysStatus.bits.Key_Open_pressed = 0;
-//						}
+						if (gKeysStatus.bits.Key_Open_pressed)   //20170331
+						{
+							gKeysStatus.bits.Key_Open_pressed = 0;
+						}
 
 						if (gSensorStatus.bits.Sensor_1PBS_active)
 						{
@@ -1985,10 +1986,10 @@ void logicSolver(void) {
 
 					}
 
-//					if (gKeysStatus.bits.Key_Open_pressed)   //20170331
-//					{
-//						gKeysStatus.bits.Key_Open_pressed = 0;
-//					}
+					if (gKeysStatus.bits.Key_Open_pressed)   //20170331
+					{
+						gKeysStatus.bits.Key_Open_pressed = 0;
+					}
 
 					if (gSensorStatus.bits.Sensor_1PBS_active)
 					{
@@ -2543,8 +2544,31 @@ void logicSolver(void) {
 				    ))
 				)
 		{
+			if( (seShutterOpenCloseCmdState_backup == CmdUpDetectedWaitUpDelay || seShutterOpenCloseCmdState_backup == CmdDownDetectedWaitDownDelay)
+				&&  gSensorStatus.bits.Sensor_InterlockIP_active == true  &&  gSensorStatus.bits.Sensor_Obstacle_active==0 )            //20170330_1
+				{
+				   seShutterOpenCloseCmdState_backup = CmdNotDetected;
 
-			if (((seShutterOpenCloseCmdState == CmdUpDetectedWaitUpDelay
+				   if (sucOpenKeyControl==0)
+				   {
+//           			                 time_ObstacleSensor = g_ui32TickCount;
+//								gstLStoCMDr.commandRequestStatus = eACTIVE;
+//								gstLStoCMDr.commandToDriveBoard.val = 0;
+//								gstLStoCMDr.commandToDriveBoard.bits.stopShutter = 1;
+//								          OpenCmdForDistinguish = 0;
+//								seHandleKeysStartupState = CmdSentWaitingForReply;
+
+								// Update last command sent
+//								sstLStoCMDrCmdSent.commandToDriveBoard.val =
+
+//										gstLStoCMDr.commandToDriveBoard.val;
+
+								// Reset the "UP or Down command detected and wait for delay before sending actual command" flag
+								seShutterOpenCloseCmdState = CmdNotDetected;
+				   }
+				}
+
+			else if (((seShutterOpenCloseCmdState == CmdUpDetectedWaitUpDelay
 					&& (get_timego( suiTimeStamp)
 							>= ((uint32_t) gu8_goup_oprdelay * 1000)))
 					|| (seShutterOpenCloseCmdState
@@ -2553,8 +2577,7 @@ void logicSolver(void) {
 									>= ((uint32_t) gu8_godn_oprdelay * 1000))))
 					&& gstLStoCMDr.commandRequestStatus == eINACTIVE) {
 				gstLStoCMDr.commandRequestStatus = eACTIVE;
-				gstLStoCMDr.commandToDriveBoard.val =
-						sstLStoCMDrCmdToBeSent.commandToDriveBoard.val;
+				gstLStoCMDr.commandToDriveBoard.val = sstLStoCMDrCmdToBeSent.commandToDriveBoard.val;
 				seHandleKeysStartupState = CmdSentWaitingForReply;
 
 				// Update last command sent
@@ -2567,6 +2590,7 @@ void logicSolver(void) {
 			}
 
 		} // check waiting "Open Shutter" command for "Go Up Delay" and Close Shutter" command for "Go Down Delay"
+
 		  // handle the response for command sent through 'HandleKeysStartup'
 		else if (gstLStoCMDr.commandRequestStatus == eACTIVE
 				&& seHandleKeysStartupState == CmdSentWaitingForReply)
@@ -2602,10 +2626,10 @@ void logicSolver(void) {
 				if (gstLStoCMDr.commandToDriveBoard.bits.openShutter || gstLStoCMDr.commandToDriveBoard.bits.openShutterApperture)
 				{
 
-//					if (gKeysStatus.bits.Key_Open_pressed)    //20170331
-//					{
-//						gKeysStatus.bits.Key_Open_pressed = 0;
-//					}
+					if (gKeysStatus.bits.Key_Open_pressed)    //20170331
+					{
+						gKeysStatus.bits.Key_Open_pressed = 0;
+					}
 
 					if (gSensorStatus.bits.Sensor_1PBS_active)
 					{
@@ -2727,10 +2751,10 @@ void logicSolver(void) {
 				gstCMDitoLS.acknowledgementReceived = eNACK;
 			}
 
-//			if (gKeysStatus.bits.Key_Open_pressed)    //20170331
-//			{
-//				gKeysStatus.bits.Key_Open_pressed = 0;
-//			}
+			if (gKeysStatus.bits.Key_Open_pressed)    //20170331
+			{
+				gKeysStatus.bits.Key_Open_pressed = 0;
+			}
 
 			if (gKeysStatus.bits.Key_Close_pressed)
 			{
@@ -3067,6 +3091,15 @@ void logicSolver(void) {
 		// End sub-state 'Handle Upper Limit Stoppage Time' of 'Logic_Solver_Drive_Run'
 		// *********************************************************************************************
 
+
+				   if (
+						(gSensorStatus.bits.Sensor_InterlockIP_active == false)&&
+						((seShutterOpenCloseCmdState == CmdUpDetectedWaitUpDelay)||(seShutterOpenCloseCmdState == CmdDownDetectedWaitDownDelay))&&
+						((gu8_intlck_prior == 1)||((gu8_intlck_prior==0)&&(gstDriveStatus.bits.shutterLowerLimit == 1)))&&
+						(gu8_intlck_valid==0)
+						)
+						seShutterOpenCloseCmdState_backup = seShutterOpenCloseCmdState;      //20170330_1
+
 		// *********************************************************************************************
 		// Start sub-state 'Handle Safety Signal- Drive board' of 'Logic_Solver_Drive_Run'
 		// *********************************************************************************************
@@ -3301,13 +3334,6 @@ void logicSolver(void) {
 		// Start sub-state 'Handle Interlock Input Signal' of 'Logic_Solver_Drive_Run'
 		// *********************************************************************************************
 
-		// Reset the flag which indicate either Up or Down  and Go UP or Go Down delay is in progress
-//		if (
-//			(gSensorStatus.bits.Sensor_InterlockIP_active == false)&&
-//			((seShutterOpenCloseCmdState == CmdUpDetectedWaitUpDelay)||(seShutterOpenCloseCmdState == CmdDownDetectedWaitDownDelay))&&
-//			((gu8_intlck_prior == 1)||((gu8_intlck_prior==0)&&(gstDriveStatus.bits.shutterLowerLimit == 1)))
-//			)
-//			seShutterOpenCloseCmdState = CmdNotDetected;      //20170330_1
 		// Keep on monitoring the Interlock Input Signal De-activated when shutter is moving and Interlock is valid and Non Priority set
 		if (
 
