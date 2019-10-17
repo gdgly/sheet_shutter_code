@@ -111,6 +111,9 @@ uint8_t paramResetRunTime(char *paramStr, uint16_t paramno)
 	//Process result
 	uint8_t viewbuff[MAX_CHARS_IN_LINE];
 	 uint8_t ccccccc[MAX_CHARS_IN_LINE]={0};
+	uint8_t viewbuff_JAP[24];
+	uint8_t ccccccc_JAP[24]={0};
+
 	// uint8_t viewbuff[MAX_CHARS_IN_LINE];
 	 //    uint8_t ccccccc[MAX_CHARS_IN_LINE]={0};
 	 		// Clear Screen.
@@ -126,10 +129,14 @@ uint8_t paramResetRunTime(char *paramStr, uint16_t paramno)
 	 	    {
 	 		//displayText("RESETTING", 2, 0, false, false, false, false, false, false);
 	 	    displayText("リセット", 2, 16, false, false, false, false, false, false);
-	 		usnprintf((char *)viewbuff, sizeof(viewbuff), "%s", paramStr);//参数名字
-	 		//memcpy(ccccccc,viewbuff,strlen(viewbuff)-1);
-	 		displayText(viewbuff, 2, 0, false, false, false, false, false, false);
-	 		//displayText("PLEASE WAIT..", 2, 48, false, false, false, false);
+
+//	 		usnprintf((char *)viewbuff, sizeof(viewbuff), "%s", paramStr);//参数名字
+//	 		//memcpy(ccccccc,viewbuff,strlen(viewbuff)-1);
+//	 		displayText(viewbuff, 2, 0, false, false, false, false, false, false);
+//	 		//displayText("PLEASE WAIT..", 2, 48, false, false, false, false);
+	 		usnprintf((char *)viewbuff_JAP, sizeof(viewbuff_JAP), "%s", paramStr);//参数名字                        //20170620   201703_No.54
+	 		displayText(viewbuff_JAP, 2, 0, false, false, false, false, false, false);      //20170620   201703_No.54
+
 	 		displayText("オマチクダサイ...", 2, 32, false, false, false, false, false, false);
 	 	    }
 	 	    else
@@ -183,9 +190,12 @@ uint8_t paramResetRunTime(char *paramStr, uint16_t paramno)
 						tickCount  = g_ui32TickCount;
 						if(gu8_language == Japanese_IDX)
 						{
-						usnprintf((char *)viewbuff, sizeof(viewbuff), "%s", paramStr);//参数名字
-						//memcpy(ccccccc,viewbuff,strlen(viewbuff)-1);
-						displayText(viewbuff, 2, 0, false, false, false, false,false, false);
+//						usnprintf((char *)viewbuff, sizeof(viewbuff), "%s", paramStr);//参数名字
+//						//memcpy(ccccccc,viewbuff,strlen(viewbuff)-1);
+//						displayText(viewbuff, 2, 0, false, false, false, false,false, false);
+						usnprintf((char *)viewbuff_JAP, sizeof(viewbuff_JAP), "%s", paramStr);//参数名字               //20170620    201703_No.54
+						displayText(viewbuff_JAP, 2, 0, false, false, false, false,false, false);		 //20170620    201703_No.54
+
 						displayText("リセットOK", 2, 16, false, false, false, false, false, false);
 						}
 						else
