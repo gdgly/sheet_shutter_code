@@ -1206,6 +1206,7 @@ VOID updatePhotoElectricDebounceTime(VOID)
   #ifdef BUG_No51_SnowA008    //20170612  201703_No.51
     if(uDriveApplBlockEEP.stEEPDriveApplBlock.snowModePhotoelec_A008 !=0)
       sensorActiveDebounceValue[PHOTOELECTRIC_SENSOR] = uDriveApplBlockEEP.stEEPDriveApplBlock.snowModePhotoelec_A008 *250;
+    else sensorActiveDebounceValue[PHOTOELECTRIC_SENSOR]= PHOTOELECTRIC_SENSOR_ACTIVE_DEBOUNCE;    //20170620
   #else
     sensorActiveDebounceValue[PHOTOELECTRIC_SENSOR] = uDriveApplBlockEEP.stEEPDriveApplBlock.snowModePhotoelec_A008;
   #endif
