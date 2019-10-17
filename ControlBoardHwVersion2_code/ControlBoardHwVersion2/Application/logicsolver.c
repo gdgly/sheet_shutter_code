@@ -593,7 +593,7 @@ void logicSolver(void) {
 			gstLStoCMDr.commandRequestStatus = eACTIVE;
 			gstLStoCMDr.commandToDriveBoard.val = 0;
 			gstLStoCMDr.commandToDriveBoard.bits.stopPowerOnCalibration = 1;
-			if(gKeysStatus.bits.Key_Stop_pressed==1)  gKeysStatus.bits.Key_Stop_pressed=0;  //20170609  201703_No.73
+			//if(gKeysStatus.bits.Key_Stop_pressed==1)  gKeysStatus.bits.Key_Stop_pressed=0;  //20170609  201703_No.73    //201806_Bug_No.11
 			if(gKeysStatus.bits.Wireless_Stop_pressed==1)  gKeysStatus.bits.Wireless_Stop_pressed=0;  //20170609  201703_No.73
 			sucStopKeyDisplay_Control_PowerON= 1;       //20170620  201703_No.58 No.59
 
@@ -1849,7 +1849,7 @@ void logicSolver(void) {
 
 								(
 
-										gstDriveStatus.bits.shutterApertureHeight == 0 &&//不在半开高度
+										//gstDriveStatus.bits.shutterApertureHeight == 0 &&//不在半开高度      //201806_Bug_No.12
 
 										(
 												(
