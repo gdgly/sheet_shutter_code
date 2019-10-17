@@ -866,8 +866,12 @@ SHORT PhaseCurrentPosition;
 				(PhaseCurrentPosition<(uDriveCommonBlockEEP.stEEPDriveCommonBlock.apertureHeightPos_A130
 					+uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.riseChangeGearPos1_A103)))
 			{
-				if(phaseOffsetCW > PHASE_OFFSET_CW)
-				    phaseOffsetCW -= PHASE_OFFSET_DEC_STEP;
+/*				if(phaseOffsetCW > PHASE_OFFSET_CW)
+				    phaseOffsetCW -= PHASE_OFFSET_DEC_STEP;*/
+				if(phaseOffsetCW > PHASE_OFFSET_CW){		//20181017
+				    if(measuredSpeed>500) phaseOffsetCW -= PHASE_OFFSET_DEC_STEP;
+					else phaseOffsetCW -= 40;
+				}
 				if(phaseOffsetCW <= PHASE_OFFSET_CW)
 				    phaseOffsetCW = PHASE_OFFSET_CW;
 
@@ -903,8 +907,12 @@ SHORT PhaseCurrentPosition;
 			if(controlOutput>6000) controlOutput=4000;//20180515 No4
 
 			}
-			if(phaseOffsetCW > PHASE_OFFSET_CW)
-			    phaseOffsetCW -= PHASE_OFFSET_DEC_STEP;
+/*			if(phaseOffsetCW > PHASE_OFFSET_CW)
+			    phaseOffsetCW -= PHASE_OFFSET_DEC_STEP;*/
+			if(phaseOffsetCW > PHASE_OFFSET_CW){		//20181017
+			    if(measuredSpeed>500) phaseOffsetCW -= PHASE_OFFSET_DEC_STEP;
+				else phaseOffsetCW -= 40;
+			}
 			if(phaseOffsetCW <= PHASE_OFFSET_CW)
 			    phaseOffsetCW = PHASE_OFFSET_CW;
 		}
@@ -935,8 +943,12 @@ SHORT PhaseCurrentPosition;
 		else
 		{
 			phaseOffsetCW = PHASE_OFFSET_CW;		//20180724 Bug_201806_No87
-			if(phaseOffsetCCW < PHASE_OFFSET_CCW_MAX)
-			    phaseOffsetCCW += PHASE_OFFSET_INC_STEP;
+/*			if(phaseOffsetCCW < PHASE_OFFSET_CCW_MAX)
+			    phaseOffsetCCW += PHASE_OFFSET_INC_STEP;*/
+			if(phaseOffsetCCW < PHASE_OFFSET_CCW_MAX){		//20181017
+			    if(measuredSpeed>500) phaseOffsetCCW += PHASE_OFFSET_INC_STEP;
+				else phaseOffsetCCW += 40;
+			}
 			if(phaseOffsetCCW >= PHASE_OFFSET_CCW_MAX)
 			    phaseOffsetCCW = PHASE_OFFSET_CCW_MAX;
 		}
@@ -957,7 +969,10 @@ SHORT PhaseCurrentPosition;
 //        else
 //			phaseCopy = phase = phaseValues[tmpRe] + phaseOffsetCW;
 
-        phaseIncFlg = PHASE_INCREMENT_FLAG;
+//        phaseIncFlg = PHASE_INCREMENT_FLAG;	20181018 start
+	    if(requiredDirection == CW) phaseIncFlg = PHASE_INCREMENT_FLAG;
+	    else phaseIncFlg = PHASE_DECREMENT_FLAG;
+//20181018 end
     }
     else if(((controlOutput >= 0) && (requiredDirection == CCW)) || ((controlOutput < 0) && (requiredDirection == CW)))
     {
@@ -1252,7 +1267,14 @@ SHORT PhaseCurrentPosition;
     if(rampStatusFlags.rampMaintainHoldingDuty)
     {
     //20170209***igbtfail
-		if(requiredDirection == CCW)
+	//20180921***************
+		if(rampStatusFlags.rampBrakeOn)
+		   {
+           if(controlOutput > SHUTTER_LOAD_HOLDING_DUTY){controlOutput = SHUTTER_LOAD_HOLDING_DUTY;}
+		   else{controlOutput =controlOutput;}
+		   }
+   //20180921****************
+		else if(requiredDirection == CCW) //20180921 if -> else if
 		{
 			if(rampOutputStatus.shutterCurrentPosition >= (uDriveCommonBlockEEP.stEEPDriveCommonBlock.lowerStoppingPos_A101 -
 									uDriveApplBlockEEP.stEEPDriveApplBlock.overrunProtection_A112))
@@ -1438,7 +1460,7 @@ VOID initSpeedControllerVariables(VOID)
     else
     {
         P_gain = uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.current_PI_KP_A514 * 100;
-        I_gain = uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.current_PI_KI_A515 * 10;
+        I_gain = 400;//uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.current_PI_KI_A515 * 10;		//20181018
 
 //        if(uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.shutterType_A537 == BEAD_SHUTTER)
 //        {

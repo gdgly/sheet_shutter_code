@@ -1725,7 +1725,8 @@ VOID shutterInstallation(VOID)
                         ShutterInstallationStepNeedSave = FALSE;   //bug_NO.43
                         shutterInstall.currentState = INSTALL_MOVE_DN_50MM;
                         //update input to ramp generator
-                        inputFlags.value = CLOSE_SHUTTER_JOG_10;
+                        //inputFlags.value = CLOSE_SHUTTER_JOG_10;
+						inputFlags.value = CLOSE_SHUTTER_JOG_50; //20181018
                         inputFlags_Installation.value = inputFlags.value;
                     }
 

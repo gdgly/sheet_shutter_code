@@ -1,6 +1,6 @@
 /********************************************************************************
 * FileName: Userdef.h
-* Description:  
+* Description:
 * This header file contains the common macros used by different modules.
 *********************************************************************************/
 
@@ -15,9 +15,9 @@
 
 /****************************************************************************
  *  Modification History
- *  
- *  Date                  Name          Comments 
- *  09/04/2014            iGate          Initial Creation                                                               
+ *
+ *  Date                  Name          Comments
+ *  09/04/2014            iGate          Initial Creation
 *****************************************************************************/
 #ifndef USERDEF_H
 #define USERDEF_H
@@ -80,8 +80,8 @@
 #define FPWM 12000        //20000		 // 20 kHz, so that no audible noise is present.
 
 #define PDIV_256        256  //Timer3 configuration for using prescalar 256 (1ms) Tcy/256
-#define PDIV_64         64   //Timer3 configuration for using prescalar 64 (1us)  Tcy/64 
- 
+#define PDIV_64         64   //Timer3 configuration for using prescalar 64 (1us)  Tcy/64
+
 #if (MOTOR_TYPE == PICOMO_MOTOR)
     #define PDIV    PDIV_64 //Current timer3 configuration
 #elif (MOTOR_TYPE == NEW_MOTOR_1)
@@ -100,9 +100,9 @@
 #define MINPERIOD	((DWORD)((FCY/PDIV)*60)/((DWORD)MAX_RPM*2*NO_POLEPAIRS))
 #define MAXPERIOD	((DWORD)((FCY/PDIV)*60)/((DWORD)MIN_RPM*2*NO_POLEPAIRS))
 
-#define PHASE_INC_CALC 1792000UL //((DWORD)(FCY/((DWORD)PDIV*2*FPWM))*65536) 
-//#define PHASE_INC_CALC 746667UL  //((DWORD)(FCY/((DWORD)PDIV*2*FPWM))*65536)
-//#define PHASE_INC_CALC 5000000UL  //((DWORD)(FCY/((DWORD)PDIV*2*FPWM))*65536) 
+//#define PHASE_INC_CALC 1792000UL //((DWORD)(FCY/((DWORD)PDIV*2*FPWM))*65536)
+#define PHASE_INC_CALC 746667UL  //((DWORD)(FCY/((DWORD)PDIV*2*FPWM))*65536)	20181002
+//#define PHASE_INC_CALC 5000000UL  //((DWORD)(FCY/((DWORD)PDIV*2*FPWM))*65536)
 
 /* Half of the PWM Deadtime; The effective deadtime written in ALTDTR registers is 2*ALTDTR_DIV2 */
 #define	ALTDTR_DIV2	140//120
@@ -116,5 +116,5 @@
 #define Q15(Float_Value)	\
         ((Float_Value < 0.0) ? (SHORT)(32768 * (Float_Value) - 0.5) \
         : (SHORT)(32767 * (Float_Value) + 0.5))
-        
+
 #endif

@@ -1391,7 +1391,7 @@ void __attribute__((interrupt, no_auto_psv)) _T4Interrupt (void)//10ms
     {
         measuredSpeed = 0;
 //        cnt_motor_stop = 11;
-        if(cnt_motor_stop>30) cnt_motor_stop = 0;		//20180629 No56 retry
+        if(cnt_motor_stop>30) cnt_motor_stop = 30;		//20180629 No56 retry
     }
 
     //checkParamUpdateToEEP();
@@ -2338,7 +2338,7 @@ VOID runShutterToReqSpeed(VOID)
                      rampStatusFlags.rampMaintainHoldingDuty = 1;
 #endif
 
-                    refSpeed = SHUTTER_SPEED_MIN;
+                    refSpeed = 200;//SHUTTER_SPEED_MIN;		20181018
                     refiTotalCurrent = RAMP_STARTING_CURRENT_MIN;
 
                     //search for current state in ramp profile
@@ -2389,7 +2389,7 @@ VOID runShutterToReqSpeed(VOID)
                rampStatusFlags.rampMaintainHoldingDuty = 1;
 #endif
 
-            refSpeed = SHUTTER_SPEED_MIN;
+            refSpeed = 200;//SHUTTER_SPEED_MIN;		20181018
             refiTotalCurrent = RAMP_STARTING_CURRENT_MIN;
 
             //search for current state in ramp profile
@@ -2439,7 +2439,8 @@ VOID runShutterToReqSpeed(VOID)
                         //Disable current loop
                         rampStatusFlags.rampCurrentControlRequired = 0;
                         //set the current reference
-                        refSpeed += gs16DownDecelaration;
+                        //refSpeed += gs16DownDecelaration;
+						  refSpeed += 25; //20181009
                         //check boundary of max speed
                         if(refSpeed > RAMP_STARTING_SPEED_MAX)
                         {
@@ -2516,7 +2517,7 @@ VOID runShutterToReqSpeed(VOID)
     else if(currentRampProfile.rampGenFlags.cwDirection)
     {
         requiredDirection = CW;
-
+		rampStatusFlags.rampMaintainHoldingDuty = 1; //20181009
         //if mechanical release required then
         if(currentRampProfile.rampGenFlags.brakeRelease && rampStatusFlags.rampBrakeOn)
         {
@@ -2541,7 +2542,7 @@ VOID runShutterToReqSpeed(VOID)
                 if(++rampDcInjectionOnCounter >= currentRampProfile.dcInjectionTime)
                 {
                     rampStatusFlags.rampDcInjectionOn = 0;
-                    rampStatusFlags.rampMaintainHoldingDuty = 1;
+                    //rampStatusFlags.rampMaintainHoldingDuty = 1; //20181009
                     refSpeed = SHUTTER_SPEED_MIN;
                     refiTotalCurrent = RAMP_STARTING_CURRENT_MIN;
 
@@ -2581,7 +2582,7 @@ VOID runShutterToReqSpeed(VOID)
         else if(currentRampProfile.rampGenFlags.brakeRelease && rampStatusFlags.rampDcInjectionOn)
         {
             rampStatusFlags.rampDcInjectionOn = 0;
-            rampStatusFlags.rampMaintainHoldingDuty = 1;
+            //rampStatusFlags.rampMaintainHoldingDuty = 1; //20181009
             refSpeed = SHUTTER_SPEED_MIN;
             refiTotalCurrent = RAMP_STARTING_CURRENT_MIN;
 
@@ -2633,7 +2634,8 @@ VOID runShutterToReqSpeed(VOID)
                         rampStatusFlags.rampCurrentControlRequired = 0;
                         //set the speed reference
                         //refSpeed += gs16UpDecelaration;
-                        refSpeed += 60;
+                        //refSpeed += 60;
+						  refSpeed += 25; //20181009
                         //check boundary of max speed
                         if(refSpeed > RAMP_STARTING_SPEED_MAX)
                         {
@@ -2947,7 +2949,8 @@ VOID stopShutter(VOID)
 {
 	if((uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveInstallation == TRUE)&&(requiredDirection == CCW)){measuredSpeed = 200;} //20180604No24
 	phaseOffsetCCW = PHASE_OFFSET_CCW_START;
-	if(requiredDirection == CCW){ phaseOffsetCW  = PHASE_OFFSET_CW_START; } //20180521 No23 LS stop NOISE
+	//if(requiredDirection == CCW){ phaseOffsetCW  = PHASE_OFFSET_CW_START; } //20180521 No23 LS stop NOISE
+    if((requiredDirection == CCW)&&(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveInstallation == TRUE)){ phaseOffsetCW  = PHASE_OFFSET_CW_START; }
 	else{ phaseOffsetCW  = 182; } //20180521 No23 LS stop NOISE
 
 	//  Logic related to increasing I gain while stoping the shutter is tuned to optimize value - YG - Nov 15
@@ -3097,8 +3100,8 @@ VOID stopShutter(VOID)
         if(!rampStatusFlags.rampDcInjectionOn)
         {
             if(requiredDirection == CW){controlOutput = SHUTTER_LOAD_HOLDING_DUTY;} //20180528 No24
-			//else{controlOutput = controlOutput;} //20180627 No53
-			else{controlOutput = SHUTTER_LOAD_HOLDING_DUTY;}//20180911
+			else{controlOutput = controlOutput;} //20181002
+			//else{controlOutput = SHUTTER_LOAD_HOLDING_DUTY;}//20180911
 
             rampStatusFlags.rampDcInjectionOn = 1;
             DCInjectionON();
@@ -3201,7 +3204,7 @@ VOID executeRampProfile(VOID)
 #ifdef  MOTOR_750W_M1
                rampStatusFlags.rampMaintainHoldingDuty = 1;
 #endif
-                    refSpeed = SHUTTER_SPEED_MIN;
+                    refSpeed = 200;//SHUTTER_SPEED_MIN;		20181018
                     refiTotalCurrent = RAMP_STARTING_CURRENT_MIN;
                     #if (STARTUP_IN_CURRENT_MODE == 1)
                     if(currentRampProfile.rampGenFlags.currentMode)
@@ -3230,7 +3233,7 @@ VOID executeRampProfile(VOID)
 #ifdef  MOTOR_750W_M1
                rampStatusFlags.rampMaintainHoldingDuty = 1;
 #endif
-            refSpeed = SHUTTER_SPEED_MIN;
+            refSpeed = 200;//SHUTTER_SPEED_MIN;		20181018
             refiTotalCurrent = RAMP_STARTING_CURRENT_MIN;
             #if (STARTUP_IN_CURRENT_MODE == 1)
             if(currentRampProfile.rampGenFlags.currentMode)
@@ -3325,7 +3328,8 @@ VOID executeRampProfile(VOID)
                         rampStatusFlags.rampCurrentControlRequired = 0;
                         //set the speed reference
 
-						refSpeed += currentRampProfile.speedChangeRate;
+						//refSpeed += currentRampProfile.speedChangeRate;
+						  refSpeed += 25; //20181009
 #if 0
 						refSpeed += lshSpeedChangeRate;
 #endif
@@ -3633,7 +3637,7 @@ VOID executeRampProfile(VOID)
     else if(currentRampProfile.rampGenFlags.cwDirection)
     {
         requiredDirection = CW;
-
+		rampStatusFlags.rampMaintainHoldingDuty = 1; //20181009
         //if mechanical release required then
         if(currentRampProfile.rampGenFlags.brakeRelease && rampStatusFlags.rampBrakeOn)
         {
@@ -3658,7 +3662,7 @@ VOID executeRampProfile(VOID)
                 if(++rampDcInjectionOnCounter >= currentRampProfile.dcInjectionTime)
                 {
                     rampStatusFlags.rampDcInjectionOn = 0;
-                    rampStatusFlags.rampMaintainHoldingDuty = 1;
+                    //rampStatusFlags.rampMaintainHoldingDuty = 1; //20181009
                     refSpeed = SHUTTER_SPEED_MIN;
                     refiTotalCurrent = RAMP_STARTING_CURRENT_MIN;
                     #if (STARTUP_IN_CURRENT_MODE == 1)
@@ -3678,7 +3682,7 @@ VOID executeRampProfile(VOID)
         else if(currentRampProfile.rampGenFlags.brakeRelease && rampStatusFlags.rampDcInjectionOn)
         {
             rampStatusFlags.rampDcInjectionOn = 0;
-            rampStatusFlags.rampMaintainHoldingDuty = 1;
+            //rampStatusFlags.rampMaintainHoldingDuty = 1; //20181009
             refSpeed = SHUTTER_SPEED_MIN;
             refiTotalCurrent = RAMP_STARTING_CURRENT_MIN;
             #if (STARTUP_IN_CURRENT_MODE == 1)
@@ -3779,7 +3783,8 @@ VOID executeRampProfile(VOID)
                         //set the speed reference
 
 						//refSpeed += currentRampProfile.speedChangeRate;
-						refSpeed += 60;
+						//refSpeed += 60;
+						  refSpeed += 25; //20181009
 #if 0
 						refSpeed += lshSpeedChangeRate;
 #endif
