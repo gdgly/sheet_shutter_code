@@ -1599,6 +1599,7 @@ VOID calculateDrift(BOOL sts)
 					{
 						hallCounts_bak = hallCounts;	// 2016/11/16 When Down , Missing Save Origin Position.
                     	hallCounts = uDriveCommonBlockEEP.stEEPDriveCommonBlock.originSensorPosMonitor_A128;
+                    	FLAG_StartApertureCorrection = 0;		//20180709 Bug_201806_No80
                     }
                 //}
             }

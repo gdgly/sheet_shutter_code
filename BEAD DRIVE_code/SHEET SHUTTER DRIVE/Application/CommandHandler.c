@@ -89,7 +89,7 @@
 #define EXPECTED_CRC_APERTUREHEIGHT                0x7292
 
 //CONST UINT32 drive_fw_version = 0x00000408;  //bug_NO.64
-CONST UINT32 drive_fw_version = 18045;    //Drive version 1804.5        20170418   201703_No.29
+CONST UINT32 drive_fw_version = 18046;    //Drive version 1804.6        20170418   201703_No.29
 
 enum {
 	no_error = 0,
@@ -652,37 +652,39 @@ VOID commandHandler(VOID)
                     if((TIME_CMD_open_shutter==0)&&(TIME_CMD_close_shutter==0))
                     {
                         FLAG_CMD_open_shutter=0;
-                            if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveReady)
+                        if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveReady)
+                        {
+                            //if(((uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterLowerLimit ||
+                               //uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterBetweenLowlmtAphgt))&&(inputFlags.value!=OPEN_SHUTTER_APERTURE))
+						    //if((!uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterUpperLimit)&&(inputFlags.value!=OPEN_SHUTTER_APERTURE)) //20161202 //20170318
+						    //20180705 Bug_1806_No20,No69,No71
+                            //if((!uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterUpperLimit)&&(inputFlags.value!=OPEN_SHUTTER_APERTURE)&&(inputFlags.value!=OPEN_SHUTTER_JOG_10)&&(inputFlags.value!=OPEN_SHUTTER_JOG_50))
+							if((((!uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterUpperLimit)&&(FLAG_StartApertureCorrection==1))||
+                               ((!uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterApertureHeight)&&(FLAG_StartApertureCorrection==0)))
+                                    &&(inputFlags.value!=OPEN_SHUTTER_APERTURE)&&(inputFlags.value!=OPEN_SHUTTER_JOG_10)&&(inputFlags.value!=OPEN_SHUTTER_JOG_50))
                             {
-                                //if(((uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterLowerLimit ||
-                                   //uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterBetweenLowlmtAphgt))&&(inputFlags.value!=OPEN_SHUTTER_APERTURE))
-							    //if((!uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterUpperLimit)&&(inputFlags.value!=OPEN_SHUTTER_APERTURE)) //20161202 //20170318
-							    //20180705 Bug_1806_No20,No69,No71
-                                //if((!uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterUpperLimit)&&(inputFlags.value!=OPEN_SHUTTER_APERTURE)&&(inputFlags.value!=OPEN_SHUTTER_JOG_10)&&(inputFlags.value!=OPEN_SHUTTER_JOG_50))
-								if((((!uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterUpperLimit)&&(FLAG_StartApertureCorrection==1))||
-                                   ((!uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterApertureHeight)&&(FLAG_StartApertureCorrection==0)))
-                                        &&(inputFlags.value!=OPEN_SHUTTER_APERTURE)&&(inputFlags.value!=OPEN_SHUTTER_JOG_10)&&(inputFlags.value!=OPEN_SHUTTER_JOG_50))
+								//20180709 Bug_201806_No80
+                                //if(FLAG_StartApertureCorrection==1){FLAG_StartApertureCorrection++;inputFlags.value = OPEN_SHUTTER; }   //bug_No.12
+                                //else if(FLAG_StartApertureCorrection>1){FLAG_StartApertureCorrection=0;inputFlags.value = OPEN_SHUTTER_APERTURE;}
+                                if(FLAG_StartApertureCorrection>0){inputFlags.value = OPEN_SHUTTER; }
+                                else inputFlags.value = OPEN_SHUTTER_APERTURE;
+                                TIME_CMD_open_shutter=100;
+                                bUpApertureCmdRecd = TRUE;
+                                //if shutter is moving then calculate min distance travel required.
+                                if(rampOutputStatus.shutterMoving)
                                 {
-                                    if(FLAG_StartApertureCorrection==1){FLAG_StartApertureCorrection++;inputFlags.value = OPEN_SHUTTER; }   //bug_No.12
-                                    else if(FLAG_StartApertureCorrection>1){FLAG_StartApertureCorrection=0;inputFlags.value = OPEN_SHUTTER_APERTURE;}
-                                    else inputFlags.value = OPEN_SHUTTER_APERTURE;
-                                    TIME_CMD_open_shutter=100;
-                                    bUpApertureCmdRecd = TRUE;
-                                    //if shutter is moving then calculate min distance travel required.
-                                    if(rampOutputStatus.shutterMoving)
-                                    {
-                                        calcShtrMinDistValue();
-                                    }
-                                }
-                                else
-                                {
-                                    status = nack;
+                                    calcShtrMinDistValue();
                                 }
                             }
                             else
                             {
                                 status = nack;
                             }
+                        }
+                        else
+                        {
+                            status = nack;
+                        }
                     }
                     else {
                         FLAG_CMD_open_shutter=1;
@@ -885,7 +887,7 @@ VOID commandHandler(VOID)
                             }
 #ifdef BUG_No76or73_powerUpCalib_osToggle      //20170607  201703_No.76 or 73
                             if(paramIndex == 537)
-                                        Flag_powerUpCalib_osToggle=1;
+                                Flag_powerUpCalib_osToggle=1;
 #endif
                            if((paramIndex == 605)&&(FLAG_StartApertureCorrection>0))
                             {

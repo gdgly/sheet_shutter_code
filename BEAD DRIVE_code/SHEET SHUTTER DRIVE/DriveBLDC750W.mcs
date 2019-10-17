@@ -2394,6 +2394,305 @@ ToolArgsString=-g -Wall -mno-eds-warn
 TraceCmdString=
 DebugOptions=
 [File184]
+Location=D:\work\shutter\motor_drive\source\08Feb2016-BxProjectFinalDeliverable\sourceCodes\aoyagi\201807\ROHM\BEAD DRIVE 20180709(Ver_1804_6)ROHM\SHEET SHUTTER DRIVE\OBJ\Application.o
+Folder=Intermediary
+DeviceName=dsPIC33EP512GM706
+LanguageToolSuiteID={9BCCB495-CD65-480A-BA76-63D8E78B117F}
+LanguageToolID={B1442D91-FF1F-4E60-9714-C39C1BA9DB62}
+LanguageToolLocation=C:\Program Files\Microchip\xc16\v1.24\bin\xc16-gcc.exe
+PPAD=$(BINDIR)|.\BIN||$(TMPDIR)|.\OBJ||$(AINDIR)|.\PIController||$(INCDIR)|.||$(LIBDIR)||$(LKRDIR)||
+SOLK=<src>|Application\Application.c|Application\CommandHandler.c|Drivers\GPIO\GPIO.c|Drivers\InputCapture\InputCapture.c|Drivers\ADC\ADC.c|MotorControl\SpeedController\SpeedController.c|MotorControl\Algorithm\svm.c|DMCI\RTDM.c|DMCI\RtdmInterface.c|Application\RampGenerator\RampGenerator.c|Common\Delay\Delay.c|Drivers\Timer\Timer.c|Drivers\PWM\MCPWM.c|Main\Main.c|Middleware\ParameterDatabase\eeprom.c|Middleware\CommunicationStack\serial.c|MotorControl\CurrentController\CurrentController.c|MotorControl\Braking\DCInjection.c|Middleware\ParameterDatabase\spi.c|Middleware\ParameterDatabase\spieeprom.c|MotorControl\PIController\piNew.c|MotorControl\PIController\pi.s|MotorControl\CurrentController\CurrentLimit.c||<obj>||<lib>||<lkr>||
+SuiteArgsString=
+ToolArgsString=-g -Wall -mno-eds-warn
+TraceCmdString=
+DebugOptions=
+[File185]
+Location=D:\work\shutter\motor_drive\source\08Feb2016-BxProjectFinalDeliverable\sourceCodes\aoyagi\201807\ROHM\BEAD DRIVE 20180709(Ver_1804_6)ROHM\SHEET SHUTTER DRIVE\OBJ\CommandHandler.o
+Folder=Intermediary
+DeviceName=dsPIC33EP512GM706
+LanguageToolSuiteID={9BCCB495-CD65-480A-BA76-63D8E78B117F}
+LanguageToolID={B1442D91-FF1F-4E60-9714-C39C1BA9DB62}
+LanguageToolLocation=C:\Program Files\Microchip\xc16\v1.24\bin\xc16-gcc.exe
+PPAD=$(BINDIR)|.\BIN||$(TMPDIR)|.\OBJ||$(AINDIR)|.\PIController||$(INCDIR)|.||$(LIBDIR)||$(LKRDIR)||
+SOLK=<src>|Application\Application.c|Application\CommandHandler.c|Drivers\GPIO\GPIO.c|Drivers\InputCapture\InputCapture.c|Drivers\ADC\ADC.c|MotorControl\SpeedController\SpeedController.c|MotorControl\Algorithm\svm.c|DMCI\RTDM.c|DMCI\RtdmInterface.c|Application\RampGenerator\RampGenerator.c|Common\Delay\Delay.c|Drivers\Timer\Timer.c|Drivers\PWM\MCPWM.c|Main\Main.c|Middleware\ParameterDatabase\eeprom.c|Middleware\CommunicationStack\serial.c|MotorControl\CurrentController\CurrentController.c|MotorControl\Braking\DCInjection.c|Middleware\ParameterDatabase\spi.c|Middleware\ParameterDatabase\spieeprom.c|MotorControl\PIController\piNew.c|MotorControl\PIController\pi.s|MotorControl\CurrentController\CurrentLimit.c||<obj>||<lib>||<lkr>||
+SuiteArgsString=
+ToolArgsString=-g -Wall -mno-eds-warn
+TraceCmdString=
+DebugOptions=
+[File186]
+Location=D:\work\shutter\motor_drive\source\08Feb2016-BxProjectFinalDeliverable\sourceCodes\aoyagi\201807\ROHM\BEAD DRIVE 20180709(Ver_1804_6)ROHM\SHEET SHUTTER DRIVE\OBJ\GPIO.o
+Folder=Intermediary
+DeviceName=dsPIC33EP512GM706
+LanguageToolSuiteID={9BCCB495-CD65-480A-BA76-63D8E78B117F}
+LanguageToolID={B1442D91-FF1F-4E60-9714-C39C1BA9DB62}
+LanguageToolLocation=C:\Program Files\Microchip\xc16\v1.24\bin\xc16-gcc.exe
+PPAD=$(BINDIR)|.\BIN||$(TMPDIR)|.\OBJ||$(AINDIR)|.\PIController||$(INCDIR)|.||$(LIBDIR)||$(LKRDIR)||
+SOLK=<src>|Application\Application.c|Application\CommandHandler.c|Drivers\GPIO\GPIO.c|Drivers\InputCapture\InputCapture.c|Drivers\ADC\ADC.c|MotorControl\SpeedController\SpeedController.c|MotorControl\Algorithm\svm.c|DMCI\RTDM.c|DMCI\RtdmInterface.c|Application\RampGenerator\RampGenerator.c|Common\Delay\Delay.c|Drivers\Timer\Timer.c|Drivers\PWM\MCPWM.c|Main\Main.c|Middleware\ParameterDatabase\eeprom.c|Middleware\CommunicationStack\serial.c|MotorControl\CurrentController\CurrentController.c|MotorControl\Braking\DCInjection.c|Middleware\ParameterDatabase\spi.c|Middleware\ParameterDatabase\spieeprom.c|MotorControl\PIController\piNew.c|MotorControl\PIController\pi.s|MotorControl\CurrentController\CurrentLimit.c||<obj>||<lib>||<lkr>||
+SuiteArgsString=
+ToolArgsString=-g -Wall -mno-eds-warn
+TraceCmdString=
+DebugOptions=
+[File187]
+Location=D:\work\shutter\motor_drive\source\08Feb2016-BxProjectFinalDeliverable\sourceCodes\aoyagi\201807\ROHM\BEAD DRIVE 20180709(Ver_1804_6)ROHM\SHEET SHUTTER DRIVE\OBJ\InputCapture.o
+Folder=Intermediary
+DeviceName=dsPIC33EP512GM706
+LanguageToolSuiteID={9BCCB495-CD65-480A-BA76-63D8E78B117F}
+LanguageToolID={B1442D91-FF1F-4E60-9714-C39C1BA9DB62}
+LanguageToolLocation=C:\Program Files\Microchip\xc16\v1.24\bin\xc16-gcc.exe
+PPAD=$(BINDIR)|.\BIN||$(TMPDIR)|.\OBJ||$(AINDIR)|.\PIController||$(INCDIR)|.||$(LIBDIR)||$(LKRDIR)||
+SOLK=<src>|Application\Application.c|Application\CommandHandler.c|Drivers\GPIO\GPIO.c|Drivers\InputCapture\InputCapture.c|Drivers\ADC\ADC.c|MotorControl\SpeedController\SpeedController.c|MotorControl\Algorithm\svm.c|DMCI\RTDM.c|DMCI\RtdmInterface.c|Application\RampGenerator\RampGenerator.c|Common\Delay\Delay.c|Drivers\Timer\Timer.c|Drivers\PWM\MCPWM.c|Main\Main.c|Middleware\ParameterDatabase\eeprom.c|Middleware\CommunicationStack\serial.c|MotorControl\CurrentController\CurrentController.c|MotorControl\Braking\DCInjection.c|Middleware\ParameterDatabase\spi.c|Middleware\ParameterDatabase\spieeprom.c|MotorControl\PIController\piNew.c|MotorControl\PIController\pi.s|MotorControl\CurrentController\CurrentLimit.c||<obj>||<lib>||<lkr>||
+SuiteArgsString=
+ToolArgsString=-g -Wall -mno-eds-warn
+TraceCmdString=
+DebugOptions=
+[File188]
+Location=D:\work\shutter\motor_drive\source\08Feb2016-BxProjectFinalDeliverable\sourceCodes\aoyagi\201807\ROHM\BEAD DRIVE 20180709(Ver_1804_6)ROHM\SHEET SHUTTER DRIVE\OBJ\ADC.o
+Folder=Intermediary
+DeviceName=dsPIC33EP512GM706
+LanguageToolSuiteID={9BCCB495-CD65-480A-BA76-63D8E78B117F}
+LanguageToolID={B1442D91-FF1F-4E60-9714-C39C1BA9DB62}
+LanguageToolLocation=C:\Program Files\Microchip\xc16\v1.24\bin\xc16-gcc.exe
+PPAD=$(BINDIR)|.\BIN||$(TMPDIR)|.\OBJ||$(AINDIR)|.\PIController||$(INCDIR)|.||$(LIBDIR)||$(LKRDIR)||
+SOLK=<src>|Application\Application.c|Application\CommandHandler.c|Drivers\GPIO\GPIO.c|Drivers\InputCapture\InputCapture.c|Drivers\ADC\ADC.c|MotorControl\SpeedController\SpeedController.c|MotorControl\Algorithm\svm.c|DMCI\RTDM.c|DMCI\RtdmInterface.c|Application\RampGenerator\RampGenerator.c|Common\Delay\Delay.c|Drivers\Timer\Timer.c|Drivers\PWM\MCPWM.c|Main\Main.c|Middleware\ParameterDatabase\eeprom.c|Middleware\CommunicationStack\serial.c|MotorControl\CurrentController\CurrentController.c|MotorControl\Braking\DCInjection.c|Middleware\ParameterDatabase\spi.c|Middleware\ParameterDatabase\spieeprom.c|MotorControl\PIController\piNew.c|MotorControl\PIController\pi.s|MotorControl\CurrentController\CurrentLimit.c||<obj>||<lib>||<lkr>||
+SuiteArgsString=
+ToolArgsString=-g -Wall -mno-eds-warn
+TraceCmdString=
+DebugOptions=
+[File189]
+Location=D:\work\shutter\motor_drive\source\08Feb2016-BxProjectFinalDeliverable\sourceCodes\aoyagi\201807\ROHM\BEAD DRIVE 20180709(Ver_1804_6)ROHM\SHEET SHUTTER DRIVE\OBJ\SpeedController.o
+Folder=Intermediary
+DeviceName=dsPIC33EP512GM706
+LanguageToolSuiteID={9BCCB495-CD65-480A-BA76-63D8E78B117F}
+LanguageToolID={B1442D91-FF1F-4E60-9714-C39C1BA9DB62}
+LanguageToolLocation=C:\Program Files\Microchip\xc16\v1.24\bin\xc16-gcc.exe
+PPAD=$(BINDIR)|.\BIN||$(TMPDIR)|.\OBJ||$(AINDIR)|.\PIController||$(INCDIR)|.||$(LIBDIR)||$(LKRDIR)||
+SOLK=<src>|Application\Application.c|Application\CommandHandler.c|Drivers\GPIO\GPIO.c|Drivers\InputCapture\InputCapture.c|Drivers\ADC\ADC.c|MotorControl\SpeedController\SpeedController.c|MotorControl\Algorithm\svm.c|DMCI\RTDM.c|DMCI\RtdmInterface.c|Application\RampGenerator\RampGenerator.c|Common\Delay\Delay.c|Drivers\Timer\Timer.c|Drivers\PWM\MCPWM.c|Main\Main.c|Middleware\ParameterDatabase\eeprom.c|Middleware\CommunicationStack\serial.c|MotorControl\CurrentController\CurrentController.c|MotorControl\Braking\DCInjection.c|Middleware\ParameterDatabase\spi.c|Middleware\ParameterDatabase\spieeprom.c|MotorControl\PIController\piNew.c|MotorControl\PIController\pi.s|MotorControl\CurrentController\CurrentLimit.c||<obj>||<lib>||<lkr>||
+SuiteArgsString=
+ToolArgsString=-g -Wall -mno-eds-warn
+TraceCmdString=
+DebugOptions=
+[File190]
+Location=D:\work\shutter\motor_drive\source\08Feb2016-BxProjectFinalDeliverable\sourceCodes\aoyagi\201807\ROHM\BEAD DRIVE 20180709(Ver_1804_6)ROHM\SHEET SHUTTER DRIVE\OBJ\svm.o
+Folder=Intermediary
+DeviceName=dsPIC33EP512GM706
+LanguageToolSuiteID={9BCCB495-CD65-480A-BA76-63D8E78B117F}
+LanguageToolID={B1442D91-FF1F-4E60-9714-C39C1BA9DB62}
+LanguageToolLocation=C:\Program Files\Microchip\xc16\v1.24\bin\xc16-gcc.exe
+PPAD=$(BINDIR)|.\BIN||$(TMPDIR)|.\OBJ||$(AINDIR)|.\PIController||$(INCDIR)|.||$(LIBDIR)||$(LKRDIR)||
+SOLK=<src>|Application\Application.c|Application\CommandHandler.c|Drivers\GPIO\GPIO.c|Drivers\InputCapture\InputCapture.c|Drivers\ADC\ADC.c|MotorControl\SpeedController\SpeedController.c|MotorControl\Algorithm\svm.c|DMCI\RTDM.c|DMCI\RtdmInterface.c|Application\RampGenerator\RampGenerator.c|Common\Delay\Delay.c|Drivers\Timer\Timer.c|Drivers\PWM\MCPWM.c|Main\Main.c|Middleware\ParameterDatabase\eeprom.c|Middleware\CommunicationStack\serial.c|MotorControl\CurrentController\CurrentController.c|MotorControl\Braking\DCInjection.c|Middleware\ParameterDatabase\spi.c|Middleware\ParameterDatabase\spieeprom.c|MotorControl\PIController\piNew.c|MotorControl\PIController\pi.s|MotorControl\CurrentController\CurrentLimit.c||<obj>||<lib>||<lkr>||
+SuiteArgsString=
+ToolArgsString=-g -Wall -mno-eds-warn
+TraceCmdString=
+DebugOptions=
+[File191]
+Location=D:\work\shutter\motor_drive\source\08Feb2016-BxProjectFinalDeliverable\sourceCodes\aoyagi\201807\ROHM\BEAD DRIVE 20180709(Ver_1804_6)ROHM\SHEET SHUTTER DRIVE\OBJ\RTDM.o
+Folder=Intermediary
+DeviceName=dsPIC33EP512GM706
+LanguageToolSuiteID={9BCCB495-CD65-480A-BA76-63D8E78B117F}
+LanguageToolID={B1442D91-FF1F-4E60-9714-C39C1BA9DB62}
+LanguageToolLocation=C:\Program Files\Microchip\xc16\v1.24\bin\xc16-gcc.exe
+PPAD=$(BINDIR)|.\BIN||$(TMPDIR)|.\OBJ||$(AINDIR)|.\PIController||$(INCDIR)|.||$(LIBDIR)||$(LKRDIR)||
+SOLK=<src>|Application\Application.c|Application\CommandHandler.c|Drivers\GPIO\GPIO.c|Drivers\InputCapture\InputCapture.c|Drivers\ADC\ADC.c|MotorControl\SpeedController\SpeedController.c|MotorControl\Algorithm\svm.c|DMCI\RTDM.c|DMCI\RtdmInterface.c|Application\RampGenerator\RampGenerator.c|Common\Delay\Delay.c|Drivers\Timer\Timer.c|Drivers\PWM\MCPWM.c|Main\Main.c|Middleware\ParameterDatabase\eeprom.c|Middleware\CommunicationStack\serial.c|MotorControl\CurrentController\CurrentController.c|MotorControl\Braking\DCInjection.c|Middleware\ParameterDatabase\spi.c|Middleware\ParameterDatabase\spieeprom.c|MotorControl\PIController\piNew.c|MotorControl\PIController\pi.s|MotorControl\CurrentController\CurrentLimit.c||<obj>||<lib>||<lkr>||
+SuiteArgsString=
+ToolArgsString=-g -Wall -mno-eds-warn
+TraceCmdString=
+DebugOptions=
+[File192]
+Location=D:\work\shutter\motor_drive\source\08Feb2016-BxProjectFinalDeliverable\sourceCodes\aoyagi\201807\ROHM\BEAD DRIVE 20180709(Ver_1804_6)ROHM\SHEET SHUTTER DRIVE\OBJ\RtdmInterface.o
+Folder=Intermediary
+DeviceName=dsPIC33EP512GM706
+LanguageToolSuiteID={9BCCB495-CD65-480A-BA76-63D8E78B117F}
+LanguageToolID={B1442D91-FF1F-4E60-9714-C39C1BA9DB62}
+LanguageToolLocation=C:\Program Files\Microchip\xc16\v1.24\bin\xc16-gcc.exe
+PPAD=$(BINDIR)|.\BIN||$(TMPDIR)|.\OBJ||$(AINDIR)|.\PIController||$(INCDIR)|.||$(LIBDIR)||$(LKRDIR)||
+SOLK=<src>|Application\Application.c|Application\CommandHandler.c|Drivers\GPIO\GPIO.c|Drivers\InputCapture\InputCapture.c|Drivers\ADC\ADC.c|MotorControl\SpeedController\SpeedController.c|MotorControl\Algorithm\svm.c|DMCI\RTDM.c|DMCI\RtdmInterface.c|Application\RampGenerator\RampGenerator.c|Common\Delay\Delay.c|Drivers\Timer\Timer.c|Drivers\PWM\MCPWM.c|Main\Main.c|Middleware\ParameterDatabase\eeprom.c|Middleware\CommunicationStack\serial.c|MotorControl\CurrentController\CurrentController.c|MotorControl\Braking\DCInjection.c|Middleware\ParameterDatabase\spi.c|Middleware\ParameterDatabase\spieeprom.c|MotorControl\PIController\piNew.c|MotorControl\PIController\pi.s|MotorControl\CurrentController\CurrentLimit.c||<obj>||<lib>||<lkr>||
+SuiteArgsString=
+ToolArgsString=-g -Wall -mno-eds-warn
+TraceCmdString=
+DebugOptions=
+[File193]
+Location=D:\work\shutter\motor_drive\source\08Feb2016-BxProjectFinalDeliverable\sourceCodes\aoyagi\201807\ROHM\BEAD DRIVE 20180709(Ver_1804_6)ROHM\SHEET SHUTTER DRIVE\OBJ\RampGenerator.o
+Folder=Intermediary
+DeviceName=dsPIC33EP512GM706
+LanguageToolSuiteID={9BCCB495-CD65-480A-BA76-63D8E78B117F}
+LanguageToolID={B1442D91-FF1F-4E60-9714-C39C1BA9DB62}
+LanguageToolLocation=C:\Program Files\Microchip\xc16\v1.24\bin\xc16-gcc.exe
+PPAD=$(BINDIR)|.\BIN||$(TMPDIR)|.\OBJ||$(AINDIR)|.\PIController||$(INCDIR)|.||$(LIBDIR)||$(LKRDIR)||
+SOLK=<src>|Application\Application.c|Application\CommandHandler.c|Drivers\GPIO\GPIO.c|Drivers\InputCapture\InputCapture.c|Drivers\ADC\ADC.c|MotorControl\SpeedController\SpeedController.c|MotorControl\Algorithm\svm.c|DMCI\RTDM.c|DMCI\RtdmInterface.c|Application\RampGenerator\RampGenerator.c|Common\Delay\Delay.c|Drivers\Timer\Timer.c|Drivers\PWM\MCPWM.c|Main\Main.c|Middleware\ParameterDatabase\eeprom.c|Middleware\CommunicationStack\serial.c|MotorControl\CurrentController\CurrentController.c|MotorControl\Braking\DCInjection.c|Middleware\ParameterDatabase\spi.c|Middleware\ParameterDatabase\spieeprom.c|MotorControl\PIController\piNew.c|MotorControl\PIController\pi.s|MotorControl\CurrentController\CurrentLimit.c||<obj>||<lib>||<lkr>||
+SuiteArgsString=
+ToolArgsString=-g -Wall -mno-eds-warn
+TraceCmdString=
+DebugOptions=
+[File194]
+Location=D:\work\shutter\motor_drive\source\08Feb2016-BxProjectFinalDeliverable\sourceCodes\aoyagi\201807\ROHM\BEAD DRIVE 20180709(Ver_1804_6)ROHM\SHEET SHUTTER DRIVE\OBJ\Delay.o
+Folder=Intermediary
+DeviceName=dsPIC33EP512GM706
+LanguageToolSuiteID={9BCCB495-CD65-480A-BA76-63D8E78B117F}
+LanguageToolID={B1442D91-FF1F-4E60-9714-C39C1BA9DB62}
+LanguageToolLocation=C:\Program Files\Microchip\xc16\v1.24\bin\xc16-gcc.exe
+PPAD=$(BINDIR)|.\BIN||$(TMPDIR)|.\OBJ||$(AINDIR)|.\PIController||$(INCDIR)|.||$(LIBDIR)||$(LKRDIR)||
+SOLK=<src>|Application\Application.c|Application\CommandHandler.c|Drivers\GPIO\GPIO.c|Drivers\InputCapture\InputCapture.c|Drivers\ADC\ADC.c|MotorControl\SpeedController\SpeedController.c|MotorControl\Algorithm\svm.c|DMCI\RTDM.c|DMCI\RtdmInterface.c|Application\RampGenerator\RampGenerator.c|Common\Delay\Delay.c|Drivers\Timer\Timer.c|Drivers\PWM\MCPWM.c|Main\Main.c|Middleware\ParameterDatabase\eeprom.c|Middleware\CommunicationStack\serial.c|MotorControl\CurrentController\CurrentController.c|MotorControl\Braking\DCInjection.c|Middleware\ParameterDatabase\spi.c|Middleware\ParameterDatabase\spieeprom.c|MotorControl\PIController\piNew.c|MotorControl\PIController\pi.s|MotorControl\CurrentController\CurrentLimit.c||<obj>||<lib>||<lkr>||
+SuiteArgsString=
+ToolArgsString=-g -Wall -mno-eds-warn
+TraceCmdString=
+DebugOptions=
+[File195]
+Location=D:\work\shutter\motor_drive\source\08Feb2016-BxProjectFinalDeliverable\sourceCodes\aoyagi\201807\ROHM\BEAD DRIVE 20180709(Ver_1804_6)ROHM\SHEET SHUTTER DRIVE\OBJ\Timer.o
+Folder=Intermediary
+DeviceName=dsPIC33EP512GM706
+LanguageToolSuiteID={9BCCB495-CD65-480A-BA76-63D8E78B117F}
+LanguageToolID={B1442D91-FF1F-4E60-9714-C39C1BA9DB62}
+LanguageToolLocation=C:\Program Files\Microchip\xc16\v1.24\bin\xc16-gcc.exe
+PPAD=$(BINDIR)|.\BIN||$(TMPDIR)|.\OBJ||$(AINDIR)|.\PIController||$(INCDIR)|.||$(LIBDIR)||$(LKRDIR)||
+SOLK=<src>|Application\Application.c|Application\CommandHandler.c|Drivers\GPIO\GPIO.c|Drivers\InputCapture\InputCapture.c|Drivers\ADC\ADC.c|MotorControl\SpeedController\SpeedController.c|MotorControl\Algorithm\svm.c|DMCI\RTDM.c|DMCI\RtdmInterface.c|Application\RampGenerator\RampGenerator.c|Common\Delay\Delay.c|Drivers\Timer\Timer.c|Drivers\PWM\MCPWM.c|Main\Main.c|Middleware\ParameterDatabase\eeprom.c|Middleware\CommunicationStack\serial.c|MotorControl\CurrentController\CurrentController.c|MotorControl\Braking\DCInjection.c|Middleware\ParameterDatabase\spi.c|Middleware\ParameterDatabase\spieeprom.c|MotorControl\PIController\piNew.c|MotorControl\PIController\pi.s|MotorControl\CurrentController\CurrentLimit.c||<obj>||<lib>||<lkr>||
+SuiteArgsString=
+ToolArgsString=-g -Wall -mno-eds-warn
+TraceCmdString=
+DebugOptions=
+[File196]
+Location=D:\work\shutter\motor_drive\source\08Feb2016-BxProjectFinalDeliverable\sourceCodes\aoyagi\201807\ROHM\BEAD DRIVE 20180709(Ver_1804_6)ROHM\SHEET SHUTTER DRIVE\OBJ\MCPWM.o
+Folder=Intermediary
+DeviceName=dsPIC33EP512GM706
+LanguageToolSuiteID={9BCCB495-CD65-480A-BA76-63D8E78B117F}
+LanguageToolID={B1442D91-FF1F-4E60-9714-C39C1BA9DB62}
+LanguageToolLocation=C:\Program Files\Microchip\xc16\v1.24\bin\xc16-gcc.exe
+PPAD=$(BINDIR)|.\BIN||$(TMPDIR)|.\OBJ||$(AINDIR)|.\PIController||$(INCDIR)|.||$(LIBDIR)||$(LKRDIR)||
+SOLK=<src>|Application\Application.c|Application\CommandHandler.c|Drivers\GPIO\GPIO.c|Drivers\InputCapture\InputCapture.c|Drivers\ADC\ADC.c|MotorControl\SpeedController\SpeedController.c|MotorControl\Algorithm\svm.c|DMCI\RTDM.c|DMCI\RtdmInterface.c|Application\RampGenerator\RampGenerator.c|Common\Delay\Delay.c|Drivers\Timer\Timer.c|Drivers\PWM\MCPWM.c|Main\Main.c|Middleware\ParameterDatabase\eeprom.c|Middleware\CommunicationStack\serial.c|MotorControl\CurrentController\CurrentController.c|MotorControl\Braking\DCInjection.c|Middleware\ParameterDatabase\spi.c|Middleware\ParameterDatabase\spieeprom.c|MotorControl\PIController\piNew.c|MotorControl\PIController\pi.s|MotorControl\CurrentController\CurrentLimit.c||<obj>||<lib>||<lkr>||
+SuiteArgsString=
+ToolArgsString=-g -Wall -mno-eds-warn
+TraceCmdString=
+DebugOptions=
+[File197]
+Location=D:\work\shutter\motor_drive\source\08Feb2016-BxProjectFinalDeliverable\sourceCodes\aoyagi\201807\ROHM\BEAD DRIVE 20180709(Ver_1804_6)ROHM\SHEET SHUTTER DRIVE\OBJ\Main.o
+Folder=Intermediary
+DeviceName=dsPIC33EP512GM706
+LanguageToolSuiteID={9BCCB495-CD65-480A-BA76-63D8E78B117F}
+LanguageToolID={B1442D91-FF1F-4E60-9714-C39C1BA9DB62}
+LanguageToolLocation=C:\Program Files\Microchip\xc16\v1.24\bin\xc16-gcc.exe
+PPAD=$(BINDIR)|.\BIN||$(TMPDIR)|.\OBJ||$(AINDIR)|.\PIController||$(INCDIR)|.||$(LIBDIR)||$(LKRDIR)||
+SOLK=<src>|Application\Application.c|Application\CommandHandler.c|Drivers\GPIO\GPIO.c|Drivers\InputCapture\InputCapture.c|Drivers\ADC\ADC.c|MotorControl\SpeedController\SpeedController.c|MotorControl\Algorithm\svm.c|DMCI\RTDM.c|DMCI\RtdmInterface.c|Application\RampGenerator\RampGenerator.c|Common\Delay\Delay.c|Drivers\Timer\Timer.c|Drivers\PWM\MCPWM.c|Main\Main.c|Middleware\ParameterDatabase\eeprom.c|Middleware\CommunicationStack\serial.c|MotorControl\CurrentController\CurrentController.c|MotorControl\Braking\DCInjection.c|Middleware\ParameterDatabase\spi.c|Middleware\ParameterDatabase\spieeprom.c|MotorControl\PIController\piNew.c|MotorControl\PIController\pi.s|MotorControl\CurrentController\CurrentLimit.c||<obj>||<lib>||<lkr>||
+SuiteArgsString=
+ToolArgsString=-g -Wall -mno-eds-warn
+TraceCmdString=
+DebugOptions=
+[File198]
+Location=D:\work\shutter\motor_drive\source\08Feb2016-BxProjectFinalDeliverable\sourceCodes\aoyagi\201807\ROHM\BEAD DRIVE 20180709(Ver_1804_6)ROHM\SHEET SHUTTER DRIVE\OBJ\eeprom.o
+Folder=Intermediary
+DeviceName=dsPIC33EP512GM706
+LanguageToolSuiteID={9BCCB495-CD65-480A-BA76-63D8E78B117F}
+LanguageToolID={B1442D91-FF1F-4E60-9714-C39C1BA9DB62}
+LanguageToolLocation=C:\Program Files\Microchip\xc16\v1.24\bin\xc16-gcc.exe
+PPAD=$(BINDIR)|.\BIN||$(TMPDIR)|.\OBJ||$(AINDIR)|.\PIController||$(INCDIR)|.||$(LIBDIR)||$(LKRDIR)||
+SOLK=<src>|Application\Application.c|Application\CommandHandler.c|Drivers\GPIO\GPIO.c|Drivers\InputCapture\InputCapture.c|Drivers\ADC\ADC.c|MotorControl\SpeedController\SpeedController.c|MotorControl\Algorithm\svm.c|DMCI\RTDM.c|DMCI\RtdmInterface.c|Application\RampGenerator\RampGenerator.c|Common\Delay\Delay.c|Drivers\Timer\Timer.c|Drivers\PWM\MCPWM.c|Main\Main.c|Middleware\ParameterDatabase\eeprom.c|Middleware\CommunicationStack\serial.c|MotorControl\CurrentController\CurrentController.c|MotorControl\Braking\DCInjection.c|Middleware\ParameterDatabase\spi.c|Middleware\ParameterDatabase\spieeprom.c|MotorControl\PIController\piNew.c|MotorControl\PIController\pi.s|MotorControl\CurrentController\CurrentLimit.c||<obj>||<lib>||<lkr>||
+SuiteArgsString=
+ToolArgsString=-g -Wall -mno-eds-warn
+TraceCmdString=
+DebugOptions=
+[File199]
+Location=D:\work\shutter\motor_drive\source\08Feb2016-BxProjectFinalDeliverable\sourceCodes\aoyagi\201807\ROHM\BEAD DRIVE 20180709(Ver_1804_6)ROHM\SHEET SHUTTER DRIVE\OBJ\serial.o
+Folder=Intermediary
+DeviceName=dsPIC33EP512GM706
+LanguageToolSuiteID={9BCCB495-CD65-480A-BA76-63D8E78B117F}
+LanguageToolID={B1442D91-FF1F-4E60-9714-C39C1BA9DB62}
+LanguageToolLocation=C:\Program Files\Microchip\xc16\v1.24\bin\xc16-gcc.exe
+PPAD=$(BINDIR)|.\BIN||$(TMPDIR)|.\OBJ||$(AINDIR)|.\PIController||$(INCDIR)|.||$(LIBDIR)||$(LKRDIR)||
+SOLK=<src>|Application\Application.c|Application\CommandHandler.c|Drivers\GPIO\GPIO.c|Drivers\InputCapture\InputCapture.c|Drivers\ADC\ADC.c|MotorControl\SpeedController\SpeedController.c|MotorControl\Algorithm\svm.c|DMCI\RTDM.c|DMCI\RtdmInterface.c|Application\RampGenerator\RampGenerator.c|Common\Delay\Delay.c|Drivers\Timer\Timer.c|Drivers\PWM\MCPWM.c|Main\Main.c|Middleware\ParameterDatabase\eeprom.c|Middleware\CommunicationStack\serial.c|MotorControl\CurrentController\CurrentController.c|MotorControl\Braking\DCInjection.c|Middleware\ParameterDatabase\spi.c|Middleware\ParameterDatabase\spieeprom.c|MotorControl\PIController\piNew.c|MotorControl\PIController\pi.s|MotorControl\CurrentController\CurrentLimit.c||<obj>||<lib>||<lkr>||
+SuiteArgsString=
+ToolArgsString=-g -Wall -mno-eds-warn
+TraceCmdString=
+DebugOptions=
+[File200]
+Location=D:\work\shutter\motor_drive\source\08Feb2016-BxProjectFinalDeliverable\sourceCodes\aoyagi\201807\ROHM\BEAD DRIVE 20180709(Ver_1804_6)ROHM\SHEET SHUTTER DRIVE\OBJ\CurrentController.o
+Folder=Intermediary
+DeviceName=dsPIC33EP512GM706
+LanguageToolSuiteID={9BCCB495-CD65-480A-BA76-63D8E78B117F}
+LanguageToolID={B1442D91-FF1F-4E60-9714-C39C1BA9DB62}
+LanguageToolLocation=C:\Program Files\Microchip\xc16\v1.24\bin\xc16-gcc.exe
+PPAD=$(BINDIR)|.\BIN||$(TMPDIR)|.\OBJ||$(AINDIR)|.\PIController||$(INCDIR)|.||$(LIBDIR)||$(LKRDIR)||
+SOLK=<src>|Application\Application.c|Application\CommandHandler.c|Drivers\GPIO\GPIO.c|Drivers\InputCapture\InputCapture.c|Drivers\ADC\ADC.c|MotorControl\SpeedController\SpeedController.c|MotorControl\Algorithm\svm.c|DMCI\RTDM.c|DMCI\RtdmInterface.c|Application\RampGenerator\RampGenerator.c|Common\Delay\Delay.c|Drivers\Timer\Timer.c|Drivers\PWM\MCPWM.c|Main\Main.c|Middleware\ParameterDatabase\eeprom.c|Middleware\CommunicationStack\serial.c|MotorControl\CurrentController\CurrentController.c|MotorControl\Braking\DCInjection.c|Middleware\ParameterDatabase\spi.c|Middleware\ParameterDatabase\spieeprom.c|MotorControl\PIController\piNew.c|MotorControl\PIController\pi.s|MotorControl\CurrentController\CurrentLimit.c||<obj>||<lib>||<lkr>||
+SuiteArgsString=
+ToolArgsString=-g -Wall -mno-eds-warn
+TraceCmdString=
+DebugOptions=
+[File201]
+Location=D:\work\shutter\motor_drive\source\08Feb2016-BxProjectFinalDeliverable\sourceCodes\aoyagi\201807\ROHM\BEAD DRIVE 20180709(Ver_1804_6)ROHM\SHEET SHUTTER DRIVE\OBJ\DCInjection.o
+Folder=Intermediary
+DeviceName=dsPIC33EP512GM706
+LanguageToolSuiteID={9BCCB495-CD65-480A-BA76-63D8E78B117F}
+LanguageToolID={B1442D91-FF1F-4E60-9714-C39C1BA9DB62}
+LanguageToolLocation=C:\Program Files\Microchip\xc16\v1.24\bin\xc16-gcc.exe
+PPAD=$(BINDIR)|.\BIN||$(TMPDIR)|.\OBJ||$(AINDIR)|.\PIController||$(INCDIR)|.||$(LIBDIR)||$(LKRDIR)||
+SOLK=<src>|Application\Application.c|Application\CommandHandler.c|Drivers\GPIO\GPIO.c|Drivers\InputCapture\InputCapture.c|Drivers\ADC\ADC.c|MotorControl\SpeedController\SpeedController.c|MotorControl\Algorithm\svm.c|DMCI\RTDM.c|DMCI\RtdmInterface.c|Application\RampGenerator\RampGenerator.c|Common\Delay\Delay.c|Drivers\Timer\Timer.c|Drivers\PWM\MCPWM.c|Main\Main.c|Middleware\ParameterDatabase\eeprom.c|Middleware\CommunicationStack\serial.c|MotorControl\CurrentController\CurrentController.c|MotorControl\Braking\DCInjection.c|Middleware\ParameterDatabase\spi.c|Middleware\ParameterDatabase\spieeprom.c|MotorControl\PIController\piNew.c|MotorControl\PIController\pi.s|MotorControl\CurrentController\CurrentLimit.c||<obj>||<lib>||<lkr>||
+SuiteArgsString=
+ToolArgsString=-g -Wall -mno-eds-warn
+TraceCmdString=
+DebugOptions=
+[File202]
+Location=D:\work\shutter\motor_drive\source\08Feb2016-BxProjectFinalDeliverable\sourceCodes\aoyagi\201807\ROHM\BEAD DRIVE 20180709(Ver_1804_6)ROHM\SHEET SHUTTER DRIVE\OBJ\spi.o
+Folder=Intermediary
+DeviceName=dsPIC33EP512GM706
+LanguageToolSuiteID={9BCCB495-CD65-480A-BA76-63D8E78B117F}
+LanguageToolID={B1442D91-FF1F-4E60-9714-C39C1BA9DB62}
+LanguageToolLocation=C:\Program Files\Microchip\xc16\v1.24\bin\xc16-gcc.exe
+PPAD=$(BINDIR)|.\BIN||$(TMPDIR)|.\OBJ||$(AINDIR)|.\PIController||$(INCDIR)|.||$(LIBDIR)||$(LKRDIR)||
+SOLK=<src>|Application\Application.c|Application\CommandHandler.c|Drivers\GPIO\GPIO.c|Drivers\InputCapture\InputCapture.c|Drivers\ADC\ADC.c|MotorControl\SpeedController\SpeedController.c|MotorControl\Algorithm\svm.c|DMCI\RTDM.c|DMCI\RtdmInterface.c|Application\RampGenerator\RampGenerator.c|Common\Delay\Delay.c|Drivers\Timer\Timer.c|Drivers\PWM\MCPWM.c|Main\Main.c|Middleware\ParameterDatabase\eeprom.c|Middleware\CommunicationStack\serial.c|MotorControl\CurrentController\CurrentController.c|MotorControl\Braking\DCInjection.c|Middleware\ParameterDatabase\spi.c|Middleware\ParameterDatabase\spieeprom.c|MotorControl\PIController\piNew.c|MotorControl\PIController\pi.s|MotorControl\CurrentController\CurrentLimit.c||<obj>||<lib>||<lkr>||
+SuiteArgsString=
+ToolArgsString=-g -Wall -mno-eds-warn
+TraceCmdString=
+DebugOptions=
+[File203]
+Location=D:\work\shutter\motor_drive\source\08Feb2016-BxProjectFinalDeliverable\sourceCodes\aoyagi\201807\ROHM\BEAD DRIVE 20180709(Ver_1804_6)ROHM\SHEET SHUTTER DRIVE\OBJ\spieeprom.o
+Folder=Intermediary
+DeviceName=dsPIC33EP512GM706
+LanguageToolSuiteID={9BCCB495-CD65-480A-BA76-63D8E78B117F}
+LanguageToolID={B1442D91-FF1F-4E60-9714-C39C1BA9DB62}
+LanguageToolLocation=C:\Program Files\Microchip\xc16\v1.24\bin\xc16-gcc.exe
+PPAD=$(BINDIR)|.\BIN||$(TMPDIR)|.\OBJ||$(AINDIR)|.\PIController||$(INCDIR)|.||$(LIBDIR)||$(LKRDIR)||
+SOLK=<src>|Application\Application.c|Application\CommandHandler.c|Drivers\GPIO\GPIO.c|Drivers\InputCapture\InputCapture.c|Drivers\ADC\ADC.c|MotorControl\SpeedController\SpeedController.c|MotorControl\Algorithm\svm.c|DMCI\RTDM.c|DMCI\RtdmInterface.c|Application\RampGenerator\RampGenerator.c|Common\Delay\Delay.c|Drivers\Timer\Timer.c|Drivers\PWM\MCPWM.c|Main\Main.c|Middleware\ParameterDatabase\eeprom.c|Middleware\CommunicationStack\serial.c|MotorControl\CurrentController\CurrentController.c|MotorControl\Braking\DCInjection.c|Middleware\ParameterDatabase\spi.c|Middleware\ParameterDatabase\spieeprom.c|MotorControl\PIController\piNew.c|MotorControl\PIController\pi.s|MotorControl\CurrentController\CurrentLimit.c||<obj>||<lib>||<lkr>||
+SuiteArgsString=
+ToolArgsString=-g -Wall -mno-eds-warn
+TraceCmdString=
+DebugOptions=
+[File204]
+Location=D:\work\shutter\motor_drive\source\08Feb2016-BxProjectFinalDeliverable\sourceCodes\aoyagi\201807\ROHM\BEAD DRIVE 20180709(Ver_1804_6)ROHM\SHEET SHUTTER DRIVE\OBJ\piNew.o
+Folder=Intermediary
+DeviceName=dsPIC33EP512GM706
+LanguageToolSuiteID={9BCCB495-CD65-480A-BA76-63D8E78B117F}
+LanguageToolID={B1442D91-FF1F-4E60-9714-C39C1BA9DB62}
+LanguageToolLocation=C:\Program Files\Microchip\xc16\v1.24\bin\xc16-gcc.exe
+PPAD=$(BINDIR)|.\BIN||$(TMPDIR)|.\OBJ||$(AINDIR)|.\PIController||$(INCDIR)|.||$(LIBDIR)||$(LKRDIR)||
+SOLK=<src>|Application\Application.c|Application\CommandHandler.c|Drivers\GPIO\GPIO.c|Drivers\InputCapture\InputCapture.c|Drivers\ADC\ADC.c|MotorControl\SpeedController\SpeedController.c|MotorControl\Algorithm\svm.c|DMCI\RTDM.c|DMCI\RtdmInterface.c|Application\RampGenerator\RampGenerator.c|Common\Delay\Delay.c|Drivers\Timer\Timer.c|Drivers\PWM\MCPWM.c|Main\Main.c|Middleware\ParameterDatabase\eeprom.c|Middleware\CommunicationStack\serial.c|MotorControl\CurrentController\CurrentController.c|MotorControl\Braking\DCInjection.c|Middleware\ParameterDatabase\spi.c|Middleware\ParameterDatabase\spieeprom.c|MotorControl\PIController\piNew.c|MotorControl\PIController\pi.s|MotorControl\CurrentController\CurrentLimit.c||<obj>||<lib>||<lkr>||
+SuiteArgsString=
+ToolArgsString=-g -Wall -mno-eds-warn
+TraceCmdString=
+DebugOptions=
+[File205]
+Location=D:\work\shutter\motor_drive\source\08Feb2016-BxProjectFinalDeliverable\sourceCodes\aoyagi\201807\ROHM\BEAD DRIVE 20180709(Ver_1804_6)ROHM\SHEET SHUTTER DRIVE\OBJ\pi.o
+Folder=Intermediary
+DeviceName=dsPIC33EP512GM706
+LanguageToolSuiteID={9BCCB495-CD65-480A-BA76-63D8E78B117F}
+LanguageToolID={C6E07232-414F-4A0C-AF99-CD44E2B71960}
+LanguageToolLocation=C:\Program Files\Microchip\xc16\v1.24\bin\xc16-as.exe
+PPAD=$(BINDIR)|.\BIN||$(TMPDIR)|.\OBJ||$(AINDIR)|.\PIController||$(INCDIR)|.||$(LIBDIR)||$(LKRDIR)||
+SOLK=<src>|Application\Application.c|Application\CommandHandler.c|Drivers\GPIO\GPIO.c|Drivers\InputCapture\InputCapture.c|Drivers\ADC\ADC.c|MotorControl\SpeedController\SpeedController.c|MotorControl\Algorithm\svm.c|DMCI\RTDM.c|DMCI\RtdmInterface.c|Application\RampGenerator\RampGenerator.c|Common\Delay\Delay.c|Drivers\Timer\Timer.c|Drivers\PWM\MCPWM.c|Main\Main.c|Middleware\ParameterDatabase\eeprom.c|Middleware\CommunicationStack\serial.c|MotorControl\CurrentController\CurrentController.c|MotorControl\Braking\DCInjection.c|Middleware\ParameterDatabase\spi.c|Middleware\ParameterDatabase\spieeprom.c|MotorControl\PIController\piNew.c|MotorControl\PIController\pi.s|MotorControl\CurrentController\CurrentLimit.c||<obj>||<lib>||<lkr>||
+SuiteArgsString=
+ToolArgsString=-g
+TraceCmdString=
+DebugOptions=
+[File206]
+Location=D:\work\shutter\motor_drive\source\08Feb2016-BxProjectFinalDeliverable\sourceCodes\aoyagi\201807\ROHM\BEAD DRIVE 20180709(Ver_1804_6)ROHM\SHEET SHUTTER DRIVE\OBJ\CurrentLimit.o
+Folder=Intermediary
+DeviceName=dsPIC33EP512GM706
+LanguageToolSuiteID={9BCCB495-CD65-480A-BA76-63D8E78B117F}
+LanguageToolID={B1442D91-FF1F-4E60-9714-C39C1BA9DB62}
+LanguageToolLocation=C:\Program Files\Microchip\xc16\v1.24\bin\xc16-gcc.exe
+PPAD=$(BINDIR)|.\BIN||$(TMPDIR)|.\OBJ||$(AINDIR)|.\PIController||$(INCDIR)|.||$(LIBDIR)||$(LKRDIR)||
+SOLK=<src>|Application\Application.c|Application\CommandHandler.c|Drivers\GPIO\GPIO.c|Drivers\InputCapture\InputCapture.c|Drivers\ADC\ADC.c|MotorControl\SpeedController\SpeedController.c|MotorControl\Algorithm\svm.c|DMCI\RTDM.c|DMCI\RtdmInterface.c|Application\RampGenerator\RampGenerator.c|Common\Delay\Delay.c|Drivers\Timer\Timer.c|Drivers\PWM\MCPWM.c|Main\Main.c|Middleware\ParameterDatabase\eeprom.c|Middleware\CommunicationStack\serial.c|MotorControl\CurrentController\CurrentController.c|MotorControl\Braking\DCInjection.c|Middleware\ParameterDatabase\spi.c|Middleware\ParameterDatabase\spieeprom.c|MotorControl\PIController\piNew.c|MotorControl\PIController\pi.s|MotorControl\CurrentController\CurrentLimit.c||<obj>||<lib>||<lkr>||
+SuiteArgsString=
+ToolArgsString=-g -Wall -mno-eds-warn
+TraceCmdString=
+DebugOptions=
+[File207]
 Location=C:\AOYAGI\TEST\TAKAHASHI\BEAD DRIVE 20180627(Ver_1804_4)ROHM_takahashi\BEAD DRIVE 20180620(Ver_1804_4)ROHM\SHEET SHUTTER DRIVE\.\BIN\DriveBLDC750W.cof
 Folder=Output
 DeviceName=dsPIC33EP512GM706
@@ -2406,7 +2705,7 @@ SuiteArgsString=
 ToolArgsString=--no-local-stack -Map="$(BINDIR_)$(TARGETBASE).map" --report-mem -o"$(BINDIR_)$(TARGETBASE).$(TARGETSUFFIX)"
 TraceCmdString=
 DebugOptions=
-[File185]
+[File208]
 Location=C:\AOYAGI\TEST\TAKAHASHI\BEAD DRIVE 20180627(Ver_1804_4)ROHM_takahashi\BEAD DRIVE 20180620(Ver_1804_4)ROHM\SHEET SHUTTER DRIVE\.\BIN\DriveBLDC750W.hex
 Folder=Output
 DeviceName=dsPIC33EP512GM706
@@ -2419,7 +2718,7 @@ SuiteArgsString=
 ToolArgsString=--no-local-stack -Map="$(BINDIR_)$(TARGETBASE).map" --report-mem -o"$(BINDIR_)$(TARGETBASE).$(TARGETSUFFIX)"
 TraceCmdString=
 DebugOptions=
-[File186]
+[File209]
 Location=D:\WORK\SHUTTER\MOTOR_DRIVE\SOURCE\08FEB2016-BXPROJECTFINALDELIVERABLE\SOURCECODES\AOYAGI\test\BEAD DRIVE 20180628(Ver_1804_4)ROHM_takahashi\BEAD DRIVE 20180620(Ver_1804_4)ROHM\SHEET SHUTTER DRIVE\.\BIN\DriveBLDC750W.cof
 Folder=Output
 DeviceName=dsPIC33EP512GM706
@@ -2432,7 +2731,7 @@ SuiteArgsString=
 ToolArgsString=--no-local-stack -Map="$(BINDIR_)$(TARGETBASE).map" --report-mem -o"$(BINDIR_)$(TARGETBASE).$(TARGETSUFFIX)"
 TraceCmdString=
 DebugOptions=
-[File187]
+[File210]
 Location=D:\WORK\SHUTTER\MOTOR_DRIVE\SOURCE\08FEB2016-BXPROJECTFINALDELIVERABLE\SOURCECODES\AOYAGI\test\BEAD DRIVE 20180628(Ver_1804_4)ROHM_takahashi\BEAD DRIVE 20180620(Ver_1804_4)ROHM\SHEET SHUTTER DRIVE\.\BIN\DriveBLDC750W.hex
 Folder=Output
 DeviceName=dsPIC33EP512GM706
@@ -2445,7 +2744,7 @@ SuiteArgsString=
 ToolArgsString=--no-local-stack -Map="$(BINDIR_)$(TARGETBASE).map" --report-mem -o"$(BINDIR_)$(TARGETBASE).$(TARGETSUFFIX)"
 TraceCmdString=
 DebugOptions=
-[File188]
+[File211]
 Location=D:\work\shutter\motor_drive\source\08Feb2016-BxProjectFinalDeliverable\sourceCodes\aoyagi\test\BEAD DRIVE 20180629(Ver_1804_4)ROHM\SHEET SHUTTER DRIVE\.\BIN\DriveBLDC750W.cof
 Folder=Output
 DeviceName=dsPIC33EP512GM706
@@ -2458,7 +2757,7 @@ SuiteArgsString=
 ToolArgsString=--no-local-stack -Map="$(BINDIR_)$(TARGETBASE).map" --report-mem -o"$(BINDIR_)$(TARGETBASE).$(TARGETSUFFIX)"
 TraceCmdString=
 DebugOptions=
-[File189]
+[File212]
 Location=D:\work\shutter\motor_drive\source\08Feb2016-BxProjectFinalDeliverable\sourceCodes\aoyagi\test\BEAD DRIVE 20180629(Ver_1804_4)ROHM\SHEET SHUTTER DRIVE\.\BIN\DriveBLDC750W.hex
 Folder=Output
 DeviceName=dsPIC33EP512GM706
@@ -2471,7 +2770,7 @@ SuiteArgsString=
 ToolArgsString=--no-local-stack -Map="$(BINDIR_)$(TARGETBASE).map" --report-mem -o"$(BINDIR_)$(TARGETBASE).$(TARGETSUFFIX)"
 TraceCmdString=
 DebugOptions=
-[File190]
+[File213]
 Location=D:\WORK\SHUTTER\MOTOR_DRIVE\SOURCE\08FEB2016-BXPROJECTFINALDELIVERABLE\SOURCECODES\AOYAGI\201806\ROHM\BEAD DRIVE 20180629(Ver_1804_4)ROHM\SHEET SHUTTER DRIVE\.\BIN\DriveBLDC750W.cof
 Folder=Output
 DeviceName=dsPIC33EP512GM706
@@ -2484,7 +2783,7 @@ SuiteArgsString=
 ToolArgsString=--no-local-stack -Map="$(BINDIR_)$(TARGETBASE).map" --report-mem -o"$(BINDIR_)$(TARGETBASE).$(TARGETSUFFIX)"
 TraceCmdString=
 DebugOptions=
-[File191]
+[File214]
 Location=D:\WORK\SHUTTER\MOTOR_DRIVE\SOURCE\08FEB2016-BXPROJECTFINALDELIVERABLE\SOURCECODES\AOYAGI\201806\ROHM\BEAD DRIVE 20180629(Ver_1804_4)ROHM\SHEET SHUTTER DRIVE\.\BIN\DriveBLDC750W.hex
 Folder=Output
 DeviceName=dsPIC33EP512GM706
@@ -2497,7 +2796,7 @@ SuiteArgsString=
 ToolArgsString=--no-local-stack -Map="$(BINDIR_)$(TARGETBASE).map" --report-mem -o"$(BINDIR_)$(TARGETBASE).$(TARGETSUFFIX)"
 TraceCmdString=
 DebugOptions=
-[File192]
+[File215]
 Location=D:\work\shutter\motor_drive\source\08Feb2016-BxProjectFinalDeliverable\sourceCodes\aoyagi\201806\ROHM\BEAD DRIVE 20180702(Ver_1804_4)ROHM\SHEET SHUTTER DRIVE\.\BIN\DriveBLDC750W.cof
 Folder=Output
 DeviceName=dsPIC33EP512GM706
@@ -2510,7 +2809,7 @@ SuiteArgsString=
 ToolArgsString=--no-local-stack -Map="$(BINDIR_)$(TARGETBASE).map" --report-mem -o"$(BINDIR_)$(TARGETBASE).$(TARGETSUFFIX)"
 TraceCmdString=
 DebugOptions=
-[File193]
+[File216]
 Location=D:\work\shutter\motor_drive\source\08Feb2016-BxProjectFinalDeliverable\sourceCodes\aoyagi\201806\ROHM\BEAD DRIVE 20180702(Ver_1804_4)ROHM\SHEET SHUTTER DRIVE\.\BIN\DriveBLDC750W.hex
 Folder=Output
 DeviceName=dsPIC33EP512GM706
@@ -2523,7 +2822,7 @@ SuiteArgsString=
 ToolArgsString=--no-local-stack -Map="$(BINDIR_)$(TARGETBASE).map" --report-mem -o"$(BINDIR_)$(TARGETBASE).$(TARGETSUFFIX)"
 TraceCmdString=
 DebugOptions=
-[File194]
+[File217]
 Location=D:\work\shutter\motor_drive\source\08Feb2016-BxProjectFinalDeliverable\sourceCodes\aoyagi\201806\ROHM\BEAD DRIVE 20180704(Ver_1804_4)ROHM\SHEET SHUTTER DRIVE\.\BIN\DriveBLDC750W.cof
 Folder=Output
 DeviceName=dsPIC33EP512GM706
@@ -2536,7 +2835,7 @@ SuiteArgsString=
 ToolArgsString=--no-local-stack -Map="$(BINDIR_)$(TARGETBASE).map" --report-mem -o"$(BINDIR_)$(TARGETBASE).$(TARGETSUFFIX)"
 TraceCmdString=
 DebugOptions=
-[File195]
+[File218]
 Location=D:\work\shutter\motor_drive\source\08Feb2016-BxProjectFinalDeliverable\sourceCodes\aoyagi\201806\ROHM\BEAD DRIVE 20180704(Ver_1804_4)ROHM\SHEET SHUTTER DRIVE\.\BIN\DriveBLDC750W.hex
 Folder=Output
 DeviceName=dsPIC33EP512GM706
@@ -2549,7 +2848,7 @@ SuiteArgsString=
 ToolArgsString=--no-local-stack -Map="$(BINDIR_)$(TARGETBASE).map" --report-mem -o"$(BINDIR_)$(TARGETBASE).$(TARGETSUFFIX)"
 TraceCmdString=
 DebugOptions=
-[File196]
+[File219]
 Location=D:\WORK\SHUTTER\MOTOR_DRIVE\SOURCE\08FEB2016-BXPROJECTFINALDELIVERABLE\SOURCECODES\aoyagi\201806\ROHM\BEAD DRIVE 20180705(Ver_1804_5)ROHM\SHEET SHUTTER DRIVE\.\BIN\DriveBLDC750W.cof
 Folder=Output
 DeviceName=dsPIC33EP512GM706
@@ -2562,7 +2861,7 @@ SuiteArgsString=
 ToolArgsString=--no-local-stack -Map="$(BINDIR_)$(TARGETBASE).map" --report-mem -o"$(BINDIR_)$(TARGETBASE).$(TARGETSUFFIX)"
 TraceCmdString=
 DebugOptions=
-[File197]
+[File220]
 Location=D:\WORK\SHUTTER\MOTOR_DRIVE\SOURCE\08FEB2016-BXPROJECTFINALDELIVERABLE\SOURCECODES\aoyagi\201806\ROHM\BEAD DRIVE 20180705(Ver_1804_5)ROHM\SHEET SHUTTER DRIVE\.\BIN\DriveBLDC750W.hex
 Folder=Output
 DeviceName=dsPIC33EP512GM706
@@ -2575,7 +2874,7 @@ SuiteArgsString=
 ToolArgsString=--no-local-stack -Map="$(BINDIR_)$(TARGETBASE).map" --report-mem -o"$(BINDIR_)$(TARGETBASE).$(TARGETSUFFIX)"
 TraceCmdString=
 DebugOptions=
-[File198]
+[File221]
 Location=D:\work\shutter\motor_drive\source\08Feb2016-BxProjectFinalDeliverable\sourceCodes\aoyagi\201807\ROHM\BEAD DRIVE 20180706(Ver_1804_5)ROHM\SHEET SHUTTER DRIVE\.\BIN\DriveBLDC750W.cof
 Folder=Output
 DeviceName=dsPIC33EP512GM706
@@ -2588,8 +2887,34 @@ SuiteArgsString=
 ToolArgsString=--no-local-stack -Map="$(BINDIR_)$(TARGETBASE).map" --report-mem -o"$(BINDIR_)$(TARGETBASE).$(TARGETSUFFIX)"
 TraceCmdString=
 DebugOptions=
-[File199]
+[File222]
 Location=D:\work\shutter\motor_drive\source\08Feb2016-BxProjectFinalDeliverable\sourceCodes\aoyagi\201807\ROHM\BEAD DRIVE 20180706(Ver_1804_5)ROHM\SHEET SHUTTER DRIVE\.\BIN\DriveBLDC750W.hex
+Folder=Output
+DeviceName=dsPIC33EP512GM706
+LanguageToolSuiteID={9BCCB495-CD65-480A-BA76-63D8E78B117F}
+LanguageToolID={6836D8CA-42BB-48FB-9E77-3F0AA8005073}
+LanguageToolLocation=C:\Program Files\Microchip\xc16\v1.24\bin\xc16-ld.exe
+PPAD=$(BINDIR)|.\BIN||$(TMPDIR)|.\OBJ||$(AINDIR)|.\PIController||$(INCDIR)|.||$(LIBDIR)||$(LKRDIR)||
+SOLK=<src>|Application\Application.c|Application\CommandHandler.c|Drivers\GPIO\GPIO.c|Drivers\InputCapture\InputCapture.c|Drivers\ADC\ADC.c|MotorControl\SpeedController\SpeedController.c|MotorControl\Algorithm\svm.c|DMCI\RTDM.c|DMCI\RtdmInterface.c|Application\RampGenerator\RampGenerator.c|Common\Delay\Delay.c|Drivers\Timer\Timer.c|Drivers\PWM\MCPWM.c|Main\Main.c|Middleware\ParameterDatabase\eeprom.c|Middleware\CommunicationStack\serial.c|MotorControl\CurrentController\CurrentController.c|MotorControl\Braking\DCInjection.c|Middleware\ParameterDatabase\spi.c|Middleware\ParameterDatabase\spieeprom.c|MotorControl\PIController\piNew.c|MotorControl\PIController\pi.s|MotorControl\CurrentController\CurrentLimit.c||<obj>||<lib>||<lkr>||
+SuiteArgsString=
+ToolArgsString=--no-local-stack -Map="$(BINDIR_)$(TARGETBASE).map" --report-mem -o"$(BINDIR_)$(TARGETBASE).$(TARGETSUFFIX)"
+TraceCmdString=
+DebugOptions=
+[File223]
+Location=D:\WORK\SHUTTER\MOTOR_DRIVE\SOURCE\08FEB2016-BXPROJECTFINALDELIVERABLE\SOURCECODES\AOYAGI\201807\ROHM\BEAD DRIVE 20180709(VER_1804_6)ROHM\SHEET SHUTTER DRIVE\.\BIN\DriveBLDC750W.cof
+Folder=Output
+DeviceName=dsPIC33EP512GM706
+LanguageToolSuiteID={9BCCB495-CD65-480A-BA76-63D8E78B117F}
+LanguageToolID={6836D8CA-42BB-48FB-9E77-3F0AA8005073}
+LanguageToolLocation=C:\Program Files\Microchip\xc16\v1.24\bin\xc16-ld.exe
+PPAD=$(BINDIR)|.\BIN||$(TMPDIR)|.\OBJ||$(AINDIR)|.\PIController||$(INCDIR)|.||$(LIBDIR)||$(LKRDIR)||
+SOLK=<src>|Application\Application.c|Application\CommandHandler.c|Drivers\GPIO\GPIO.c|Drivers\InputCapture\InputCapture.c|Drivers\ADC\ADC.c|MotorControl\SpeedController\SpeedController.c|MotorControl\Algorithm\svm.c|DMCI\RTDM.c|DMCI\RtdmInterface.c|Application\RampGenerator\RampGenerator.c|Common\Delay\Delay.c|Drivers\Timer\Timer.c|Drivers\PWM\MCPWM.c|Main\Main.c|Middleware\ParameterDatabase\eeprom.c|Middleware\CommunicationStack\serial.c|MotorControl\CurrentController\CurrentController.c|MotorControl\Braking\DCInjection.c|Middleware\ParameterDatabase\spi.c|Middleware\ParameterDatabase\spieeprom.c|MotorControl\PIController\piNew.c|MotorControl\PIController\pi.s|MotorControl\CurrentController\CurrentLimit.c||<obj>||<lib>||<lkr>||
+SuiteArgsString=
+ToolArgsString=--no-local-stack -Map="$(BINDIR_)$(TARGETBASE).map" --report-mem -o"$(BINDIR_)$(TARGETBASE).$(TARGETSUFFIX)"
+TraceCmdString=
+DebugOptions=
+[File224]
+Location=D:\WORK\SHUTTER\MOTOR_DRIVE\SOURCE\08FEB2016-BXPROJECTFINALDELIVERABLE\SOURCECODES\AOYAGI\201807\ROHM\BEAD DRIVE 20180709(VER_1804_6)ROHM\SHEET SHUTTER DRIVE\.\BIN\DriveBLDC750W.hex
 Folder=Output
 DeviceName=dsPIC33EP512GM706
 LanguageToolSuiteID={9BCCB495-CD65-480A-BA76-63D8E78B117F}
