@@ -150,11 +150,11 @@ extern uint8_t  LCD_DISP_GUESTURE;
 // first byte = Not used, 		second byte = Not used,
 // third byte = Major Version 	fourth byte = Minor version
 //uint32_t gDisplayFirmwareVersion = 0x00000003;
-uint32_t gDisplayFirmwareVersion = 0x00000303;
+uint32_t gDisplayFirmwareVersion = 0x00000400;
 
-const uint8_t display_fw[][3]={{16,8,15},{16,9,02},{16,9,9},{16,9,14}};
-const uint8_t control_fw[][3]={{16,8,15},{16,9,02},{16,9,9},{16,9,14}};
-const uint8_t drive_fw[][3]={{16,8,15},{16,9,02},{16,9,9},{16,9,14}};
+const uint8_t display_fw[][3]={{16,8,15},{16,9,02},{16,9,9},{16,9,14},{16,10,18}};
+const uint8_t control_fw[][3]={{16,8,15},{16,9,02},{16,9,9},{16,9,14},{16,10,18}};
+const uint8_t drive_fw[][3]={{16,8,15},{16,9,02},{16,9,9},{16,9,14},{16,10,18}};
 
 /*******************************************************
 Version 3 details
