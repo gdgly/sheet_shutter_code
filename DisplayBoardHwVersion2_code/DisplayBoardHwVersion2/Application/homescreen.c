@@ -1228,6 +1228,10 @@ uint8_t homeScreenRunTime(void)
                                   
                                
                              }
+
+				if((gstDriveBoardStatus.bits.drivePowerOnCalibration != 1)&&(gstDriveBoardStatus.bits.driveRunTimeCalibration!=1)&&
+                                         (gstDriveBoardStatus.bits.driveInstallation!=1)&&(gstDriveBoardStatus.bits.driveFaultUnrecoverable!=1))
+				{
                               if(menu_gesture_flag_cyw == 0)
                                {
                                        if(LCD_DISP_GUESTURE == 1)
@@ -1245,9 +1249,13 @@ uint8_t homeScreenRunTime(void)
                                {
                                      //  GrRectFIllBolymin(4, 12, 32, 45, true, true);
                                       //  GrRectFIllBolymin(2, 14, 32, 45, true, true);
-                                       DISP_GUESTER_FAN_DIS(2, 14, 32, 45);
-                                } 
 
+					
+					
+                                       DISP_GUESTER_FAN_DIS(2, 14, 32, 45);
+					
+                                } 
+				}
 				
 			}
 
@@ -1479,6 +1487,9 @@ uint8_t homeScreenPaint(void)
 		displayText(" STOP ",83, 32, true, true, true, false,false,true);
 	}
 	}
+if((gstDriveBoardStatus.bits.drivePowerOnCalibration != 1)&&(gstDriveBoardStatus.bits.driveRunTimeCalibration!=1)&&
+                                         (gstDriveBoardStatus.bits.driveInstallation!=1)&&(gstDriveBoardStatus.bits.driveFaultUnrecoverable!=1))
+{
        if(menu_gesture_flag_cyw == 0)
         {
         if(LCD_DISP_GUESTURE == 1)
@@ -1498,7 +1509,7 @@ uint8_t homeScreenPaint(void)
       ///    GrRectFIllBolymin(2, 14, 32, 45, true, true);
               DISP_GUESTER_FAN_DIS(2, 14, 32, 45);
          }
-      
+      }
 	return 0;
 }
 

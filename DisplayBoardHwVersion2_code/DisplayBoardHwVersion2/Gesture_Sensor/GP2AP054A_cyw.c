@@ -24,6 +24,7 @@
 #include "GP2AP054A_cyw.h"
 #include "inc/hw_gpio.h"//cyw add 20150902
 #include "inc/hw_types.h"//cyw add 20150902
+#include "Application/intertaskcommunication.h"
 uint8_t  LCD_DISP_GUESTURE=0;
 uint8_t setting_flag=1;//���������ò��?
 uint8_t error_guesture_cyw=0;
@@ -1328,6 +1329,9 @@ void changeOPmode(struct gp_params *p_gp, bool init_reg_on)
 	         {
 	        	// STOPPLUSE_LEVELLOW;
 	        	// DISP_GUESTER_9_16(4, 12, 32, 45);
+	        		if((gstDriveBoardStatus.bits.drivePowerOnCalibration != 1)&&(gstDriveBoardStatus.bits.driveRunTimeCalibration!=1)&&
+	        	                                         (gstDriveBoardStatus.bits.driveInstallation!=1)&&(gstDriveBoardStatus.bits.driveFaultUnrecoverable!=1))
+
 	        	 DISP_GUESTER_13_16(2, 14, 32, 45);
 	        	 Set_lcdlightON();
 	        	 OPENPLUSE_LEVELLOW;
@@ -1340,6 +1344,9 @@ void changeOPmode(struct gp_params *p_gp, bool init_reg_on)
 	         switch((p_gp->res_gs)&0x0f){
 	  	   				case 0x1:
 	  	   				// DISP_GUESTER(4, 12, 32, 45);
+	  	   				if((gstDriveBoardStatus.bits.drivePowerOnCalibration != 1)&&(gstDriveBoardStatus.bits.driveRunTimeCalibration!=1)&&
+	  	   			                                         (gstDriveBoardStatus.bits.driveInstallation!=1)&&(gstDriveBoardStatus.bits.driveFaultUnrecoverable!=1))
+
 	  	   				 DISP_GUESTER_13_16(2, 14, 32, 45);
 	  	   				Set_lcdlightON();
 	  	   				OPENPLUSE_LEVELLOW;
@@ -1349,6 +1356,9 @@ void changeOPmode(struct gp_params *p_gp, bool init_reg_on)
 
 	  	   				case 0x2:
 	  	   				// DISP_GUESTER(4, 12, 32, 45);
+	  	   				if((gstDriveBoardStatus.bits.drivePowerOnCalibration != 1)&&(gstDriveBoardStatus.bits.driveRunTimeCalibration!=1)&&
+	  	   			                                         (gstDriveBoardStatus.bits.driveInstallation!=1)&&(gstDriveBoardStatus.bits.driveFaultUnrecoverable!=1))
+
 	  	   				 DISP_GUESTER_13_16(2, 14, 32, 45);
 	  	   				Set_lcdlightON();
 	  	   				OPENPLUSE_LEVELLOW;
@@ -1359,6 +1369,9 @@ void changeOPmode(struct gp_params *p_gp, bool init_reg_on)
 
 	  	   				case 0x4:
 	  	   				// DISP_GUESTER(4, 12, 32, 45);
+	  	   				if((gstDriveBoardStatus.bits.drivePowerOnCalibration != 1)&&(gstDriveBoardStatus.bits.driveRunTimeCalibration!=1)&&
+	  	   			                                         (gstDriveBoardStatus.bits.driveInstallation!=1)&&(gstDriveBoardStatus.bits.driveFaultUnrecoverable!=1))
+
 	  	   				 DISP_GUESTER_13_16(2, 14, 32, 45);
 	  	   				Set_lcdlightON();
 	  	   				OPENPLUSE_LEVELLOW;
@@ -1367,6 +1380,9 @@ void changeOPmode(struct gp_params *p_gp, bool init_reg_on)
 	                      break;
 	  	   				case 0x8:
 	  	   				// DISP_GUESTER(4, 12, 32, 45);
+	  	   				if((gstDriveBoardStatus.bits.drivePowerOnCalibration != 1)&&(gstDriveBoardStatus.bits.driveRunTimeCalibration!=1)&&
+	  	   			                                         (gstDriveBoardStatus.bits.driveInstallation!=1)&&(gstDriveBoardStatus.bits.driveFaultUnrecoverable!=1))
+
 	  	   				 DISP_GUESTER_13_16(2, 14, 32, 45);
 	  	   				Set_lcdlightON();
 	  	   		       OPENPLUSE_LEVELLOW;

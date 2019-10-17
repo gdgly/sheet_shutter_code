@@ -115,6 +115,7 @@
 ****************************************************************************/
 extern volatile uint32_t g_ui32TickCount;
 extern uint32_t gTickCount3Seconds;
+extern uint8_t setting_flag;
 
 #ifndef SKIP_DRIVE_COMMANDS
 //uint8_t gUserModuleState = GET_SHUTTER_TYPE;
@@ -138,6 +139,8 @@ uint32_t gDriveFirmwareVersion = 0;
 // BELOW MENTIONED VARIABLE IN POWER ON SEQUENCE
 
 uint32_t gDisplayHardwareVersion = 0;
+
+extern uint8_t  LCD_DISP_GUESTURE;
 //******************************************************************************
 
 
@@ -1232,6 +1235,9 @@ uint8_t powerOnRunTime()
 			gstLEDcontrolRegister.autoManualLED = _BLINK_STATUS_100_MSEC;
 			gstLEDcontrolRegister.powerLED = _BLINK_STATUS_100_MSEC;
 
+
+			setting_flag = 0;
+
 		}
 		else
 		{
@@ -1261,6 +1267,8 @@ uint8_t powerOnRunTime()
 			// Added on 28 April to send System Init Command to control
 			// move to the state for sending system init command
 			gNextUMState = SEND_SYS_INIT_CMD;
+
+			setting_flag = 1;
 
 		}
 
@@ -1301,7 +1309,7 @@ uint8_t powerOnRunTime()
 			// Added on 28 April to send System Init Command to control
 			// move to the state for sending system init command
 			gNextUMState = SEND_SYS_INIT_CMD;
-
+			LCD_DISP_GUESTURE = 0;
 
 		}
 		/*else
