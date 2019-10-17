@@ -119,8 +119,8 @@ EXTERN UINT16 Time_uart_count;
 EXTERN UINT8 Flag_powerUpCalib_osToggle;
 
 //define IGBT type    
-#define IGBT_LowActive_IR
-//#define IGBT_HighActive_ROME
+//#define IGBT_LowActive_IR
+#define IGBT_HighActive_ROME
 
 //define Correction No.
 #define  BUG_No41_microSwSensorTrigrd             //20170606  201703_No.41
