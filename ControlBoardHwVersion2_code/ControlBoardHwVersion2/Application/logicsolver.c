@@ -2048,7 +2048,7 @@ void logicSolver(void) {
 						(
 								(gSensorStatus.bits.Sensor_1PBS_active == 0 && gSensorStatus.bits.Sensor_Wireless_1PBS_active == 0) ||
 								(
-										(gSensorStatus.bits.Sensor_1PBS_active == 1 || gSensorStatus.bits.Sensor_Wireless_1PBS_active == 1) &&
+										(gSensorStatus.bits.Sensor_1PBS_active == 1 || gSensorStatus.bits.Sensor_Wireless_1PBS_active == 1 ) &&
 										(gstDriveStatus.bits.shutterUpperLimit == 1 || gstDriveStatus.bits.shutterApertureHeight == 1) 		&&
 
 										// 23 Oct Added condition to allow 1 PBS to close shutter from Upper Limit only in case of Manual mode
@@ -2926,6 +2926,8 @@ void logicSolver(void) {
 					 sucCloseKeyDisplay != 0 || sucCloseKeyControl != 0 ||
 					 sucStopKeyDisplay != 0 || sucStopKeyControl != 0 ||
 					 OnePBSEnabled == true || sucStartupControl != 0) ||
+
+					 ((gSensorStatus.bits.Sensor_Obstacle_active==1)&&(gstControlBoardStatus.bits.autoManual == 1))||   //add 20161021
 
 					// Check Going down delay is in progress after detecting the Close key/command
 					(seShutterOpenCloseCmdState != CmdNotDetected) ||
