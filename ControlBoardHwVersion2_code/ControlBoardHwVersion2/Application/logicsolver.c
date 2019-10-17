@@ -1706,8 +1706,8 @@ void logicSolver(void) {
 							 (gstDriveStatus.bits.shutterUpperLimit == 0)
 					 ) ||
 					 (gSensorStatus.bits.Sensor_Obstacle_active && gstControlBoardStatus.bits.autoManual == 1 &&
-							 OpenCmdForDistinguish == 0 && gstDriveStatus.bits.shutterMovingUp == 0 && (get_timego(time_ObstacleSensor)>500) && sucStopKeyDisplay==0)   //add 20161020
-							 //OpenCmdForDistinguish == 0 && gstDriveStatus.bits.shutterMovingUp == 0 && (get_timego(time_ObstacleSensor)>500) && (sucStopKeyDisplay==0 || sucWirelessStopKeyControl==0 || sucStopKeyControl==0))   //20161202pm
+							 //OpenCmdForDistinguish == 0 && gstDriveStatus.bits.shutterMovingUp == 0 && (get_timego(time_ObstacleSensor)>500) && sucStopKeyDisplay==0)   //add 20161020
+							 OpenCmdForDistinguish == 0 && gstDriveStatus.bits.shutterMovingUp == 0 && (get_timego(time_ObstacleSensor)>500) && sucStopKeyDisplay==0 &&(((gstDriveStatus.bits.shutterUpperLimit != 1)&&(gu8_en_apheight_ctl==0))||((gstDriveStatus.bits.shutterApertureHeight != 1)&&(gu8_en_apheight_ctl==1))) )   //20161204
 				)
 			{
 
@@ -1815,8 +1815,8 @@ void logicSolver(void) {
 						// Stop and close keys are not pressed
 						(
 //								sucCloseKeyDisplay == 0 && sucCloseKeyControl == 0 	&&
-								sucStopKeyDisplay == 0 && sucStopKeyControl == 0   	&&
-								sucWirelessCloseKeyControl == 0
+								sucStopKeyDisplay == 0 && sucStopKeyControl == 0
+//								&&  sucWirelessCloseKeyControl == 0    //20161204
 						) &&
 
 						// Check Open key on display panel not pressed OR Open key on display panel pressed,then it should be enabled
