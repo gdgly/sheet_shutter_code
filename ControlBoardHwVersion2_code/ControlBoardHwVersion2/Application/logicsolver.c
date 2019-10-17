@@ -1976,7 +1976,7 @@ void logicSolver(void) {
 					{
 						//if(gstControlApplicationFault.bits.startupSafetySensor == 1)  //20160906 item104
 						//if((gstControlApplicationFault.bits.startupSafetySensor == 1)&&(gstDriveStatus.bits.shutterUpperLimit != 1))  //20161205
-						if((gstControlApplicationFault.bits.startupSafetySensor == 1)&&(gstDriveStatus.bits.shutterUpperLimit != 1)&&(gstDriveStatus.bits.shutterLowerLimit != 1))  //20170623   201703_No.CQ04
+						if((gstControlApplicationFault.bits.startupSafetySensor == 1)&&(gstDriveStatus.bits.shutterUpperLimit != 1)&&(gstDriveStatus.bits.shutterLowerLimit != 1)&&(gstDriveStatus.bits.shutterStopped!=1))  //20170623   201703_No.CQ04
 						{
 							season_cyw = 1;
 						}

@@ -1616,7 +1616,7 @@ void handleCommandFromLS_EM_CMDi(void)
 					lstCMDrInnerTaskComm.commandToDriveBoard.bits.closeShutterJog = 1;
 					lstCMDrInnerTaskComm.additionalCommandData = gstLStoCMDr.additionalCommandData;
 				}
-				else if (gstLStoCMDr.commandToDriveBoard.bits.closeShutterApperture)
+				else if ((gstLStoCMDr.commandToDriveBoard.bits.closeShutterApperture)&&(gstControlApplicationFault.bits.startupSafetySensor == 0))
 				{
 					lstCMDrInnerTaskComm.commandToDriveBoard.bits.closeShutterApperture = 1;
 				}
