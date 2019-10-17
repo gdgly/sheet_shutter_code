@@ -30,6 +30,7 @@
 #include "./Middleware/ParameterDatabase/eeprom.h"
 #include "./Common/Delay/Delay.h"
 #include "./DMCI/RtdmInterface.h"
+#include "./Application/CommandHandler.h"
 
 //	Macro to enable feature of motor cable fault - Dec 2015
 #define ENABLE_MOTOR_CABLE_FAULT
@@ -49,13 +50,6 @@
 #define PHASE_OFFSET_INC_STEP 1
 #define PHASE_OFFSET_DEC_STEP 20
 */
-#define PHASE_OFFSET_CW 728 //measured offset is 1274*(360/65536) = 7 degrees.
-#define PHASE_OFFSET_CW_START 3458
-#define PHASE_OFFSET_CCW 9828
-#define PHASE_OFFSET_CW_MAX 6734
-#define PHASE_OFFSET_CCW_MAX 10192
-#define PHASE_OFFSET_INC_STEP 20
-#define PHASE_OFFSET_DEC_STEP 50
 #else
 #define PHASE_OFFSET_CW 10000
 #define PHASE_OFFSET_CCW 0
@@ -823,11 +817,36 @@ SHORT PhaseCurrentPosition;
             phaseOffsetCW = PHASE_OFFSET_CW;
     }
 */
-	if(requiredDirection == CW)
+	if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.drivePowerOnCalibration
+		|| uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveRuntimeCalibration
+		|| uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveInstallation)
+	{
+		if(requiredDirection == CW)
+		{
+			phaseOffsetCW = 1456;
+		}
+		else if(requiredDirection == CCW)
+		{
+			phaseOffsetCCW = 10192;
+		}
+	}
+	else if(requiredDirection == CW)
 	{
 		if(PhaseCurrentPosition>uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.riseChangeGearPos1_A103)
 		{
-	    	if(measuredSpeed < 100)
+			if(currentDirection==CCW)
+			{
+			    phaseOffsetCW = PHASE_OFFSET_CW_START;
+			}
+			else if((inputFlags.value==OPEN_SHUTTER_APERTURE)&&
+				(PhaseCurrentPosition<(uDriveCommonBlockEEP.stEEPDriveCommonBlock.apertureHeightPos_A130+350)))
+			{
+				if(phaseOffsetCW > PHASE_OFFSET_CW)
+				    phaseOffsetCW -= PHASE_OFFSET_DEC_STEP;
+				if(phaseOffsetCW <= PHASE_OFFSET_CW)
+				    phaseOffsetCW = PHASE_OFFSET_CW;
+			}
+	    	else if(measuredSpeed < 100)
 			{
 				phaseOffsetCW = PHASE_OFFSET_CW_START;
 			}
@@ -848,7 +867,11 @@ SHORT PhaseCurrentPosition;
 		}
 		else
 		{
-			if(phaseOffsetCW > PHASE_OFFSET_CW)
+			if(currentDirection==CCW)
+			{
+			    phaseOffsetCW = 1638;
+			}
+			else if(phaseOffsetCW > PHASE_OFFSET_CW)
 			    phaseOffsetCW -= PHASE_OFFSET_DEC_STEP;
 			if(phaseOffsetCW <= PHASE_OFFSET_CW)
 			    phaseOffsetCW = PHASE_OFFSET_CW;
@@ -860,7 +883,7 @@ SHORT PhaseCurrentPosition;
 		{
 	    	if(measuredSpeed < 100)
 	    	{
-				phaseOffsetCCW = PHASE_OFFSET_CCW_MAX;
+				phaseOffsetCCW = PHASE_OFFSET_CCW_START;//PHASE_OFFSET_CCW_MAX;
 			}
 	    	else if(measuredSpeed < 500)
 			{
@@ -1115,6 +1138,7 @@ VOID speedControl(VOID)
     //calculate percentage duty
     ctrlOpPercent = __builtin_divud(((unsigned long)controlOutput*100),MAX_SPEED_PI);
 */
+    rampOutputStatus.shutterCurrentPosition = hallCounts;
     if((measurediTotal>10000)&&(FLAG_overLoad == FALSE))
     {
         FLAG_overLoad = 1;
@@ -1126,7 +1150,7 @@ VOID speedControl(VOID)
 		{
 			if(measuredSpeed < 500)
 			{
-				phaseOffsetCW = PHASE_OFFSET_CW;
+				phaseOffsetCW = PHASE_OFFSET_CW_START;
 			}
 		}
 		else if(requiredDirection == CCW)
@@ -1144,11 +1168,11 @@ VOID speedControl(VOID)
 		if(measurediTotal<4000)
 		{
 			FLAG_overLoad = 0;
-			speedPIparms.qOutMax = 6*measuredSpeed+5000;
+			speedPIparms.qOutMax = 6*measuredSpeed+7000;
 		}
 		else
 		{
-			speedPIparms.qOutMax = 5000;
+			speedPIparms.qOutMax = 12000;
 		}
 	}
 	else
@@ -1166,25 +1190,39 @@ VOID speedControl(VOID)
     //20170209***igbtfail
 		if(requiredDirection == CCW)
 		{
-			if(monitorSectorRoatCnt > 300)
+			if(rampOutputStatus.shutterCurrentPosition >= (uDriveCommonBlockEEP.stEEPDriveCommonBlock.lowerStoppingPos_A101 -
+									uDriveApplBlockEEP.stEEPDriveApplBlock.overrunProtection_A112))
 			{
-            	lockApply;
-            	controlOutput = 0;
-            	stopMotor();
-            	rampStatusFlags.rampMaintainHoldingDuty = 0;
-            	rampOutputStatus.shutterMoving = 0;
-            	rampStatusFlags.shutterOperationStart = 0;
-            	rampStatusFlags.shutterOperationComplete = 1;
-            	rampStatusFlags.rampBrakeOn = 1;
+				if(monitorSectorRoatCnt > 300)
+				{
+					lockApply;
+					controlOutput = 0;
+					stopMotor();
+					rampStatusFlags.rampMaintainHoldingDuty = 0;
+					rampOutputStatus.shutterMoving = 0;
+					rampStatusFlags.shutterOperationStart = 0;
+					rampStatusFlags.shutterOperationComplete = 1;
+					rampStatusFlags.rampBrakeOn = 1;
+				}
 			}
-			else if(measuredSpeed < 300)
+			if(measuredSpeed < 300)
 	        {
     	        controlOutput += HOLDING_DUTY_INC;
-				if(controlOutput >= 5000) //20170209
+				if(controlOutput >= 7000) //20170209
 				{
-					controlOutput = 5000; //20170209
+					controlOutput = 7000; //20170209
 				}
     	    }
+	        else
+    	    {
+        	    rampStatusFlags.rampMaintainHoldingDuty = 0;
+            	speedPIparms.qdSum = (LONG)controlOutput << 15;
+	            speedPIparms.qOut = controlOutput;
+
+    	        calcPiNew(&speedPIparms);
+        	    if(flags.speedControl)
+            	    controlOutput = speedPIparms.qOut;
+	        }
         }
         else if(measuredSpeed < 300)//SHUTTER_SPEED_MIN_STOP)
         {
@@ -1197,8 +1235,6 @@ VOID speedControl(VOID)
         else
         {
             rampStatusFlags.rampMaintainHoldingDuty = 0;
-            speedPIparms.qInRef = refSpeed; //20170209
-            speedPIparms.qInMeas = measuredSpeed;
             speedPIparms.qdSum = (LONG)controlOutput << 15;
             speedPIparms.qOut = controlOutput;
 

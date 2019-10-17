@@ -89,7 +89,7 @@
 #define EXPECTED_CRC_APERTUREHEIGHT                0x7292
 
 //CONST UINT32 drive_fw_version = 0x00000408;  //bug_NO.64
-CONST UINT32 drive_fw_version = 18040;    //Drive version 1704.1        20170418   201703_No.29
+CONST UINT32 drive_fw_version = 18043;    //Drive version 1804.3        20170418   201703_No.29
 
 enum {
 	no_error = 0,
@@ -463,11 +463,11 @@ VOID commandHandler(VOID)
     //    }
     //}
     flag_uart_cmd=readCmndFromCommBuffer();
- #ifdef BUG_No82_UartRxTimeOut1S     //20170606  201703_No.82   
-   if(flag_uart_cmd){Time_uart_count=0; LED_YELLOW=1; }             
-   else if(Time_uart_count>=50){initCommandHandler();Time_uart_count=0; LED_YELLOW=0;}  
-#endif    
-    
+ #ifdef BUG_No82_UartRxTimeOut1S     //20170606  201703_No.82
+   if(flag_uart_cmd){Time_uart_count=0; LED_YELLOW=1; }
+   else if(Time_uart_count>=50){initCommandHandler();Time_uart_count=0; LED_YELLOW=0;}
+#endif
+
     if((flag_uart_cmd)||((FLAG_CMD_open_shutter==1)&&(TIME_CMD_open_shutter==0)&&(TIME_CMD_close_shutter==0)))
     {
         if((new_cmd == uCBCommand.stCBCommand.recdCmdState)||((FLAG_CMD_open_shutter==1)&&(TIME_CMD_open_shutter==0)&&(TIME_CMD_close_shutter==0)))
@@ -523,12 +523,12 @@ VOID commandHandler(VOID)
                             else status = nack;
                         }
 #ifdef BUG_NoCQ07_Limit_enterCmdRcvd    //20170627  201703_No.CQ07
-                        else if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveInstallationStatus.bits.installationValidation == TRUE)   
+                        else if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveInstallationStatus.bits.installationValidation == TRUE)
                             shutterInstall.enterCmdRcvd = FALSE;
-                        else 
+                        else
 #else
-                        else                                                                                                        /*******20160914 bug_No.99      end*********/                        
-#endif                    
+                        else                                                                                                        /*******20160914 bug_No.99      end*********/
+#endif
                           shutterInstall.enterCmdRcvd = TRUE;
                     }
                     else
@@ -633,7 +633,7 @@ VOID commandHandler(VOID)
                                 //if(((uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterLowerLimit ||
                                    //uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterBetweenLowlmtAphgt))&&(inputFlags.value!=OPEN_SHUTTER_APERTURE))
 							    //if((!uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterUpperLimit)&&(inputFlags.value!=OPEN_SHUTTER_APERTURE)) //20161202 //20170318
-                                if((!uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterUpperLimit)&&(inputFlags.value!=OPEN_SHUTTER_APERTURE)&&(inputFlags.value!=OPEN_SHUTTER_JOG_10)&&(inputFlags.value!=OPEN_SHUTTER_JOG_50)) 
+                                if((!uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterUpperLimit)&&(inputFlags.value!=OPEN_SHUTTER_APERTURE)&&(inputFlags.value!=OPEN_SHUTTER_JOG_10)&&(inputFlags.value!=OPEN_SHUTTER_JOG_50))
 
                                 {
                                     if(FLAG_StartApertureCorrection==1){FLAG_StartApertureCorrection++;inputFlags.value = OPEN_SHUTTER; }   //bug_No.12
@@ -857,8 +857,8 @@ VOID commandHandler(VOID)
                             }
 #ifdef BUG_No76or73_powerUpCalib_osToggle      //20170607  201703_No.76 or 73
                             if(paramIndex == 537)
-                                        Flag_powerUpCalib_osToggle=1;                  
-#endif                            
+                                        Flag_powerUpCalib_osToggle=1;
+#endif
                            if((paramIndex == 605)&&(FLAG_StartApertureCorrection>0))
                             {
                                if((parameter&0x00000040)==0x00000040)
@@ -999,9 +999,9 @@ VOID commandHandler(VOID)
                                         if(Flag_powerUpCalib_osToggle==1)
                                         {
                                            Flag_powerUpCalib_osToggle=0;
-                                           powerUpCalib.osToggle=0;  
-                                        }                  
-#endif                                        
+                                           powerUpCalib.osToggle=0;
+                                        }
+#endif
                     }
                     if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveInstallation)
                     {
@@ -1141,11 +1141,11 @@ BOOL readCurrSensorState(BOOL scanPE_Sensor)
 {
     BOOL sts = FALSE;
 
-#ifdef BUG_No41_microSwSensorTrigrd     //20170606  201703_No.41 
-    if(microSwSensorTrigrd && scanPE_Sensor == TRUE)      
-#else    
+#ifdef BUG_No41_microSwSensorTrigrd     //20170606  201703_No.41
+    if(microSwSensorTrigrd && scanPE_Sensor == TRUE)
+#else
     if(microSwSensorTrigrd)
-#endif 
+#endif
     {
         uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.microSwitch = TRUE;
         sts = TRUE;
@@ -1153,9 +1153,9 @@ BOOL readCurrSensorState(BOOL scanPE_Sensor)
 
 
 #ifdef BUG_No79_FaultPeObstacle     //20170608  201703_No.79
-    if(photoElecObsSensTrigrd && scanPE_Sensor == TRUE && (rampCurrentPosition < uDriveCommonBlockEEP.stEEPDriveCommonBlock.photoElecPosMonitor_A102))    
+    if(photoElecObsSensTrigrd && scanPE_Sensor == TRUE && (rampCurrentPosition < uDriveCommonBlockEEP.stEEPDriveCommonBlock.photoElecPosMonitor_A102))
 #else
-    if(photoElecObsSensTrigrd && scanPE_Sensor == TRUE)    
+    if(photoElecObsSensTrigrd && scanPE_Sensor == TRUE)
 #endif
     {
         uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.peObstacle = TRUE;
