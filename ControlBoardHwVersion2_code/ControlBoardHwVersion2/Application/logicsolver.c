@@ -1203,6 +1203,7 @@ void logicSolver(void) {
 //						 (gKeysStatus.bits.Key_Open_released) 		||
 //						 (gKeysStatus.bits.Key_Close_pressed) 		||
 //						 (gKeysStatus.bits.Key_Close_released) 		||
+						 (gKeysStatus.bits.Key_Stop_pressed) 		||    //20170628  201703_No.CQ09
 						 (gKeysStatus.bits.Wireless_Stop_pressed) 	||
 
 					(
@@ -1325,7 +1326,9 @@ void logicSolver(void) {
 								(gstCMDitoLS.commandDisplayBoardLS.bits.upPressed || gstCMDitoLS.commandDisplayBoardLS.bits.openPressed)
 						)
 						|| gKeysStatus.bits.Key_Open_pressed
-					) && (gstDriveInstallation.bits.installA100 == 1 || gstDriveInstallation.bits.installA101 == 1 || gstDriveInstallation.bits.installA102 == 1))
+					) && (gstDriveInstallation.bits.installA100 == 1 || gstDriveInstallation.bits.installA101 == 1 || gstDriveInstallation.bits.installA102 == 1)
+					  && (gstControlBoardStatus.bits.s3PBS_stoppress==0)       //20170628  201703_No.CQ09
+					)
 				{
 					gstLStoCMDr.commandRequestStatus = eACTIVE;
 					gstLStoCMDr.commandToDriveBoard.val = 0;
@@ -1343,7 +1346,9 @@ void logicSolver(void) {
 							(gstCMDitoLS.commandDisplayBoardLS.bits.downPressed || gstCMDitoLS.commandDisplayBoardLS.bits.closePressed)
 							)
 							|| gKeysStatus.bits.Key_Close_pressed)
-						  &&(gstDriveInstallation.bits.installA100 == 1 || gstDriveInstallation.bits.installA101 == 1 || gstDriveInstallation.bits.installA102 == 1))
+						  &&(gstDriveInstallation.bits.installA100 == 1 || gstDriveInstallation.bits.installA101 == 1 || gstDriveInstallation.bits.installA102 == 1)
+						  && (gstControlBoardStatus.bits.s3PBS_stoppress==0)       //20170628  201703_No.CQ09
+						  )
 				{
 					gstLStoCMDr.commandRequestStatus = eACTIVE;
 					gstLStoCMDr.commandToDriveBoard.val = 0;
@@ -1360,7 +1365,9 @@ void logicSolver(void) {
 							 gstCMDitoLS.commandRequestStatus == eACTIVE &&
 							(gstCMDitoLS.commandDisplayBoardLS.bits.upReleased || gstCMDitoLS.commandDisplayBoardLS.bits.openReleased || gstCMDitoLS.commandDisplayBoardLS.bits.downReleased || gstCMDitoLS.commandDisplayBoardLS.bits.closeReleased || gstCMDitoLS.commandDisplayBoardLS.bits.stopPressed)
 							) ||
-							(gKeysStatus.bits.Key_Open_released || gKeysStatus.bits.Key_Close_released || gKeysStatus.bits.Key_Stop_pressed)
+							(gKeysStatus.bits.Key_Open_released || gKeysStatus.bits.Key_Close_released || gKeysStatus.bits.Key_Stop_pressed
+							 || gstControlBoardStatus.bits.s3PBS_stoppress  //20170628  201703_No.CQ09
+							)
 						) && (gstDriveInstallation.bits.installA100 == 1 || gstDriveInstallation.bits.installA101 == 1 || gstDriveInstallation.bits.installA102 == 1))
 				{
 					gstLStoCMDr.commandRequestStatus = eACTIVE;
@@ -1369,6 +1376,11 @@ void logicSolver(void) {
 
 					// Update last command sent
 					sstLStoCMDrCmdSent.commandToDriveBoard.val = gstLStoCMDr.commandToDriveBoard.val;
+
+					if (gKeysStatus.bits.Key_Stop_pressed)   //20170628  201703_No.CQ09
+					{
+						gKeysStatus.bits.Key_Stop_pressed = 0;
+					}
 
 				}
 				// Process Enter key Pressed from Display board and Control board
@@ -1890,7 +1902,7 @@ void logicSolver(void) {
 						// Stop and close keys are not pressed
 						(
 //								sucCloseKeyDisplay == 0 && sucCloseKeyControl == 0 	&&
-								//sucStopKeyDisplay == 0 &&
+								sucStopKeyDisplay == 0 &&     //20170628  201703_No.CQ02
 								sucStopKeyControl == 0   //20161205
 								&&  gstControlBoardStatus.bits.s3PBS_stoppress==0     //20170627  201703_No.CQ03
 //								&&  sucWirelessCloseKeyControl == 0    //20161204
@@ -1981,7 +1993,7 @@ void logicSolver(void) {
 							sstLStoCMDrCmdToBeSent.commandToDriveBoard.bits.openShutterApperture = 1;
 							sucLastOpenCommandType = 1;
 							//OpenCmdForDistinguish = 0;
-							                            ///***********start 20170622    201703_No.CQ02 No.CQ06***********************/
+							                            ///***********start 20170622    201703_No.CQ02 201703_No.CQ06***********************/
 							if(
 									(gstCMDitoLS.commandRequestStatus == eACTIVE && gstCMDitoLS.commandDisplayBoardLS.bits.stopPressed) ||
 									(gKeysStatus.bits.Key_Stop_pressed)																	||
@@ -1989,7 +2001,7 @@ void logicSolver(void) {
 							 )
 								OpenCmdForDistinguish = 1;
 							else OpenCmdForDistinguish = 0;
-							                          ///***********end 20170622    201703_No.CQ02 No.CQ06***********************/
+							                          ///***********end 20170622    201703_No.CQ02 201703_No.CQ06***********************/
 						}
 					}
 
