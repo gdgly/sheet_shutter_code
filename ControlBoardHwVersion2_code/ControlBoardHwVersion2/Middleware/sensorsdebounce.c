@@ -176,6 +176,7 @@ const uint8_t cucSensorTempReleaseMaxLimit = TEMPORARY_RELEASE_MAX_LIMIT; // 0 -
 ****************************************************************************/
 _SENSOR_STATUS gSensorStatus;
 static uint8_t g_ui8SensorStates;
+static uint8_t FLAG_PIN_OBSTACLE;
 /****************************************************************************/
 
 /****************************************************************************
@@ -314,6 +315,9 @@ void sensorsPoll(uint8_t *pui8Delta, uint8_t *pui8RawState)
     						gstControlBoardStatus.bits.controlFault = 0;
     					}
     		}
+
+    if((ui32Data&PIN_OBSTACLE)==0) FLAG_PIN_OBSTACLE=1;   //add 20161026
+    else FLAG_PIN_OBSTACLE=0;
 
     /*    union ui32TempData lun32Data;
     uint8_t lui8Pending = 0;
@@ -688,7 +692,7 @@ void sensorsProcessFlags(uint8_t sensorState, uint8_t sensorChanged)
 //3	//Obstacle Sensor active
 //	if(isPowerOfTwo(activeState))
 	{
-		if(SENSOR_ACTIVE(PIN_OBSTACLE, sensorState, sensorChanged))
+		if((SENSOR_ACTIVE(PIN_OBSTACLE, sensorState, sensorChanged))||((gSensorStatus.bits.autoManual_switch_first==1)&&(FLAG_PIN_OBSTACLE==1)))   //add 20161026
 		{
 			if(!gSensorStatus.bits.Sensor_Obstacle_active)
 			{
@@ -700,6 +704,7 @@ void sensorsProcessFlags(uint8_t sensorState, uint8_t sensorChanged)
 				gstDriveStatusMenu.bits.Startup_Status = 1;
 
 			}
+			if(gSensorStatus.bits.autoManual_switch_first==1)gSensorStatus.bits.autoManual_switch_first=0;  //add 20161026
 		}
 	}
 	//---Obstacle Sensor inactive

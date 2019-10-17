@@ -206,7 +206,7 @@ typedef union {
 		uint32_t bit12 :1;					//15
 
 		uint32_t bit16 :1;	//16
-		uint32_t bit17 :1;	//17
+		uint32_t autoManual_switch_first :1;	//17
 		uint32_t bit18 :1;	//18
 		uint32_t bit19 :1;			//19
 		uint32_t bit20 :1;					//20 -

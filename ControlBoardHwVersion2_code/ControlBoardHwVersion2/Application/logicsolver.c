@@ -3503,6 +3503,8 @@ void logicSolver(void) {
 								// Set Auto mode
 								gstControlBoardStatus.bits.autoManual = 1;
 
+								gSensorStatus.bits.autoManual_switch_first=1;    //add 20161026
+
 								gstDriveStatusMenu.bits.Auto_Mode_Status = 1;
 								gstDriveStatusMenu.bits.Manual_Mode_Status = 0;
 
@@ -3510,6 +3512,10 @@ void logicSolver(void) {
 							{
 								// Set Manual mode
 								gstControlBoardStatus.bits.autoManual = 0;
+
+								gSensorStatus.bits.Sensor_Obstacle_inactive=0;     //add 20161026
+								gSensorStatus.bits.Sensor_Obstacle_active=0;
+								sucStartupControl = 0;
 
 								gstDriveStatusMenu.bits.Auto_Mode_Status = 0;
 								gstDriveStatusMenu.bits.Manual_Mode_Status = 1;
