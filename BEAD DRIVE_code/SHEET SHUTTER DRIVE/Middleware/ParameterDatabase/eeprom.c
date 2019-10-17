@@ -729,7 +729,7 @@ BOOL initMotorControlBlock(VOID)
         //writeBlock(EEP_MOTOR_CTRL_BLOCK_START, uEEPDriveMotorCtrlBlock.val, DRIVE_MOTOR_BLOCK_DAT_LENGTH);
         wrBlUsingWriteByte(EEP_MOTOR_CTRL_BLOCK_START, uEEPDriveMotorCtrlBlock.val, DRIVE_MOTOR_BLOCK_DAT_LENGTH);
         updateMotorBlockCrc();
-        //PORTAbits.RA7 = 0;
+        PORTAbits.RA7 = 0;
         crcValid = FALSE;
     }
     else
@@ -772,7 +772,7 @@ BOOL initApplBlock(VOID)
         //writeBlock(EEP_APPL_BLOCK_START, uDriveApplBlockEEP.val, APPL_BLOCK_DAT_LENGTH);
         wrBlUsingWriteByte(EEP_APPL_BLOCK_START, uDriveApplBlockEEP.val, APPL_BLOCK_DAT_LENGTH);
         updateApplBlockCrc();
-        //PORTAbits.RA7 = 0;
+        PORTAbits.RA7 = 0;
         crcValid = FALSE;
     }
     else
@@ -798,7 +798,7 @@ VOID testEEPRomData(VOID)
     }
     else
     {
-        //PORTAbits.RA7 = 0;
+        PORTAbits.RA7 = 0;
     }
     
     //transmitACK(rdData);
@@ -839,7 +839,7 @@ BOOL initCommonBlock(VOID)
         //writeBlock(EEP_COMMON_BLOCK_START, uDriveCommonBlockEEP.val, COMMON_BLOCK_DAT_LENGTH);
         wrBlUsingWriteByte(EEP_COMMON_BLOCK_START, uDriveCommonBlockEEP.val, COMMON_BLOCK_DAT_LENGTH);
         updateCommonBlockCrc();
-        //PORTAbits.RA7 = 0;
+        PORTAbits.RA7 = 0;
         crcValid = FALSE;
     }
     else

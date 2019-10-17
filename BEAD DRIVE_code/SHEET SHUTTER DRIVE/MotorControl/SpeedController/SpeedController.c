@@ -354,7 +354,6 @@ VOID monitorSectorRotation(VOID)
             currentLimitClamp = controlOutput;
             outputDecRate = __builtin_divud(currentLimitClamp, PWM_COASTING_TIME);
             uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorStall = TRUE;
-            monitorSectorRoatCnt=0;
         }
         else
         {

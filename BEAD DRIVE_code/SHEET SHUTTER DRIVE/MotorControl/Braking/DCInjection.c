@@ -54,10 +54,10 @@ VOID DCInjectionON(VOID)
         {
 // 2017/01/31 by IME
 //            IEC0bits.T1IE = 0;
-            //IEC0bits.T2IE = 0;    //2017.10.28 test E019 30sec
+            IEC0bits.T2IE = 0;
 //            IEC0bits.T3IE = 0;
 //            T1CONbits.TON = 0;
-            //T2CONbits.TON = 0;    //2017.10.28 test E019 30sec
+            T2CONbits.TON = 0;
 //            T3CONbits.TON = 0;
 //	No need to disable hall interrupts
 //	Changed to handle "offset at upper & lower limit"
