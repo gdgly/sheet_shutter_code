@@ -2018,7 +2018,8 @@ void logicSolver(void) {
 							if(
 									(gstCMDitoLS.commandRequestStatus == eACTIVE && gstCMDitoLS.commandDisplayBoardLS.bits.stopPressed) ||
 									(gKeysStatus.bits.Key_Stop_pressed)																	||
-									(gKeysStatus.bits.Wireless_Stop_pressed)
+									(gKeysStatus.bits.Wireless_Stop_pressed)||
+									(gu8_en_apheight_ctl == 1 && gstControlBoardStatus.bits.autoManual ==1 && gu8_sensor_in == 1 && gSensorStatus.bits.Sensor_Obstacle_active && gu8_goup_oprdelay != 0)   //Bug_201806_91
 							 )
 								OpenCmdForDistinguish = 1;
 							else OpenCmdForDistinguish = 0;
