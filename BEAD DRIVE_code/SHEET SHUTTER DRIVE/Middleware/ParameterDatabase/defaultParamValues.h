@@ -40,7 +40,7 @@ CONST _EEPDriveMotorCtrlBlock uEEP_BeadDriveMotorCtrlBlockDefault =
         600,      //UINT32	decel1Up_A521;
 		1750,   //1900,CHANGED BY AOYAGI_ST_20160415   //UINT16  s1Up_A522;   //bug_NO.44
 		400,    //UINT16  s2Up_A523; 
-		200,      //UINT16  s3Up_A524; 
+		350,//200,      //UINT16  s3Up_A524;       //20170626  201703_No.87
 		3,      //UINT8	upStepCount_A525; 
         
 		0,      //UINT32	accel1Down_A526; 

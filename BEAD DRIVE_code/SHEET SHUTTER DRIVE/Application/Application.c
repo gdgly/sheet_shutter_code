@@ -1763,7 +1763,11 @@ VOID shutterInstallation(VOID)
                         //if shutter position is within accepatable range then stop calibration and end process
 						//	If A112 is set to 0 it may increase the chances of installation fail - Dec 2015
 						//if(positionError <= uDriveApplBlockEEP.stEEPDriveApplBlock.overrunProtection_A112)
-                        if(positionError <= 10)
+#ifdef BUG_No87_upperStoppingPos_Limit    //20170626  201703_No.87
+                        if(positionError <= 20)                        
+#else
+                        if(positionError <= 10)                        
+#endif                        
                         {
                             //shutter has reached to final position
                             //clear previous installation status bit
