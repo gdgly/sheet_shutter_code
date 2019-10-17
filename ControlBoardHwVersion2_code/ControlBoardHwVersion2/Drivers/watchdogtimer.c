@@ -106,7 +106,7 @@ void doWatchdogReset(void)
 {
 //	ROM_WatchdogReloadSet(WATCHDOG0_BASE, 0);
 //	ROM_WatchdogReloadSet(WATCHDOG0_BASE, 0xFFFFFFFF);
-	ROM_WatchdogReloadSet(WATCHDOG0_BASE, ROM_SysCtlClockGet());          //20170421   201703_No.39
+	ROM_WatchdogReloadSet(WATCHDOG0_BASE, ROM_SysCtlClockGet()/2);          //20170421   201703_No.39
 }
 
 /******************************************************************************
