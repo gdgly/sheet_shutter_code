@@ -103,7 +103,7 @@ void Set_lcdlightOFF(void)
 
 void Out_of_settingmode_cyw(void)
 {
-	if(flag_out_setting_cyw == 1)
+	if((flag_out_setting_cyw == 1)||(flag_out_setting_cyw == 2))
 	{
 	if(gstUMtoCMoperational.commandRequestStatus == eACTIVE)
 		{
@@ -123,7 +123,11 @@ void Out_of_settingmode_cyw(void)
 								psActiveMenu = &gsMainMenu;
 								psActiveMenu->ui8FocusIndex = 0;
 
+								if(flag_out_setting_cyw==1)
 								psActiveFunctionalBlock = &gsInstallationFunctionalBlock;
+								if(flag_out_setting_cyw==2)
+								psActiveFunctionalBlock = &gsApertureheightFunctionalBlock;
+
 								//psActiveFunctionalBlock = &gsHomeScreenFunctionalBlock;
 								psActiveFunctionalBlock->pfnPaintFirstScreen();
 								isMenutitle = 0;
@@ -158,7 +162,11 @@ void Out_of_settingmode_cyw(void)
 								psActiveMenu = &gsMainMenu;
 								psActiveMenu->ui8FocusIndex = 0;
 
+								if(flag_out_setting_cyw==1)
 								psActiveFunctionalBlock = &gsInstallationFunctionalBlock;
+								if(flag_out_setting_cyw==2)
+								psActiveFunctionalBlock = &gsApertureheightFunctionalBlock;
+
 								//psActiveFunctionalBlock = &gsHomeScreenFunctionalBlock;
 								psActiveFunctionalBlock->pfnPaintFirstScreen();
 								isMenutitle = 0;

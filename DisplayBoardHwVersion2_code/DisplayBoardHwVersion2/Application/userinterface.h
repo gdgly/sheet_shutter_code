@@ -238,6 +238,10 @@ extern struct stDisplayStatusAndFault gsDisplayStatusAndFaultRegister;
 // Installation
 extern stInternalFunctions gsInstallationFunctionalBlock;
 
+//apertureheight
+extern stInternalFunctions gsApertureheightFunctionalBlock;
+
+
 //Run
 extern stInternalFunctions gsShutterRunFunctionalBlock;
 

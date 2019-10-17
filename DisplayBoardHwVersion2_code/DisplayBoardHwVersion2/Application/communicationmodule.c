@@ -393,6 +393,10 @@ enum commandResponseType insertCommandIDandData (uint8_t * commandBuffer, uint8_
 		*wrIndex+=1;
 	   leCommandResponseType = eResponseACK_NACK;
 	    break;
+	case 0x20000000:
+		*commandBuffer = START_APERTUREHEIGHT_CMD_FROM_DISPLAY;
+		leCommandResponseType = eResponseACK_NACK;
+		break;
 	default:
 		*commandBuffer = INVALID_COMMAND_ID;
 		break;
@@ -1575,7 +1579,7 @@ void pollDriveControlStatusFault(void)
 
 	case eSendInstalltionPollCmdToDrive:
 
-		if (gstDriveBoardStatus.bits.driveInstallation != 0)
+		if ((gstDriveBoardStatus.bits.driveInstallation != 0)||(gstDriveBoardStatus.bits.driveApertureheight != 0))
 		{
 
 			if(
@@ -2055,6 +2059,10 @@ void handleCommandFromUM_EM_EH(void)
 				{
 					lstCommunicationModuleInnerTaskComm.commandToControlBoard.bits.settingsModeStatus = 1;
 					lstCommunicationModuleInnerTaskComm.additionalCommandData = gstUMtoCMoperational.additionalCommandData;
+				}
+				else if(gstUMtoCMoperational.commandToControlBoard.bits.startapertureheight)
+				{
+					lstCommunicationModuleInnerTaskComm.commandToControlBoard.bits.startApertureheight = 1;
 				}
 
 				gstUMtoCMoperational.commandResponseStatus = eWAITING;

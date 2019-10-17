@@ -104,6 +104,7 @@ uint8_t gValueParamGetStarted = 0;
 stValue gsValue;
 uint8_t gDigitCount = 0;
 
+extern uint8_t flag_out_setting_cyw;
 /****************************************************************************/
 
 /******************************************************************************
@@ -1046,6 +1047,22 @@ uint8_t valueTypeParamEnter()
     if(gKeysStatus.bits.Key_Enter_pressed)
     {
     	gKeysStatus.bits.Key_Enter_pressed = 0;
+
+    	if(gHighlightedItemIndex == 56)
+    	{
+    		if(gstUMtoCMoperational.commandRequestStatus == eINACTIVE)
+    		{
+    				gui8SettingsModeStatus = SERVICED;
+    				gstUMtoCMoperational.commandToControlBoard.bits.settingsModeStatus = 1;
+    				gstUMtoCMoperational.additionalCommandData = 0;
+    				gstUMtoCMoperational.commandRequestStatus = eACTIVE;
+    				//gValueParamGetStarted = 0;
+    			    flag_out_setting_cyw = 2;
+    		}
+    		gui8SettingsModeStatus = DEACTIVATED;
+    		gui8SettingsScreen = DEACTIVATED;
+    		return 0;
+    	}
 
     	if( (0 == gValueParamSetStarted) &&
 //    	    (1 != gstDisplayBoardFault.bits.displayCommunication)

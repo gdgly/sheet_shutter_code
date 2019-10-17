@@ -52,6 +52,7 @@ _DriveMotorFault			gstDriveMotorFault;
 _DriveApplicationFault		gstDriveApplicationFault;
 _DriveProcessorFault		gstDriveProcessorfault;
 _DriveInstallation			gstDriveInstallation;
+//_DriveApertureheight        gstDriveApertureheight;
 
 /*
 	Control board status and fault registers declaration

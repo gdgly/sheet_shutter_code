@@ -215,7 +215,13 @@ typedef union unDriveBoardStatus
 
 		uint32_t microSwitchSensorStatus	: 1;
 		uint32_t peSensorStatus				: 1;
-		uint32_t unused						: 14;
+
+		uint32_t driveBoardBootloader       : 1;
+		uint32_t shutterBetweenUplmtAphgt   : 1;
+		uint32_t shutterBetweenLowlmtAphgt  : 1;
+
+		uint32_t driveApertureheight		: 1;
+		uint32_t unused						: 13;
 	} bits;
 } _DriveBoardStatus;
 
@@ -336,13 +342,32 @@ typedef union unDriveInstallation
 		uint16_t installA100			: 1;
 		uint16_t installA101			: 1;
 		uint16_t installA102			: 1;
+
 		uint16_t installationValid		: 1;
 
 		uint16_t installationSuccess	: 1;
 		uint16_t installationFailed		: 1;
+		uint16_t installA130            : 1;
 		uint16_t unused					: 10;
 	} bits;
 } _DriveInstallation;
+
+
+typedef union unApertureheight
+{
+   uint16_t val;
+   struct stApertureheight
+   	{
+   		uint16_t unused1				: 1;
+   		uint16_t unused2				: 1;
+   		uint16_t unused3				: 1;
+   		uint16_t apertureheightValid	: 1;
+
+   		uint16_t apertureheightSuccess	: 1;
+   		uint16_t apertureheightFailed	: 1;
+   		uint16_t unused					: 10;
+   	} bits;
+}_DriveApertureheight;
 
 /*
 	Control board status and fault registers
@@ -546,7 +571,8 @@ typedef struct stUMtoCMoperational
 			uint32_t wirelessModeChangeReleased	: 1;	//	Added on 04 Dec as per new requirement from client
 			//	Added this command to implement "disable shutter functionality while we are in settings mode" -RN - Dec 2015
 			uint32_t settingsModeStatus			: 1;
-			uint32_t unused						: 10;
+			uint32_t startapertureheight        : 1;
+			uint32_t unused						: 9;
 		} bits;
 	} commandToControlBoard;
 
@@ -861,6 +887,8 @@ extern _DriveMotorFault			gstDriveMotorFault;
 extern _DriveApplicationFault	gstDriveApplicationFault;
 extern _DriveProcessorFault		gstDriveProcessorfault;
 extern _DriveInstallation		gstDriveInstallation;
+//extern _DriveApertureheight     gstDriveApertureheight;
+
 
 /*
 	Control board status and fault registers declaration

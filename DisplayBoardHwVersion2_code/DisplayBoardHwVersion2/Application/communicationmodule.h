@@ -92,6 +92,7 @@
 
 //	Added this commands to implement "disable shutter functionality while we are in settings mode" -RN - Dec 2015
 #define SETTINGS_MODE_STATUS				0x37
+#define START_APERTUREHEIGHT_CMD_FROM_DISPLAY 0x38
 #define ADD_LOGIN                           0X55
 
 #define DRIVE_STATUS_PARAM_NO				605		// 0x025D
@@ -180,8 +181,8 @@ typedef struct stCommunicationModuleInnerTaskComm
 			//	Added this command to implement "disable shutter functionality while we are in settings mode" -RN - Dec 2015
 			uint32_t settingsModeStatus				: 1;
 			uint32_t recover_anomaly                : 1;
-
-			uint32_t unused							: 4;
+			uint32_t startApertureheight			: 1;
+			uint32_t unused							: 3;
 		} bits;
 	}commandToControlBoard;
 
