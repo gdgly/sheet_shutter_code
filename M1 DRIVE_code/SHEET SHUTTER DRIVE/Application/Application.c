@@ -1043,6 +1043,13 @@ VOID checkShutterPosition(VOID)
 			{
 				uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveReady = TRUE;
 			}
+            if(powerOnCalibration == TERMINATED)    //20170418  201703_No.22
+            {
+                        //stop calibration process
+                        uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.drivePowerOnCalibration = FALSE;
+                        uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveRuntimeCalibration = FALSE;
+                        uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveReady = TRUE;                
+            }            
             //reset the calibration state machine
             powerUpCalib.currentState = CALIB_STATE_END;
             //reset input flag to ramp generator

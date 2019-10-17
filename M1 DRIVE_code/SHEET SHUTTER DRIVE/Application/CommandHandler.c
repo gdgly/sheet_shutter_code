@@ -88,8 +88,8 @@
 #define EXPECTED_CRC_CLEAN_ERROR                0xB253
 #define EXPECTED_CRC_APERTUREHEIGHT                0x7292
 
-CONST UINT32 drive_fw_version = 0x00000406;  //bug_NO.64
-
+//CONST UINT32 drive_fw_version = 0x00000406;  //bug_NO.64
+CONST UINT32 drive_fw_version = 17041;    //Drive version 1704.1        20170418   201703_No.29
 
 enum {
 	no_error = 0,
