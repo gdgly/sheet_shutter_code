@@ -692,6 +692,7 @@ void sensorsProcessFlags(uint8_t sensorState, uint8_t sensorChanged)
 		{
 			if(!gSensorStatus.bits.Sensor_Obstacle_active)
 			{
+				suiTimeStampForOnePBS = g_ui32TickCount;  //bug_No.88
 				gSensorStatus.bits.Sensor_Obstacle_active = true;
 				gSensorStatus.bits.Sensor_Obstacle_inactive = false;
 
