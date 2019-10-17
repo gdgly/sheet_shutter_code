@@ -71,7 +71,7 @@ rampStructure_t rampJogUpProfile[JOG_UP_STATES] = {
 
 rampStructure_t rampJogDnProfile[JOG_DN_STATES] = {		
 /*Parameters       rampGenFlags      ,startPosition,endPosition, startSpeed, endSpeed,speedChangeRate,startCurrent,endCurrent,currentChangeRate,startOpenloop,endOpenloop,openLoopRate,dcInjectionDuty,dcInjectionTime*/
-/* State 0 */{{1,0,0,0,0,1,0,1,0,1,0},  JOGHI_POS,	 JOGDNPOS,	 JOGSTRTSPD, JOGDNSPD,	ACC_STEP,		0,			0,		    0,				    0,			0,		    0,			SHUTTER_LOAD_HOLDING_DUTY,	JOGSTRTDCCNT},
+/* State 0 */{{1,0,0,0,0,1,0,1,0,1,0},  JOGHI_POS,	 JOGDNPOS,	 JOGSTRTSPD, JOGDNSPD,	ACC_STEP,		0,			0,		    0,				    0,			0,		    0,			SHUTTER_LOAD_HOLDING_DUTY_DOWN_START,	JOGSTRTDCCNT},
 /* State 1 */{{1,0,0,0,0,0,0,0,0,1,0},	JOGDNPOS,	 JOGDNPOS,   JOGDNSPD,   JOGDNSPD,		0,			0,			0,			0,					0,			0,			0,				0,				        0},
 /* State 2 */{{1,0,0,0,1,0,1,0,0,1,0},	JOGDNPOS,	 JOGLOWPOS,  JOGDNSPD,   JOGENDSPD,	DEC_STEP,		0,			0,			0,					0,			0,			0,		    SHUTTER_LOAD_HOLDING_DUTY,	 JOGENDDCCNT},
 };/* End of Jog down profile */

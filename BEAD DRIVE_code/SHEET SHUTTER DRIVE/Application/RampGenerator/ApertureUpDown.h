@@ -71,7 +71,7 @@ rampStructure_t rampApertureUpProfile[APER_UP_STATES] = {
 
 rampStructure_t rampApertureDnProfile[APER_DN_STATES] = {		
 /*Parameters       rampGenFlags      ,startPosition,endPosition, startSpeed, endSpeed,speedChangeRate,startCurrent,endCurrent,currentChangeRate,startOpenloop,endOpenloop,openLoopRate,dcInjectionDuty,dcInjectionTime*/
-/* State 0 */{{1,0,0,0,0,1,0,1,0,1,0},  APERHI_POS,	 APERDNPOS,	  APERSTRTSPD, APERDNSPD,	ACC_STEP,		0,			0,		    0,				    0,			0,		    0,			SHUTTER_LOAD_HOLDING_DUTY,	APERSTRTDCCNT},
+/* State 0 */{{1,0,0,0,0,1,0,1,0,1,0},  APERHI_POS,	 APERDNPOS,	  APERSTRTSPD, APERDNSPD,	ACC_STEP,		0,			0,		    0,				    0,			0,		    0,			SHUTTER_LOAD_HOLDING_DUTY_DOWN_START,	APERSTRTDCCNT},
 /* State 1 */{{1,0,0,0,0,0,0,0,0,1,0},	APERDNPOS,	 APERDNPOS,   APERDNSPD,   APERDNSPD,		0,			0,			0,			0,					0,			0,			0,				0,				        0},
 /* State 2 */{{1,0,0,0,1,0,1,0,0,1,0},	APERDNPOS,	 APERLOWPOS,  APERDNSPD,   APERENDSPD,	DEC_STEP,		0,			0,			0,					0,			0,			0,		    SHUTTER_LOAD_HOLDING_DUTY,	 APERENDDCCNT},
 };/* End of Aperture down profile */

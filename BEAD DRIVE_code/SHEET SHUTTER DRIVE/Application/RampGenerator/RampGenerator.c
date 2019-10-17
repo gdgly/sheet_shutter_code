@@ -3097,7 +3097,8 @@ VOID stopShutter(VOID)
         if(!rampStatusFlags.rampDcInjectionOn)
         {
             if(requiredDirection == CW){controlOutput = SHUTTER_LOAD_HOLDING_DUTY;} //20180528 No24
-			else{controlOutput = controlOutput;} //20180627 No53
+			//else{controlOutput = controlOutput;} //20180627 No53
+			else{controlOutput = SHUTTER_LOAD_HOLDING_DUTY;}//20180911
 
             rampStatusFlags.rampDcInjectionOn = 1;
             DCInjectionON();

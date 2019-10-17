@@ -74,7 +74,7 @@ rampStructure_t rampInchUpProfile[INCH_UP_STATES] = {
 
 rampStructure_t rampInchDnProfile[INCH_DN_STATES] = {		
 /*Parameters       rampGenFlags      ,startPosition,endPosition, startSpeed, endSpeed,speedChangeRate,startCurrent,endCurrent,currentChangeRate,startOpenloop,endOpenloop,openLoopRate,dcInjectionDuty,dcInjectionTime*/
-/* State 0 */{{1,0,0,0,0,1,0,1,0,1,0},  INHHI_POS,	 INHDNPOS,	 INHSTRTSPD, INHDNSPD,	ACC_STEP,		0,			0,		    0,				    0,			0,		    0,			SHUTTER_LOAD_HOLDING_DUTY,	INHSTRTDCCNT},
+/* State 0 */{{1,0,0,0,0,1,0,1,0,1,0},  INHHI_POS,	 INHDNPOS,	 INHSTRTSPD, INHDNSPD,	ACC_STEP,		0,			0,		    0,				    0,			0,		    0,			SHUTTER_LOAD_HOLDING_DUTY_DOWN_START,	INHSTRTDCCNT},
 /* State 1 */{{1,0,0,0,0,0,0,0,0,1,0},	INHDNPOS,	 INHDNPOS,   INHDNSPD,   INHDNSPD,		0,			0,			0,			0,					0,			0,			0,				0,				        0},
 /* State 2 */{{1,0,0,0,1,0,1,0,0,1,0},	INHDNPOS,	 INHLOWPOS,  INHDNSPD,   INHENDSPD,	DEC_STEP,		0,			0,			0,					0,			0,			0,		    SHUTTER_LOAD_HOLDING_DUTY,	 INHENDDCTCNT},
 };/* End of INH down profile */

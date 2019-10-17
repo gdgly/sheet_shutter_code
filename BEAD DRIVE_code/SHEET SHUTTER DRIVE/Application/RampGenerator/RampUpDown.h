@@ -77,7 +77,7 @@ rampStructure_t rampUpGoingProfile[RAMP_UP_STATES] = {/* Start of ramp up profil
 
 rampStructure_t rampDnGoingProfile[RAMP_DN_STATES] = { /* Start of Ramp down profile */
 /*Parameters       rampGenFlags      ,startPosition,endPosition, startSpeed,  endSpeed,   speedChangeRate,startCurrent,endCurrent,currentChangeRate,startOpenloop,endOpenloop,openLoopRate,dcInjectionDuty,dcInjectionTime*/
-/* State 0 */{{1,0,0,0,0,1,0,1,0,1,0},	 RMPHI_POS,	 RMPDNS1POS, RMPSTRTSPD, RMPDNS1SPD,	ACC_STEP,			0,			0,		    0,				    0,			0,		    0,		SHUTTER_LOAD_HOLDING_DUTY,	RMPSTRTDCCNT},
+/* State 0 */{{1,0,0,0,0,1,0,1,0,1,0},	 RMPHI_POS,	 RMPDNS1POS, RMPSTRTSPD, RMPDNS1SPD,	ACC_STEP,			0,			0,		    0,				    0,			0,		    0,		SHUTTER_LOAD_HOLDING_DUTY_DOWN_START,	RMPSTRTDCCNT},
 /* State 1 */{{1,0,0,0,0,0,0,0,0,1,0},	 RMPHI_POS,	 RMPDNS1POS, RMPDNS1SPD, RMPDNS1SPD,		 0,			    0,			0,			0,					0,			0,			0,				    0,			    0},
 /* State 2 */{{1,0,0,0,0,0,0,0,0,1,0},	 RMPDNS1POS, RMPDNS2POS, RMPDNS1SPD, RMPDNS2SPD,	DEC_STEP,			0,			0,			0,					0,			0,			0,				    0,		        0},
 /* State 3 */{{1,0,0,0,0,0,0,0,0,1,0},	 RMPDNS2POS, RMPDNS2POS, RMPDNS2SPD, RMPDNS2SPD,		 0,			    0,			0,			0,					0,			0,			0,				    0,			    0},
