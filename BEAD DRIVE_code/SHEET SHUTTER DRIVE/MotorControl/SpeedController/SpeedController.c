@@ -898,7 +898,8 @@ VOID speedControl(VOID)
 //        speedPIparms.qOutMin = -(currentLimitClamp);
 //    }
 #ifdef MOTOR_750W_BD
-            if(measuredSpeed<500){speedPIparms.qOutMax = 7000;}//10000;//22000;//17000;//currentLimitClamp;20160915
+            if(measuredSpeed<450)   //500  //20161018
+            {speedPIparms.qOutMax = 7000;}//10000;//22000;//17000;//currentLimitClamp;20160915
             else{speedPIparms.qOutMax = 17000;}
             speedPIparms.qOutMin = -(currentLimitClamp);
 #endif

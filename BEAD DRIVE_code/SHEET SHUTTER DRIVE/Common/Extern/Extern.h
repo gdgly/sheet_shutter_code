@@ -108,3 +108,4 @@ EXTERN int cnt_motor_stop;
 EXTERN UINT8  ShutterInstallationStep;
 EXTERN BOOL ShutterInstallationEnabled;
 
+
