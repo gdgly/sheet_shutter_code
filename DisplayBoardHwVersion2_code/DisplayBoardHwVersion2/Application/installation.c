@@ -93,6 +93,7 @@ void Set_lcdlightON(void);
 void guest_reinit(void);
 
 static uint8_t lsDelay500msGetCountStart_cyw=0;
+static unsigned char Flag_startInstallation=0;      //20170628   201703_No.CQ12
 uint32_t wait_for_current_time=0;
 //**************************************************************************
 // Current encoder count to be fetched from drive board
@@ -302,7 +303,7 @@ uint8_t installationRunTime(void)
 				gInstallationState = START_INSTALLATION;
 				setting_flag = 1;
 
-
+				Flag_startInstallation=1;  //20170628   201703_No.CQ12
 
 			}
 
@@ -859,6 +860,8 @@ uint8_t installationRunTime(void)
 				//
 				if(lsDelay500msStart == 0)
 				{
+
+					Flag_startInstallation=0;  //20170628   201703_No.CQ12
 
 					//
 					// Clear screen only once
@@ -1876,6 +1879,7 @@ uint8_t installationEnter(void)
 		//
 		if( (gKeysStatus.bits.Key_Enter_pressed) /*(gKeysStatus.bits.Key_3secEnter_pressed)*/ &&
 				(0 == gui8OpenState) && (0 == gui8CloseState) && (0 == gui8UpState) && (0 == gui8DownState)
+				&& (Flag_startInstallation==0)  //20170628   201703_No.CQ12
 		)
 		{
 			setting_flag = 1;
