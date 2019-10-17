@@ -922,6 +922,11 @@ VOID speedControl(VOID)
         if(measuredSpeed < SHUTTER_SPEED_MIN_STOP)
         {
             controlOutput += HOLDING_DUTY_INC;
+				if(controlOutput >= 7000)
+				{
+					controlOutput = 7000;
+				}
+								
         }
         else
         {

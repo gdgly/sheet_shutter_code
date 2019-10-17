@@ -150,13 +150,13 @@ Program Memory  [Origin = 0x200, Length = 0x555ec]
 
 section                    address   length (PC units)   length (bytes) (dec)
 -------                    -------   -----------------   --------------------
-.text                        0x200              0x17ba          0x2397  (9111)
-.const                      0x19ba               0x614           0x91e  (2334)
-.text                       0x1fce              0x9f66          0xef19  (61209)
-.dinit                      0xbf34               0x476           0x6b1  (1713)
-.text                       0xc3aa               0xe0e          0x1515  (5397)
+.text                        0x200              0x17c6          0x23a9  (9129)
+.const                      0x19c6               0x614           0x91e  (2334)
+.text                       0x1fda              0x9f66          0xef19  (61209)
+.dinit                      0xbf40               0x476           0x6b1  (1713)
+.text                       0xc3b6               0xe0e          0x1515  (5397)
 
-                     Total program memory used (bytes):        0x13794  (79764) 15%
+                     Total program memory used (bytes):        0x137a6  (79782) 15%
 
 
 Data Memory  [Origin = 0x1000, Length = 0xc000]
@@ -617,539 +617,539 @@ External Symbols in Program Memory (by address):
                   0x0008a6                  _calculatePhaseValue
                   0x0009cc                  _measureActualSpeed
                   0x000ad4                  _speedControl
-                  0x000b8e                  _initSpeedControllerVariables
-                  0x000d0e                  _intitSpeedController
-                  0x000d16                  __AD1Interrupt
-                  0x000d38                  __AD2Interrupt
-                  0x000e76                  __T5Interrupt
-                  0x000e7e                  _executePowerFailRoutine
-                  0x000f9a                  __T2Interrupt
-                  0x000fc6                  _calculateTotalCurrent
-                  0x001032                  _filterTotalCurrent
-                  0x00108a                  _checkPhaseCompensation
-                  0x001118                  _intitCurrentController
-                  0x001120                  _initCurrentControllerVariables
-                  0x001174                  _currentControl
-                  0x001296                  _measureADCOffset
-                  0x0012ea                  __DefaultInterrupt
-                  0x0012ee                  ___floatsisf
-                  0x0012f4                  ___mulsf3
-                  0x00135c                  ___divsf3
-                  0x0013e0                  ___fixsfsi
-                  0x001422                  ___muldi3
-                  0x0014e0                  ___udivmoddi3
-                  0x00155e                  ___udivdi3
-                  0x001570                  ___umoddi3
-                  0x00157c                  ___divdi3
-                  0x0015b0                  ___moddi3
-                  0x00167e                  ___floatunsisf
-                  0x001682                  ___gtsf2
-                  0x001682                  ___gesf2
-                  0x001686                  ___eqsf2
-                  0x001686                  ___lesf2
-                  0x001686                  ___ltsf2
-                  0x00168a                  ___floatdisf
-                  0x0016aa                  __funpack2
-                  0x0016ba                  __fPropagateNaN
-                  0x0016cc                  __fbopExit
-                  0x0016d4                  __fbopReturnNaN
-                  0x0016da                  __fpack
-                  0x001726                  __funpack
-                  0x001750                  ___umuldi3
-                  0x001794                  ___floatundisf
-                  0x0017f2                  __fcompare
-                  0x001828                  _CloseUART2
-                  0x001838                  _ConfigIntUART2
-                  0x001884                  _OpenUART2
-                  0x001890                  _putsUART2
-                  0x0018bc                  _BusyUART2
-                  0x0018ca                  _WriteUART2
-                  0x0018dc                  _ReadUART2
-                  0x0018f2                  _DataRdyUART2
-                  0x0018fc                  _CloseUART1
-                  0x00190c                  _ConfigIntUART1
-                  0x001958                  _OpenUART1
-                  0x001964                  _WriteUART1
-                  0x001976                  _ReadUART1
-                  0x00198c                  _DataRdyUART1
-                  0x001996                  _memcpy
-                  0x0019a8                  _memset
-                  0x0019ba                  _drive_fw_version
-                  0x001bbe                  _constCBCommandList
-                  0x001da2                  _uEEP_BeadDriveMotorCtrlBlockDefault
-                  0x001e08                  _uEEP_M1DriveMotorCtrlBlockDefault
-                  0x001e6e                  _uDriveCommonBlockEEPDefault
-                  0x001e7f                  _uDriveApplBlockEEPDefault
-                  0x001ea5                  _uDriveStatusDefault
-                  0x001ea9                  _uDriveInstallationStatusDefault
-                  0x001eaa                  _uDriveFaultDefault
-                  0x001eab                  _uDriveCommunicationFaultDefault
-                  0x001eac                  _uDriveMotorFaultDefault
-                  0x001eae                  _uDriveApplicationFaultDefault
-                  0x001eb2                  _uDriveProcessorFaultDefault
-                  0x001eb4                  _uDriveAnamolyHistoryDefault
-                  0x001ebe                  _uDriveStatusFaultBlockEEPDefault
-                  0x001ede                  _parameterMap
-                  0x001fa2                  _RTDMTxdata
-                  0x001fa7                  _RTDMSanityCheckOK
-                  0x001fb1                  _RTDMWriteMemoryOK
-                  0x001fb9                  _RTDMErrorIllegalFunction
-                  0x001fc2                  _phaseValues
-                  0x001fce                  _initRampGenerator
-                  0x002058                  _initProfileData
-                  0x0021ae                  _initRampProfileData
-                  0x0033f4                  _initJogProfileData
-                  0x003c0a                  _initApertureProfileData
-                  0x00433c                  _initInchProfileData
-                  0x004a4c                  _reAdjustRampPositions
-                  0x005104                  _pwmBufferControl
-                  0x005118                  _chargeBootstraps
-                  0x005158                  _startMotor
-                  0x0051a0                  _stopMotor
-                  0x0051c4                  _getDriveMovement
-                  0x0051e6                  _startRampGenerator
-                  0x0051f6                  _stopRampGenerator
-                  0x005204                  _monitorSafetySensors
-                  0x0055a4                  _updatePhotoElectricDebounceTime
-                  0x0055b2                  _resetSensorStatus
-                  0x005600                  _initSensorList
-                  0x005762                  _readEmergencySensorSts
-                  0x005778                  _readMicroSwSensorSts
-                  0x00578e                  _readAirSwSensorSts
-                  0x0057a4                  _readWrapSwSensorSts
-                  0x0057ba                  _readPhotoElecSensorSts
-                  0x0057d0                  _readTemperatureSensorSts
-                  0x0057de                  _readOriginSensorSts
-                  0x0057ee                  _readFourPtSensorSts
-                  0x005804                  _readPowerFailSensorSts
-                  0x00581a                  __T4Interrupt
-                  0x0058d8                  __INT0Interrupt
-                  0x005a12                  __INT1Interrupt
-                  0x005a42                  _calculateDrift
-                  0x005b2e                  _checkPhotoElecObsLevel
-                  0x005be0                  _microSwSensorTiggered
-                  0x005c62                  _tempSensorTriggered
-                  0x005c90                  _igbtOverTempSensorTriggered
-                  0x005ca8                  _fourPtLimitSwTriggered
-                  0x005cce                  _emergencySensorSwTriggered
-                  0x005cd6                  _overcurrentfaultTriggered
-                  0x005cf2                  _checkPwmCoastingRequired
-                  0x005d2a                  _checkRampTripStatus
-                  0x005db8                  _checkRampCommand
-                  0x005f2c                  _updateShutterOutputStatus
-                  0x005f52                  _executeRampState
-                  0x005fa6                  _forceStopShutter
-                  0x005fd4                  _startShutter
-                  0x006184                  _runShutterToReqSpeed
-                  0x006558                  _calcShtrMinDistValue
-                  0x0065dc                  _calcShtrStopDistValue
-                  0x006654                  _stopShutter
-                  0x0068c4                  _executeRampProfile
-                  0x007122                  _brakingRequired
-                  0x007204                  _initApplication
-                  0x0072a6                  __T6Interrupt
-                  0x0072e4                  __T8Interrupt
-                  0x007314                  _getSystemTick
-                  0x007320                  _application
-                  0x007328                  _updateFaultRecoverFlag
-                  0x0073bc                  _updateDriveFaultFlags
-                  0x0074ca                  _updateDriveStatusFlags
-                  0x0077ba                  _updateSytemCounters
-                  0x0079b0                  _checkShutterPosition
-                  0x007b46                  _powerUpCalibration
-                  0x007da6                  _checkShutterInstallation
-                  0x007e6c                  _startApertureHeight
-                  0x007e88                  _startInstallation
-                  0x007ee4                  _shutterInstallation
-                  0x00876a                  _readBYTE
-                  0x00877e                  _readWORD
-                  0x008792                  _readDWORD
-                  0x0087a6                  _writeBYTE
-                  0x0087ec                  _writeWORD
-                  0x008820                  _writeDWORD
-                  0x008856                  _readBlock
-                  0x00886a                  _writeBlock
-                  0x00888a                  _eraseBlock
-                  0x0088a6                  _wrBlUsingWriteByte
-                  0x00891e                  _initMotorControlBlock
-                  0x00898c                  _initApplBlock
-                  0x0089fa                  _testEEPRomData
-                  0x008a26                  _initCommonBlock
-                  0x008a94                  _initDriveStatusFaultBlock
-                  0x008aee                  _getParameter
-                  0x008e62                  _setParameter
-                  0x00921a                  _checkResetParameter
-                  0x009382                  _getBlockStartAndLength
-                  0x009480                  _getParamStartAndLength
-                  0x009506                  _resetShutterPositions
-                  0x0096ba                  _resetAllParameters
-                  0x00977c                  _updateCommonBlockCrc
-                  0x0097ba                  _updateApplBlockCrc
-                  0x0097f8                  _updateMotorBlockCrc
-                  0x009836                  _readCmndFromCommBuffer
-                  0x00987c                  _processCMDFromCB
-                  0x0099ee                  _initCommandHandler
-                  0x009a1e                  _checkSerialTxCompleted
-                  0x009a44                  _commandHandler
-                  0x00a2ec                  _readCurrSensorState
-                  0x00a35e                  _transmitRestartComm
-                  0x00a3a0                  _transmitACK
-                  0x00a3c0                  _transmitDat
-                  0x00a3d4                  _transmitParameter
-                  0x00a51e                  _crc16
-                  0x00a72a                  _initUARTBuffers
-                  0x00a808                  _configureUART
-                  0x00a8b2                  _getBufferIndex
-                  0x00a8f0                  _checkUARTChannel
-                  0x00a92e                  _uartCheckFreeTxBuffer
-                  0x00a96a                  _uartSendTxBuffer
-                  0x00aa2e                  _uartCheckRxBufferOverflowState
-                  0x00aa6c                  _uartCheckNotFreeRxBuffer
-                  0x00aaaa                  _uartCheckNewCommandReceived
-                  0x00aca4                  _getSafeRxBufferIndex
-                  0x00acc8                  _getRxBufferBytesRecdFrmStartFrame
-                  0x00ad38                  _uartGetRxBuffer
-                  0x00ae28                  _uartGetCommand
-                  0x00af70                  _genericTXInterruptHandler
-                  0x00b076                  _writeCharToUART
-                  0x00b0b4                  _readCharFromUART
-                  0x00b0f0                  __U1TXInterrupt
-                  0x00b10e                  _genericRXInterruptHandler
-                  0x00b334                  _checkDataReadyBit
-                  0x00b370                  __U1RXInterrupt
-                  0x00b38e                  __U1ErrInterrupt
-                  0x00b3a0                  _svm
-                  0x00b838                  __T7Interrupt
-                  0x00b8d4                  __PWM1Interrupt
-                  0x00b9a0                  _EEPROMInit
-                  0x00b9aa                  _EEPROMWriteByte
-                  0x00ba02                  _EEPROMWriteWord
-                  0x00ba74                  _EEPROMWriteDword
-                  0x00bae8                  _EEPROMWriteBlock
-                  0x00bbfc                  _EEPROMEraseBlock
-                  0x00bcfa                  _EEPROMReadByte
-                  0x00bd38                  _EEPROMReadWord
-                  0x00bd8e                  _EEPROMReadDword
-                  0x00bde6                  _EEPROMReadBlock
-                  0x00bea8                  _EEPROMWriteEnable
-                  0x00beba                  _EEPROMWriteDisable
-                  0x00becc                  _mEEPROMSSLow
-                  0x00beec                  _mEEPROMSSHigh
-                  0x00bf0c                  _EEPROMReadStatus
-                  0x00c3aa                  _RTDM_Start
-                  0x00c3de                  _CloseRTDM
-                  0x00c3ee                  _RTDM_ProcessMsgs
-                  0x00c6d6                  __U2RXInterrupt
-                  0x00c746                  _RTDM_CumulativeCrc16
-                  0x00c7b8                  _initPiNew
-                  0x00c88e                  _calcPiNew
-                  0x00ca40                  _initGPIO
-                  0x00cb9e                  _initTMR1
-                  0x00cbba                  _initTMR2
-                  0x00cbd6                  _initTMR3
-                  0x00cbe8                  _initTMR4
-                  0x00cc04                  _initTMR5
-                  0x00cc26                  _initTMR6
-                  0x00cc48                  _initTMR7
-                  0x00cc6a                  _initTMR8
-                  0x00cc8c                  _main
-                  0x00cd6a                  _updateRTDMData
-                  0x00cdd8                  _initRTDMD
-                  0x00ce44                  _initCurrentLimitPI
-                  0x00ce72                  _runCurrentLimitPI
-                  0x00ce98                  _checkSustainedOvercurrent
-                  0x00cefe                  _initADC
-                  0x00cf56                  _initADC2
-                  0x00cfae                  _initMCPWM
-                  0x00d032                  _delayUs
-                  0x00d066                  _delayMs
-                  0x00d09a                  _writeSPI1
-                  0x00d0b8                  _SPI1INTInit
-                  0x00d0e4                  __SPI1Interrupt
-                  0x00d0ec                  _DCInjectionON
-                  0x00d128                  _DCInjectionOFF
-                  0x00d138                  _initInputCapture
-                  0x00d17a                  InitPI
-                  0x00d17a                  _InitPI
-                  0x00d17e                  CalcPI
-                  0x00d17e                  _CalcPI
+                  0x000b9a                  _initSpeedControllerVariables
+                  0x000d1a                  _intitSpeedController
+                  0x000d22                  __AD1Interrupt
+                  0x000d44                  __AD2Interrupt
+                  0x000e82                  __T5Interrupt
+                  0x000e8a                  _executePowerFailRoutine
+                  0x000fa6                  __T2Interrupt
+                  0x000fd2                  _calculateTotalCurrent
+                  0x00103e                  _filterTotalCurrent
+                  0x001096                  _checkPhaseCompensation
+                  0x001124                  _intitCurrentController
+                  0x00112c                  _initCurrentControllerVariables
+                  0x001180                  _currentControl
+                  0x0012a2                  _measureADCOffset
+                  0x0012f6                  __DefaultInterrupt
+                  0x0012fa                  ___floatsisf
+                  0x001300                  ___mulsf3
+                  0x001368                  ___divsf3
+                  0x0013ec                  ___fixsfsi
+                  0x00142e                  ___muldi3
+                  0x0014ec                  ___udivmoddi3
+                  0x00156a                  ___udivdi3
+                  0x00157c                  ___umoddi3
+                  0x001588                  ___divdi3
+                  0x0015bc                  ___moddi3
+                  0x00168a                  ___floatunsisf
+                  0x00168e                  ___gtsf2
+                  0x00168e                  ___gesf2
+                  0x001692                  ___eqsf2
+                  0x001692                  ___lesf2
+                  0x001692                  ___ltsf2
+                  0x001696                  ___floatdisf
+                  0x0016b6                  __funpack2
+                  0x0016c6                  __fPropagateNaN
+                  0x0016d8                  __fbopExit
+                  0x0016e0                  __fbopReturnNaN
+                  0x0016e6                  __fpack
+                  0x001732                  __funpack
+                  0x00175c                  ___umuldi3
+                  0x0017a0                  ___floatundisf
+                  0x0017fe                  __fcompare
+                  0x001834                  _CloseUART2
+                  0x001844                  _ConfigIntUART2
+                  0x001890                  _OpenUART2
+                  0x00189c                  _putsUART2
+                  0x0018c8                  _BusyUART2
+                  0x0018d6                  _WriteUART2
+                  0x0018e8                  _ReadUART2
+                  0x0018fe                  _DataRdyUART2
+                  0x001908                  _CloseUART1
+                  0x001918                  _ConfigIntUART1
+                  0x001964                  _OpenUART1
+                  0x001970                  _WriteUART1
+                  0x001982                  _ReadUART1
+                  0x001998                  _DataRdyUART1
+                  0x0019a2                  _memcpy
+                  0x0019b4                  _memset
+                  0x0019c6                  _drive_fw_version
+                  0x001bca                  _constCBCommandList
+                  0x001dae                  _uEEP_BeadDriveMotorCtrlBlockDefault
+                  0x001e14                  _uEEP_M1DriveMotorCtrlBlockDefault
+                  0x001e7a                  _uDriveCommonBlockEEPDefault
+                  0x001e8b                  _uDriveApplBlockEEPDefault
+                  0x001eb1                  _uDriveStatusDefault
+                  0x001eb5                  _uDriveInstallationStatusDefault
+                  0x001eb6                  _uDriveFaultDefault
+                  0x001eb7                  _uDriveCommunicationFaultDefault
+                  0x001eb8                  _uDriveMotorFaultDefault
+                  0x001eba                  _uDriveApplicationFaultDefault
+                  0x001ebe                  _uDriveProcessorFaultDefault
+                  0x001ec0                  _uDriveAnamolyHistoryDefault
+                  0x001eca                  _uDriveStatusFaultBlockEEPDefault
+                  0x001eea                  _parameterMap
+                  0x001fae                  _RTDMTxdata
+                  0x001fb3                  _RTDMSanityCheckOK
+                  0x001fbd                  _RTDMWriteMemoryOK
+                  0x001fc5                  _RTDMErrorIllegalFunction
+                  0x001fce                  _phaseValues
+                  0x001fda                  _initRampGenerator
+                  0x002064                  _initProfileData
+                  0x0021ba                  _initRampProfileData
+                  0x003400                  _initJogProfileData
+                  0x003c16                  _initApertureProfileData
+                  0x004348                  _initInchProfileData
+                  0x004a58                  _reAdjustRampPositions
+                  0x005110                  _pwmBufferControl
+                  0x005124                  _chargeBootstraps
+                  0x005164                  _startMotor
+                  0x0051ac                  _stopMotor
+                  0x0051d0                  _getDriveMovement
+                  0x0051f2                  _startRampGenerator
+                  0x005202                  _stopRampGenerator
+                  0x005210                  _monitorSafetySensors
+                  0x0055b0                  _updatePhotoElectricDebounceTime
+                  0x0055be                  _resetSensorStatus
+                  0x00560c                  _initSensorList
+                  0x00576e                  _readEmergencySensorSts
+                  0x005784                  _readMicroSwSensorSts
+                  0x00579a                  _readAirSwSensorSts
+                  0x0057b0                  _readWrapSwSensorSts
+                  0x0057c6                  _readPhotoElecSensorSts
+                  0x0057dc                  _readTemperatureSensorSts
+                  0x0057ea                  _readOriginSensorSts
+                  0x0057fa                  _readFourPtSensorSts
+                  0x005810                  _readPowerFailSensorSts
+                  0x005826                  __T4Interrupt
+                  0x0058e4                  __INT0Interrupt
+                  0x005a1e                  __INT1Interrupt
+                  0x005a4e                  _calculateDrift
+                  0x005b3a                  _checkPhotoElecObsLevel
+                  0x005bec                  _microSwSensorTiggered
+                  0x005c6e                  _tempSensorTriggered
+                  0x005c9c                  _igbtOverTempSensorTriggered
+                  0x005cb4                  _fourPtLimitSwTriggered
+                  0x005cda                  _emergencySensorSwTriggered
+                  0x005ce2                  _overcurrentfaultTriggered
+                  0x005cfe                  _checkPwmCoastingRequired
+                  0x005d36                  _checkRampTripStatus
+                  0x005dc4                  _checkRampCommand
+                  0x005f38                  _updateShutterOutputStatus
+                  0x005f5e                  _executeRampState
+                  0x005fb2                  _forceStopShutter
+                  0x005fe0                  _startShutter
+                  0x006190                  _runShutterToReqSpeed
+                  0x006564                  _calcShtrMinDistValue
+                  0x0065e8                  _calcShtrStopDistValue
+                  0x006660                  _stopShutter
+                  0x0068d0                  _executeRampProfile
+                  0x00712e                  _brakingRequired
+                  0x007210                  _initApplication
+                  0x0072b2                  __T6Interrupt
+                  0x0072f0                  __T8Interrupt
+                  0x007320                  _getSystemTick
+                  0x00732c                  _application
+                  0x007334                  _updateFaultRecoverFlag
+                  0x0073c8                  _updateDriveFaultFlags
+                  0x0074d6                  _updateDriveStatusFlags
+                  0x0077c6                  _updateSytemCounters
+                  0x0079bc                  _checkShutterPosition
+                  0x007b52                  _powerUpCalibration
+                  0x007db2                  _checkShutterInstallation
+                  0x007e78                  _startApertureHeight
+                  0x007e94                  _startInstallation
+                  0x007ef0                  _shutterInstallation
+                  0x008776                  _readBYTE
+                  0x00878a                  _readWORD
+                  0x00879e                  _readDWORD
+                  0x0087b2                  _writeBYTE
+                  0x0087f8                  _writeWORD
+                  0x00882c                  _writeDWORD
+                  0x008862                  _readBlock
+                  0x008876                  _writeBlock
+                  0x008896                  _eraseBlock
+                  0x0088b2                  _wrBlUsingWriteByte
+                  0x00892a                  _initMotorControlBlock
+                  0x008998                  _initApplBlock
+                  0x008a06                  _testEEPRomData
+                  0x008a32                  _initCommonBlock
+                  0x008aa0                  _initDriveStatusFaultBlock
+                  0x008afa                  _getParameter
+                  0x008e6e                  _setParameter
+                  0x009226                  _checkResetParameter
+                  0x00938e                  _getBlockStartAndLength
+                  0x00948c                  _getParamStartAndLength
+                  0x009512                  _resetShutterPositions
+                  0x0096c6                  _resetAllParameters
+                  0x009788                  _updateCommonBlockCrc
+                  0x0097c6                  _updateApplBlockCrc
+                  0x009804                  _updateMotorBlockCrc
+                  0x009842                  _readCmndFromCommBuffer
+                  0x009888                  _processCMDFromCB
+                  0x0099fa                  _initCommandHandler
+                  0x009a2a                  _checkSerialTxCompleted
+                  0x009a50                  _commandHandler
+                  0x00a2f8                  _readCurrSensorState
+                  0x00a36a                  _transmitRestartComm
+                  0x00a3ac                  _transmitACK
+                  0x00a3cc                  _transmitDat
+                  0x00a3e0                  _transmitParameter
+                  0x00a52a                  _crc16
+                  0x00a736                  _initUARTBuffers
+                  0x00a814                  _configureUART
+                  0x00a8be                  _getBufferIndex
+                  0x00a8fc                  _checkUARTChannel
+                  0x00a93a                  _uartCheckFreeTxBuffer
+                  0x00a976                  _uartSendTxBuffer
+                  0x00aa3a                  _uartCheckRxBufferOverflowState
+                  0x00aa78                  _uartCheckNotFreeRxBuffer
+                  0x00aab6                  _uartCheckNewCommandReceived
+                  0x00acb0                  _getSafeRxBufferIndex
+                  0x00acd4                  _getRxBufferBytesRecdFrmStartFrame
+                  0x00ad44                  _uartGetRxBuffer
+                  0x00ae34                  _uartGetCommand
+                  0x00af7c                  _genericTXInterruptHandler
+                  0x00b082                  _writeCharToUART
+                  0x00b0c0                  _readCharFromUART
+                  0x00b0fc                  __U1TXInterrupt
+                  0x00b11a                  _genericRXInterruptHandler
+                  0x00b340                  _checkDataReadyBit
+                  0x00b37c                  __U1RXInterrupt
+                  0x00b39a                  __U1ErrInterrupt
+                  0x00b3ac                  _svm
+                  0x00b844                  __T7Interrupt
+                  0x00b8e0                  __PWM1Interrupt
+                  0x00b9ac                  _EEPROMInit
+                  0x00b9b6                  _EEPROMWriteByte
+                  0x00ba0e                  _EEPROMWriteWord
+                  0x00ba80                  _EEPROMWriteDword
+                  0x00baf4                  _EEPROMWriteBlock
+                  0x00bc08                  _EEPROMEraseBlock
+                  0x00bd06                  _EEPROMReadByte
+                  0x00bd44                  _EEPROMReadWord
+                  0x00bd9a                  _EEPROMReadDword
+                  0x00bdf2                  _EEPROMReadBlock
+                  0x00beb4                  _EEPROMWriteEnable
+                  0x00bec6                  _EEPROMWriteDisable
+                  0x00bed8                  _mEEPROMSSLow
+                  0x00bef8                  _mEEPROMSSHigh
+                  0x00bf18                  _EEPROMReadStatus
+                  0x00c3b6                  _RTDM_Start
+                  0x00c3ea                  _CloseRTDM
+                  0x00c3fa                  _RTDM_ProcessMsgs
+                  0x00c6e2                  __U2RXInterrupt
+                  0x00c752                  _RTDM_CumulativeCrc16
+                  0x00c7c4                  _initPiNew
+                  0x00c89a                  _calcPiNew
+                  0x00ca4c                  _initGPIO
+                  0x00cbaa                  _initTMR1
+                  0x00cbc6                  _initTMR2
+                  0x00cbe2                  _initTMR3
+                  0x00cbf4                  _initTMR4
+                  0x00cc10                  _initTMR5
+                  0x00cc32                  _initTMR6
+                  0x00cc54                  _initTMR7
+                  0x00cc76                  _initTMR8
+                  0x00cc98                  _main
+                  0x00cd76                  _updateRTDMData
+                  0x00cde4                  _initRTDMD
+                  0x00ce50                  _initCurrentLimitPI
+                  0x00ce7e                  _runCurrentLimitPI
+                  0x00cea4                  _checkSustainedOvercurrent
+                  0x00cf0a                  _initADC
+                  0x00cf62                  _initADC2
+                  0x00cfba                  _initMCPWM
+                  0x00d03e                  _delayUs
+                  0x00d072                  _delayMs
+                  0x00d0a6                  _writeSPI1
+                  0x00d0c4                  _SPI1INTInit
+                  0x00d0f0                  __SPI1Interrupt
+                  0x00d0f8                  _DCInjectionON
+                  0x00d134                  _DCInjectionOFF
+                  0x00d144                  _initInputCapture
+                  0x00d186                  InitPI
+                  0x00d186                  _InitPI
+                  0x00d18a                  CalcPI
+                  0x00d18a                  _CalcPI
                   0x0557fa                  __FGS.sec
 
 External Symbols in Program Memory (by name):
 
-                  0x00d17e                  CalcPI
-                  0x00d17a                  InitPI
-                  0x0018bc                  _BusyUART2
-                  0x00d17e                  _CalcPI
-                  0x00c3de                  _CloseRTDM
-                  0x0018fc                  _CloseUART1
-                  0x001828                  _CloseUART2
-                  0x00190c                  _ConfigIntUART1
-                  0x001838                  _ConfigIntUART2
-                  0x00d128                  _DCInjectionOFF
-                  0x00d0ec                  _DCInjectionON
-                  0x00198c                  _DataRdyUART1
-                  0x0018f2                  _DataRdyUART2
-                  0x00bbfc                  _EEPROMEraseBlock
-                  0x00b9a0                  _EEPROMInit
-                  0x00bde6                  _EEPROMReadBlock
-                  0x00bcfa                  _EEPROMReadByte
-                  0x00bd8e                  _EEPROMReadDword
-                  0x00bf0c                  _EEPROMReadStatus
-                  0x00bd38                  _EEPROMReadWord
-                  0x00bae8                  _EEPROMWriteBlock
-                  0x00b9aa                  _EEPROMWriteByte
-                  0x00beba                  _EEPROMWriteDisable
-                  0x00ba74                  _EEPROMWriteDword
-                  0x00bea8                  _EEPROMWriteEnable
-                  0x00ba02                  _EEPROMWriteWord
-                  0x00d17a                  _InitPI
-                  0x001958                  _OpenUART1
-                  0x001884                  _OpenUART2
-                  0x001fb9                  _RTDMErrorIllegalFunction
-                  0x001fa7                  _RTDMSanityCheckOK
-                  0x001fa2                  _RTDMTxdata
-                  0x001fb1                  _RTDMWriteMemoryOK
-                  0x00c746                  _RTDM_CumulativeCrc16
-                  0x00c3ee                  _RTDM_ProcessMsgs
-                  0x00c3aa                  _RTDM_Start
-                  0x001976                  _ReadUART1
-                  0x0018dc                  _ReadUART2
-                  0x00d0b8                  _SPI1INTInit
-                  0x001964                  _WriteUART1
-                  0x0018ca                  _WriteUART2
-                  0x000d16                  __AD1Interrupt
-                  0x000d38                  __AD2Interrupt
-                  0x0012ea                  __DefaultInterrupt
+                  0x00d18a                  CalcPI
+                  0x00d186                  InitPI
+                  0x0018c8                  _BusyUART2
+                  0x00d18a                  _CalcPI
+                  0x00c3ea                  _CloseRTDM
+                  0x001908                  _CloseUART1
+                  0x001834                  _CloseUART2
+                  0x001918                  _ConfigIntUART1
+                  0x001844                  _ConfigIntUART2
+                  0x00d134                  _DCInjectionOFF
+                  0x00d0f8                  _DCInjectionON
+                  0x001998                  _DataRdyUART1
+                  0x0018fe                  _DataRdyUART2
+                  0x00bc08                  _EEPROMEraseBlock
+                  0x00b9ac                  _EEPROMInit
+                  0x00bdf2                  _EEPROMReadBlock
+                  0x00bd06                  _EEPROMReadByte
+                  0x00bd9a                  _EEPROMReadDword
+                  0x00bf18                  _EEPROMReadStatus
+                  0x00bd44                  _EEPROMReadWord
+                  0x00baf4                  _EEPROMWriteBlock
+                  0x00b9b6                  _EEPROMWriteByte
+                  0x00bec6                  _EEPROMWriteDisable
+                  0x00ba80                  _EEPROMWriteDword
+                  0x00beb4                  _EEPROMWriteEnable
+                  0x00ba0e                  _EEPROMWriteWord
+                  0x00d186                  _InitPI
+                  0x001964                  _OpenUART1
+                  0x001890                  _OpenUART2
+                  0x001fc5                  _RTDMErrorIllegalFunction
+                  0x001fb3                  _RTDMSanityCheckOK
+                  0x001fae                  _RTDMTxdata
+                  0x001fbd                  _RTDMWriteMemoryOK
+                  0x00c752                  _RTDM_CumulativeCrc16
+                  0x00c3fa                  _RTDM_ProcessMsgs
+                  0x00c3b6                  _RTDM_Start
+                  0x001982                  _ReadUART1
+                  0x0018e8                  _ReadUART2
+                  0x00d0c4                  _SPI1INTInit
+                  0x001970                  _WriteUART1
+                  0x0018d6                  _WriteUART2
+                  0x000d22                  __AD1Interrupt
+                  0x000d44                  __AD2Interrupt
+                  0x0012f6                  __DefaultInterrupt
                   0x0557fa                  __FGS.sec
                   0x000576                  __IC1Interrupt
                   0x000672                  __IC2Interrupt
                   0x0007aa                  __IC3Interrupt
-                  0x0058d8                  __INT0Interrupt
-                  0x005a12                  __INT1Interrupt
-                  0x00b8d4                  __PWM1Interrupt
-                  0x00d0e4                  __SPI1Interrupt
+                  0x0058e4                  __INT0Interrupt
+                  0x005a1e                  __INT1Interrupt
+                  0x00b8e0                  __PWM1Interrupt
+                  0x00d0f0                  __SPI1Interrupt
                   0x000322                  __T1Interrupt
-                  0x000f9a                  __T2Interrupt
+                  0x000fa6                  __T2Interrupt
                   0x0003fe                  __T3Interrupt
-                  0x00581a                  __T4Interrupt
-                  0x000e76                  __T5Interrupt
-                  0x0072a6                  __T6Interrupt
-                  0x00b838                  __T7Interrupt
-                  0x0072e4                  __T8Interrupt
-                  0x00b38e                  __U1ErrInterrupt
-                  0x00b370                  __U1RXInterrupt
-                  0x00b0f0                  __U1TXInterrupt
-                  0x00c6d6                  __U2RXInterrupt
+                  0x005826                  __T4Interrupt
+                  0x000e82                  __T5Interrupt
+                  0x0072b2                  __T6Interrupt
+                  0x00b844                  __T7Interrupt
+                  0x0072f0                  __T8Interrupt
+                  0x00b39a                  __U1ErrInterrupt
+                  0x00b37c                  __U1RXInterrupt
+                  0x00b0fc                  __U1TXInterrupt
+                  0x00c6e2                  __U2RXInterrupt
                   0x000238                  ___delay32
-                  0x00157c                  ___divdi3
-                  0x00135c                  ___divsf3
-                  0x001686                  ___eqsf2
-                  0x0013e0                  ___fixsfsi
-                  0x00168a                  ___floatdisf
-                  0x0012ee                  ___floatsisf
-                  0x001794                  ___floatundisf
-                  0x00167e                  ___floatunsisf
-                  0x001682                  ___gesf2
-                  0x001682                  ___gtsf2
-                  0x001686                  ___lesf2
-                  0x001686                  ___ltsf2
-                  0x0015b0                  ___moddi3
-                  0x001422                  ___muldi3
-                  0x0012f4                  ___mulsf3
-                  0x00155e                  ___udivdi3
-                  0x0014e0                  ___udivmoddi3
-                  0x001570                  ___umoddi3
-                  0x001750                  ___umuldi3
+                  0x001588                  ___divdi3
+                  0x001368                  ___divsf3
+                  0x001692                  ___eqsf2
+                  0x0013ec                  ___fixsfsi
+                  0x001696                  ___floatdisf
+                  0x0012fa                  ___floatsisf
+                  0x0017a0                  ___floatundisf
+                  0x00168a                  ___floatunsisf
+                  0x00168e                  ___gesf2
+                  0x00168e                  ___gtsf2
+                  0x001692                  ___lesf2
+                  0x001692                  ___ltsf2
+                  0x0015bc                  ___moddi3
+                  0x00142e                  ___muldi3
+                  0x001300                  ___mulsf3
+                  0x00156a                  ___udivdi3
+                  0x0014ec                  ___udivmoddi3
+                  0x00157c                  ___umoddi3
+                  0x00175c                  ___umuldi3
                   0x000254                  __data_init
                   0x000254                  __data_init_extended
-                  0x0016ba                  __fPropagateNaN
-                  0x0016cc                  __fbopExit
-                  0x0016d4                  __fbopReturnNaN
-                  0x0017f2                  __fcompare
-                  0x0016da                  __fpack
-                  0x001726                  __funpack
-                  0x0016aa                  __funpack2
+                  0x0016c6                  __fPropagateNaN
+                  0x0016d8                  __fbopExit
+                  0x0016e0                  __fbopReturnNaN
+                  0x0017fe                  __fcompare
+                  0x0016e6                  __fpack
+                  0x001732                  __funpack
+                  0x0016b6                  __funpack2
                   0x00022c                  __psv_init
                   0x000200                  __resetPRI
-                  0x007320                  _application
-                  0x007122                  _brakingRequired
-                  0x00c88e                  _calcPiNew
-                  0x006558                  _calcShtrMinDistValue
-                  0x0065dc                  _calcShtrStopDistValue
-                  0x005a42                  _calculateDrift
+                  0x00732c                  _application
+                  0x00712e                  _brakingRequired
+                  0x00c89a                  _calcPiNew
+                  0x006564                  _calcShtrMinDistValue
+                  0x0065e8                  _calcShtrStopDistValue
+                  0x005a4e                  _calculateDrift
                   0x0008a6                  _calculatePhaseValue
-                  0x000fc6                  _calculateTotalCurrent
-                  0x005118                  _chargeBootstraps
-                  0x00b334                  _checkDataReadyBit
-                  0x00108a                  _checkPhaseCompensation
-                  0x005b2e                  _checkPhotoElecObsLevel
-                  0x005cf2                  _checkPwmCoastingRequired
-                  0x005db8                  _checkRampCommand
-                  0x005d2a                  _checkRampTripStatus
-                  0x00921a                  _checkResetParameter
-                  0x009a1e                  _checkSerialTxCompleted
-                  0x007da6                  _checkShutterInstallation
-                  0x0079b0                  _checkShutterPosition
-                  0x00ce98                  _checkSustainedOvercurrent
-                  0x00a8f0                  _checkUARTChannel
-                  0x009a44                  _commandHandler
-                  0x00a808                  _configureUART
-                  0x001bbe                  _constCBCommandList
-                  0x00a51e                  _crc16
-                  0x001174                  _currentControl
-                  0x00d066                  _delayMs
-                  0x00d032                  _delayUs
-                  0x0019ba                  _drive_fw_version
-                  0x005cce                  _emergencySensorSwTriggered
-                  0x00888a                  _eraseBlock
-                  0x000e7e                  _executePowerFailRoutine
-                  0x0068c4                  _executeRampProfile
-                  0x005f52                  _executeRampState
-                  0x001032                  _filterTotalCurrent
-                  0x005fa6                  _forceStopShutter
-                  0x005ca8                  _fourPtLimitSwTriggered
-                  0x00b10e                  _genericRXInterruptHandler
-                  0x00af70                  _genericTXInterruptHandler
-                  0x009382                  _getBlockStartAndLength
-                  0x00a8b2                  _getBufferIndex
+                  0x000fd2                  _calculateTotalCurrent
+                  0x005124                  _chargeBootstraps
+                  0x00b340                  _checkDataReadyBit
+                  0x001096                  _checkPhaseCompensation
+                  0x005b3a                  _checkPhotoElecObsLevel
+                  0x005cfe                  _checkPwmCoastingRequired
+                  0x005dc4                  _checkRampCommand
+                  0x005d36                  _checkRampTripStatus
+                  0x009226                  _checkResetParameter
+                  0x009a2a                  _checkSerialTxCompleted
+                  0x007db2                  _checkShutterInstallation
+                  0x0079bc                  _checkShutterPosition
+                  0x00cea4                  _checkSustainedOvercurrent
+                  0x00a8fc                  _checkUARTChannel
+                  0x009a50                  _commandHandler
+                  0x00a814                  _configureUART
+                  0x001bca                  _constCBCommandList
+                  0x00a52a                  _crc16
+                  0x001180                  _currentControl
+                  0x00d072                  _delayMs
+                  0x00d03e                  _delayUs
+                  0x0019c6                  _drive_fw_version
+                  0x005cda                  _emergencySensorSwTriggered
+                  0x008896                  _eraseBlock
+                  0x000e8a                  _executePowerFailRoutine
+                  0x0068d0                  _executeRampProfile
+                  0x005f5e                  _executeRampState
+                  0x00103e                  _filterTotalCurrent
+                  0x005fb2                  _forceStopShutter
+                  0x005cb4                  _fourPtLimitSwTriggered
+                  0x00b11a                  _genericRXInterruptHandler
+                  0x00af7c                  _genericTXInterruptHandler
+                  0x00938e                  _getBlockStartAndLength
+                  0x00a8be                  _getBufferIndex
                   0x00041e                  _getCurrentSectorNo
-                  0x0051c4                  _getDriveMovement
-                  0x009480                  _getParamStartAndLength
-                  0x008aee                  _getParameter
-                  0x00acc8                  _getRxBufferBytesRecdFrmStartFrame
-                  0x00aca4                  _getSafeRxBufferIndex
-                  0x007314                  _getSystemTick
-                  0x005c90                  _igbtOverTempSensorTriggered
-                  0x00cefe                  _initADC
-                  0x00cf56                  _initADC2
-                  0x003c0a                  _initApertureProfileData
-                  0x00898c                  _initApplBlock
-                  0x007204                  _initApplication
-                  0x0099ee                  _initCommandHandler
-                  0x008a26                  _initCommonBlock
-                  0x001120                  _initCurrentControllerVariables
-                  0x00ce44                  _initCurrentLimitPI
-                  0x008a94                  _initDriveStatusFaultBlock
-                  0x00ca40                  _initGPIO
-                  0x00433c                  _initInchProfileData
-                  0x00d138                  _initInputCapture
-                  0x0033f4                  _initJogProfileData
-                  0x00cfae                  _initMCPWM
-                  0x00891e                  _initMotorControlBlock
-                  0x00c7b8                  _initPiNew
-                  0x002058                  _initProfileData
-                  0x00cdd8                  _initRTDMD
-                  0x001fce                  _initRampGenerator
-                  0x0021ae                  _initRampProfileData
-                  0x005600                  _initSensorList
-                  0x000b8e                  _initSpeedControllerVariables
-                  0x00cb9e                  _initTMR1
-                  0x00cbba                  _initTMR2
-                  0x00cbd6                  _initTMR3
-                  0x00cbe8                  _initTMR4
-                  0x00cc04                  _initTMR5
-                  0x00cc26                  _initTMR6
-                  0x00cc48                  _initTMR7
-                  0x00cc6a                  _initTMR8
-                  0x00a72a                  _initUARTBuffers
-                  0x001118                  _intitCurrentController
-                  0x000d0e                  _intitSpeedController
-                  0x00beec                  _mEEPROMSSHigh
-                  0x00becc                  _mEEPROMSSLow
-                  0x00cc8c                  _main
-                  0x001296                  _measureADCOffset
+                  0x0051d0                  _getDriveMovement
+                  0x00948c                  _getParamStartAndLength
+                  0x008afa                  _getParameter
+                  0x00acd4                  _getRxBufferBytesRecdFrmStartFrame
+                  0x00acb0                  _getSafeRxBufferIndex
+                  0x007320                  _getSystemTick
+                  0x005c9c                  _igbtOverTempSensorTriggered
+                  0x00cf0a                  _initADC
+                  0x00cf62                  _initADC2
+                  0x003c16                  _initApertureProfileData
+                  0x008998                  _initApplBlock
+                  0x007210                  _initApplication
+                  0x0099fa                  _initCommandHandler
+                  0x008a32                  _initCommonBlock
+                  0x00112c                  _initCurrentControllerVariables
+                  0x00ce50                  _initCurrentLimitPI
+                  0x008aa0                  _initDriveStatusFaultBlock
+                  0x00ca4c                  _initGPIO
+                  0x004348                  _initInchProfileData
+                  0x00d144                  _initInputCapture
+                  0x003400                  _initJogProfileData
+                  0x00cfba                  _initMCPWM
+                  0x00892a                  _initMotorControlBlock
+                  0x00c7c4                  _initPiNew
+                  0x002064                  _initProfileData
+                  0x00cde4                  _initRTDMD
+                  0x001fda                  _initRampGenerator
+                  0x0021ba                  _initRampProfileData
+                  0x00560c                  _initSensorList
+                  0x000b9a                  _initSpeedControllerVariables
+                  0x00cbaa                  _initTMR1
+                  0x00cbc6                  _initTMR2
+                  0x00cbe2                  _initTMR3
+                  0x00cbf4                  _initTMR4
+                  0x00cc10                  _initTMR5
+                  0x00cc32                  _initTMR6
+                  0x00cc54                  _initTMR7
+                  0x00cc76                  _initTMR8
+                  0x00a736                  _initUARTBuffers
+                  0x001124                  _intitCurrentController
+                  0x000d1a                  _intitSpeedController
+                  0x00bef8                  _mEEPROMSSHigh
+                  0x00bed8                  _mEEPROMSSLow
+                  0x00cc98                  _main
+                  0x0012a2                  _measureADCOffset
                   0x0009cc                  _measureActualSpeed
-                  0x001996                  _memcpy
-                  0x0019a8                  _memset
-                  0x005be0                  _microSwSensorTiggered
-                  0x005204                  _monitorSafetySensors
+                  0x0019a2                  _memcpy
+                  0x0019b4                  _memset
+                  0x005bec                  _microSwSensorTiggered
+                  0x005210                  _monitorSafetySensors
                   0x000460                  _monitorSectorRotation
                   0x0004fa                  _monitorShutterFalseMovement
-                  0x005cd6                  _overcurrentfaultTriggered
-                  0x001ede                  _parameterMap
-                  0x001fc2                  _phaseValues
-                  0x007b46                  _powerUpCalibration
-                  0x00987c                  _processCMDFromCB
-                  0x001890                  _putsUART2
-                  0x005104                  _pwmBufferControl
-                  0x004a4c                  _reAdjustRampPositions
-                  0x00578e                  _readAirSwSensorSts
-                  0x00876a                  _readBYTE
-                  0x008856                  _readBlock
-                  0x00b0b4                  _readCharFromUART
-                  0x009836                  _readCmndFromCommBuffer
-                  0x00a2ec                  _readCurrSensorState
-                  0x008792                  _readDWORD
-                  0x005762                  _readEmergencySensorSts
-                  0x0057ee                  _readFourPtSensorSts
-                  0x005778                  _readMicroSwSensorSts
-                  0x0057de                  _readOriginSensorSts
-                  0x0057ba                  _readPhotoElecSensorSts
-                  0x005804                  _readPowerFailSensorSts
-                  0x0057d0                  _readTemperatureSensorSts
-                  0x00877e                  _readWORD
-                  0x0057a4                  _readWrapSwSensorSts
-                  0x0096ba                  _resetAllParameters
-                  0x0055b2                  _resetSensorStatus
-                  0x009506                  _resetShutterPositions
-                  0x00ce72                  _runCurrentLimitPI
-                  0x006184                  _runShutterToReqSpeed
-                  0x008e62                  _setParameter
-                  0x007ee4                  _shutterInstallation
+                  0x005ce2                  _overcurrentfaultTriggered
+                  0x001eea                  _parameterMap
+                  0x001fce                  _phaseValues
+                  0x007b52                  _powerUpCalibration
+                  0x009888                  _processCMDFromCB
+                  0x00189c                  _putsUART2
+                  0x005110                  _pwmBufferControl
+                  0x004a58                  _reAdjustRampPositions
+                  0x00579a                  _readAirSwSensorSts
+                  0x008776                  _readBYTE
+                  0x008862                  _readBlock
+                  0x00b0c0                  _readCharFromUART
+                  0x009842                  _readCmndFromCommBuffer
+                  0x00a2f8                  _readCurrSensorState
+                  0x00879e                  _readDWORD
+                  0x00576e                  _readEmergencySensorSts
+                  0x0057fa                  _readFourPtSensorSts
+                  0x005784                  _readMicroSwSensorSts
+                  0x0057ea                  _readOriginSensorSts
+                  0x0057c6                  _readPhotoElecSensorSts
+                  0x005810                  _readPowerFailSensorSts
+                  0x0057dc                  _readTemperatureSensorSts
+                  0x00878a                  _readWORD
+                  0x0057b0                  _readWrapSwSensorSts
+                  0x0096c6                  _resetAllParameters
+                  0x0055be                  _resetSensorStatus
+                  0x009512                  _resetShutterPositions
+                  0x00ce7e                  _runCurrentLimitPI
+                  0x006190                  _runShutterToReqSpeed
+                  0x008e6e                  _setParameter
+                  0x007ef0                  _shutterInstallation
                   0x000ad4                  _speedControl
-                  0x007e6c                  _startApertureHeight
-                  0x007e88                  _startInstallation
-                  0x005158                  _startMotor
-                  0x0051e6                  _startRampGenerator
-                  0x005fd4                  _startShutter
-                  0x0051a0                  _stopMotor
-                  0x0051f6                  _stopRampGenerator
-                  0x006654                  _stopShutter
-                  0x00b3a0                  _svm
-                  0x005c62                  _tempSensorTriggered
-                  0x0089fa                  _testEEPRomData
-                  0x00a3a0                  _transmitACK
-                  0x00a3c0                  _transmitDat
-                  0x00a3d4                  _transmitParameter
-                  0x00a35e                  _transmitRestartComm
-                  0x001eb4                  _uDriveAnamolyHistoryDefault
-                  0x001e7f                  _uDriveApplBlockEEPDefault
-                  0x001eae                  _uDriveApplicationFaultDefault
-                  0x001e6e                  _uDriveCommonBlockEEPDefault
-                  0x001eab                  _uDriveCommunicationFaultDefault
-                  0x001eaa                  _uDriveFaultDefault
-                  0x001ea9                  _uDriveInstallationStatusDefault
-                  0x001eac                  _uDriveMotorFaultDefault
-                  0x001eb2                  _uDriveProcessorFaultDefault
-                  0x001ea5                  _uDriveStatusDefault
-                  0x001ebe                  _uDriveStatusFaultBlockEEPDefault
-                  0x001da2                  _uEEP_BeadDriveMotorCtrlBlockDefault
-                  0x001e08                  _uEEP_M1DriveMotorCtrlBlockDefault
-                  0x00a92e                  _uartCheckFreeTxBuffer
-                  0x00aaaa                  _uartCheckNewCommandReceived
-                  0x00aa6c                  _uartCheckNotFreeRxBuffer
-                  0x00aa2e                  _uartCheckRxBufferOverflowState
-                  0x00ae28                  _uartGetCommand
-                  0x00ad38                  _uartGetRxBuffer
-                  0x00a96a                  _uartSendTxBuffer
-                  0x0097ba                  _updateApplBlockCrc
-                  0x00977c                  _updateCommonBlockCrc
-                  0x0073bc                  _updateDriveFaultFlags
-                  0x0074ca                  _updateDriveStatusFlags
-                  0x007328                  _updateFaultRecoverFlag
-                  0x0097f8                  _updateMotorBlockCrc
-                  0x0055a4                  _updatePhotoElectricDebounceTime
-                  0x00cd6a                  _updateRTDMData
-                  0x005f2c                  _updateShutterOutputStatus
-                  0x0077ba                  _updateSytemCounters
-                  0x0088a6                  _wrBlUsingWriteByte
-                  0x0087a6                  _writeBYTE
-                  0x00886a                  _writeBlock
-                  0x00b076                  _writeCharToUART
-                  0x008820                  _writeDWORD
-                  0x00d09a                  _writeSPI1
-                  0x0087ec                  _writeWORD
+                  0x007e78                  _startApertureHeight
+                  0x007e94                  _startInstallation
+                  0x005164                  _startMotor
+                  0x0051f2                  _startRampGenerator
+                  0x005fe0                  _startShutter
+                  0x0051ac                  _stopMotor
+                  0x005202                  _stopRampGenerator
+                  0x006660                  _stopShutter
+                  0x00b3ac                  _svm
+                  0x005c6e                  _tempSensorTriggered
+                  0x008a06                  _testEEPRomData
+                  0x00a3ac                  _transmitACK
+                  0x00a3cc                  _transmitDat
+                  0x00a3e0                  _transmitParameter
+                  0x00a36a                  _transmitRestartComm
+                  0x001ec0                  _uDriveAnamolyHistoryDefault
+                  0x001e8b                  _uDriveApplBlockEEPDefault
+                  0x001eba                  _uDriveApplicationFaultDefault
+                  0x001e7a                  _uDriveCommonBlockEEPDefault
+                  0x001eb7                  _uDriveCommunicationFaultDefault
+                  0x001eb6                  _uDriveFaultDefault
+                  0x001eb5                  _uDriveInstallationStatusDefault
+                  0x001eb8                  _uDriveMotorFaultDefault
+                  0x001ebe                  _uDriveProcessorFaultDefault
+                  0x001eb1                  _uDriveStatusDefault
+                  0x001eca                  _uDriveStatusFaultBlockEEPDefault
+                  0x001dae                  _uEEP_BeadDriveMotorCtrlBlockDefault
+                  0x001e14                  _uEEP_M1DriveMotorCtrlBlockDefault
+                  0x00a93a                  _uartCheckFreeTxBuffer
+                  0x00aab6                  _uartCheckNewCommandReceived
+                  0x00aa78                  _uartCheckNotFreeRxBuffer
+                  0x00aa3a                  _uartCheckRxBufferOverflowState
+                  0x00ae34                  _uartGetCommand
+                  0x00ad44                  _uartGetRxBuffer
+                  0x00a976                  _uartSendTxBuffer
+                  0x0097c6                  _updateApplBlockCrc
+                  0x009788                  _updateCommonBlockCrc
+                  0x0073c8                  _updateDriveFaultFlags
+                  0x0074d6                  _updateDriveStatusFlags
+                  0x007334                  _updateFaultRecoverFlag
+                  0x009804                  _updateMotorBlockCrc
+                  0x0055b0                  _updatePhotoElectricDebounceTime
+                  0x00cd76                  _updateRTDMData
+                  0x005f38                  _updateShutterOutputStatus
+                  0x0077c6                  _updateSytemCounters
+                  0x0088b2                  _wrBlUsingWriteByte
+                  0x0087b2                  _writeBYTE
+                  0x008876                  _writeBlock
+                  0x00b082                  _writeCharToUART
+                  0x00882c                  _writeDWORD
+                  0x00d0a6                  _writeSPI1
+                  0x0087f8                  _writeWORD
 
 Memory Configuration
 
@@ -1220,7 +1220,7 @@ LOAD c:/program files/microchip/xc16/v1.24/bin/bin/../../lib\libfx-coff.a
                   0x000002          0x2 SHORT 0x0 ((ABSOLUTE (__reset) >> 0x10) & 0x7f)
                   0x000003          0x2 SHORT 0x0
 
-.text             0x000200       0x17ba
+.text             0x000200       0x17c6
  *(.init)
  .init            0x000200         0x38 c:/program files/microchip/xc16/v1.24/bin/bin/../../lib\libpic30-coff.a(crt0_extendedep.o)
                   0x000200                  _resetPRI
@@ -1235,7 +1235,7 @@ LOAD c:/program files/microchip/xc16/v1.24/bin/bin/../../lib\libfx-coff.a
  *(.handle)
  .handle          0x0002ee         0x34 jump_table
  *(.isr*)
- .isr.text        0x000322        0x9f4 OBJ\SpeedController.o
+ .isr.text        0x000322        0xa00 OBJ\SpeedController.o
                   0x000322                  _T1Interrupt
                   0x0003fe                  _T3Interrupt
                   0x00041e                  getCurrentSectorNo
@@ -1247,102 +1247,102 @@ LOAD c:/program files/microchip/xc16/v1.24/bin/bin/../../lib\libfx-coff.a
                   0x0008a6                  calculatePhaseValue
                   0x0009cc                  measureActualSpeed
                   0x000ad4                  speedControl
-                  0x000b8e                  initSpeedControllerVariables
-                  0x000d0e                  intitSpeedController
- .isr.text        0x000d16        0x5d4 OBJ\CurrentController.o
-                  0x000d16                  _AD1Interrupt
-                  0x000d38                  _AD2Interrupt
-                  0x000e76                  _T5Interrupt
-                  0x000e7e                  executePowerFailRoutine
-                  0x000f9a                  _T2Interrupt
-                  0x000fc6                  calculateTotalCurrent
-                  0x001032                  filterTotalCurrent
-                  0x00108a                  checkPhaseCompensation
-                  0x001118                  intitCurrentController
-                  0x001120                  initCurrentControllerVariables
-                  0x001174                  currentControl
-                  0x001296                  measureADCOffset
- .isr             0x0012ea          0x4 default_isr
-                  0x0012ea                  _DefaultInterrupt
+                  0x000b9a                  initSpeedControllerVariables
+                  0x000d1a                  intitSpeedController
+ .isr.text        0x000d22        0x5d4 OBJ\CurrentController.o
+                  0x000d22                  _AD1Interrupt
+                  0x000d44                  _AD2Interrupt
+                  0x000e82                  _T5Interrupt
+                  0x000e8a                  executePowerFailRoutine
+                  0x000fa6                  _T2Interrupt
+                  0x000fd2                  calculateTotalCurrent
+                  0x00103e                  filterTotalCurrent
+                  0x001096                  checkPhaseCompensation
+                  0x001124                  intitCurrentController
+                  0x00112c                  initCurrentControllerVariables
+                  0x001180                  currentControl
+                  0x0012a2                  measureADCOffset
+ .isr             0x0012f6          0x4 default_isr
+                  0x0012f6                  _DefaultInterrupt
  *(.libc)
  *(.libm)
- .libm            0x0012ee          0x6 c:/program files/microchip/xc16/v1.24/bin/bin/../../lib\libm-coff.a(floatsisf.epo)
-                  0x0012ee                  __floatsisf
- .libm            0x0012f4         0x68 c:/program files/microchip/xc16/v1.24/bin/bin/../../lib\libm-coff.a(mulsf3.epo)
-                  0x0012f4                  __mulsf3
- .libm            0x00135c         0x84 c:/program files/microchip/xc16/v1.24/bin/bin/../../lib\libm-coff.a(divsf3.epo)
-                  0x00135c                  __divsf3
- .libm            0x0013e0         0x42 c:/program files/microchip/xc16/v1.24/bin/bin/../../lib\libm-coff.a(fixsfsi.epo)
-                  0x0013e0                  __fixsfsi
- .libm            0x001422         0x56 c:/program files/microchip/xc16/v1.24/bin/bin/../../lib\libm-coff.a(muldi3.epo)
-                  0x001422                  __muldi3
- .libm            0x001478        0x206 c:/program files/microchip/xc16/v1.24/bin/bin/../../lib\libm-coff.a(divmoddi3.epo)
-                  0x0014e0                  __udivmoddi3
-                  0x00155e                  __udivdi3
-                  0x001570                  __umoddi3
-                  0x00157c                  __divdi3
-                  0x0015b0                  __moddi3
- .libm            0x00167e          0x4 c:/program files/microchip/xc16/v1.24/bin/bin/../../lib\libm-coff.a(floatunsisf.epo)
-                  0x00167e                  __floatunsisf
- .libm            0x001682          0x4 c:/program files/microchip/xc16/v1.24/bin/bin/../../lib\libm-coff.a(fgtge.epo)
-                  0x001682                  __gesf2
-                  0x001682                  __gtsf2
- .libm            0x001686          0x4 c:/program files/microchip/xc16/v1.24/bin/bin/../../lib\libm-coff.a(feqltle.epo)
-                  0x001686                  __eqsf2
-                  0x001686                  __ltsf2
-                  0x001686                  __lesf2
- .libm            0x00168a         0x20 c:/program files/microchip/xc16/v1.24/bin/bin/../../lib\libm-coff.a(floatdisf.epo)
-                  0x00168a                  __floatdisf
- .libm            0x0016aa         0x10 c:/program files/microchip/xc16/v1.24/bin/bin/../../lib\libm-coff.a(funpack2.epo)
-                  0x0016aa                  _funpack2
- .libm            0x0016ba         0x20 c:/program files/microchip/xc16/v1.24/bin/bin/../../lib\libm-coff.a(futil.epo)
-                  0x0016ba                  _fPropagateNaN
-                  0x0016cc                  _fbopExit
-                  0x0016d4                  _fbopReturnNaN
- .libm            0x0016da         0x4c c:/program files/microchip/xc16/v1.24/bin/bin/../../lib\libm-coff.a(fpack.epo)
-                  0x0016da                  _fpack
- .libm            0x001726         0x2a c:/program files/microchip/xc16/v1.24/bin/bin/../../lib\libm-coff.a(funpack.epo)
-                  0x001726                  _funpack
- .libm            0x001750         0x44 c:/program files/microchip/xc16/v1.24/bin/bin/../../lib\libm-coff.a(umuldi3.epo)
-                  0x001750                  __umuldi3
- .libm            0x001794         0x5e c:/program files/microchip/xc16/v1.24/bin/bin/../../lib\libm-coff.a(floatundisf.epo)
-                  0x001794                  __floatundisf
- .libm            0x0017f2         0x36 c:/program files/microchip/xc16/v1.24/bin/bin/../../lib\libm-coff.a(fcompare.epo)
-                  0x0017f2                  _fcompare
+ .libm            0x0012fa          0x6 c:/program files/microchip/xc16/v1.24/bin/bin/../../lib\libm-coff.a(floatsisf.epo)
+                  0x0012fa                  __floatsisf
+ .libm            0x001300         0x68 c:/program files/microchip/xc16/v1.24/bin/bin/../../lib\libm-coff.a(mulsf3.epo)
+                  0x001300                  __mulsf3
+ .libm            0x001368         0x84 c:/program files/microchip/xc16/v1.24/bin/bin/../../lib\libm-coff.a(divsf3.epo)
+                  0x001368                  __divsf3
+ .libm            0x0013ec         0x42 c:/program files/microchip/xc16/v1.24/bin/bin/../../lib\libm-coff.a(fixsfsi.epo)
+                  0x0013ec                  __fixsfsi
+ .libm            0x00142e         0x56 c:/program files/microchip/xc16/v1.24/bin/bin/../../lib\libm-coff.a(muldi3.epo)
+                  0x00142e                  __muldi3
+ .libm            0x001484        0x206 c:/program files/microchip/xc16/v1.24/bin/bin/../../lib\libm-coff.a(divmoddi3.epo)
+                  0x0014ec                  __udivmoddi3
+                  0x00156a                  __udivdi3
+                  0x00157c                  __umoddi3
+                  0x001588                  __divdi3
+                  0x0015bc                  __moddi3
+ .libm            0x00168a          0x4 c:/program files/microchip/xc16/v1.24/bin/bin/../../lib\libm-coff.a(floatunsisf.epo)
+                  0x00168a                  __floatunsisf
+ .libm            0x00168e          0x4 c:/program files/microchip/xc16/v1.24/bin/bin/../../lib\libm-coff.a(fgtge.epo)
+                  0x00168e                  __gesf2
+                  0x00168e                  __gtsf2
+ .libm            0x001692          0x4 c:/program files/microchip/xc16/v1.24/bin/bin/../../lib\libm-coff.a(feqltle.epo)
+                  0x001692                  __eqsf2
+                  0x001692                  __ltsf2
+                  0x001692                  __lesf2
+ .libm            0x001696         0x20 c:/program files/microchip/xc16/v1.24/bin/bin/../../lib\libm-coff.a(floatdisf.epo)
+                  0x001696                  __floatdisf
+ .libm            0x0016b6         0x10 c:/program files/microchip/xc16/v1.24/bin/bin/../../lib\libm-coff.a(funpack2.epo)
+                  0x0016b6                  _funpack2
+ .libm            0x0016c6         0x20 c:/program files/microchip/xc16/v1.24/bin/bin/../../lib\libm-coff.a(futil.epo)
+                  0x0016c6                  _fPropagateNaN
+                  0x0016d8                  _fbopExit
+                  0x0016e0                  _fbopReturnNaN
+ .libm            0x0016e6         0x4c c:/program files/microchip/xc16/v1.24/bin/bin/../../lib\libm-coff.a(fpack.epo)
+                  0x0016e6                  _fpack
+ .libm            0x001732         0x2a c:/program files/microchip/xc16/v1.24/bin/bin/../../lib\libm-coff.a(funpack.epo)
+                  0x001732                  _funpack
+ .libm            0x00175c         0x44 c:/program files/microchip/xc16/v1.24/bin/bin/../../lib\libm-coff.a(umuldi3.epo)
+                  0x00175c                  __umuldi3
+ .libm            0x0017a0         0x5e c:/program files/microchip/xc16/v1.24/bin/bin/../../lib\libm-coff.a(floatundisf.epo)
+                  0x0017a0                  __floatundisf
+ .libm            0x0017fe         0x36 c:/program files/microchip/xc16/v1.24/bin/bin/../../lib\libm-coff.a(fcompare.epo)
+                  0x0017fe                  _fcompare
  *(.libdsp)
  *(.lib*)
- .libperi         0x001828         0x10 c:/program files/microchip/xc16/v1.24/bin/bin/../../lib/dsPIC33E\libp33EP512GM706-coff.a(CloseUART2.o)
-                  0x001828                  CloseUART2
- .libperi         0x001838         0x4c c:/program files/microchip/xc16/v1.24/bin/bin/../../lib/dsPIC33E\libp33EP512GM706-coff.a(ConfigIntUART2.o)
-                  0x001838                  ConfigIntUART2
- .libperi         0x001884          0xc c:/program files/microchip/xc16/v1.24/bin/bin/../../lib/dsPIC33E\libp33EP512GM706-coff.a(OpenUART2.o)
-                  0x001884                  OpenUART2
- .libperi         0x001890         0x2c c:/program files/microchip/xc16/v1.24/bin/bin/../../lib/dsPIC33E\libp33EP512GM706-coff.a(putsUART2.o)
-                  0x001890                  putsUART2
- .libperi         0x0018bc          0xe c:/program files/microchip/xc16/v1.24/bin/bin/../../lib/dsPIC33E\libp33EP512GM706-coff.a(BusyUART2.o)
-                  0x0018bc                  BusyUART2
- .libperi         0x0018ca         0x12 c:/program files/microchip/xc16/v1.24/bin/bin/../../lib/dsPIC33E\libp33EP512GM706-coff.a(WriteUART2.o)
-                  0x0018ca                  WriteUART2
- .libperi         0x0018dc         0x16 c:/program files/microchip/xc16/v1.24/bin/bin/../../lib/dsPIC33E\libp33EP512GM706-coff.a(ReadUART2.o)
-                  0x0018dc                  ReadUART2
- .libperi         0x0018f2          0xa c:/program files/microchip/xc16/v1.24/bin/bin/../../lib/dsPIC33E\libp33EP512GM706-coff.a(DataRdyUART2.o)
-                  0x0018f2                  DataRdyUART2
- .libperi         0x0018fc         0x10 c:/program files/microchip/xc16/v1.24/bin/bin/../../lib/dsPIC33E\libp33EP512GM706-coff.a(CloseUART1.o)
-                  0x0018fc                  CloseUART1
- .libperi         0x00190c         0x4c c:/program files/microchip/xc16/v1.24/bin/bin/../../lib/dsPIC33E\libp33EP512GM706-coff.a(ConfigIntUART1.o)
-                  0x00190c                  ConfigIntUART1
- .libperi         0x001958          0xc c:/program files/microchip/xc16/v1.24/bin/bin/../../lib/dsPIC33E\libp33EP512GM706-coff.a(OpenUART1.o)
-                  0x001958                  OpenUART1
- .libperi         0x001964         0x12 c:/program files/microchip/xc16/v1.24/bin/bin/../../lib/dsPIC33E\libp33EP512GM706-coff.a(WriteUART1.o)
-                  0x001964                  WriteUART1
- .libperi         0x001976         0x16 c:/program files/microchip/xc16/v1.24/bin/bin/../../lib/dsPIC33E\libp33EP512GM706-coff.a(ReadUART1.o)
-                  0x001976                  ReadUART1
- .libperi         0x00198c          0xa c:/program files/microchip/xc16/v1.24/bin/bin/../../lib/dsPIC33E\libp33EP512GM706-coff.a(DataRdyUART1.o)
-                  0x00198c                  DataRdyUART1
- .libc.memcpy     0x001996         0x12 c:/program files/microchip/xc16/v1.24/bin/bin/../../lib\libc-coff.a(memcpy.epo)
-                  0x001996                  memcpy
- .libc.memset     0x0019a8         0x12 c:/program files/microchip/xc16/v1.24/bin/bin/../../lib\libc-coff.a(memset.epo)
-                  0x0019a8                  memset
+ .libperi         0x001834         0x10 c:/program files/microchip/xc16/v1.24/bin/bin/../../lib/dsPIC33E\libp33EP512GM706-coff.a(CloseUART2.o)
+                  0x001834                  CloseUART2
+ .libperi         0x001844         0x4c c:/program files/microchip/xc16/v1.24/bin/bin/../../lib/dsPIC33E\libp33EP512GM706-coff.a(ConfigIntUART2.o)
+                  0x001844                  ConfigIntUART2
+ .libperi         0x001890          0xc c:/program files/microchip/xc16/v1.24/bin/bin/../../lib/dsPIC33E\libp33EP512GM706-coff.a(OpenUART2.o)
+                  0x001890                  OpenUART2
+ .libperi         0x00189c         0x2c c:/program files/microchip/xc16/v1.24/bin/bin/../../lib/dsPIC33E\libp33EP512GM706-coff.a(putsUART2.o)
+                  0x00189c                  putsUART2
+ .libperi         0x0018c8          0xe c:/program files/microchip/xc16/v1.24/bin/bin/../../lib/dsPIC33E\libp33EP512GM706-coff.a(BusyUART2.o)
+                  0x0018c8                  BusyUART2
+ .libperi         0x0018d6         0x12 c:/program files/microchip/xc16/v1.24/bin/bin/../../lib/dsPIC33E\libp33EP512GM706-coff.a(WriteUART2.o)
+                  0x0018d6                  WriteUART2
+ .libperi         0x0018e8         0x16 c:/program files/microchip/xc16/v1.24/bin/bin/../../lib/dsPIC33E\libp33EP512GM706-coff.a(ReadUART2.o)
+                  0x0018e8                  ReadUART2
+ .libperi         0x0018fe          0xa c:/program files/microchip/xc16/v1.24/bin/bin/../../lib/dsPIC33E\libp33EP512GM706-coff.a(DataRdyUART2.o)
+                  0x0018fe                  DataRdyUART2
+ .libperi         0x001908         0x10 c:/program files/microchip/xc16/v1.24/bin/bin/../../lib/dsPIC33E\libp33EP512GM706-coff.a(CloseUART1.o)
+                  0x001908                  CloseUART1
+ .libperi         0x001918         0x4c c:/program files/microchip/xc16/v1.24/bin/bin/../../lib/dsPIC33E\libp33EP512GM706-coff.a(ConfigIntUART1.o)
+                  0x001918                  ConfigIntUART1
+ .libperi         0x001964          0xc c:/program files/microchip/xc16/v1.24/bin/bin/../../lib/dsPIC33E\libp33EP512GM706-coff.a(OpenUART1.o)
+                  0x001964                  OpenUART1
+ .libperi         0x001970         0x12 c:/program files/microchip/xc16/v1.24/bin/bin/../../lib/dsPIC33E\libp33EP512GM706-coff.a(WriteUART1.o)
+                  0x001970                  WriteUART1
+ .libperi         0x001982         0x16 c:/program files/microchip/xc16/v1.24/bin/bin/../../lib/dsPIC33E\libp33EP512GM706-coff.a(ReadUART1.o)
+                  0x001982                  ReadUART1
+ .libperi         0x001998          0xa c:/program files/microchip/xc16/v1.24/bin/bin/../../lib/dsPIC33E\libp33EP512GM706-coff.a(DataRdyUART1.o)
+                  0x001998                  DataRdyUART1
+ .libc.memcpy     0x0019a2         0x12 c:/program files/microchip/xc16/v1.24/bin/bin/../../lib\libc-coff.a(memcpy.epo)
+                  0x0019a2                  memcpy
+ .libc.memset     0x0019b4         0x12 c:/program files/microchip/xc16/v1.24/bin/bin/../../lib\libc-coff.a(memset.epo)
+                  0x0019b4                  memset
 
 usercode
  *(usercode)
@@ -1419,165 +1419,165 @@ __FUID3
  *(.debug_aranges)
 
 .ivt              0x000004        0x13e
-                  0x000004          0x4 LONG 0x12ea DEFINED (__OscillatorFail)?ABSOLUTE (__OscillatorFail):ABSOLUTE (__DefaultInterrupt)
-                  0x000006          0x4 LONG 0x12ea DEFINED (__AddressError)?ABSOLUTE (__AddressError):ABSOLUTE (__DefaultInterrupt)
-                  0x000008          0x4 LONG 0x12ea DEFINED (__HardTrapError)?ABSOLUTE (__HardTrapError):ABSOLUTE (__DefaultInterrupt)
-                  0x00000a          0x4 LONG 0x12ea DEFINED (__StackError)?ABSOLUTE (__StackError):ABSOLUTE (__DefaultInterrupt)
-                  0x00000c          0x4 LONG 0x12ea DEFINED (__MathError)?ABSOLUTE (__MathError):ABSOLUTE (__DefaultInterrupt)
-                  0x00000e          0x4 LONG 0x12ea DEFINED (__DMACError)?ABSOLUTE (__DMACError):ABSOLUTE (__DefaultInterrupt)
-                  0x000010          0x4 LONG 0x12ea DEFINED (__SoftTrapError)?ABSOLUTE (__SoftTrapError):ABSOLUTE (__DefaultInterrupt)
-                  0x000012          0x4 LONG 0x12ea DEFINED (__ReservedTrap7)?ABSOLUTE (__ReservedTrap7):ABSOLUTE (__DefaultInterrupt)
-                  0x000014          0x4 LONG 0x58d8 DEFINED (__INT0Interrupt)?ABSOLUTE (__INT0Interrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x000004          0x4 LONG 0x12f6 DEFINED (__OscillatorFail)?ABSOLUTE (__OscillatorFail):ABSOLUTE (__DefaultInterrupt)
+                  0x000006          0x4 LONG 0x12f6 DEFINED (__AddressError)?ABSOLUTE (__AddressError):ABSOLUTE (__DefaultInterrupt)
+                  0x000008          0x4 LONG 0x12f6 DEFINED (__HardTrapError)?ABSOLUTE (__HardTrapError):ABSOLUTE (__DefaultInterrupt)
+                  0x00000a          0x4 LONG 0x12f6 DEFINED (__StackError)?ABSOLUTE (__StackError):ABSOLUTE (__DefaultInterrupt)
+                  0x00000c          0x4 LONG 0x12f6 DEFINED (__MathError)?ABSOLUTE (__MathError):ABSOLUTE (__DefaultInterrupt)
+                  0x00000e          0x4 LONG 0x12f6 DEFINED (__DMACError)?ABSOLUTE (__DMACError):ABSOLUTE (__DefaultInterrupt)
+                  0x000010          0x4 LONG 0x12f6 DEFINED (__SoftTrapError)?ABSOLUTE (__SoftTrapError):ABSOLUTE (__DefaultInterrupt)
+                  0x000012          0x4 LONG 0x12f6 DEFINED (__ReservedTrap7)?ABSOLUTE (__ReservedTrap7):ABSOLUTE (__DefaultInterrupt)
+                  0x000014          0x4 LONG 0x58e4 DEFINED (__INT0Interrupt)?ABSOLUTE (__INT0Interrupt):ABSOLUTE (__DefaultInterrupt)
                   0x000016          0x4 LONG 0x576 DEFINED (__IC1Interrupt)?ABSOLUTE (__IC1Interrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x000018          0x4 LONG 0x12ea DEFINED (__OC1Interrupt)?ABSOLUTE (__OC1Interrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x000018          0x4 LONG 0x12f6 DEFINED (__OC1Interrupt)?ABSOLUTE (__OC1Interrupt):ABSOLUTE (__DefaultInterrupt)
                   0x00001a          0x4 LONG 0x322 DEFINED (__T1Interrupt)?ABSOLUTE (__T1Interrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x00001c          0x4 LONG 0x12ea DEFINED (__DMA0Interrupt)?ABSOLUTE (__DMA0Interrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x00001c          0x4 LONG 0x12f6 DEFINED (__DMA0Interrupt)?ABSOLUTE (__DMA0Interrupt):ABSOLUTE (__DefaultInterrupt)
                   0x00001e          0x4 LONG 0x672 DEFINED (__IC2Interrupt)?ABSOLUTE (__IC2Interrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x000020          0x4 LONG 0x12ea DEFINED (__OC2Interrupt)?ABSOLUTE (__OC2Interrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x000022          0x4 LONG 0xf9a DEFINED (__T2Interrupt)?ABSOLUTE (__T2Interrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x000020          0x4 LONG 0x12f6 DEFINED (__OC2Interrupt)?ABSOLUTE (__OC2Interrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x000022          0x4 LONG 0xfa6 DEFINED (__T2Interrupt)?ABSOLUTE (__T2Interrupt):ABSOLUTE (__DefaultInterrupt)
                   0x000024          0x4 LONG 0x3fe DEFINED (__T3Interrupt)?ABSOLUTE (__T3Interrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x000026          0x4 LONG 0x12ea DEFINED (__SPI1ErrInterrupt)?ABSOLUTE (__SPI1ErrInterrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x000028          0x4 LONG 0xd0e4 DEFINED (__SPI1Interrupt)?ABSOLUTE (__SPI1Interrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x00002a          0x4 LONG 0xb370 DEFINED (__U1RXInterrupt)?ABSOLUTE (__U1RXInterrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x00002c          0x4 LONG 0xb0f0 DEFINED (__U1TXInterrupt)?ABSOLUTE (__U1TXInterrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x00002e          0x4 LONG 0xd16 DEFINED (__AD1Interrupt)?ABSOLUTE (__AD1Interrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x000030          0x4 LONG 0x12ea DEFINED (__DMA1Interrupt)?ABSOLUTE (__DMA1Interrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x000032          0x4 LONG 0x12ea DEFINED (__Interrupt15)?ABSOLUTE (__Interrupt15):ABSOLUTE (__DefaultInterrupt)
-                  0x000034          0x4 LONG 0x12ea DEFINED (__SI2C1Interrupt)?ABSOLUTE (__SI2C1Interrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x000036          0x4 LONG 0x12ea DEFINED (__MI2C1Interrupt)?ABSOLUTE (__MI2C1Interrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x000038          0x4 LONG 0x12ea DEFINED (__CM1Interrupt)?ABSOLUTE (__CM1Interrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x00003a          0x4 LONG 0x12ea DEFINED (__CNInterrupt)?ABSOLUTE (__CNInterrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x00003c          0x4 LONG 0x5a12 DEFINED (__INT1Interrupt)?ABSOLUTE (__INT1Interrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x00003e          0x4 LONG 0xd38 DEFINED (__AD2Interrupt)?ABSOLUTE (__AD2Interrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x000040          0x4 LONG 0x12ea DEFINED (__IC7Interrupt)?ABSOLUTE (__IC7Interrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x000042          0x4 LONG 0x12ea DEFINED (__IC8Interrupt)?ABSOLUTE (__IC8Interrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x000044          0x4 LONG 0x12ea DEFINED (__DMA2Interrupt)?ABSOLUTE (__DMA2Interrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x000046          0x4 LONG 0x12ea DEFINED (__OC3Interrupt)?ABSOLUTE (__OC3Interrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x000048          0x4 LONG 0x12ea DEFINED (__OC4Interrupt)?ABSOLUTE (__OC4Interrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x00004a          0x4 LONG 0x581a DEFINED (__T4Interrupt)?ABSOLUTE (__T4Interrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x00004c          0x4 LONG 0xe76 DEFINED (__T5Interrupt)?ABSOLUTE (__T5Interrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x00004e          0x4 LONG 0x12ea DEFINED (__INT2Interrupt)?ABSOLUTE (__INT2Interrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x000050          0x4 LONG 0xc6d6 DEFINED (__U2RXInterrupt)?ABSOLUTE (__U2RXInterrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x000052          0x4 LONG 0x12ea DEFINED (__U2TXInterrupt)?ABSOLUTE (__U2TXInterrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x000054          0x4 LONG 0x12ea DEFINED (__SPI2ErrInterrupt)?ABSOLUTE (__SPI2ErrInterrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x000056          0x4 LONG 0x12ea DEFINED (__SPI2Interrupt)?ABSOLUTE (__SPI2Interrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x000058          0x4 LONG 0x12ea DEFINED (__C1RxRdyInterrupt)?ABSOLUTE (__C1RxRdyInterrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x00005a          0x4 LONG 0x12ea DEFINED (__C1Interrupt)?ABSOLUTE (__C1Interrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x00005c          0x4 LONG 0x12ea DEFINED (__DMA3Interrupt)?ABSOLUTE (__DMA3Interrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x000026          0x4 LONG 0x12f6 DEFINED (__SPI1ErrInterrupt)?ABSOLUTE (__SPI1ErrInterrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x000028          0x4 LONG 0xd0f0 DEFINED (__SPI1Interrupt)?ABSOLUTE (__SPI1Interrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x00002a          0x4 LONG 0xb37c DEFINED (__U1RXInterrupt)?ABSOLUTE (__U1RXInterrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x00002c          0x4 LONG 0xb0fc DEFINED (__U1TXInterrupt)?ABSOLUTE (__U1TXInterrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x00002e          0x4 LONG 0xd22 DEFINED (__AD1Interrupt)?ABSOLUTE (__AD1Interrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x000030          0x4 LONG 0x12f6 DEFINED (__DMA1Interrupt)?ABSOLUTE (__DMA1Interrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x000032          0x4 LONG 0x12f6 DEFINED (__Interrupt15)?ABSOLUTE (__Interrupt15):ABSOLUTE (__DefaultInterrupt)
+                  0x000034          0x4 LONG 0x12f6 DEFINED (__SI2C1Interrupt)?ABSOLUTE (__SI2C1Interrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x000036          0x4 LONG 0x12f6 DEFINED (__MI2C1Interrupt)?ABSOLUTE (__MI2C1Interrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x000038          0x4 LONG 0x12f6 DEFINED (__CM1Interrupt)?ABSOLUTE (__CM1Interrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x00003a          0x4 LONG 0x12f6 DEFINED (__CNInterrupt)?ABSOLUTE (__CNInterrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x00003c          0x4 LONG 0x5a1e DEFINED (__INT1Interrupt)?ABSOLUTE (__INT1Interrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x00003e          0x4 LONG 0xd44 DEFINED (__AD2Interrupt)?ABSOLUTE (__AD2Interrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x000040          0x4 LONG 0x12f6 DEFINED (__IC7Interrupt)?ABSOLUTE (__IC7Interrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x000042          0x4 LONG 0x12f6 DEFINED (__IC8Interrupt)?ABSOLUTE (__IC8Interrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x000044          0x4 LONG 0x12f6 DEFINED (__DMA2Interrupt)?ABSOLUTE (__DMA2Interrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x000046          0x4 LONG 0x12f6 DEFINED (__OC3Interrupt)?ABSOLUTE (__OC3Interrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x000048          0x4 LONG 0x12f6 DEFINED (__OC4Interrupt)?ABSOLUTE (__OC4Interrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x00004a          0x4 LONG 0x5826 DEFINED (__T4Interrupt)?ABSOLUTE (__T4Interrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x00004c          0x4 LONG 0xe82 DEFINED (__T5Interrupt)?ABSOLUTE (__T5Interrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x00004e          0x4 LONG 0x12f6 DEFINED (__INT2Interrupt)?ABSOLUTE (__INT2Interrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x000050          0x4 LONG 0xc6e2 DEFINED (__U2RXInterrupt)?ABSOLUTE (__U2RXInterrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x000052          0x4 LONG 0x12f6 DEFINED (__U2TXInterrupt)?ABSOLUTE (__U2TXInterrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x000054          0x4 LONG 0x12f6 DEFINED (__SPI2ErrInterrupt)?ABSOLUTE (__SPI2ErrInterrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x000056          0x4 LONG 0x12f6 DEFINED (__SPI2Interrupt)?ABSOLUTE (__SPI2Interrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x000058          0x4 LONG 0x12f6 DEFINED (__C1RxRdyInterrupt)?ABSOLUTE (__C1RxRdyInterrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x00005a          0x4 LONG 0x12f6 DEFINED (__C1Interrupt)?ABSOLUTE (__C1Interrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x00005c          0x4 LONG 0x12f6 DEFINED (__DMA3Interrupt)?ABSOLUTE (__DMA3Interrupt):ABSOLUTE (__DefaultInterrupt)
                   0x00005e          0x4 LONG 0x7aa DEFINED (__IC3Interrupt)?ABSOLUTE (__IC3Interrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x000060          0x4 LONG 0x12ea DEFINED (__IC4Interrupt)?ABSOLUTE (__IC4Interrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x000062          0x4 LONG 0x12ea DEFINED (__IC5Interrupt)?ABSOLUTE (__IC5Interrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x000064          0x4 LONG 0x12ea DEFINED (__IC6Interrupt)?ABSOLUTE (__IC6Interrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x000066          0x4 LONG 0x12ea DEFINED (__OC5Interrupt)?ABSOLUTE (__OC5Interrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x000068          0x4 LONG 0x12ea DEFINED (__OC6Interrupt)?ABSOLUTE (__OC6Interrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x00006a          0x4 LONG 0x12ea DEFINED (__OC7Interrupt)?ABSOLUTE (__OC7Interrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x00006c          0x4 LONG 0x12ea DEFINED (__OC8Interrupt)?ABSOLUTE (__OC8Interrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x00006e          0x4 LONG 0x12ea DEFINED (__PMPInterrupt)?ABSOLUTE (__PMPInterrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x000070          0x4 LONG 0x12ea DEFINED (__Interrupt46)?ABSOLUTE (__Interrupt46):ABSOLUTE (__DefaultInterrupt)
-                  0x000072          0x4 LONG 0x72a6 DEFINED (__T6Interrupt)?ABSOLUTE (__T6Interrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x000074          0x4 LONG 0xb838 DEFINED (__T7Interrupt)?ABSOLUTE (__T7Interrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x000076          0x4 LONG 0x12ea DEFINED (__SI2C2Interrupt)?ABSOLUTE (__SI2C2Interrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x000078          0x4 LONG 0x12ea DEFINED (__MI2C2Interrupt)?ABSOLUTE (__MI2C2Interrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x00007a          0x4 LONG 0x72e4 DEFINED (__T8Interrupt)?ABSOLUTE (__T8Interrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x00007c          0x4 LONG 0x12ea DEFINED (__T9Interrupt)?ABSOLUTE (__T9Interrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x00007e          0x4 LONG 0x12ea DEFINED (__INT3Interrupt)?ABSOLUTE (__INT3Interrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x000080          0x4 LONG 0x12ea DEFINED (__INT4Interrupt)?ABSOLUTE (__INT4Interrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x000082          0x4 LONG 0x12ea DEFINED (__C2RxRdyInterrupt)?ABSOLUTE (__C2RxRdyInterrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x000084          0x4 LONG 0x12ea DEFINED (__C2Interrupt)?ABSOLUTE (__C2Interrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x000086          0x4 LONG 0x12ea DEFINED (__PWMSpEventMatchInterrupt)?ABSOLUTE (__PWMSpEventMatchInterrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x000088          0x4 LONG 0x12ea DEFINED (__QEI1Interrupt)?ABSOLUTE (__QEI1Interrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x00008a          0x4 LONG 0x12ea DEFINED (__DCIEInterrupt)?ABSOLUTE (__DCIEInterrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x00008c          0x4 LONG 0x12ea DEFINED (__DCIInterrupt)?ABSOLUTE (__DCIInterrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x00008e          0x4 LONG 0x12ea DEFINED (__Interrupt61)?ABSOLUTE (__Interrupt61):ABSOLUTE (__DefaultInterrupt)
-                  0x000090          0x4 LONG 0x12ea DEFINED (__RTCCInterrupt)?ABSOLUTE (__RTCCInterrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x000092          0x4 LONG 0x12ea DEFINED (__Interrupt63)?ABSOLUTE (__Interrupt63):ABSOLUTE (__DefaultInterrupt)
-                  0x000094          0x4 LONG 0x12ea DEFINED (__Interrupt64)?ABSOLUTE (__Interrupt64):ABSOLUTE (__DefaultInterrupt)
-                  0x000096          0x4 LONG 0xb38e DEFINED (__U1ErrInterrupt)?ABSOLUTE (__U1ErrInterrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x000098          0x4 LONG 0x12ea DEFINED (__U2ErrInterrupt)?ABSOLUTE (__U2ErrInterrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x00009a          0x4 LONG 0x12ea DEFINED (__CRCInterrupt)?ABSOLUTE (__CRCInterrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x00009c          0x4 LONG 0x12ea DEFINED (__Interrupt68)?ABSOLUTE (__Interrupt68):ABSOLUTE (__DefaultInterrupt)
-                  0x00009e          0x4 LONG 0x12ea DEFINED (__Interrupt69)?ABSOLUTE (__Interrupt69):ABSOLUTE (__DefaultInterrupt)
-                  0x0000a0          0x4 LONG 0x12ea DEFINED (__C1TxReqInterrupt)?ABSOLUTE (__C1TxReqInterrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x0000a2          0x4 LONG 0x12ea DEFINED (__C2TxReqInterrupt)?ABSOLUTE (__C2TxReqInterrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x0000a4          0x4 LONG 0x12ea DEFINED (__Interrupt72)?ABSOLUTE (__Interrupt72):ABSOLUTE (__DefaultInterrupt)
-                  0x0000a6          0x4 LONG 0x12ea DEFINED (__PWMSecSpEventMatchInterrupt)?ABSOLUTE (__PWMSecSpEventMatchInterrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x0000a8          0x4 LONG 0x12ea DEFINED (__Interrupt74)?ABSOLUTE (__Interrupt74):ABSOLUTE (__DefaultInterrupt)
-                  0x0000aa          0x4 LONG 0x12ea DEFINED (__QEI2Interrupt)?ABSOLUTE (__QEI2Interrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x0000ac          0x4 LONG 0x12ea DEFINED (__Interrupt76)?ABSOLUTE (__Interrupt76):ABSOLUTE (__DefaultInterrupt)
-                  0x0000ae          0x4 LONG 0x12ea DEFINED (__CTMUInterrupt)?ABSOLUTE (__CTMUInterrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x0000b0          0x4 LONG 0x12ea DEFINED (__Interrupt78)?ABSOLUTE (__Interrupt78):ABSOLUTE (__DefaultInterrupt)
-                  0x0000b2          0x4 LONG 0x12ea DEFINED (__Interrupt79)?ABSOLUTE (__Interrupt79):ABSOLUTE (__DefaultInterrupt)
-                  0x0000b4          0x4 LONG 0x12ea DEFINED (__Interrupt80)?ABSOLUTE (__Interrupt80):ABSOLUTE (__DefaultInterrupt)
-                  0x0000b6          0x4 LONG 0x12ea DEFINED (__U3ErrInterrupt)?ABSOLUTE (__U3ErrInterrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x0000b8          0x4 LONG 0x12ea DEFINED (__U3RXInterrupt)?ABSOLUTE (__U3RXInterrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x0000ba          0x4 LONG 0x12ea DEFINED (__U3TXInterrupt)?ABSOLUTE (__U3TXInterrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x0000bc          0x4 LONG 0x12ea DEFINED (__Interrupt84)?ABSOLUTE (__Interrupt84):ABSOLUTE (__DefaultInterrupt)
-                  0x0000be          0x4 LONG 0x12ea DEFINED (__Interrupt85)?ABSOLUTE (__Interrupt85):ABSOLUTE (__DefaultInterrupt)
-                  0x0000c0          0x4 LONG 0x12ea DEFINED (__Interrupt86)?ABSOLUTE (__Interrupt86):ABSOLUTE (__DefaultInterrupt)
-                  0x0000c2          0x4 LONG 0x12ea DEFINED (__U4ErrInterrupt)?ABSOLUTE (__U4ErrInterrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x0000c4          0x4 LONG 0x12ea DEFINED (__U4RXInterrupt)?ABSOLUTE (__U4RXInterrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x0000c6          0x4 LONG 0x12ea DEFINED (__U4TXInterrupt)?ABSOLUTE (__U4TXInterrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x0000c8          0x4 LONG 0x12ea DEFINED (__SPI3ErrInterrupt)?ABSOLUTE (__SPI3ErrInterrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x0000ca          0x4 LONG 0x12ea DEFINED (__SPI3Interrupt)?ABSOLUTE (__SPI3Interrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x0000cc          0x4 LONG 0x12ea DEFINED (__Interrupt92)?ABSOLUTE (__Interrupt92):ABSOLUTE (__DefaultInterrupt)
-                  0x0000ce          0x4 LONG 0x12ea DEFINED (__Interrupt93)?ABSOLUTE (__Interrupt93):ABSOLUTE (__DefaultInterrupt)
-                  0x0000d0          0x4 LONG 0xb8d4 DEFINED (__PWM1Interrupt)?ABSOLUTE (__PWM1Interrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x0000d2          0x4 LONG 0x12ea DEFINED (__PWM2Interrupt)?ABSOLUTE (__PWM2Interrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x0000d4          0x4 LONG 0x12ea DEFINED (__PWM3Interrupt)?ABSOLUTE (__PWM3Interrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x0000d6          0x4 LONG 0x12ea DEFINED (__PWM4Interrupt)?ABSOLUTE (__PWM4Interrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x0000d8          0x4 LONG 0x12ea DEFINED (__PWM5Interrupt)?ABSOLUTE (__PWM5Interrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x0000da          0x4 LONG 0x12ea DEFINED (__PWM6Interrupt)?ABSOLUTE (__PWM6Interrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x0000dc          0x4 LONG 0x12ea DEFINED (__Interrupt100)?ABSOLUTE (__Interrupt100):ABSOLUTE (__DefaultInterrupt)
-                  0x0000de          0x4 LONG 0x12ea DEFINED (__Interrupt101)?ABSOLUTE (__Interrupt101):ABSOLUTE (__DefaultInterrupt)
-                  0x0000e0          0x4 LONG 0x12ea DEFINED (__Interrupt102)?ABSOLUTE (__Interrupt102):ABSOLUTE (__DefaultInterrupt)
-                  0x0000e2          0x4 LONG 0x12ea DEFINED (__Interrupt103)?ABSOLUTE (__Interrupt103):ABSOLUTE (__DefaultInterrupt)
-                  0x0000e4          0x4 LONG 0x12ea DEFINED (__Interrupt104)?ABSOLUTE (__Interrupt104):ABSOLUTE (__DefaultInterrupt)
-                  0x0000e6          0x4 LONG 0x12ea DEFINED (__Interrupt105)?ABSOLUTE (__Interrupt105):ABSOLUTE (__DefaultInterrupt)
-                  0x0000e8          0x4 LONG 0x12ea DEFINED (__Interrupt106)?ABSOLUTE (__Interrupt106):ABSOLUTE (__DefaultInterrupt)
-                  0x0000ea          0x4 LONG 0x12ea DEFINED (__Interrupt107)?ABSOLUTE (__Interrupt107):ABSOLUTE (__DefaultInterrupt)
-                  0x0000ec          0x4 LONG 0x12ea DEFINED (__Interrupt108)?ABSOLUTE (__Interrupt108):ABSOLUTE (__DefaultInterrupt)
-                  0x0000ee          0x4 LONG 0x12ea DEFINED (__Interrupt109)?ABSOLUTE (__Interrupt109):ABSOLUTE (__DefaultInterrupt)
-                  0x0000f0          0x4 LONG 0x12ea DEFINED (__Interrupt110)?ABSOLUTE (__Interrupt110):ABSOLUTE (__DefaultInterrupt)
-                  0x0000f2          0x4 LONG 0x12ea DEFINED (__Interrupt111)?ABSOLUTE (__Interrupt111):ABSOLUTE (__DefaultInterrupt)
-                  0x0000f4          0x4 LONG 0x12ea DEFINED (__Interrupt112)?ABSOLUTE (__Interrupt112):ABSOLUTE (__DefaultInterrupt)
-                  0x0000f6          0x4 LONG 0x12ea DEFINED (__Interrupt113)?ABSOLUTE (__Interrupt113):ABSOLUTE (__DefaultInterrupt)
-                  0x0000f8          0x4 LONG 0x12ea DEFINED (__Interrupt114)?ABSOLUTE (__Interrupt114):ABSOLUTE (__DefaultInterrupt)
-                  0x0000fa          0x4 LONG 0x12ea DEFINED (__Interrupt115)?ABSOLUTE (__Interrupt115):ABSOLUTE (__DefaultInterrupt)
-                  0x0000fc          0x4 LONG 0x12ea DEFINED (__Interrupt116)?ABSOLUTE (__Interrupt116):ABSOLUTE (__DefaultInterrupt)
-                  0x0000fe          0x4 LONG 0x12ea DEFINED (__Interrupt117)?ABSOLUTE (__Interrupt117):ABSOLUTE (__DefaultInterrupt)
-                  0x000100          0x4 LONG 0x12ea DEFINED (__Interrupt118)?ABSOLUTE (__Interrupt118):ABSOLUTE (__DefaultInterrupt)
-                  0x000102          0x4 LONG 0x12ea DEFINED (__Interrupt119)?ABSOLUTE (__Interrupt119):ABSOLUTE (__DefaultInterrupt)
-                  0x000104          0x4 LONG 0x12ea DEFINED (__Interrupt120)?ABSOLUTE (__Interrupt120):ABSOLUTE (__DefaultInterrupt)
-                  0x000106          0x4 LONG 0x12ea DEFINED (__Interrupt121)?ABSOLUTE (__Interrupt121):ABSOLUTE (__DefaultInterrupt)
-                  0x000108          0x4 LONG 0x12ea DEFINED (__Interrupt122)?ABSOLUTE (__Interrupt122):ABSOLUTE (__DefaultInterrupt)
-                  0x00010a          0x4 LONG 0x12ea DEFINED (__Interrupt123)?ABSOLUTE (__Interrupt123):ABSOLUTE (__DefaultInterrupt)
-                  0x00010c          0x4 LONG 0x12ea DEFINED (__Interrupt124)?ABSOLUTE (__Interrupt124):ABSOLUTE (__DefaultInterrupt)
-                  0x00010e          0x4 LONG 0x12ea DEFINED (__Interrupt125)?ABSOLUTE (__Interrupt125):ABSOLUTE (__DefaultInterrupt)
-                  0x000110          0x4 LONG 0x12ea DEFINED (__Interrupt126)?ABSOLUTE (__Interrupt126):ABSOLUTE (__DefaultInterrupt)
-                  0x000112          0x4 LONG 0x12ea DEFINED (__Interrupt127)?ABSOLUTE (__Interrupt127):ABSOLUTE (__DefaultInterrupt)
-                  0x000114          0x4 LONG 0x12ea DEFINED (__Interrupt128)?ABSOLUTE (__Interrupt128):ABSOLUTE (__DefaultInterrupt)
-                  0x000116          0x4 LONG 0x12ea DEFINED (__Interrupt129)?ABSOLUTE (__Interrupt129):ABSOLUTE (__DefaultInterrupt)
-                  0x000118          0x4 LONG 0x12ea DEFINED (__Interrupt130)?ABSOLUTE (__Interrupt130):ABSOLUTE (__DefaultInterrupt)
-                  0x00011a          0x4 LONG 0x12ea DEFINED (__Interrupt131)?ABSOLUTE (__Interrupt131):ABSOLUTE (__DefaultInterrupt)
-                  0x00011c          0x4 LONG 0x12ea DEFINED (__Interrupt132)?ABSOLUTE (__Interrupt132):ABSOLUTE (__DefaultInterrupt)
-                  0x00011e          0x4 LONG 0x12ea DEFINED (__Interrupt133)?ABSOLUTE (__Interrupt133):ABSOLUTE (__DefaultInterrupt)
-                  0x000120          0x4 LONG 0x12ea DEFINED (__Interrupt134)?ABSOLUTE (__Interrupt134):ABSOLUTE (__DefaultInterrupt)
-                  0x000122          0x4 LONG 0x12ea DEFINED (__Interrupt135)?ABSOLUTE (__Interrupt135):ABSOLUTE (__DefaultInterrupt)
-                  0x000124          0x4 LONG 0x12ea DEFINED (__Interrupt136)?ABSOLUTE (__Interrupt136):ABSOLUTE (__DefaultInterrupt)
-                  0x000126          0x4 LONG 0x12ea DEFINED (__Interrupt137)?ABSOLUTE (__Interrupt137):ABSOLUTE (__DefaultInterrupt)
-                  0x000128          0x4 LONG 0x12ea DEFINED (__Interrupt138)?ABSOLUTE (__Interrupt138):ABSOLUTE (__DefaultInterrupt)
-                  0x00012a          0x4 LONG 0x12ea DEFINED (__Interrupt139)?ABSOLUTE (__Interrupt139):ABSOLUTE (__DefaultInterrupt)
-                  0x00012c          0x4 LONG 0x12ea DEFINED (__Interrupt140)?ABSOLUTE (__Interrupt140):ABSOLUTE (__DefaultInterrupt)
-                  0x00012e          0x4 LONG 0x12ea DEFINED (__Interrupt141)?ABSOLUTE (__Interrupt141):ABSOLUTE (__DefaultInterrupt)
-                  0x000130          0x4 LONG 0x12ea DEFINED (__ICDInterrupt)?ABSOLUTE (__ICDInterrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x000132          0x4 LONG 0x12ea DEFINED (__JTAGInterrupt)?ABSOLUTE (__JTAGInterrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x000134          0x4 LONG 0x12ea DEFINED (__Interrupt144)?ABSOLUTE (__Interrupt144):ABSOLUTE (__DefaultInterrupt)
-                  0x000136          0x4 LONG 0x12ea DEFINED (__PTGSTEPInterrupt)?ABSOLUTE (__PTGSTEPInterrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x000138          0x4 LONG 0x12ea DEFINED (__PTGWDTInterrupt)?ABSOLUTE (__PTGWDTInterrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x00013a          0x4 LONG 0x12ea DEFINED (__PTG0Interrupt)?ABSOLUTE (__PTG0Interrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x00013c          0x4 LONG 0x12ea DEFINED (__PTG1Interrupt)?ABSOLUTE (__PTG1Interrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x00013e          0x4 LONG 0x12ea DEFINED (__PTG2Interrupt)?ABSOLUTE (__PTG2Interrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x000140          0x4 LONG 0x12ea DEFINED (__PTG3Interrupt)?ABSOLUTE (__PTG3Interrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x000060          0x4 LONG 0x12f6 DEFINED (__IC4Interrupt)?ABSOLUTE (__IC4Interrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x000062          0x4 LONG 0x12f6 DEFINED (__IC5Interrupt)?ABSOLUTE (__IC5Interrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x000064          0x4 LONG 0x12f6 DEFINED (__IC6Interrupt)?ABSOLUTE (__IC6Interrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x000066          0x4 LONG 0x12f6 DEFINED (__OC5Interrupt)?ABSOLUTE (__OC5Interrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x000068          0x4 LONG 0x12f6 DEFINED (__OC6Interrupt)?ABSOLUTE (__OC6Interrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x00006a          0x4 LONG 0x12f6 DEFINED (__OC7Interrupt)?ABSOLUTE (__OC7Interrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x00006c          0x4 LONG 0x12f6 DEFINED (__OC8Interrupt)?ABSOLUTE (__OC8Interrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x00006e          0x4 LONG 0x12f6 DEFINED (__PMPInterrupt)?ABSOLUTE (__PMPInterrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x000070          0x4 LONG 0x12f6 DEFINED (__Interrupt46)?ABSOLUTE (__Interrupt46):ABSOLUTE (__DefaultInterrupt)
+                  0x000072          0x4 LONG 0x72b2 DEFINED (__T6Interrupt)?ABSOLUTE (__T6Interrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x000074          0x4 LONG 0xb844 DEFINED (__T7Interrupt)?ABSOLUTE (__T7Interrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x000076          0x4 LONG 0x12f6 DEFINED (__SI2C2Interrupt)?ABSOLUTE (__SI2C2Interrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x000078          0x4 LONG 0x12f6 DEFINED (__MI2C2Interrupt)?ABSOLUTE (__MI2C2Interrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x00007a          0x4 LONG 0x72f0 DEFINED (__T8Interrupt)?ABSOLUTE (__T8Interrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x00007c          0x4 LONG 0x12f6 DEFINED (__T9Interrupt)?ABSOLUTE (__T9Interrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x00007e          0x4 LONG 0x12f6 DEFINED (__INT3Interrupt)?ABSOLUTE (__INT3Interrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x000080          0x4 LONG 0x12f6 DEFINED (__INT4Interrupt)?ABSOLUTE (__INT4Interrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x000082          0x4 LONG 0x12f6 DEFINED (__C2RxRdyInterrupt)?ABSOLUTE (__C2RxRdyInterrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x000084          0x4 LONG 0x12f6 DEFINED (__C2Interrupt)?ABSOLUTE (__C2Interrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x000086          0x4 LONG 0x12f6 DEFINED (__PWMSpEventMatchInterrupt)?ABSOLUTE (__PWMSpEventMatchInterrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x000088          0x4 LONG 0x12f6 DEFINED (__QEI1Interrupt)?ABSOLUTE (__QEI1Interrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x00008a          0x4 LONG 0x12f6 DEFINED (__DCIEInterrupt)?ABSOLUTE (__DCIEInterrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x00008c          0x4 LONG 0x12f6 DEFINED (__DCIInterrupt)?ABSOLUTE (__DCIInterrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x00008e          0x4 LONG 0x12f6 DEFINED (__Interrupt61)?ABSOLUTE (__Interrupt61):ABSOLUTE (__DefaultInterrupt)
+                  0x000090          0x4 LONG 0x12f6 DEFINED (__RTCCInterrupt)?ABSOLUTE (__RTCCInterrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x000092          0x4 LONG 0x12f6 DEFINED (__Interrupt63)?ABSOLUTE (__Interrupt63):ABSOLUTE (__DefaultInterrupt)
+                  0x000094          0x4 LONG 0x12f6 DEFINED (__Interrupt64)?ABSOLUTE (__Interrupt64):ABSOLUTE (__DefaultInterrupt)
+                  0x000096          0x4 LONG 0xb39a DEFINED (__U1ErrInterrupt)?ABSOLUTE (__U1ErrInterrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x000098          0x4 LONG 0x12f6 DEFINED (__U2ErrInterrupt)?ABSOLUTE (__U2ErrInterrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x00009a          0x4 LONG 0x12f6 DEFINED (__CRCInterrupt)?ABSOLUTE (__CRCInterrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x00009c          0x4 LONG 0x12f6 DEFINED (__Interrupt68)?ABSOLUTE (__Interrupt68):ABSOLUTE (__DefaultInterrupt)
+                  0x00009e          0x4 LONG 0x12f6 DEFINED (__Interrupt69)?ABSOLUTE (__Interrupt69):ABSOLUTE (__DefaultInterrupt)
+                  0x0000a0          0x4 LONG 0x12f6 DEFINED (__C1TxReqInterrupt)?ABSOLUTE (__C1TxReqInterrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x0000a2          0x4 LONG 0x12f6 DEFINED (__C2TxReqInterrupt)?ABSOLUTE (__C2TxReqInterrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x0000a4          0x4 LONG 0x12f6 DEFINED (__Interrupt72)?ABSOLUTE (__Interrupt72):ABSOLUTE (__DefaultInterrupt)
+                  0x0000a6          0x4 LONG 0x12f6 DEFINED (__PWMSecSpEventMatchInterrupt)?ABSOLUTE (__PWMSecSpEventMatchInterrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x0000a8          0x4 LONG 0x12f6 DEFINED (__Interrupt74)?ABSOLUTE (__Interrupt74):ABSOLUTE (__DefaultInterrupt)
+                  0x0000aa          0x4 LONG 0x12f6 DEFINED (__QEI2Interrupt)?ABSOLUTE (__QEI2Interrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x0000ac          0x4 LONG 0x12f6 DEFINED (__Interrupt76)?ABSOLUTE (__Interrupt76):ABSOLUTE (__DefaultInterrupt)
+                  0x0000ae          0x4 LONG 0x12f6 DEFINED (__CTMUInterrupt)?ABSOLUTE (__CTMUInterrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x0000b0          0x4 LONG 0x12f6 DEFINED (__Interrupt78)?ABSOLUTE (__Interrupt78):ABSOLUTE (__DefaultInterrupt)
+                  0x0000b2          0x4 LONG 0x12f6 DEFINED (__Interrupt79)?ABSOLUTE (__Interrupt79):ABSOLUTE (__DefaultInterrupt)
+                  0x0000b4          0x4 LONG 0x12f6 DEFINED (__Interrupt80)?ABSOLUTE (__Interrupt80):ABSOLUTE (__DefaultInterrupt)
+                  0x0000b6          0x4 LONG 0x12f6 DEFINED (__U3ErrInterrupt)?ABSOLUTE (__U3ErrInterrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x0000b8          0x4 LONG 0x12f6 DEFINED (__U3RXInterrupt)?ABSOLUTE (__U3RXInterrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x0000ba          0x4 LONG 0x12f6 DEFINED (__U3TXInterrupt)?ABSOLUTE (__U3TXInterrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x0000bc          0x4 LONG 0x12f6 DEFINED (__Interrupt84)?ABSOLUTE (__Interrupt84):ABSOLUTE (__DefaultInterrupt)
+                  0x0000be          0x4 LONG 0x12f6 DEFINED (__Interrupt85)?ABSOLUTE (__Interrupt85):ABSOLUTE (__DefaultInterrupt)
+                  0x0000c0          0x4 LONG 0x12f6 DEFINED (__Interrupt86)?ABSOLUTE (__Interrupt86):ABSOLUTE (__DefaultInterrupt)
+                  0x0000c2          0x4 LONG 0x12f6 DEFINED (__U4ErrInterrupt)?ABSOLUTE (__U4ErrInterrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x0000c4          0x4 LONG 0x12f6 DEFINED (__U4RXInterrupt)?ABSOLUTE (__U4RXInterrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x0000c6          0x4 LONG 0x12f6 DEFINED (__U4TXInterrupt)?ABSOLUTE (__U4TXInterrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x0000c8          0x4 LONG 0x12f6 DEFINED (__SPI3ErrInterrupt)?ABSOLUTE (__SPI3ErrInterrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x0000ca          0x4 LONG 0x12f6 DEFINED (__SPI3Interrupt)?ABSOLUTE (__SPI3Interrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x0000cc          0x4 LONG 0x12f6 DEFINED (__Interrupt92)?ABSOLUTE (__Interrupt92):ABSOLUTE (__DefaultInterrupt)
+                  0x0000ce          0x4 LONG 0x12f6 DEFINED (__Interrupt93)?ABSOLUTE (__Interrupt93):ABSOLUTE (__DefaultInterrupt)
+                  0x0000d0          0x4 LONG 0xb8e0 DEFINED (__PWM1Interrupt)?ABSOLUTE (__PWM1Interrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x0000d2          0x4 LONG 0x12f6 DEFINED (__PWM2Interrupt)?ABSOLUTE (__PWM2Interrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x0000d4          0x4 LONG 0x12f6 DEFINED (__PWM3Interrupt)?ABSOLUTE (__PWM3Interrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x0000d6          0x4 LONG 0x12f6 DEFINED (__PWM4Interrupt)?ABSOLUTE (__PWM4Interrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x0000d8          0x4 LONG 0x12f6 DEFINED (__PWM5Interrupt)?ABSOLUTE (__PWM5Interrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x0000da          0x4 LONG 0x12f6 DEFINED (__PWM6Interrupt)?ABSOLUTE (__PWM6Interrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x0000dc          0x4 LONG 0x12f6 DEFINED (__Interrupt100)?ABSOLUTE (__Interrupt100):ABSOLUTE (__DefaultInterrupt)
+                  0x0000de          0x4 LONG 0x12f6 DEFINED (__Interrupt101)?ABSOLUTE (__Interrupt101):ABSOLUTE (__DefaultInterrupt)
+                  0x0000e0          0x4 LONG 0x12f6 DEFINED (__Interrupt102)?ABSOLUTE (__Interrupt102):ABSOLUTE (__DefaultInterrupt)
+                  0x0000e2          0x4 LONG 0x12f6 DEFINED (__Interrupt103)?ABSOLUTE (__Interrupt103):ABSOLUTE (__DefaultInterrupt)
+                  0x0000e4          0x4 LONG 0x12f6 DEFINED (__Interrupt104)?ABSOLUTE (__Interrupt104):ABSOLUTE (__DefaultInterrupt)
+                  0x0000e6          0x4 LONG 0x12f6 DEFINED (__Interrupt105)?ABSOLUTE (__Interrupt105):ABSOLUTE (__DefaultInterrupt)
+                  0x0000e8          0x4 LONG 0x12f6 DEFINED (__Interrupt106)?ABSOLUTE (__Interrupt106):ABSOLUTE (__DefaultInterrupt)
+                  0x0000ea          0x4 LONG 0x12f6 DEFINED (__Interrupt107)?ABSOLUTE (__Interrupt107):ABSOLUTE (__DefaultInterrupt)
+                  0x0000ec          0x4 LONG 0x12f6 DEFINED (__Interrupt108)?ABSOLUTE (__Interrupt108):ABSOLUTE (__DefaultInterrupt)
+                  0x0000ee          0x4 LONG 0x12f6 DEFINED (__Interrupt109)?ABSOLUTE (__Interrupt109):ABSOLUTE (__DefaultInterrupt)
+                  0x0000f0          0x4 LONG 0x12f6 DEFINED (__Interrupt110)?ABSOLUTE (__Interrupt110):ABSOLUTE (__DefaultInterrupt)
+                  0x0000f2          0x4 LONG 0x12f6 DEFINED (__Interrupt111)?ABSOLUTE (__Interrupt111):ABSOLUTE (__DefaultInterrupt)
+                  0x0000f4          0x4 LONG 0x12f6 DEFINED (__Interrupt112)?ABSOLUTE (__Interrupt112):ABSOLUTE (__DefaultInterrupt)
+                  0x0000f6          0x4 LONG 0x12f6 DEFINED (__Interrupt113)?ABSOLUTE (__Interrupt113):ABSOLUTE (__DefaultInterrupt)
+                  0x0000f8          0x4 LONG 0x12f6 DEFINED (__Interrupt114)?ABSOLUTE (__Interrupt114):ABSOLUTE (__DefaultInterrupt)
+                  0x0000fa          0x4 LONG 0x12f6 DEFINED (__Interrupt115)?ABSOLUTE (__Interrupt115):ABSOLUTE (__DefaultInterrupt)
+                  0x0000fc          0x4 LONG 0x12f6 DEFINED (__Interrupt116)?ABSOLUTE (__Interrupt116):ABSOLUTE (__DefaultInterrupt)
+                  0x0000fe          0x4 LONG 0x12f6 DEFINED (__Interrupt117)?ABSOLUTE (__Interrupt117):ABSOLUTE (__DefaultInterrupt)
+                  0x000100          0x4 LONG 0x12f6 DEFINED (__Interrupt118)?ABSOLUTE (__Interrupt118):ABSOLUTE (__DefaultInterrupt)
+                  0x000102          0x4 LONG 0x12f6 DEFINED (__Interrupt119)?ABSOLUTE (__Interrupt119):ABSOLUTE (__DefaultInterrupt)
+                  0x000104          0x4 LONG 0x12f6 DEFINED (__Interrupt120)?ABSOLUTE (__Interrupt120):ABSOLUTE (__DefaultInterrupt)
+                  0x000106          0x4 LONG 0x12f6 DEFINED (__Interrupt121)?ABSOLUTE (__Interrupt121):ABSOLUTE (__DefaultInterrupt)
+                  0x000108          0x4 LONG 0x12f6 DEFINED (__Interrupt122)?ABSOLUTE (__Interrupt122):ABSOLUTE (__DefaultInterrupt)
+                  0x00010a          0x4 LONG 0x12f6 DEFINED (__Interrupt123)?ABSOLUTE (__Interrupt123):ABSOLUTE (__DefaultInterrupt)
+                  0x00010c          0x4 LONG 0x12f6 DEFINED (__Interrupt124)?ABSOLUTE (__Interrupt124):ABSOLUTE (__DefaultInterrupt)
+                  0x00010e          0x4 LONG 0x12f6 DEFINED (__Interrupt125)?ABSOLUTE (__Interrupt125):ABSOLUTE (__DefaultInterrupt)
+                  0x000110          0x4 LONG 0x12f6 DEFINED (__Interrupt126)?ABSOLUTE (__Interrupt126):ABSOLUTE (__DefaultInterrupt)
+                  0x000112          0x4 LONG 0x12f6 DEFINED (__Interrupt127)?ABSOLUTE (__Interrupt127):ABSOLUTE (__DefaultInterrupt)
+                  0x000114          0x4 LONG 0x12f6 DEFINED (__Interrupt128)?ABSOLUTE (__Interrupt128):ABSOLUTE (__DefaultInterrupt)
+                  0x000116          0x4 LONG 0x12f6 DEFINED (__Interrupt129)?ABSOLUTE (__Interrupt129):ABSOLUTE (__DefaultInterrupt)
+                  0x000118          0x4 LONG 0x12f6 DEFINED (__Interrupt130)?ABSOLUTE (__Interrupt130):ABSOLUTE (__DefaultInterrupt)
+                  0x00011a          0x4 LONG 0x12f6 DEFINED (__Interrupt131)?ABSOLUTE (__Interrupt131):ABSOLUTE (__DefaultInterrupt)
+                  0x00011c          0x4 LONG 0x12f6 DEFINED (__Interrupt132)?ABSOLUTE (__Interrupt132):ABSOLUTE (__DefaultInterrupt)
+                  0x00011e          0x4 LONG 0x12f6 DEFINED (__Interrupt133)?ABSOLUTE (__Interrupt133):ABSOLUTE (__DefaultInterrupt)
+                  0x000120          0x4 LONG 0x12f6 DEFINED (__Interrupt134)?ABSOLUTE (__Interrupt134):ABSOLUTE (__DefaultInterrupt)
+                  0x000122          0x4 LONG 0x12f6 DEFINED (__Interrupt135)?ABSOLUTE (__Interrupt135):ABSOLUTE (__DefaultInterrupt)
+                  0x000124          0x4 LONG 0x12f6 DEFINED (__Interrupt136)?ABSOLUTE (__Interrupt136):ABSOLUTE (__DefaultInterrupt)
+                  0x000126          0x4 LONG 0x12f6 DEFINED (__Interrupt137)?ABSOLUTE (__Interrupt137):ABSOLUTE (__DefaultInterrupt)
+                  0x000128          0x4 LONG 0x12f6 DEFINED (__Interrupt138)?ABSOLUTE (__Interrupt138):ABSOLUTE (__DefaultInterrupt)
+                  0x00012a          0x4 LONG 0x12f6 DEFINED (__Interrupt139)?ABSOLUTE (__Interrupt139):ABSOLUTE (__DefaultInterrupt)
+                  0x00012c          0x4 LONG 0x12f6 DEFINED (__Interrupt140)?ABSOLUTE (__Interrupt140):ABSOLUTE (__DefaultInterrupt)
+                  0x00012e          0x4 LONG 0x12f6 DEFINED (__Interrupt141)?ABSOLUTE (__Interrupt141):ABSOLUTE (__DefaultInterrupt)
+                  0x000130          0x4 LONG 0x12f6 DEFINED (__ICDInterrupt)?ABSOLUTE (__ICDInterrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x000132          0x4 LONG 0x12f6 DEFINED (__JTAGInterrupt)?ABSOLUTE (__JTAGInterrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x000134          0x4 LONG 0x12f6 DEFINED (__Interrupt144)?ABSOLUTE (__Interrupt144):ABSOLUTE (__DefaultInterrupt)
+                  0x000136          0x4 LONG 0x12f6 DEFINED (__PTGSTEPInterrupt)?ABSOLUTE (__PTGSTEPInterrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x000138          0x4 LONG 0x12f6 DEFINED (__PTGWDTInterrupt)?ABSOLUTE (__PTGWDTInterrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x00013a          0x4 LONG 0x12f6 DEFINED (__PTG0Interrupt)?ABSOLUTE (__PTG0Interrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x00013c          0x4 LONG 0x12f6 DEFINED (__PTG1Interrupt)?ABSOLUTE (__PTG1Interrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x00013e          0x4 LONG 0x12f6 DEFINED (__PTG2Interrupt)?ABSOLUTE (__PTG2Interrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x000140          0x4 LONG 0x12f6 DEFINED (__PTG3Interrupt)?ABSOLUTE (__PTG3Interrupt):ABSOLUTE (__DefaultInterrupt)
                     0x0000                  WREG0 = 0x0
                     0x0000                  _WREG0 = 0x0
                     0x0002                  WREG1 = 0x2
@@ -4180,235 +4180,235 @@ __c30_signature
                     0x1c62                  gucPowerFailFlag
                     0x1c63                  gucPowerRestoredFlag
 
-.const              0x99ba        0x614 load address 0x0019ba  
- .const             0x99ba        0x3e8 OBJ\CommandHandler.o
-                    0x99ba                  drive_fw_version
-                    0x9bbe                  constCBCommandList
- .const             0x9da2        0x200 OBJ\eeprom.o
-                    0x9da2                  uEEP_BeadDriveMotorCtrlBlockDefault
-                    0x9e08                  uEEP_M1DriveMotorCtrlBlockDefault
-                    0x9e6e                  uDriveCommonBlockEEPDefault
-                    0x9e7f                  uDriveApplBlockEEPDefault
-                    0x9ea5                  uDriveStatusDefault
-                    0x9ea9                  uDriveInstallationStatusDefault
-                    0x9eaa                  uDriveFaultDefault
-                    0x9eab                  uDriveCommunicationFaultDefault
-                    0x9eac                  uDriveMotorFaultDefault
-                    0x9eae                  uDriveApplicationFaultDefault
-                    0x9eb2                  uDriveProcessorFaultDefault
-                    0x9eb4                  uDriveAnamolyHistoryDefault
-                    0x9ebe                  uDriveStatusFaultBlockEEPDefault
-                    0x9ede                  parameterMap
- .const             0x9fa2         0x20 OBJ\RTDM.o
-                    0x9fa2                  RTDMTxdata
-                    0x9fa7                  RTDMSanityCheckOK
-                    0x9fb1                  RTDMWriteMemoryOK
-                    0x9fb9                  RTDMErrorIllegalFunction
- .const             0x9fc2          0xc OBJ\SpeedController.o
-                    0x9fc2                  phaseValues
+.const              0x99c6        0x614 load address 0x0019c6  
+ .const             0x99c6        0x3e8 OBJ\CommandHandler.o
+                    0x99c6                  drive_fw_version
+                    0x9bca                  constCBCommandList
+ .const             0x9dae        0x200 OBJ\eeprom.o
+                    0x9dae                  uEEP_BeadDriveMotorCtrlBlockDefault
+                    0x9e14                  uEEP_M1DriveMotorCtrlBlockDefault
+                    0x9e7a                  uDriveCommonBlockEEPDefault
+                    0x9e8b                  uDriveApplBlockEEPDefault
+                    0x9eb1                  uDriveStatusDefault
+                    0x9eb5                  uDriveInstallationStatusDefault
+                    0x9eb6                  uDriveFaultDefault
+                    0x9eb7                  uDriveCommunicationFaultDefault
+                    0x9eb8                  uDriveMotorFaultDefault
+                    0x9eba                  uDriveApplicationFaultDefault
+                    0x9ebe                  uDriveProcessorFaultDefault
+                    0x9ec0                  uDriveAnamolyHistoryDefault
+                    0x9eca                  uDriveStatusFaultBlockEEPDefault
+                    0x9eea                  parameterMap
+ .const             0x9fae         0x20 OBJ\RTDM.o
+                    0x9fae                  RTDMTxdata
+                    0x9fb3                  RTDMSanityCheckOK
+                    0x9fbd                  RTDMWriteMemoryOK
+                    0x9fc5                  RTDMErrorIllegalFunction
+ .const             0x9fce          0xc OBJ\SpeedController.o
+                    0x9fce                  phaseValues
 
-.text             0x001fce       0x9f66
- .text            0x001fce       0x5236 OBJ\RampGenerator.o
-                  0x001fce                  initRampGenerator
-                  0x002058                  initProfileData
-                  0x0021ae                  initRampProfileData
-                  0x0033f4                  initJogProfileData
-                  0x003c0a                  initApertureProfileData
-                  0x00433c                  initInchProfileData
-                  0x004a4c                  reAdjustRampPositions
-                  0x005104                  pwmBufferControl
-                  0x005118                  chargeBootstraps
-                  0x005158                  startMotor
-                  0x0051a0                  stopMotor
-                  0x0051c4                  getDriveMovement
-                  0x0051e6                  startRampGenerator
-                  0x0051f6                  stopRampGenerator
-                  0x005204                  monitorSafetySensors
-                  0x0055a4                  updatePhotoElectricDebounceTime
-                  0x0055b2                  resetSensorStatus
-                  0x005600                  initSensorList
-                  0x005762                  readEmergencySensorSts
-                  0x005778                  readMicroSwSensorSts
-                  0x00578e                  readAirSwSensorSts
-                  0x0057a4                  readWrapSwSensorSts
-                  0x0057ba                  readPhotoElecSensorSts
-                  0x0057d0                  readTemperatureSensorSts
-                  0x0057de                  readOriginSensorSts
-                  0x0057ee                  readFourPtSensorSts
-                  0x005804                  readPowerFailSensorSts
-                  0x00581a                  _T4Interrupt
-                  0x0058d8                  _INT0Interrupt
-                  0x005a12                  _INT1Interrupt
-                  0x005a42                  calculateDrift
-                  0x005b2e                  checkPhotoElecObsLevel
-                  0x005be0                  microSwSensorTiggered
-                  0x005c62                  tempSensorTriggered
-                  0x005c90                  igbtOverTempSensorTriggered
-                  0x005ca8                  fourPtLimitSwTriggered
-                  0x005cce                  emergencySensorSwTriggered
-                  0x005cd6                  overcurrentfaultTriggered
-                  0x005cf2                  checkPwmCoastingRequired
-                  0x005d2a                  checkRampTripStatus
-                  0x005db8                  checkRampCommand
-                  0x005f2c                  updateShutterOutputStatus
-                  0x005f52                  executeRampState
-                  0x005fa6                  forceStopShutter
-                  0x005fd4                  startShutter
-                  0x006184                  runShutterToReqSpeed
-                  0x006558                  calcShtrMinDistValue
-                  0x0065dc                  calcShtrStopDistValue
-                  0x006654                  stopShutter
-                  0x0068c4                  executeRampProfile
-                  0x007122                  brakingRequired
- .text            0x007204       0x1566 OBJ\Application.o
-                  0x007204                  initApplication
-                  0x0072a6                  _T6Interrupt
-                  0x0072e4                  _T8Interrupt
-                  0x007314                  getSystemTick
-                  0x007320                  application
-                  0x007328                  updateFaultRecoverFlag
-                  0x0073bc                  updateDriveFaultFlags
-                  0x0074ca                  updateDriveStatusFlags
-                  0x0077ba                  updateSytemCounters
-                  0x0079b0                  checkShutterPosition
-                  0x007b46                  powerUpCalibration
-                  0x007da6                  checkShutterInstallation
-                  0x007e6c                  startApertureHeight
-                  0x007e88                  startInstallation
-                  0x007ee4                  shutterInstallation
- .text            0x00876a       0x10cc OBJ\eeprom.o
-                  0x00876a                  readBYTE
-                  0x00877e                  readWORD
-                  0x008792                  readDWORD
-                  0x0087a6                  writeBYTE
-                  0x0087ec                  writeWORD
-                  0x008820                  writeDWORD
-                  0x008856                  readBlock
-                  0x00886a                  writeBlock
-                  0x00888a                  eraseBlock
-                  0x0088a6                  wrBlUsingWriteByte
-                  0x00891e                  initMotorControlBlock
-                  0x00898c                  initApplBlock
-                  0x0089fa                  testEEPRomData
-                  0x008a26                  initCommonBlock
-                  0x008a94                  initDriveStatusFaultBlock
-                  0x008aee                  getParameter
-                  0x008e62                  setParameter
-                  0x00921a                  checkResetParameter
-                  0x009382                  getBlockStartAndLength
-                  0x009480                  getParamStartAndLength
-                  0x009506                  resetShutterPositions
-                  0x0096ba                  resetAllParameters
-                  0x00977c                  updateCommonBlockCrc
-                  0x0097ba                  updateApplBlockCrc
-                  0x0097f8                  updateMotorBlockCrc
- .text            0x009836        0xef4 OBJ\CommandHandler.o
-                  0x009836                  readCmndFromCommBuffer
-                  0x00987c                  processCMDFromCB
-                  0x0099ee                  initCommandHandler
-                  0x009a1e                  checkSerialTxCompleted
-                  0x009a44                  commandHandler
-                  0x00a2ec                  readCurrSensorState
-                  0x00a35e                  transmitRestartComm
-                  0x00a3a0                  transmitACK
-                  0x00a3c0                  transmitDat
-                  0x00a3d4                  transmitParameter
-                  0x00a51e                  crc16
- .text            0x00a72a        0xc76 OBJ\serial.o
-                  0x00a72a                  initUARTBuffers
-                  0x00a808                  configureUART
-                  0x00a8b2                  getBufferIndex
-                  0x00a8f0                  checkUARTChannel
-                  0x00a92e                  uartCheckFreeTxBuffer
-                  0x00a96a                  uartSendTxBuffer
-                  0x00aa2e                  uartCheckRxBufferOverflowState
-                  0x00aa6c                  uartCheckNotFreeRxBuffer
-                  0x00aaaa                  uartCheckNewCommandReceived
-                  0x00aca4                  getSafeRxBufferIndex
-                  0x00acc8                  getRxBufferBytesRecdFrmStartFrame
-                  0x00ad38                  uartGetRxBuffer
-                  0x00ae28                  uartGetCommand
-                  0x00af70                  genericTXInterruptHandler
-                  0x00b076                  writeCharToUART
-                  0x00b0b4                  readCharFromUART
-                  0x00b0f0                  _U1TXInterrupt
-                  0x00b10e                  genericRXInterruptHandler
-                  0x00b334                  checkDataReadyBit
-                  0x00b370                  _U1RXInterrupt
-                  0x00b38e                  _U1ErrInterrupt
- .text            0x00b3a0        0x600 OBJ\svm.o
-                  0x00b3a0                  svm
-                  0x00b838                  _T7Interrupt
-                  0x00b8d4                  _PWM1Interrupt
- .text            0x00b9a0        0x594 OBJ\spieeprom.o
-                  0x00b9a0                  EEPROMInit
-                  0x00b9aa                  EEPROMWriteByte
-                  0x00ba02                  EEPROMWriteWord
-                  0x00ba74                  EEPROMWriteDword
-                  0x00bae8                  EEPROMWriteBlock
-                  0x00bbfc                  EEPROMEraseBlock
-                  0x00bcfa                  EEPROMReadByte
-                  0x00bd38                  EEPROMReadWord
-                  0x00bd8e                  EEPROMReadDword
-                  0x00bde6                  EEPROMReadBlock
-                  0x00bea8                  EEPROMWriteEnable
-                  0x00beba                  EEPROMWriteDisable
-                  0x00becc                  mEEPROMSSLow
-                  0x00beec                  mEEPROMSSHigh
-                  0x00bf0c                  EEPROMReadStatus
+.text             0x001fda       0x9f66
+ .text            0x001fda       0x5236 OBJ\RampGenerator.o
+                  0x001fda                  initRampGenerator
+                  0x002064                  initProfileData
+                  0x0021ba                  initRampProfileData
+                  0x003400                  initJogProfileData
+                  0x003c16                  initApertureProfileData
+                  0x004348                  initInchProfileData
+                  0x004a58                  reAdjustRampPositions
+                  0x005110                  pwmBufferControl
+                  0x005124                  chargeBootstraps
+                  0x005164                  startMotor
+                  0x0051ac                  stopMotor
+                  0x0051d0                  getDriveMovement
+                  0x0051f2                  startRampGenerator
+                  0x005202                  stopRampGenerator
+                  0x005210                  monitorSafetySensors
+                  0x0055b0                  updatePhotoElectricDebounceTime
+                  0x0055be                  resetSensorStatus
+                  0x00560c                  initSensorList
+                  0x00576e                  readEmergencySensorSts
+                  0x005784                  readMicroSwSensorSts
+                  0x00579a                  readAirSwSensorSts
+                  0x0057b0                  readWrapSwSensorSts
+                  0x0057c6                  readPhotoElecSensorSts
+                  0x0057dc                  readTemperatureSensorSts
+                  0x0057ea                  readOriginSensorSts
+                  0x0057fa                  readFourPtSensorSts
+                  0x005810                  readPowerFailSensorSts
+                  0x005826                  _T4Interrupt
+                  0x0058e4                  _INT0Interrupt
+                  0x005a1e                  _INT1Interrupt
+                  0x005a4e                  calculateDrift
+                  0x005b3a                  checkPhotoElecObsLevel
+                  0x005bec                  microSwSensorTiggered
+                  0x005c6e                  tempSensorTriggered
+                  0x005c9c                  igbtOverTempSensorTriggered
+                  0x005cb4                  fourPtLimitSwTriggered
+                  0x005cda                  emergencySensorSwTriggered
+                  0x005ce2                  overcurrentfaultTriggered
+                  0x005cfe                  checkPwmCoastingRequired
+                  0x005d36                  checkRampTripStatus
+                  0x005dc4                  checkRampCommand
+                  0x005f38                  updateShutterOutputStatus
+                  0x005f5e                  executeRampState
+                  0x005fb2                  forceStopShutter
+                  0x005fe0                  startShutter
+                  0x006190                  runShutterToReqSpeed
+                  0x006564                  calcShtrMinDistValue
+                  0x0065e8                  calcShtrStopDistValue
+                  0x006660                  stopShutter
+                  0x0068d0                  executeRampProfile
+                  0x00712e                  brakingRequired
+ .text            0x007210       0x1566 OBJ\Application.o
+                  0x007210                  initApplication
+                  0x0072b2                  _T6Interrupt
+                  0x0072f0                  _T8Interrupt
+                  0x007320                  getSystemTick
+                  0x00732c                  application
+                  0x007334                  updateFaultRecoverFlag
+                  0x0073c8                  updateDriveFaultFlags
+                  0x0074d6                  updateDriveStatusFlags
+                  0x0077c6                  updateSytemCounters
+                  0x0079bc                  checkShutterPosition
+                  0x007b52                  powerUpCalibration
+                  0x007db2                  checkShutterInstallation
+                  0x007e78                  startApertureHeight
+                  0x007e94                  startInstallation
+                  0x007ef0                  shutterInstallation
+ .text            0x008776       0x10cc OBJ\eeprom.o
+                  0x008776                  readBYTE
+                  0x00878a                  readWORD
+                  0x00879e                  readDWORD
+                  0x0087b2                  writeBYTE
+                  0x0087f8                  writeWORD
+                  0x00882c                  writeDWORD
+                  0x008862                  readBlock
+                  0x008876                  writeBlock
+                  0x008896                  eraseBlock
+                  0x0088b2                  wrBlUsingWriteByte
+                  0x00892a                  initMotorControlBlock
+                  0x008998                  initApplBlock
+                  0x008a06                  testEEPRomData
+                  0x008a32                  initCommonBlock
+                  0x008aa0                  initDriveStatusFaultBlock
+                  0x008afa                  getParameter
+                  0x008e6e                  setParameter
+                  0x009226                  checkResetParameter
+                  0x00938e                  getBlockStartAndLength
+                  0x00948c                  getParamStartAndLength
+                  0x009512                  resetShutterPositions
+                  0x0096c6                  resetAllParameters
+                  0x009788                  updateCommonBlockCrc
+                  0x0097c6                  updateApplBlockCrc
+                  0x009804                  updateMotorBlockCrc
+ .text            0x009842        0xef4 OBJ\CommandHandler.o
+                  0x009842                  readCmndFromCommBuffer
+                  0x009888                  processCMDFromCB
+                  0x0099fa                  initCommandHandler
+                  0x009a2a                  checkSerialTxCompleted
+                  0x009a50                  commandHandler
+                  0x00a2f8                  readCurrSensorState
+                  0x00a36a                  transmitRestartComm
+                  0x00a3ac                  transmitACK
+                  0x00a3cc                  transmitDat
+                  0x00a3e0                  transmitParameter
+                  0x00a52a                  crc16
+ .text            0x00a736        0xc76 OBJ\serial.o
+                  0x00a736                  initUARTBuffers
+                  0x00a814                  configureUART
+                  0x00a8be                  getBufferIndex
+                  0x00a8fc                  checkUARTChannel
+                  0x00a93a                  uartCheckFreeTxBuffer
+                  0x00a976                  uartSendTxBuffer
+                  0x00aa3a                  uartCheckRxBufferOverflowState
+                  0x00aa78                  uartCheckNotFreeRxBuffer
+                  0x00aab6                  uartCheckNewCommandReceived
+                  0x00acb0                  getSafeRxBufferIndex
+                  0x00acd4                  getRxBufferBytesRecdFrmStartFrame
+                  0x00ad44                  uartGetRxBuffer
+                  0x00ae34                  uartGetCommand
+                  0x00af7c                  genericTXInterruptHandler
+                  0x00b082                  writeCharToUART
+                  0x00b0c0                  readCharFromUART
+                  0x00b0fc                  _U1TXInterrupt
+                  0x00b11a                  genericRXInterruptHandler
+                  0x00b340                  checkDataReadyBit
+                  0x00b37c                  _U1RXInterrupt
+                  0x00b39a                  _U1ErrInterrupt
+ .text            0x00b3ac        0x600 OBJ\svm.o
+                  0x00b3ac                  svm
+                  0x00b844                  _T7Interrupt
+                  0x00b8e0                  _PWM1Interrupt
+ .text            0x00b9ac        0x594 OBJ\spieeprom.o
+                  0x00b9ac                  EEPROMInit
+                  0x00b9b6                  EEPROMWriteByte
+                  0x00ba0e                  EEPROMWriteWord
+                  0x00ba80                  EEPROMWriteDword
+                  0x00baf4                  EEPROMWriteBlock
+                  0x00bc08                  EEPROMEraseBlock
+                  0x00bd06                  EEPROMReadByte
+                  0x00bd44                  EEPROMReadWord
+                  0x00bd9a                  EEPROMReadDword
+                  0x00bdf2                  EEPROMReadBlock
+                  0x00beb4                  EEPROMWriteEnable
+                  0x00bec6                  EEPROMWriteDisable
+                  0x00bed8                  mEEPROMSSLow
+                  0x00bef8                  mEEPROMSSHigh
+                  0x00bf18                  EEPROMReadStatus
 
-.dinit            0x00bf34        0x476
- .dinit           0x00bf34        0x476 data_init
+.dinit            0x00bf40        0x476
+ .dinit           0x00bf40        0x476 data_init
 
-.text             0x00c3aa        0xe0e
- .text            0x00c3aa        0x40e OBJ\RTDM.o
-                  0x00c3aa                  RTDM_Start
-                  0x00c3de                  CloseRTDM
-                  0x00c3ee                  RTDM_ProcessMsgs
-                  0x00c6d6                  _U2RXInterrupt
-                  0x00c746                  RTDM_CumulativeCrc16
- .text            0x00c7b8        0x288 OBJ\piNew.o
-                  0x00c7b8                  initPiNew
-                  0x00c88e                  calcPiNew
- .text            0x00ca40        0x15e OBJ\GPIO.o
-                  0x00ca40                  initGPIO
- .text            0x00cb9e         0xee OBJ\Timer.o
-                  0x00cb9e                  initTMR1
-                  0x00cbba                  initTMR2
-                  0x00cbd6                  initTMR3
-                  0x00cbe8                  initTMR4
-                  0x00cc04                  initTMR5
-                  0x00cc26                  initTMR6
-                  0x00cc48                  initTMR7
-                  0x00cc6a                  initTMR8
- .text            0x00cc8c         0xde OBJ\Main.o
-                  0x00cc8c                  main
- .text            0x00cd6a         0xda OBJ\RtdmInterface.o
-                  0x00cd6a                  updateRTDMData
-                  0x00cdd8                  initRTDMD
- .text            0x00ce44         0xba OBJ\CurrentLimit.o
-                  0x00ce44                  initCurrentLimitPI
-                  0x00ce72                  runCurrentLimitPI
-                  0x00ce98                  checkSustainedOvercurrent
- .text            0x00cefe         0xb0 OBJ\ADC.o
-                  0x00cefe                  initADC
-                  0x00cf56                  initADC2
- .text            0x00cfae         0x84 OBJ\MCPWM.o
-                  0x00cfae                  initMCPWM
- .text            0x00d032         0x68 OBJ\Delay.o
-                  0x00d032                  delayUs
-                  0x00d066                  delayMs
- .text            0x00d09a         0x52 OBJ\spi.o
-                  0x00d09a                  writeSPI1
-                  0x00d0b8                  SPI1INTInit
-                  0x00d0e4                  _SPI1Interrupt
- .text            0x00d0ec         0x4c OBJ\DCInjection.o
-                  0x00d0ec                  DCInjectionON
-                  0x00d128                  DCInjectionOFF
- .text            0x00d138         0x42 OBJ\InputCapture.o
-                  0x00d138                  initInputCapture
- .text            0x00d17a         0x3e OBJ\pi.o
-                  0x00d17a                  InitPI
-                  0x00d17a                  InitPI
-                  0x00d17e                  CalcPI
-                  0x00d17e                  CalcPI
+.text             0x00c3b6        0xe0e
+ .text            0x00c3b6        0x40e OBJ\RTDM.o
+                  0x00c3b6                  RTDM_Start
+                  0x00c3ea                  CloseRTDM
+                  0x00c3fa                  RTDM_ProcessMsgs
+                  0x00c6e2                  _U2RXInterrupt
+                  0x00c752                  RTDM_CumulativeCrc16
+ .text            0x00c7c4        0x288 OBJ\piNew.o
+                  0x00c7c4                  initPiNew
+                  0x00c89a                  calcPiNew
+ .text            0x00ca4c        0x15e OBJ\GPIO.o
+                  0x00ca4c                  initGPIO
+ .text            0x00cbaa         0xee OBJ\Timer.o
+                  0x00cbaa                  initTMR1
+                  0x00cbc6                  initTMR2
+                  0x00cbe2                  initTMR3
+                  0x00cbf4                  initTMR4
+                  0x00cc10                  initTMR5
+                  0x00cc32                  initTMR6
+                  0x00cc54                  initTMR7
+                  0x00cc76                  initTMR8
+ .text            0x00cc98         0xde OBJ\Main.o
+                  0x00cc98                  main
+ .text            0x00cd76         0xda OBJ\RtdmInterface.o
+                  0x00cd76                  updateRTDMData
+                  0x00cde4                  initRTDMD
+ .text            0x00ce50         0xba OBJ\CurrentLimit.o
+                  0x00ce50                  initCurrentLimitPI
+                  0x00ce7e                  runCurrentLimitPI
+                  0x00cea4                  checkSustainedOvercurrent
+ .text            0x00cf0a         0xb0 OBJ\ADC.o
+                  0x00cf0a                  initADC
+                  0x00cf62                  initADC2
+ .text            0x00cfba         0x84 OBJ\MCPWM.o
+                  0x00cfba                  initMCPWM
+ .text            0x00d03e         0x68 OBJ\Delay.o
+                  0x00d03e                  delayUs
+                  0x00d072                  delayMs
+ .text            0x00d0a6         0x52 OBJ\spi.o
+                  0x00d0a6                  writeSPI1
+                  0x00d0c4                  SPI1INTInit
+                  0x00d0f0                  _SPI1Interrupt
+ .text            0x00d0f8         0x4c OBJ\DCInjection.o
+                  0x00d0f8                  DCInjectionON
+                  0x00d134                  DCInjectionOFF
+ .text            0x00d144         0x42 OBJ\InputCapture.o
+                  0x00d144                  initInputCapture
+ .text            0x00d186         0x3e OBJ\pi.o
+                  0x00d186                  InitPI
+                  0x00d186                  InitPI
+                  0x00d18a                  CalcPI
+                  0x00d18a                  CalcPI
