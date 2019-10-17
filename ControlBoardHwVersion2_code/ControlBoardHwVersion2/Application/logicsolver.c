@@ -2298,6 +2298,8 @@ void logicSolver(void) {
 				if (gKeysStatus.bits.Key_Stop_pressed)
 				{
 					sucStopKeyControl = 1;
+					// Reset the flag which indicate either Up  and Go UP  delay is in progress
+					if (seShutterOpenCloseCmdState == CmdUpDetectedWaitUpDelay)seShutterOpenCloseCmdState = CmdNotDetected;      //20170328
 				}
 
 				if (gKeysStatus.bits.Wireless_Stop_pressed)
@@ -2540,7 +2542,6 @@ void logicSolver(void) {
 							&& (get_timego( suiTimeStamp)
 									>= ((uint32_t) gu8_godn_oprdelay * 1000))))
 					&& gstLStoCMDr.commandRequestStatus == eINACTIVE) {
-
 				gstLStoCMDr.commandRequestStatus = eACTIVE;
 				gstLStoCMDr.commandToDriveBoard.val =
 						sstLStoCMDrCmdToBeSent.commandToDriveBoard.val;
