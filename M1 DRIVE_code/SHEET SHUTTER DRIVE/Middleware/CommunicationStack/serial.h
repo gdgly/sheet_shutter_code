@@ -142,6 +142,8 @@ void genericRXInterruptHandler(UINT8 channelNumber);
 // TX interrupt handler method for all 4 UART channels 
 void genericTXInterruptHandler(UINT8 channelNumber); 
 
+void generic_UART1_TX_Handler(UINT8 channelNumber);
+
 // fetch character received on the specified channel 
 UINT8 readCharFromUART(UINT8 channelNumber); 
 

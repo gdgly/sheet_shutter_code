@@ -227,15 +227,14 @@ void __attribute__((interrupt, no_auto_psv)) _AD2Interrupt (void)
 //	Added for implementation of power fail functionality on DC Bus for version 4 board- RN- NOV 2015
 void __attribute__((interrupt, no_auto_psv)) _T5Interrupt (void)
 {
-	static unsigned int lsui8Count = 0;
+	//static unsigned int lsui8Count = 0;
     IFS1bits.T5IF = 0;
-	lsui8Count++;
-    Time_uart_count++;     //20170502  201703_No.xx    
+	/*lsui8Count++;
 	if(lsui8Count >= 50)
 	{	//Blink after 1 sec
 		LED_RED = ~LED_RED;
 		lsui8Count = 0;
-	}
+	}*/
 }
 VOID executePowerFailRoutine(VOID)
 {

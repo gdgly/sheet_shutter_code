@@ -38,6 +38,7 @@
 #include "./Common/Typedefs/Typedefs.h"
 #include "./MotorControl/CurrentController/CurrentController.h"
 #include "./Middleware/ParameterDatabase/eeprom.h"
+#include "./Middleware/CommunicationStack/serial.h"
 #include "./Middleware/ParameterDatabase/spieeprom.h"
 #include "./Middleware/ParameterDatabase/spi.h"
 #include "./Common/Delay/Delay.h"
@@ -179,6 +180,7 @@ INT main(VOID)
 #endif
 //        uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorOverCurrent = FALSE;
         application();
+        generic_UART1_TX_Handler(UART_CHANNEL_1);   //20170531
 		ClrWdt();   // clear the WDT to inhibit the device reset
 		//	Commented as DMCI is not to be used for shutter application
         //RTDM_ProcessMsgs();
