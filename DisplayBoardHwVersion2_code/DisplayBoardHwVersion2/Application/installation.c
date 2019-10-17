@@ -866,6 +866,7 @@ uint8_t installationRunTime(void)
 					}
 					else if(gstDriveInstallation.bits.installA101 == 1)
 					{
+						GrRectFIllBolymin(0, 126, 0, 15, 0x00, true);   //add 20161018
 						displayText("A101", 2, 0, false, false, false, false, false, false);
 						GrRectFIllBolymin(0, 126, 16, 31, 0x00, true);
 						//
@@ -880,6 +881,7 @@ uint8_t installationRunTime(void)
 					}
 					else if(gstDriveInstallation.bits.installA102 == 1)
 					{
+						GrRectFIllBolymin(0, 126, 0, 15, 0x00, true);   //add 20161018
 						displayText("A102", 2, 0, false, false, false, false, false, false);
 						GrRectFIllBolymin(0, 126, 16, 31, 0x00, true);
 						//
@@ -1743,7 +1745,7 @@ uint8_t installationMode(void)
 			// Initiate 'Change Shutter Type  command
 			//
 			//if((gstDriveInstallation.bits.installA100 == 1) && (gstUMtoCMdatabase.commandRequestStatus == eINACTIVE) && (gucShutterTypeChangedFlag == 0))
-			if(gstDriveInstallation.bits.installA100 == 1)
+			if((gstDriveInstallation.bits.installA100 == 1)||(gstDriveInstallation.bits.installA101 == 1) ||(gstDriveInstallation.bits.installA102 == 1))  //add 20161017
 			{
 
 				if(psActiveFunctionalBlock == NULL)

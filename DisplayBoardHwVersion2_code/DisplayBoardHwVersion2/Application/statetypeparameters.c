@@ -266,7 +266,7 @@ uint8_t stateTypeParamRunTime()
 						}
 						if(gShutterType == 2)
 						{
-							    if(gstUMtoCMdatabase.getParameterValue == 1250)
+							    if(gstUMtoCMdatabase.getParameterValue == 1200)//1250)     //add 20161018
 								{
 								gCurrentParameterState =0;
 								}
@@ -274,7 +274,7 @@ uint8_t stateTypeParamRunTime()
 								{
 								gCurrentParameterState =1;
 								}
-								else if(gstUMtoCMdatabase.getParameterValue == 2500)
+								else if(gstUMtoCMdatabase.getParameterValue == 2450)//2500)   //add 20161018
 								{
 								gCurrentParameterState =2;
 								}
@@ -326,7 +326,7 @@ uint8_t stateTypeParamRunTime()
 						}
 						if(gShutterType == 2)
 						{
-							if(gstUMtoCMdatabase.getParameterValue == 1250)
+							if(gstUMtoCMdatabase.getParameterValue == 1200)//1250)    //add 20161018
 							{
 								gCurrentParameterState =0;
 							}
@@ -334,7 +334,7 @@ uint8_t stateTypeParamRunTime()
 							{
 								gCurrentParameterState =1;
 							}
-							else if(gstUMtoCMdatabase.getParameterValue == 2500)
+							else if(gstUMtoCMdatabase.getParameterValue == 2450)//2500)    //add 20161018
 							{
 								gCurrentParameterState =2;
 							}
@@ -999,7 +999,7 @@ uint8_t stateTypeParamEnter()
 							}
 							else
 							{
-								gstUMtoCMdatabase.dataToControlBoard.commandData.setParameterValue =1250;
+								gstUMtoCMdatabase.dataToControlBoard.commandData.setParameterValue =1200;//1250;   //add 20161018
 							}
 
 						}
@@ -1031,7 +1031,7 @@ uint8_t stateTypeParamEnter()
 							 }
 							else
 							{
-								gstUMtoCMdatabase.dataToControlBoard.commandData.setParameterValue = 2500;
+								gstUMtoCMdatabase.dataToControlBoard.commandData.setParameterValue = 2450;//2500;    //add 20161018
 							}
 
 						}
@@ -1050,7 +1050,7 @@ uint8_t stateTypeParamEnter()
 						   }
 							else
 							{
-								gstUMtoCMdatabase.dataToControlBoard.commandData.setParameterValue = 1250;
+								gstUMtoCMdatabase.dataToControlBoard.commandData.setParameterValue = 1200;//1250;    //add 20161018
 							}
 
 					   }
@@ -1081,7 +1081,7 @@ uint8_t stateTypeParamEnter()
 							}
 							else
 							{
-								gstUMtoCMdatabase.dataToControlBoard.commandData.setParameterValue = 2500;
+								gstUMtoCMdatabase.dataToControlBoard.commandData.setParameterValue = 2450;//2500;    //add 20161018
 							}
 
 						}

@@ -862,6 +862,47 @@ uint8_t menuRunTime(void)
 	//
 	updateFaultLEDStatus();
 
+    /*************************add 20161017 start****************************************/
+	if(
+			(gstDriveBoardStatus.bits.driveFaultUnrecoverable == 0) &&
+			(gstControlBoardStatus.bits.controlFaultUnrecoverable == 0)
+	)
+	{
+	    //
+	    // Check whether stop key is pressed
+	    //
+	    //if((gKeysStatus.bits.Key_Stop_pressed) && (0 == lsui8OpenState) && (0 == lsui8CloseState))
+		if(gKeysStatus.bits.Key_Stop_pressed)
+	    {
+		    //
+		    // Initiate stop command
+		    //
+		    if(gstUMtoCMoperational.commandRequestStatus == eINACTIVE)
+		    {
+			    gKeysStatus.bits.Key_Stop_pressed = 0;
+			    //lsui8StopState = 1;
+			    gstUMtoCMoperational.commandToControlBoard.bits.stopPressed = 1;
+			    gstUMtoCMoperational.commandRequestStatus = eACTIVE;
+		    }
+	    }
+
+	    if(gKeysStatus.bits.Key_Stop_released)
+	    {
+		   //
+		   // Initiate stop command
+		   //
+		   if(gstUMtoCMoperational.commandRequestStatus == eINACTIVE)
+		   {
+			   gKeysStatus.bits.Key_Stop_released = 0;
+			   //lsui8StopState = 0;
+			   gstUMtoCMoperational.commandToControlBoard.bits.stopReleased = 1;
+			   gstUMtoCMoperational.commandRequestStatus = eACTIVE;
+		   }
+	   }
+	}
+	/*************************add 20161017 end****************************************/
+
+
 	//	Added to implement "disable shutter functionality while we are in settings mode" -RN - Dec 2015
 
 	if(gui8SettingsModeStatus == ACTIVATED)
