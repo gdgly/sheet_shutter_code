@@ -81,7 +81,7 @@ const unsigned char cucUnitmeter[] = "m";
 const unsigned char cucUnitVolt[] = "V";
 const unsigned char cucUnitAmpere[] = "A";
 const unsigned char cucUnitRPM[] = "rpm";
-const unsigned char cucUnitX1000[] = "x1K";
+const unsigned char cucUnitX1000[] = "x1000";  //"x1K";  //add 20161018
 const unsigned char cucUnitS[]="s";
 
 const unsigned char cucYES_NO_State[][40] =
@@ -242,7 +242,7 @@ const stParamDatabase gsParamDatabase[TOTAL_PARAMETERS] =
 		// Shutter Parameters
 		//
 		//{	0	,	 true	,	 false	,	 false	,	eDestControlBoard	,	"A000 クド"		,	eVAL_INT	,	0	,	{	0	,	60	,	(unsigned char *)cucUnitSec				}	,	{	0												,	0	}	 }	,
-		{	0	,	 true	,	 false	,	 false	,	eDestControlBoard	,	"A000 ジョウゲンテイシ タイマ"		,	eVAL_INT	,	0	,	{	0	,	60	,	(unsigned char *)cucUnitSec				}	,	{	0												,	0	},"A000 UP STOP TIME"	 }	,
+		{	0	,	 true	,	 false	,	 false	,	eDestControlBoard	,	"A000 ジョウゲンテイシ タイマ"		,	eVAL_INT	,	0	,	{	1	,	60	,	(unsigned char *)cucUnitSec				}	,	{	0												,	0	},"A000 UP STOP TIME"	 }	,
 		{	1	,	 true	,	 false	,	 false	,	eDestControlBoard	,	"A001 I-ロック ユウセン"			,	eSTATE		,	1	,	{	0	,	0	,	0										}	,	{	(unsigned char *)cucPRIORITY_States				,	2,(unsigned char *)cucPRIORITY_States_english		},"A001 I-LOCK PRIORITY"	 }	,
 		{	2	,	 true	,	 false	,	 false	,	eDestControlBoard	,	"A002 I-ロック ON/OFF"		    ,	eSTATE		,	2	,	{	0	,	0	,	0										}	,	{	(unsigned char *)cucValid_Invalid_State			,	2,(unsigned char *)cucValid_Invalid_State_english	},"A002 I-LOCK VALID"	 }	,
 		{	3	,	 true	,	 false	,	 false	,	eDestControlBoard	,	"A003 UPチエン タイマ"			,	eVAL_INT	,	3	,	{	0	,	10	,	(unsigned char *)cucUnitSec				}	,	{	0												,	0	},"A003 UP DELAY"	 }	,
@@ -264,7 +264,7 @@ const stParamDatabase gsParamDatabase[TOTAL_PARAMETERS] =
 		//
 		// Drive Parameters
 		//
-		{	17	,	 true	,	 false	,	 false	,	eDestControlBoard	,	"A000 ジョウゲンテイシ タイマ"		,	eVAL_INT	,	0	,	{	0	,	60	,	(unsigned char *)cucUnitSec				}	,	{	0												,	0	},"A000 UP STOP TIME"	 }	,
+		{	17	,	 true	,	 false	,	 false	,	eDestControlBoard	,	"A000 ジョウゲンテイシ タイマ"		,	eVAL_INT	,	0	,	{	1	,	60	,	(unsigned char *)cucUnitSec				}	,	{	0												,	0	},"A000 UP STOP TIME"	 }	,
 		{	18	,	 true	,	 false	,	 false	,	eDestControlBoard	,	"A001 I-ロック ユウセン"			,	eSTATE		,	1	,	{	0	,	0	,	0										}	,	{	(unsigned char *)cucPRIORITY_States				,	2,(unsigned char *)cucPRIORITY_States_english	},"A001 I-LOCK PRIORITY"	 }	,
 		{	19	,	 true	,	 false	,	 false	,	eDestControlBoard	,	"A002 I-ロック ON/OFF"		    ,	eSTATE		,	2	,	{	0	,	0	,	0										}	,	{	(unsigned char *)cucValid_Invalid_State			,	2,(unsigned char *)cucValid_Invalid_State_english	},"A002 I-LOCK VALID"	 }	,
 		{	20	,	 true	,	 false	,	 false	,	eDestControlBoard	,	"A003 UPチエン タイマ"			,	eVAL_INT	,	3	,	{	0	,	10	,	(unsigned char *)cucUnitSec				}	,	{	0												,	0	},"A003 UP DELAY"	 }	,
