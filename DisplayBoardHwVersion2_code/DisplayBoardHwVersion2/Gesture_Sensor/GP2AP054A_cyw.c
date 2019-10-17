@@ -1,4 +1,4 @@
-/*
+﻿/*
  * GP2AP054A.C
  *
  *  Created on: 2015�?��7��
@@ -2151,17 +2151,34 @@ void init054A(void)
 
 
           ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);//ʹ�ܿ�F ���?���APB������
+          ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOE);
+
           ROM_SysCtlDelay(1);
-          ROM_GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, GPIO_PIN_0);//OPEN LEVEL
-          ROM_GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, GPIO_PIN_1);//STOP LEVEL
-          ROM_GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, GPIO_PIN_2);//CLOSE LEVEL
-          OPENPLUSE_LEVELHIGH;//��ʼΪ��
-          STOPPLUSE_LEVELHIGH;//��ʼΪ��
-          CLOSEPLUSE_LEVELHIGH;//��ʼΪ��
+          ROM_GPIODirModeSet(GPIO_PORTF_BASE, GPIO_PIN_0,GPIO_DIR_MODE_OUT);
+          ROM_GPIODirModeSet(GPIO_PORTF_BASE, GPIO_PIN_1,GPIO_DIR_MODE_OUT);
+          ROM_GPIODirModeSet(GPIO_PORTF_BASE, GPIO_PIN_2,GPIO_DIR_MODE_OUT);
+
+
+          ROM_GPIOPadConfigSet(GPIO_PORTF_BASE, GPIO_PIN_0, GPIO_STRENGTH_2MA, GPIO_PIN_TYPE_OD);
+          ROM_GPIOPadConfigSet(GPIO_PORTF_BASE, GPIO_PIN_1, GPIO_STRENGTH_2MA, GPIO_PIN_TYPE_OD);
+          ROM_GPIOPadConfigSet(GPIO_PORTF_BASE, GPIO_PIN_2, GPIO_STRENGTH_2MA, GPIO_PIN_TYPE_OD);
+          
+
+         //��ʼΪ��
+          //��ʼΪ��
+          //��ʼΪ��
           //��֪��Ϊʲô��λû�а���DATA�� �����Լ�д�˼Ĵ��?
-           HWREG(GPIO_PORTF_BASE+GPIO_O_LOCK)=0X4C4F434B;//���?
-           HWREG(GPIO_PORTF_BASE+GPIO_O_CR)=0xff;//����
-            HWREG(GPIO_PORTF_BASE+GPIO_O_DEN)=0x07;//��ӦΪ�?ֹ���
+           
+          HWREG(GPIO_PORTF_BASE+GPIO_O_LOCK)=0X4C4F434B;
+          HWREG(GPIO_PORTF_BASE+GPIO_O_CR)=0x07;
+          HWREG(GPIO_PORTF_BASE+GPIO_O_DEN)|=0x07;
+          HWREG(GPIO_PORTF_BASE+GPIO_O_PUR)|=0x07;
+          HWREG(GPIO_PORTF_BASE+GPIO_O_LOCK)=0;
+
+          OPENPLUSE_LEVELHIGH;
+          STOPPLUSE_LEVELHIGH;
+          CLOSEPLUSE_LEVELHIGH;
+
 }
 
 
