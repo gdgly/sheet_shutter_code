@@ -1546,7 +1546,7 @@ VOID calculateDrift(BOOL sts)
                         - uDriveCommonBlockEEP.stEEPDriveCommonBlock.originSensorPosMonitor_A128;
                     rampStatusFlags.rampDriftCalculated = 1;
 */
-					if(hallCounts_bak==0x7FFF)
+					if((hallCounts_bak==0x7FFF)&&(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.originSensorStatus==0))  //20161202
 					{
 						hallCounts_bak = hallCounts;	// 2016/11/16 When Down , Missing Save Origin Position.
                     	hallCounts = uDriveCommonBlockEEP.stEEPDriveCommonBlock.originSensorPosMonitor_A128;
@@ -1853,7 +1853,8 @@ VOID checkRampTripStatus(VOID)
             if(!rampTripSts.rampOrgSenToggled)
             {
                 //set the error flag
-                uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.osNotDetectUP = TRUE;
+                uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.osNotDetectUP = FALSE;
+//              uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.osNotDetectUP = TRUE;
             }
             else
             {
@@ -1887,7 +1888,8 @@ VOID checkRampTripStatus(VOID)
             if(!rampTripSts.rampOrgSenToggled)
             {
                 //set the error flag
-                uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.osNotDetectDown = TRUE;
+                uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.osNotDetectDown = FALSE;
+//              uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.osNotDetectDown = TRUE;
             }
             else
             {

@@ -601,7 +601,7 @@ VOID updateDriveStatusFlags(VOID)
 
         if((rampOutputStatus.shutterCurrentPosition < (uDriveCommonBlockEEP.stEEPDriveCommonBlock.lowerStoppingPos_A101 -    //bug_NO.12?13?14?15
             uDriveApplBlockEEP.stEEPDriveApplBlock.overrunProtection_A112)) && (rampOutputStatus.shutterCurrentPosition >
-            (uDriveCommonBlockEEP.stEEPDriveCommonBlock.apertureHeightPos_A130 +
+            (uDriveCommonBlockEEP.stEEPDriveCommonBlock.apertureHeightPos_A130 +    
             uDriveApplBlockEEP.stEEPDriveApplBlock.overrunProtection_A112)))
         {
             uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterBetweenLowlmtAphgt = TRUE;
@@ -836,7 +836,7 @@ VOID updateSytemCounters(VOID)
 					if((uDriveApplBlockEEP.stEEPDriveApplBlock.correctedFreqAperture_A126 - 1) <= uDriveApplBlockEEP.stEEPDriveApplBlock.apertureHeightOperCount_A604)    //bug_NO.12
 					{
 						//	Added to handle aperture correction when operation count is incremented at upper limit - Jan 2016
-						//lsbStartApertureCorrection = TRUE;
+//						lsbStartApertureCorrection = TRUE; //20161202
                         FLAG_StartApertureCorrection= 1;  //bug_No.12
 						//	Removed to handle aperture correction when operation count is incremented at upper limit - Jan 2016
 						/*
@@ -877,9 +877,12 @@ VOID updateSytemCounters(VOID)
     {
         incrementOperationCnt = TRUE;
 		//bDownApertureCmdRecd = FALSE;
-        bUpApertureCmdRecd = FALSE; //20161201
+        //bUpApertureCmdRecd = FALSE; //20161201
     }
 	//	Added to handle aperture correction when operation count is incremented at upper limit - Jan 2016
+
+//	if(lsbStartApertureCorrection\
+//	   && uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterApertureHeight) //20161202
 	if(lsbStartApertureCorrection\
 	   && uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterLowerLimit)
 //    if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterLowerLimit)
