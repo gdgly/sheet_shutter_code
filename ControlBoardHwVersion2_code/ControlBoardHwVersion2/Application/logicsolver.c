@@ -1915,7 +1915,8 @@ void logicSolver(void) {
 							(
 									((gu8_en_oprdelay == 0 || gu8_en_oprdelay == 2) && gstControlBoardStatus.bits.autoManual == 1) ||
 									((gu8_en_oprdelay == 1 || gu8_en_oprdelay == 2) && gstControlBoardStatus.bits.autoManual == 0)) &&
-									gu8_goup_oprdelay != 0 	&& gstDriveStatus.bits.shutterLowerLimit
+									//gu8_goup_oprdelay != 0 	&& gstDriveStatus.bits.shutterLowerLimit
+									(gu8_goup_oprdelay != 0 ||(gu8_goup_oprdelay==0 && gu8_intlck_valid==0 && gu8_intlck_prior == 1))	&& gstDriveStatus.bits.shutterLowerLimit    //20170406
 							)
 					{
 
@@ -2569,12 +2570,13 @@ void logicSolver(void) {
 				}
 
 			else if (((seShutterOpenCloseCmdState == CmdUpDetectedWaitUpDelay
-					&& (get_timego( suiTimeStamp)
-							>= ((uint32_t) gu8_goup_oprdelay * 1000)))
-					|| (seShutterOpenCloseCmdState
-							== CmdDownDetectedWaitDownDelay
-							&& (get_timego( suiTimeStamp)
-									>= ((uint32_t) gu8_godn_oprdelay * 1000))))
+//					&& (get_timego( suiTimeStamp) >= ((uint32_t) gu8_goup_oprdelay * 1000)))
+
+					&& ((gu8_goup_oprdelay!=0 && (get_timego( suiTimeStamp) >= ((uint32_t) gu8_goup_oprdelay * 1000))) ||                  //20170406
+							(gu8_goup_oprdelay==0 && gu8_intlck_valid==0 && gu8_intlck_prior == 1 &&(get_timego( suiTimeStamp) >= ((uint32_t) 500)))  ))
+
+					|| (seShutterOpenCloseCmdState == CmdDownDetectedWaitDownDelay
+							&& (get_timego( suiTimeStamp) >= ((uint32_t) gu8_godn_oprdelay * 1000))))
 					&& gstLStoCMDr.commandRequestStatus == eINACTIVE) {
 				gstLStoCMDr.commandRequestStatus = eACTIVE;
 				gstLStoCMDr.commandToDriveBoard.val = sstLStoCMDrCmdToBeSent.commandToDriveBoard.val;
