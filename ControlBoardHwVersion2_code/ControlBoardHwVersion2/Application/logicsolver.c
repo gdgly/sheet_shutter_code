@@ -1976,7 +1976,7 @@ void logicSolver(void) {
 							sstLStoCMDrCmdToBeSent.commandToDriveBoard.val = 0;
 							sstLStoCMDrCmdToBeSent.commandToDriveBoard.bits.openShutterApperture = 1;
 							sucLastOpenCommandType = 1;
-							OpenCmdForDistinguish = 0;
+							OpenCmdForDistinguish = 1;    //20170622    201703_No.CQ02
 						}
 					}
 
@@ -2174,7 +2174,7 @@ void logicSolver(void) {
 										gstDriveApplicationFault.bits.microSwitch == 0 &&
 										gstDriveApplicationFault.bits.peObstacle == 0 &&
 										gstControlApplicationFault.bits.startupSafetySensor == 0
-										&& gstControlApplicationFault.bits.ObstacleSensor ==0        //20170621   201703_No.00
+										&& gstControlApplicationFault.bits.ObstacleSensor ==0        //20170621   201703_No.CQ01
 										//(gstDriveStatus.bits.shutterUpperLimit == 1 && gSensorStatus.bits.Sensor_Safety_active == true))
 								) ||
 								 (
