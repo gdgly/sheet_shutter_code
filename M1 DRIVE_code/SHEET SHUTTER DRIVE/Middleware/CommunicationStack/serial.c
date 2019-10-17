@@ -254,7 +254,8 @@ configureUART(UINT8 lucUartNumber)
 
 // gets the index of the buffer array which is in use by the specified UART 
 UINT8 getBufferIndex(UINT8 lucUartNumber)
-{
+{
+
 	UINT8 status = NOT_FOUND; 
 	UINT8 index = 0; 	
 
@@ -824,6 +825,8 @@ void genericTXInterruptHandler(UINT8 channelNumber)
     if(stTxRxBuffer[index].uchTxBufferByteCount == 0)
     {
         PORTCbits.RC4 = 0; //Disable transmitt for UART1 
+        txResetCount = 0;
+        txInProgress = FALSE;
     }
     
     //if(stTxRxBuffer[index].uchTxBufferByteCount == 0)

@@ -413,14 +413,18 @@ VOID initCommandHandler(VOID)
 
 VOID checkSerialTxCompleted(VOID)
 {
-    if((txInProgress == TRUE) && (stTxRxBuffer[0].uchTxBufferByteCount == 0))
+    UINT8 index;
+    
+    //if((txInProgress == TRUE) && (stTxRxBuffer[0].uchTxBufferByteCount == 0))
+    if(txInProgress == TRUE)
     {
         if(++txResetCount > 2)
         {
-            PORTCbits.RC4 = 0;
-            txInProgress = FALSE;
+            txResetCount=0;
+            initCommandHandler();
         }
     }
+    
 }
 /******************************************************************************
  * CommandHandler

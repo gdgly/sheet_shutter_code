@@ -243,6 +243,7 @@ void __attribute__((interrupt, no_auto_psv)) _T6Interrupt (void)
     //calibration
     powerUpCalibration();
 
+    checkSerialTxCompleted();
     if(TIME_CMD_open_shutter)TIME_CMD_open_shutter--;
     if(TIME_CMD_close_shutter)TIME_CMD_close_shutter--;
 }
