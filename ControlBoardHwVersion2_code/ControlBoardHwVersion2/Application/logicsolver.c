@@ -55,7 +55,7 @@
 // 1 == Interlock delay timer enabled for close and relay open operation
 
 
-#define ENTER_CMD_ONLY_ONCE_PER_INSTALLATION_STATE	1
+#define ENTER_CMD_ONLY_ONCE_PER_INSTALLATION_STATE	0        //20160914   bug_No。99
 // 0 = Enter command can go multiple times per installation state
 // 1 = Logic added to make sure Enter command to go single times per installation state
 
@@ -411,13 +411,13 @@ void logicSolver(void) {
 #define ContineousOperationDelay 5000 // 5 Sec
 #endif
 
-#if ENTER_CMD_ONLY_ONCE_PER_INSTALLATION_STATE
+//#if ENTER_CMD_ONLY_ONCE_PER_INSTALLATION_STATE    //20160914   bug_No。99
 
 		static unsigned char sucConfSubStateCmdAllowedFlag = 0;
 		static unsigned char sucConfSubStateCmdAllowedFlagCopy = 0;
 		// 1 = Confirm substate allowed to sent
 		// 0 = Confirm substate not allowed to sent
-#endif
+//#endif                //20160914   bug_No。99
 
 	switch (eLogic_Solver_State)
 	{
