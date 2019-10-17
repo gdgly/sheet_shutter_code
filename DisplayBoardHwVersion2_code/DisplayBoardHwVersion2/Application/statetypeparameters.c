@@ -348,8 +348,6 @@ uint8_t stateTypeParamRunTime()
 					else
 					{
 				      gCurrentParameterState = gstUMtoCMdatabase.getParameterValue;
-				      if(gstUMtoCMdatabase.dataToControlBoard.parameterNumber == 7)     //201806_Bug_No.10
-				    	  menu_gesture_flag_A007= gCurrentParameterState;
 					}
 					gGetParameterState = gCurrentParameterState;
 
@@ -983,6 +981,8 @@ uint8_t stateTypeParamEnter()
 				// Set parameter setting started flag
 				//
 				gStateTypeParamSetStates = PARAM_SET_STARTED;
+			    if(gstUMtoCMdatabase.dataToControlBoard.parameterNumber == 7)     //201806_Bug_No.10
+			    	  menu_gesture_flag_A007= gCurrentParameterState;
 
 				//
 				// Initiate set parameter command

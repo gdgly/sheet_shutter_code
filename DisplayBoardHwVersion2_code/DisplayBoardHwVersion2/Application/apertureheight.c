@@ -140,16 +140,16 @@ uint8_t apertureheightPaint(void)
 	//	usnprintf((char*)lBuff, sizeof(lBuff), "%04d", gCurrentEncoderCount);
 	//	displayText(lBuff, 2, 32, false, false, false, false);
 		setting_flag = 1;
-		if(eINACTIVE == gstUMtoCMdatabase.commandRequestStatus)
-		{
-						gstUMtoCMdatabase.commandToControlBoard.bits.getParameter = 1;
-						gstUMtoCMdatabase.dataToControlBoard.parameterNumber = 130;
-
-						gstUMtoCMdatabase.destination = eDestDriveBoard;
-
-						gstUMtoCMdatabase.commandRequestStatus = eACTIVE;
-		}
-		APERT_TIME = g_ui32TickCount;
+//		if(eINACTIVE == gstUMtoCMdatabase.commandRequestStatus)
+//		{
+//						gstUMtoCMdatabase.commandToControlBoard.bits.getParameter = 1;
+//						gstUMtoCMdatabase.dataToControlBoard.parameterNumber = 130;
+//
+//						gstUMtoCMdatabase.destination = eDestDriveBoard;
+//
+//						gstUMtoCMdatabase.commandRequestStatus = eACTIVE;
+//		}
+//		APERT_TIME = g_ui32TickCount;
 
 		if(gstControlBoardStatus.bits.s3PBS_stoppressd == 1)
 		{
@@ -201,32 +201,32 @@ uint8_t apertureheightRunTime(void)
 	switch(gApertureheightState)
 	{
 	case A_CHECK_SHUTTER_STATE:
-		if( (eACTIVE == gstUMtoCMdatabase.commandRequestStatus) && (1 == gstUMtoCMdatabase.commandToControlBoard.bits.getParameter) )
-		{
-						if(eSUCCESS == gstUMtoCMdatabase.commandResponseStatus)
-						{
-						    if(eACK == gstUMtoCMdatabase.acknowledgementReceived)
-							{
-						    	Ap_his_cyw = gstUMtoCMdatabase.getParameterValue ;
-
-						    	gstUMtoCMdatabase.commandToControlBoard.bits.getParameter = 0;
-						    	gstUMtoCMdatabase.commandRequestStatus = eINACTIVE;
-						    	gstUMtoCMdatabase.commandResponseStatus = eNO_STATUS;
-						    	gstUMtoCMdatabase.acknowledgementReceived = eNO_ACK;
-
-
-							}
-						}
-						else if((gstUMtoCMdatabase.commandResponseStatus ==eFAIL)||(gstUMtoCMdatabase.commandResponseStatus ==eTIME_OUT))
-						{
-							Ap_his_cyw = 0;
-
-							gstUMtoCMdatabase.commandToControlBoard.bits.getParameter = 0;
-							gstUMtoCMdatabase.commandRequestStatus = eINACTIVE;
-							gstUMtoCMdatabase.commandResponseStatus = eNO_STATUS;
-							gstUMtoCMdatabase.acknowledgementReceived = eNO_ACK;
-						}
-		}
+//		if( (eACTIVE == gstUMtoCMdatabase.commandRequestStatus) && (1 == gstUMtoCMdatabase.commandToControlBoard.bits.getParameter) )
+//		{
+//						if(eSUCCESS == gstUMtoCMdatabase.commandResponseStatus)
+//						{
+//						    if(eACK == gstUMtoCMdatabase.acknowledgementReceived)
+//							{
+//						    	Ap_his_cyw = gstUMtoCMdatabase.getParameterValue ;
+//
+//						    	gstUMtoCMdatabase.commandToControlBoard.bits.getParameter = 0;
+//						    	gstUMtoCMdatabase.commandRequestStatus = eINACTIVE;
+//						    	gstUMtoCMdatabase.commandResponseStatus = eNO_STATUS;
+//						    	gstUMtoCMdatabase.acknowledgementReceived = eNO_ACK;
+//
+//
+//							}
+//						}
+//						else if((gstUMtoCMdatabase.commandResponseStatus ==eFAIL)||(gstUMtoCMdatabase.commandResponseStatus ==eTIME_OUT))
+//						{
+//							Ap_his_cyw = 0;
+//
+//							gstUMtoCMdatabase.commandToControlBoard.bits.getParameter = 0;
+//							gstUMtoCMdatabase.commandRequestStatus = eINACTIVE;
+//							gstUMtoCMdatabase.commandResponseStatus = eNO_STATUS;
+//							gstUMtoCMdatabase.acknowledgementReceived = eNO_ACK;
+//						}
+//		}
 		if(gstDriveBoardStatus.bits.driveApertureheight == 1)
 		{
 			gApertureheightState = A_KEY_PRESS_HANDLE;
@@ -1303,9 +1303,10 @@ uint8_t apertureheightRunTime(void)
 							gstUMtoLM_write.commandToLMwrite.bits.changeSettingHistory = 1;
 							gstUMtoLM_write.changeSetting.newValue = A_gCurrentEncoderCount;
 							gstUMtoLM_write.changeSetting.oldValue = Ap_his_cyw;
-							gstUMtoLM_write.changeSetting.parameterNumber = (gsParamDatabase[13].paramName_english[1]-'0')*100 +
-							                                                (gsParamDatabase[13].paramName_english[2]-'0')*10  +
-														                    (gsParamDatabase[13].paramName_english[3]-'0');//gsParamDatabase[gHighlightedItemIndex].paramEEPROMIndex;
+							gstUMtoLM_write.changeSetting.parameterNumber = //(gsParamDatabase[13].paramName_english[1]-'0')*100 +
+							                                                //(gsParamDatabase[13].paramName_english[2]-'0')*10  +
+														                    //(gsParamDatabase[13].paramName_english[3]-'0');
+									                                        gsParamDatabase[gHighlightedItemIndex].paramEEPROMIndex;   //201806_Bug_No.9
 							gstUMtoLM_write.changeSetting.timeStamp = (HWREG(0x400FC000));
 						    writeChangeSettingsHistory();
 

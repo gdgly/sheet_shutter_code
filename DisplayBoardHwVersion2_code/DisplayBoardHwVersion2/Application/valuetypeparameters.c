@@ -1048,7 +1048,8 @@ uint8_t valueTypeParamEnter()
     {
     	gKeysStatus.bits.Key_Enter_pressed = 0;
 
-    	if((gHighlightedItemIndex == 56)||(gHighlightedItemIndex == 13))     //20161208
+    	//if((gHighlightedItemIndex == 56)||(gHighlightedItemIndex == 13))     //20161208
+    	if(gsParamDatabase[gHighlightedItemIndex].paramEEPROMIndex ==130)     //20161208    //201806_Bug_No.9
     	{//ap
     		if(gstUMtoCMoperational.commandRequestStatus == eINACTIVE)
     		{

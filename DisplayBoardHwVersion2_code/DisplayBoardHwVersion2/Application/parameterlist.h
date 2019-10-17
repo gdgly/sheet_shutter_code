@@ -33,15 +33,15 @@
 /****************************************************************************
  *  Macros
 ****************************************************************************/
-#define TOTAL_PARAMETERS			60  //63 //61	//57 //80 //103
+#define TOTAL_PARAMETERS			63  //60  //63 //61	//57 //80 //103          //201806_Bug_No.9
 
-#define TOTAL_PARAMETERS1	17
-#define TOTAL_PARAMETERS2	44	//35 //34 //30	//54 //76
+#define TOTAL_PARAMETERS1	20  //17            201806_Bug_No.9
+#define TOTAL_PARAMETERS2	43	//35 //34 //30	//54 //76
 #define TOTAL_SERVICE_PARAMETERS	 6
 
 #define SHUTTER_PARAM_START_INDEX	0
-#define DRIVE_PARAM_START_INDEX		17
-#define SERVICE_PARAM_START_INDEX	61	//57 //55	//74
+#define DRIVE_PARAM_START_INDEX		20  //17   //201806_Bug_No.9
+#define SERVICE_PARAM_START_INDEX	64  //61	//57 //55	//74   //201806_Bug_No.9
 
 #define NUMBER_OF_LINES		4
 #define MENU_ITEM_HEIGHT	16

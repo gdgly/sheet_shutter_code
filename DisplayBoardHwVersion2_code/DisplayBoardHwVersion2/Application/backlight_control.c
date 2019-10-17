@@ -44,6 +44,7 @@ extern  const uint16_t gu16_backlight_DEF;
 //uint32_t backlight_count_now;
 uint32_t backlight_count_his=0;
 uint8_t Flag_lcdbackon = 0;
+uint32_t Time_LCD_Brush=0;
 
 //uint8_t  Flag_lcd_light_on =0;
 extern uint8_t flag_out_setting_cyw;
@@ -84,6 +85,12 @@ void Set_lcdlightOFF(void)
 		Flag_lcdbackon = 0;
 		//Flag_lcd_light_on = 0;
 	}
+	}
+
+	if(get_timego(Time_LCD_Brush)>60000)  //10ms base   //Bug_201806_No.65
+	{
+		KEY_PRESS_3SEC_STOP_FLAG_CYW=1;
+		Time_LCD_Brush=g_ui32TickCount;
 	}
 
 	if(KEY_PRESS_3SEC_STOP_FLAG_CYW == 1)

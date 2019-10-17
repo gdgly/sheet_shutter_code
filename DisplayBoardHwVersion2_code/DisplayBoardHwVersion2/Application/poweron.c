@@ -156,7 +156,7 @@ extern uint8_t  LCD_DISP_GUESTURE;
 // third byte = Major Version 	fourth byte = Minor version
 //uint32_t gDisplayFirmwareVersion = 0x00000003;
 //uint32_t gDisplayFirmwareVersion = 0x00000501;//20170414      201703_No.29
-uint32_t gDisplayFirmwareVersion = 18060;//20170414      201703_No.29
+uint32_t gDisplayFirmwareVersion = 18064;//20170414      201703_No.29
 
 const uint8_t display_fw[][3]={{16,8,15},{16,9,02},{16,9,9},{16,9,14},{16,10,18},{17,04,14}};
 const uint8_t control_fw[][3]={{16,8,15},{16,9,02},{16,9,9},{16,9,14},{16,10,18}};
