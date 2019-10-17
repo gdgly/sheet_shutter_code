@@ -1666,7 +1666,8 @@ void logicSolver(void) {
 				(gstDriveApplicationFault.bits.emergencyStop == 0) 	&&
 
 				// Check intelock input
-				(ValidateInterlockInput() == 1) &&
+			//	(ValidateInterlockInput() == 1) &&
+				((ValidateInterlockInput() == 1)||((ValidateInterlockInput() == 0) && (gKeysStatus.bits.Key_Open_pressed==1 || gstCMDitoLS.commandDisplayBoardLS.bits.openPressed==1))) &&   //20170407   201703_No.11
 
 				//	Added this check to implement "disable shutter functionality while we are in settings mode" -RN - Dec 2015
 				(guiSettingsModeStatus == 0) &&
@@ -1710,8 +1711,10 @@ void logicSolver(void) {
 					 //(gSensorStatus.bits.Sensor_Obstacle_active && gstControlBoardStatus.bits.autoManual == 1 &&
 					 (gSensorStatus.bits.Sensor_Obstacle_active && gstControlBoardStatus.bits.autoManual == 1 &&  sucStopKeyControl==0 &&       //20161208
 							 //OpenCmdForDistinguish == 0 && gstDriveStatus.bits.shutterMovingUp == 0 && (get_timego(time_ObstacleSensor)>500) && sucStopKeyDisplay==0)   //add 20161020
-							 OpenCmdForDistinguish == 0 && gstDriveStatus.bits.shutterMovingUp == 0 && (get_timego(time_ObstacleSensor)>500) && sucStopKeyDisplay==0 &&(((gstDriveStatus.bits.shutterUpperLimit != 1)&&(gu8_en_apheight_ctl==0))||((gstDriveStatus.bits.shutterApertureHeight != 1)&&(gu8_en_apheight_ctl==1))) )   //20161204
-				)
+							 //OpenCmdForDistinguish == 0 && gstDriveStatus.bits.shutterMovingUp == 0 && (get_timego(time_ObstacleSensor)>500) && sucStopKeyDisplay==0 &&(((gstDriveStatus.bits.shutterUpperLimit != 1)&&(gu8_en_apheight_ctl==0))||((gstDriveStatus.bits.shutterApertureHeight != 1)&&(gu8_en_apheight_ctl==1))) )   //20161204
+							 OpenCmdForDistinguish == 0 && gstDriveStatus.bits.shutterMovingUp == 0 && (get_timego(time_ObstacleSensor)>500) && sucStopKeyDisplay==0 &&
+							 (((gstDriveStatus.bits.shutterUpperLimit != 1)&&(gu8_en_apheight_ctl==0))||((gstDriveStatus.bits.shutterUpperLimit != 1)&&(gu8_en_apheight_ctl==1)&&(gu8_sensor_in==0))||((gstDriveStatus.bits.shutterApertureHeight != 1)&&(gu8_en_apheight_ctl==1))) )   //20170407  201703_No.23
+					 )
 			{
 
 				if (gstCMDitoLS.commandDisplayBoardLS.bits.openPressed)
@@ -2546,11 +2549,11 @@ void logicSolver(void) {
 				)
 		{
 			if( (seShutterOpenCloseCmdState_backup == CmdUpDetectedWaitUpDelay || seShutterOpenCloseCmdState_backup == CmdDownDetectedWaitDownDelay)
-				&&  gSensorStatus.bits.Sensor_InterlockIP_active == true  &&  gSensorStatus.bits.Sensor_Obstacle_active==0 )            //20170330_1   201703_No.16  201703_No.11
+				&&  gSensorStatus.bits.Sensor_InterlockIP_active == true  &&  gSensorStatus.bits.Sensor_Obstacle_active==0 )            //20170330_1   201703_No.16
 				{
 				   seShutterOpenCloseCmdState_backup = CmdNotDetected;
 
-				   if (sucOpenKeyControl==0)
+				   if (sucOpenKeyControl==0)          //  201703_No.11
 				   {
 //           			                 time_ObstacleSensor = g_ui32TickCount;
 //								gstLStoCMDr.commandRequestStatus = eACTIVE;
