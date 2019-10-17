@@ -850,10 +850,12 @@ VOID updateSytemCounters(VOID)
         incrementOperationCnt = TRUE;
 		sShutterAtUpperLimitFlag = FALSE;
     }
-	else if(bDownApertureCmdRecd && !uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterApertureHeight)
+
+	else if(bUpApertureCmdRecd && !uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterApertureHeight)
+//	else if(bDownApertureCmdRecd && !uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterApertureHeight) //20161202
     {
         incrementOperationCnt = TRUE;
-		bDownApertureCmdRecd = FALSE;
+//		bDownApertureCmdRecd = FALSE; //20161202
     }
 	//	Added to handle aperture correction when operation count is incremented at upper limit - Jan 2016
 	if(lsbStartApertureCorrection\
