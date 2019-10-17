@@ -422,6 +422,8 @@ void logicSolver(void) {
 		// 0 = Confirm substate not allowed to sent
 //#endif                //20160914   bug_No。99
 
+		static unsigned char Power_ON_Sensor_Obstacle_active=0;
+
 	switch (eLogic_Solver_State)
 	{
 
@@ -474,13 +476,12 @@ void logicSolver(void) {
 						 gstCMDitoLS.commandRequestStatus == eACTIVE && gstCMDitoLS.commandResponseStatus == eNO_STATUS &&
 						 gstCMDitoLS.commandDisplayBoardLS.bits.startInstallation == 1/*gstCMDitoLS.commandDisplayBoardLS.val == START_INSTALLATION_CMD_FROM_DISPLAY*/
 						 ) ||
-						 (gKeysStatus.bits.Keys3_3secOpStCl_pressed)
+						  (gKeysStatus.bits.Keys3_3secOpStCl_pressed)
 				) &&
 				gstLStoCMDr.commandRequestStatus == eINACTIVE &&
 				sHandlePowerON_Init == HandlePowerOnInit_Home
 			)
 		{
-
 			gstLStoCMDr.commandRequestStatus = eACTIVE;
 			gstLStoCMDr.commandToDriveBoard.val = 0;
 			gstLStoCMDr.commandToDriveBoard.bits.startInstallation = 1;
@@ -512,6 +513,7 @@ void logicSolver(void) {
 //
 //		}
 
+
 		else if (
 				(
 						(
@@ -531,6 +533,7 @@ void logicSolver(void) {
 				(sHandlePowerON_Init == HandlePowerOnInit_Home) &&
 				//	Power on calibration command shall be initiated only when drivePowerOnCalibration bit is set - Added - Feb 2016
 				(gstDriveStatus.bits.drivePowerOnCalibration)
+				&& (gucSystemInitComplete == 3)    //20170609  201703_No.73
 			)
 		{
 
@@ -542,7 +545,31 @@ void logicSolver(void) {
 			sstLStoCMDrCmdSent.commandToDriveBoard.val = gstLStoCMDr.commandToDriveBoard.val;
 
 			sHandlePowerON_Init = HandlePowerOnInit_InstallationCmdSentToDrive;
+
+			if (gSensorStatus.bits.Sensor_1PBS_active)    //20170612  201703_No.60
+			{
+				gSensorStatus.bits.Sensor_1PBS_active = 0;
+			}
+			                                  /******************start 20170609  201703_No.73*******************/
+			if(gKeysStatus.bits.Key_Open_pressed == 1)
+				gKeysStatus.bits.Key_Open_pressed=0;
+			if(gKeysStatus.bits.Key_Close_pressed == 1)
+				gKeysStatus.bits.Key_Close_pressed=0;
+			if(gKeysStatus.bits.Wireless_Open_pressed == 1)
+				gKeysStatus.bits.Wireless_Open_pressed=0;
+			if(gKeysStatus.bits.Wireless_Close_pressed == 1)
+				gKeysStatus.bits.Wireless_Close_pressed=0;
+			if(gSensorStatus.bits.Sensor_Wireless_1PBS_active == 1)
+				gSensorStatus.bits.Sensor_Wireless_1PBS_active=0;
+			if((gSensorStatus.bits.Sensor_Obstacle_active && gstControlBoardStatus.bits.autoManual == 1))
+			{
+				gSensorStatus.bits.Sensor_Obstacle_active=0;
+				Power_ON_Sensor_Obstacle_active=1;
+			}
+			                                 /******************end 20170609  201703_No.73*******************/
+
 		}
+
 		else if (
 					(
 							(
@@ -550,6 +577,7 @@ void logicSolver(void) {
 							 gstCMDitoLS.commandDisplayBoardLS.bits.stopPressed == 1
 							 ) ||
 							 (gKeysStatus.bits.Key_Stop_pressed)
+							 || gKeysStatus.bits.Wireless_Stop_pressed==1   //20170609  201703_No.73
 					) &&
 					gstLStoCMDr.commandRequestStatus == eINACTIVE &&
 					sHandlePowerON_Init == HandlePowerOnInit_Home
@@ -559,6 +587,8 @@ void logicSolver(void) {
 			gstLStoCMDr.commandRequestStatus = eACTIVE;
 			gstLStoCMDr.commandToDriveBoard.val = 0;
 			gstLStoCMDr.commandToDriveBoard.bits.stopPowerOnCalibration = 1;
+			if(gKeysStatus.bits.Key_Stop_pressed==1)  gKeysStatus.bits.Key_Stop_pressed=0;  //20170609  201703_No.73
+			if(gKeysStatus.bits.Wireless_Stop_pressed==1)  gKeysStatus.bits.Wireless_Stop_pressed=0;  //20170609  201703_No.73
 
 			// Update last command sent
 			sstLStoCMDrCmdSent.commandToDriveBoard.val = gstLStoCMDr.commandToDriveBoard.val;
@@ -566,6 +596,7 @@ void logicSolver(void) {
 			sHandlePowerON_Init = HandlePowerOnInit_InstallationCmdSentToDrive;
 
 		}
+
 		else if (
 					(
 							(
@@ -578,6 +609,8 @@ void logicSolver(void) {
 							 	 )
 							 ) /*||
 							 (gKeysStatus.bits.Keys3_3secOpStCl_pressed)*/
+							 || gSensorStatus.bits.Sensor_Obstacle_inactive==1   //20170609  201703_No.73
+							 ||gKeysStatus.bits.Key_Stop_released==1   ||  gKeysStatus.bits.Wireless_Stop_released==1         //20170609  201703_No.73
 					) &&
 					sHandlePowerON_Init == HandlePowerOnInit_Home
 				)
@@ -585,7 +618,21 @@ void logicSolver(void) {
 
 			gstCMDitoLS.commandResponseStatus = eSUCCESS;
 			gstCMDitoLS.acknowledgementReceived = eNACK;
-
+			                             /******************start 20170609  201703_No.73*******************/
+			if(gstCMDitoLS.commandDisplayBoardLS.bits.stopReleased == 1 || gKeysStatus.bits.Key_Stop_released==1   ||  gKeysStatus.bits.Wireless_Stop_released==1)
+			{
+				gstCMDitoLS.commandDisplayBoardLS.bits.stopReleased=0;
+				gKeysStatus.bits.Key_Stop_released=0;
+				gKeysStatus.bits.Wireless_Stop_released=0;
+				if(Power_ON_Sensor_Obstacle_active==1)
+					gSensorStatus.bits.Sensor_Obstacle_active=1;
+			}
+			if(gSensorStatus.bits.Sensor_Obstacle_inactive==1 )
+			{
+				Power_ON_Sensor_Obstacle_active=0;
+				gSensorStatus.bits.Sensor_Obstacle_inactive=0;
+			}
+			                            /******************end 20170609  201703_No.73*******************/
 		}
 		else if ((gstLStoCMDr.commandRequestStatus == eACTIVE) && (sHandlePowerON_Init == HandlePowerOnInit_InstallationCmdSentToDrive))
 		{
@@ -2205,8 +2252,10 @@ void logicSolver(void) {
 									((gu8_en_oprdelay == 1 || gu8_en_oprdelay == 2) && gstControlBoardStatus.bits.autoManual == 0)
 							) &&
 							(gu8_godn_oprdelay != 0) &&
-							(gstDriveStatus.bits.shutterUpperLimit) &&
-							(sstLStoCMDrCmdToBeSent.commandToDriveBoard.bits.closeShutter == 1)
+							/*(gstDriveStatus.bits.shutterUpperLimit) &&
+							(sstLStoCMDrCmdToBeSent.commandToDriveBoard.bits.closeShutter == 1)*/
+							(gstDriveStatus.bits.shutterUpperLimit==1 || gstDriveStatus.bits.shutterApertureHeight==1) &&    //20170613  201703_No.53
+							(sstLStoCMDrCmdToBeSent.commandToDriveBoard.bits.closeShutter == 1 || sstLStoCMDrCmdToBeSent.commandToDriveBoard.bits.closeShutterApperture==1)    //20170613  201703_No.53
 					  )
 					{
 
@@ -2590,7 +2639,8 @@ void logicSolver(void) {
 
 					|| (seShutterOpenCloseCmdState == CmdDownDetectedWaitDownDelay
 							&& (get_timego( suiTimeStamp) >= ((uint32_t) gu8_godn_oprdelay * 1000))))
-					&& gstLStoCMDr.commandRequestStatus == eINACTIVE) {
+					&& gstLStoCMDr.commandRequestStatus == eINACTIVE)
+			{
 				gstLStoCMDr.commandRequestStatus = eACTIVE;
 				gstLStoCMDr.commandToDriveBoard.val = sstLStoCMDrCmdToBeSent.commandToDriveBoard.val;
 				seHandleKeysStartupState = CmdSentWaitingForReply;

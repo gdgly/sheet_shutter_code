@@ -579,6 +579,7 @@ void communicationModuleDisplay(void)
 							case SYSTEM_INIT_COMPLETE:
 
 								gucSystemInitComplete = 1;
+								if(gstDriveStatus.bits.drivePowerOnCalibration)gucSystemInitComplete =3;   //20170609  201703_No.73
 
 								break;
 
@@ -807,7 +808,8 @@ void communicationModuleDisplay(void)
 		if(		gstCMDitoLS.commandResponseStatus == eSUCCESS 	||
 				gstCMDitoLS.commandResponseStatus == eTIME_OUT 	||
 				gstCMDitoLS.commandResponseStatus == eFAIL		||
-				gucSystemInitComplete == 1
+				//gucSystemInitComplete == 1        //20170609  201703_No.73
+				gucSystemInitComplete ==1  ||  gucSystemInitComplete == 3   //20170609  201703_No.73
 		  )
 		{
 
@@ -820,6 +822,13 @@ void communicationModuleDisplay(void)
 						uartSendTxBuffer(UART_display,sucaResponseBuffer,sucResponsePacketLength);
 
 			}
+			                             /************start  20170609  201703_No.73 **********/
+			else if (gucSystemInitComplete == 3)
+			{
+						sucaResponseBuffer[sucResponsePacketLength++] = ACK;
+						uartSendTxBuffer(UART_display,sucaResponseBuffer,sucResponsePacketLength);
+			}
+			                             /************end  20170609  201703_No.73 **********/
 			else if(gstCMDitoLS.commandResponseStatus == eSUCCESS)
 			{
 				if(gstCMDitoLS.acknowledgementReceived == eACK)
