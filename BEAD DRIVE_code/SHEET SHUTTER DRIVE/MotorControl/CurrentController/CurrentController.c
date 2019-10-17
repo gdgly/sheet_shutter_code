@@ -16,9 +16,9 @@
 
 /****************************************************************************
  *  Modification History
- *  
- *  Date                  Name          Comments 
- *  09/04/2014            iGate          Initial Creation                                                               
+ *
+ *  Date                  Name          Comments
+ *  09/04/2014            iGate          Initial Creation
 *****************************************************************************/
 #include <p33Exxxx.h>
 #include "CurrentController.h"
@@ -31,7 +31,7 @@
 #include "./MotorControl/SpeedController/SpeedController.h"
 #include "./Middleware/ParameterDatabase/eeprom.h"
 
-#define CURRENT_FILTER_CONST 70//100//500//1000 
+#define CURRENT_FILTER_CONST 70//100//500//1000
 
 #define MAX_ADC_VOLTAGE     3300
 
@@ -70,7 +70,7 @@ DWORD iTotalInstStateVar;
 DWORD iTotalInstFilter;
 
 /* total current for the PI */
-WORD measurediTotal;  
+WORD measurediTotal;
 
 /* Reference current for PI */
 SHORT refiTotalCurrent;
@@ -144,12 +144,12 @@ VOID checkPhaseCompensation(VOID);
  * RETURNS: none
  *
  * ERRNO: none
- ********************************************************************************/  
+ ********************************************************************************/
 void __attribute__((interrupt, no_auto_psv)) _AD1Interrupt (void)
 {
-    IFS0bits.AD1IF = 0; 
-    
-    iTotalADCCnt = ADC1BUF0;   
+    IFS0bits.AD1IF = 0;
+
+    iTotalADCCnt = ADC1BUF0;
     calculateTotalCurrent();
 	//	Capture DC Bus current
 	//uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.PWMFreqMotorCtrl_A500 = ADC1BUF0;
@@ -162,13 +162,13 @@ void __attribute__((interrupt, no_auto_psv)) _AD2Interrupt (void)
 	//	Timer variables
 	static WORD lsusiTimeSincePowerRestored = 0;
 	static WORD lsusiTimeSincePowerFailed = 0;
-	
+
     IFS1bits.AD2IF = 0;
 	//	Capture DC Bus volatage
 	lfDcBusVoltage = ADC2BUF0 / 2.25;	//	1V = 2.25 counts
-	
+
 	if(
-		(lfDcBusVoltage > minimumWorkingVoltage) && 
+		(lfDcBusVoltage > minimumWorkingVoltage) &&
 		(!gucPowerRestoredFlag)
 		//	Removed to make powerFail error a recoverable type error - Jan 2016
 		/* &&
@@ -177,7 +177,7 @@ void __attribute__((interrupt, no_auto_psv)) _AD2Interrupt (void)
 	{
 		//	Capture event at which power is restored
 		lsusiTimeSincePowerRestored = systemTick;
-		
+
 		gucPowerRestoredFlag = 1;
 		//	Added to make powerFail error a recoverable type error - Jan 2016
 		gucPowerFailFlag = 0;
@@ -242,23 +242,27 @@ VOID executePowerFailRoutine(VOID)
 	//lockApply;
 	//INTCON2bits.GIE = 0; //Disable all interrupts
 	forceStopShutter();
-	
-	uDriveCommonBlockEEP.stEEPDriveCommonBlock.currentValueMonitor_A129 = hallCounts;        
+
+	// 2016/11/16 When Down , Missing Save Origin Position.
+	if(hallCounts_bak==0x7FFF)
+		uDriveCommonBlockEEP.stEEPDriveCommonBlock.currentValueMonitor_A129 = hallCounts;
+	else
+		uDriveCommonBlockEEP.stEEPDriveCommonBlock.currentValueMonitor_A129 = hallCounts_bak;
 	//if installation was in progress then reset shutter positions
 	if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveInstallation)
 	{
 //		uDriveCommonBlockEEP.stEEPDriveCommonBlock.upperStoppingPos_A100 = 0;     //bug_NO.43
-//		uDriveCommonBlockEEP.stEEPDriveCommonBlock.lowerStoppingPos_A101 = 0; 
+//		uDriveCommonBlockEEP.stEEPDriveCommonBlock.lowerStoppingPos_A101 = 0;
 //        uDriveCommonBlockEEP.stEEPDriveCommonBlock.photoElecPosMonitor_A102 = 0;
-		writeWORD(EEP_UPPER_STOPPING_POS, uDriveCommonBlockEEP.stEEPDriveCommonBlock.upperStoppingPos_A100); 
-		writeWORD(EEP_LOWER_STOPPING_POS, uDriveCommonBlockEEP.stEEPDriveCommonBlock.lowerStoppingPos_A101); 
-		writeWORD(EEP_PHOTOELEC_POS, uDriveCommonBlockEEP.stEEPDriveCommonBlock.photoElecPosMonitor_A102); 
-		writeWORD(EEP_ORIGIN_SENS_POS, uDriveCommonBlockEEP.stEEPDriveCommonBlock.originSensorPosMonitor_A128); 
-	}        
+		writeWORD(EEP_UPPER_STOPPING_POS, uDriveCommonBlockEEP.stEEPDriveCommonBlock.upperStoppingPos_A100);
+		writeWORD(EEP_LOWER_STOPPING_POS, uDriveCommonBlockEEP.stEEPDriveCommonBlock.lowerStoppingPos_A101);
+		writeWORD(EEP_PHOTOELEC_POS, uDriveCommonBlockEEP.stEEPDriveCommonBlock.photoElecPosMonitor_A102);
+		writeWORD(EEP_ORIGIN_SENS_POS, uDriveCommonBlockEEP.stEEPDriveCommonBlock.originSensorPosMonitor_A128);
+	}
 	writeWORD(EEP_CURRENT_VAL_MONITOR, uDriveCommonBlockEEP.stEEPDriveCommonBlock.currentValueMonitor_A129);
-	writeWORD(EEP_ORIGIN_SENS_DRIFT_POS, uDriveCommonBlockEEP.stEEPDriveCommonBlock.originSensorDrift_A637); 
-	updateCommonBlockCrc(); 
-	
+	writeWORD(EEP_ORIGIN_SENS_DRIFT_POS, uDriveCommonBlockEEP.stEEPDriveCommonBlock.originSensorDrift_A637);
+	updateCommonBlockCrc();
+
 	writeDWORD(EEP_OPERATION_COUNT,uDriveApplBlockEEP.stEEPDriveApplBlock.operationCount_A600);
 	//writeWORD(EEP_MAINTENANCE_COUNT_VALUE,uDriveApplBlockEEP.stEEPDriveApplBlock.maintenanceCountValue_A636);
 	//writeDWORD(EEP_APERTURE_HEIGHT_OP_COUNT,uDriveApplBlockEEP.stEEPDriveApplBlock.apertureHeightOperCount_A604);
@@ -277,15 +281,15 @@ VOID executePowerFailRoutine(VOID)
  * RETURNS: none
  *
  * ERRNO: none
- ********************************************************************************/  
+ ********************************************************************************/
 void __attribute__((interrupt, no_auto_psv)) _T2Interrupt (void)
 {
 	IFS0bits.T2IF = 0;
-    
+
     checkPhaseCompensation();
-    
+
     runCurrentLimitPI();
-    
+
     if( rampStatusFlags.rampCurrentControlRequired)
         currentControl();
 }
@@ -296,31 +300,31 @@ VOID calculateTotalCurrent(VOID)
     {
         iTotalOffsetTot += iTotalADCCnt;
         if(++measureItotalOffsetCnt >= CALCULATE_ADC_OFFSET_CNT)
-        {            
-            iTotalOffset = __builtin_divud(iTotalOffsetTot,measureItotalOffsetCnt);     
-            adcCntToAmps = __builtin_divud(ADC_MEASURABLE_CURRENT_VALUE, (ADC_CNT_AVAILABLE - iTotalOffset)); 
+        {
+            iTotalOffset = __builtin_divud(iTotalOffsetTot,measureItotalOffsetCnt);
+            adcCntToAmps = __builtin_divud(ADC_MEASURABLE_CURRENT_VALUE, (ADC_CNT_AVAILABLE - iTotalOffset));
             currControlFlag.offsetCalulated = 1;
         }
     }
-    else 
-    {   
+    else
+    {
         iTotalInst = iTotalADCCnt;
-        //check if we got some incorrect value then do not calculate current        
+        //check if we got some incorrect value then do not calculate current
         if(iTotalInst > iTotalOffset)
         {
             iTotalInst -= iTotalOffset;
             filterTotalCurrent();
         }
-    } 
+    }
 }
 
 VOID filterTotalCurrent(VOID)
-{    
+{
     iTotalInstStateVar+= ((iTotalInst - iTotalInstFilter)*(iTotalInstFilterConstant));
-    iTotalInstFilter = iTotalInstStateVar>>15;    
-    
+    iTotalInstFilter = iTotalInstStateVar>>15;
+
     //measurediTotal = iTotalInstFilter * ADC_CNT_TO_CURR_FACTOR;
-    measurediTotal = iTotalInstFilter * adcCntToAmps;    
+    measurediTotal = iTotalInstFilter * adcCntToAmps;
     feedbackCurrent = measurediTotal;
 }
 
@@ -328,14 +332,14 @@ VOID checkPhaseCompensation(VOID)
 {
     WORD phaseIncAng = 0;
 //    SHORT tmpDiff = 0;
-    
+
     curriTotal = measurediTotal;
-    //phase compensation should be applied when measured current is more than 300 mA    
+    //phase compensation should be applied when measured current is more than 300 mA
     if(curriTotal > NO_LOAD_CURRENT)
     {
         //check difference between current and previous total current value
         diffiTotal = curriTotal - previTotal;
-        //if difference is positive side then icnrement phase, if difference is negative side then 
+        //if difference is positive side then icnrement phase, if difference is negative side then
         //decrement phse
         if(diffiTotal < 0)
         {
@@ -372,7 +376,7 @@ VOID checkPhaseCompensation(VOID)
 /******************************************************************************
  * intitCurrentController
  *
- * The intitCurrentController gives interface of speed controller to other modules. 
+ * The intitCurrentController gives interface of speed controller to other modules.
  * speed control mode.
  *
  * PARAMETER REQ: none
@@ -380,16 +384,16 @@ VOID checkPhaseCompensation(VOID)
  * RETURNS: none
  *
  * ERRNO: none
- ********************************************************************************/ 
+ ********************************************************************************/
 VOID intitCurrentController(VOID)
 {
-    initCurrentControllerVariables();    
+    initCurrentControllerVariables();
 }
 
 /******************************************************************************
  * initCurrentControllerVariables
  *
- * The initCurrentControllerVariables inititializes all the variables used by 
+ * The initCurrentControllerVariables inititializes all the variables used by
  * current control mode.
  *
  * PARAMETER REQ: none
@@ -397,15 +401,15 @@ VOID intitCurrentController(VOID)
  * RETURNS: none
  *
  * ERRNO: none
- ********************************************************************************/ 
+ ********************************************************************************/
 VOID initCurrentControllerVariables(VOID)
 {
-    iTotalADCCnt = 0;   
-    iTotalInst = 1; 
+    iTotalADCCnt = 0;
+    iTotalInst = 1;
     iTotalInstFilterConstant = CURRENT_FILTER_CONST;
     iTotalInstStateVar = ((DWORD)1 << 15);
-    iTotalInstFilter = 1;                
-    
+    iTotalInstFilter = 1;
+
     iTotalADCCntAcc = 0;
     iTotalADCCntAccSmpls = 0;
     calcTotalCurrentFlag = 0;
@@ -428,46 +432,46 @@ VOID initCurrentControllerVariables(VOID)
  * RETURNS: none
  *
  * ERRNO: none
- ********************************************************************************/ 
-VOID currentControl(VOID) 
-{   
+ ********************************************************************************/
+VOID currentControl(VOID)
+{
     currentPIparms.qInRef = refiTotalCurrent;
-    currentPIparms.qInMeas = measurediTotal;  
+    currentPIparms.qInMeas = measurediTotal;
 
     currentPIparms.qOutMax = currentLimitClamp;
-    currentPIparms.qOutMin = 0;  
-    
+    currentPIparms.qOutMin = 0;
+
     if(rampStatusFlags.rampMaintainHoldingDuty)
     {
         if(measuredSpeed < (SHUTTER_SPEED_MIN_STOP + 100))
         {
-            controlOutput += HOLDING_DUTY_INC; 
+            controlOutput += HOLDING_DUTY_INC;
         }
         else
         {
             rampStatusFlags.rampMaintainHoldingDuty = 0;
             currentPIparms.qInRef = measurediTotal;
-            currentPIparms.qInMeas = measurediTotal;  
+            currentPIparms.qInMeas = measurediTotal;
             currentPIparms.qdSum = (LONG)controlOutput << 15;
             currentPIparms.qOut = controlOutput;
-            calcPiNew(&currentPIparms);            
+            calcPiNew(&currentPIparms);
             if(flags.currentControl)
             {
                 controlOutput = currentPIparms.qOut;
                 speedPIparms.qdSum = currentPIparms.qdSum;
             }
-        }  
+        }
     }
     else
     {
-        calcPiNew(&currentPIparms);        
+        calcPiNew(&currentPIparms);
         if(flags.currentControl)
         {
             controlOutput = currentPIparms.qOut;
             speedPIparms.qdSum = currentPIparms.qdSum;
         }
     }
-    
+
     //calculate percentage duty
     ctrlOpPercent = __builtin_divud(((unsigned long)controlOutput*100),MAX_CURRENT_PI);
 }
@@ -482,39 +486,39 @@ VOID currentControl(VOID)
  * RETURNS: none
  *
  * ERRNO: none
- ********************************************************************************/ 
+ ********************************************************************************/
 VOID measureADCOffset(VOID)
 {
-    initCurrentControllerVariables();    
+    initCurrentControllerVariables();
     currControlFlag.offsetCalulated = 0;
     iTotalOffset = 0;
     measureItotalOffsetCnt = 0;
     iTotalOffsetTot = 0;
     chargeBootstraps();
-    
+
     TMR2 = 0;			/* Reset timer 2 for current control */
     T2CONbits.TON = 1;
-    IFS0bits.T2IF = 0;		/* Clear timer 2 flag */    
-    IEC0bits.T2IE = 1;		/* Enable interrupts for timer 2 */       
+    IFS0bits.T2IF = 0;		/* Clear timer 2 flag */
+    IEC0bits.T2IE = 1;		/* Enable interrupts for timer 2 */
     PDC1 = PHASE1 / 2;	/* Initialize as 0 voltage */
 	PDC2 = PHASE2 / 2;
-	PDC3 = PHASE3 / 2;	
-//    TMR7 = 0; 
+	PDC3 = PHASE3 / 2;
+//    TMR7 = 0;
 //    IFS3bits.T7IF = 0;
 //    IEC3bits.T7IE = 1;
 //    T7CONbits.TON = 1;
     IFS5bits.PWM1IF = 0;
     IEC5bits.PWM1IE = 1;
-    PTCONbits.PTEN = 1;	    // start PWM 
+    PTCONbits.PTEN = 1;	    // start PWM
     //pwmBufferControl(ENABLE);
-	AD1CON1bits.ADON = 1;   //turn ON ADC module 
+	AD1CON1bits.ADON = 1;   //turn ON ADC module
     delayMs(10);        /* wait for offset calculation */
     //pwmBufferControl(DISABLE);
-    PTCONbits.PTEN = 0;	
+    PTCONbits.PTEN = 0;
     T7CONbits.TON = 0;
     T2CONbits.TON = 0;
-    TMR2 = 0;	 
-	IEC0bits.T2IE = 0;	    
+    TMR2 = 0;
+	IEC0bits.T2IE = 0;
     TMR7 = 0;
     IEC3bits.T7IE = 0;
 }

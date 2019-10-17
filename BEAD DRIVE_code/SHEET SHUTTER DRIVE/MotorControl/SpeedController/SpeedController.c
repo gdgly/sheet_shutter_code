@@ -149,6 +149,7 @@ DWORD periodStateVar;
 
 //Observed hall counts for one hall sensor (IC2) is 155, 148, 151
 SHORT hallCounts = 0;
+SHORT hallCounts_bak = 0x7FFF;
 
 /* Variable used by inbuilt division function */
 UINT tmpQu = 0;
@@ -242,6 +243,8 @@ void __attribute__((interrupt, no_auto_psv)) _T1Interrupt (void)
 				{
 					uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.motorCableFault = TRUE;
 					forceStopShutter(); // stop motor by applying mechanical brake
+					// 2016/11/16 When Down , Missing Save Origin Position.
+					hallCounts_bak = 0x7FFF;
 				}
 			}
 		} //else if (1 == lsCnt1msStarted) // timer started
@@ -900,6 +903,8 @@ VOID speedControl(VOID)
 #ifdef MOTOR_750W_BD
             if(measuredSpeed<450)   //500  //20161018
             {speedPIparms.qOutMax = 7000;}//10000;//22000;//17000;//currentLimitClamp;20160915
+            else if(measuredSpeed<1000)   //500  //20161108
+            {speedPIparms.qOutMax = 12000;}//10000;//22000;//17000;//currentLimitClamp;20161108
             else{speedPIparms.qOutMax = 17000;}
             speedPIparms.qOutMin = -(currentLimitClamp);
 #endif
@@ -926,7 +931,7 @@ VOID speedControl(VOID)
 				{
 					controlOutput = 7000;
 				}
-								
+
         }
         else
         {

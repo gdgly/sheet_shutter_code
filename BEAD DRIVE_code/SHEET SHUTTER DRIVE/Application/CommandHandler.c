@@ -88,7 +88,7 @@
 #define EXPECTED_CRC_CLEAN_ERROR                0xB253
 #define EXPECTED_CRC_APERTUREHEIGHT                0x7292
 
-CONST UINT32 drive_fw_version = 0x00000401;  //bug_NO.64
+CONST UINT32 drive_fw_version = 0x00000404;  //bug_NO.64
 
 
 enum {
@@ -496,8 +496,8 @@ VOID commandHandler(VOID)
                             inputFlags.value = STOP_SHUTTER;
                             rampCurrentState = RAMP_STOP;
                             gui8StopKeyPressed = 1;
-                            stopShutter();  
-                        /*************add 20161017 end************************/    
+                            stopShutter();
+                        /*************add 20161017 end************************/
                     break;
                 case  start_apertureHeight:
                        startApertureHeight();
@@ -505,8 +505,8 @@ VOID commandHandler(VOID)
                             inputFlags.value = STOP_SHUTTER;
                             rampCurrentState = RAMP_STOP;
                             gui8StopKeyPressed = 1;
-                            stopShutter();      
-                       /*************add 20161017 end************************/     
+                            stopShutter();
+                       /*************add 20161017 end************************/
                     break;
                 case confirm_sub_state_install:
                     if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveInstallation)
@@ -648,6 +648,7 @@ VOID commandHandler(VOID)
                     }
                     break;
                 case close_shutter:
+                case close_shutter_aperture_height:			// 2016/11/28 ADD close aperture height NG
                     //If shutter is at lower limit then do not process command
                     if((TIME_CMD_open_shutter==0)&&(TIME_CMD_close_shutter==0))
                     {
@@ -725,6 +726,7 @@ VOID commandHandler(VOID)
                     }
 
                     break;
+/* 2016/11/28 close aperture height NG
                 case close_shutter_aperture_height:
                     FLAG_CMD_open_shutter=0;
                     //If shutter is at upper limit then do not process command
@@ -766,7 +768,7 @@ VOID commandHandler(VOID)
                     }
                     else status =no_reply_reqd;
                     break;
-
+*/
                 case close_shutter_ignoring_sensors:
 
                     if(!uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterLowerLimit)
