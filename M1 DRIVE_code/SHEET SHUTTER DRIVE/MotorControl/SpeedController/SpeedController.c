@@ -198,7 +198,7 @@ void __attribute__((interrupt, no_auto_psv)) _T1Interrupt (void)
 
 // 2016/3/3 Motor Stal & PWM Cost
 #ifdef BUG_No88_M2overcurrentfault
-     if(cnt_motor_stop>10) 
+     if(cnt_motor_stop>5) 
      {
         if (requiredDirection == CW || requiredDirection== CCW)
         {
