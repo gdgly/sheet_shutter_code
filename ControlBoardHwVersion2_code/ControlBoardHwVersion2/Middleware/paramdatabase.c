@@ -129,9 +129,9 @@ const uint8_t gu8_opr_cntres_DEF = 0;
 const uint8_t gu8_init_valueset_DEF = 0;
 const uint8_t gu8_motor_shaft_ctrl_DEF = 1;
 const uint32_t gu32_opr_cnt_in_DEF = 0;
-const uint8_t gu8_sensor_in_DEF = 0;
-const uint8_t gu8_1pb_in_DEF = 0;
-const uint8_t gu8_3pb_in_DEF = 0;
+const uint8_t gu8_sensor_in_DEF = 1;//2016 09 21 modify 0 to 1
+const uint8_t gu8_1pb_in_DEF = 1;//2016 09 21 modify 0 to 1
+const uint8_t gu8_3pb_in_DEF = 1;//2016 09 21 modify 0 to 1
 const uint8_t gu8_multi_fn_out1_DEF = 0;
 const uint8_t gu8_multi_fn_out2_DEF = 1;
 const uint8_t gu8_init_sheetpospar_DEF = 0;
@@ -145,7 +145,7 @@ const uint8_t gu8_en_apheight_ctl_DEF = 0;
 // Format:
 // First byte = Not used, 		Second Byte = Not used
 // Third byte = Major Version, 	Fourth byte = Minor version
-const uint32_t gu32_ctrl_fwver_DEF = 0x00000302; //Read Default Firmware Version
+const uint32_t gu32_ctrl_fwver_DEF = 0x00000303; //Read Default Firmware Version
 
 // In dbhandler.c the gu32_ctrl_fwver_DEF variable is used to send response to the display board for version information
 //*******************************************
