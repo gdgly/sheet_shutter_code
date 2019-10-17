@@ -2099,11 +2099,11 @@ void logicSolver(void) {
 
 					// if Close operation setting should be enabled, then trigger JOG Close command
 					if (
-							(gu8_close_oprset == 1) &&
+							(gu8_close_oprset == 1) /*&&                             //20161012
 							(gstDriveApplicationFault.bits.microSwitch == 1 ||
 							 gstDriveApplicationFault.bits.wraparound == 1 ||
 							 gstDriveApplicationFault.bits.peObstacle == 1  ||
-							 gstControlApplicationFault.bits.startupSafetySensor == 1)
+							 gstControlApplicationFault.bits.startupSafetySensor == 1)*/
 					   )
 					{
 
