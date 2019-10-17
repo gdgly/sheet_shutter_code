@@ -891,7 +891,11 @@ VOID commandHandler(VOID)
                             }
 #ifdef BUG_No76or73_powerUpCalib_osToggle      //20170607  201703_No.76 or 73
                             if(paramIndex == 537)
+                            {
                                 Flag_powerUpCalib_osToggle=1;
+                                if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.osDetectOnUp == TRUE)
+                                    uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.osDetectOnUp = FALSE;
+                            }
 #endif
                            if((paramIndex == 605)&&(FLAG_StartApertureCorrection>0))
                             {
