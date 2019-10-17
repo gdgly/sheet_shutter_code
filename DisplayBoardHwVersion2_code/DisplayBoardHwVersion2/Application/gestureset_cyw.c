@@ -113,7 +113,7 @@ uint8_t gestureRunTime(void)
 uint8_t gesturePaint(void)
 {
    char test_test[]="ƒ†ƒEƒRƒE";
-    test_test[0] = test_test[0];
+    //test_test[0] = test_test[0];
 	GrRectFIllBolymin(0, 126, 0, 63, 0x00, true);
 
     //displayText("ENABLE GESTICULATORY", 2, 0, false, false, false, false,false,true);

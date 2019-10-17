@@ -49,6 +49,7 @@
 #include "ledhandler.h"
 #include "parameterlist.h"
 #include "Middleware/serial.h"
+#include "Gesture_Sensor/ram_cyw.h"
 /****************************************************************************/
 
 /****************************************************************************
@@ -105,6 +106,8 @@
 #define WAIT_FOR_SHUTTERTYPE                25
 #define SEND_POWER_ON_CMD					26
 #define WAIT_FOR_POWER_ON_CMD_RESPONSE		27
+#define GET_SHUTTER_A007					28
+#define WAIT_FOR_SHUTTERA007                29
 
 
 #define POWER_ON_SEQ_INTERSCREEN_DELAY		100
@@ -153,7 +156,7 @@ extern uint8_t  LCD_DISP_GUESTURE;
 // third byte = Major Version 	fourth byte = Minor version
 //uint32_t gDisplayFirmwareVersion = 0x00000003;
 //uint32_t gDisplayFirmwareVersion = 0x00000501;//20170414      201703_No.29
-uint32_t gDisplayFirmwareVersion = 17110;//20170414      201703_No.29
+uint32_t gDisplayFirmwareVersion = 18060;//20170414      201703_No.29
 
 const uint8_t display_fw[][3]={{16,8,15},{16,9,02},{16,9,9},{16,9,14},{16,10,18},{17,04,14}};
 const uint8_t control_fw[][3]={{16,8,15},{16,9,02},{16,9,9},{16,9,14},{16,10,18}};
@@ -312,10 +315,71 @@ uint8_t powerOnRunTime()
 		displayText("BX", 58, 0, false, false, false, false,true,false);
 		GrLineDrawHorizontalBolymin(0, 126, 14, false);	// line draw function
 
-		gUserModuleState = GET_SHUTTER_TYPE;
+		gUserModuleState = GET_SHUTTER_A007;   //201806_Bug_No.10
 
 		break;
 	}
+
+	case GET_SHUTTER_A007 :    //201806_Bug_No.10
+	{
+		//
+		// Start GET_PARAMETER command for input parameter as A007
+		//
+		if((gstUMtoCMdatabase.commandRequestStatus == eINACTIVE) && (gstUMtoCMdatabase.commandResponseStatus == eNO_STATUS))
+		{
+
+			gstUMtoCMdatabase.dataToControlBoard.parameterNumber =7;  //A007
+			gstUMtoCMdatabase.commandToControlBoard.bits.getParameter = 1;
+			gstUMtoCMdatabase.destination = eDestControlBoard;
+			gstUMtoCMdatabase.commandRequestStatus = eACTIVE;
+			gUserModuleState = WAIT_FOR_SHUTTERA007;
+		}
+
+		break;
+	}
+	case WAIT_FOR_SHUTTERA007:   //201806_Bug_No.10
+		if(eACTIVE == gstUMtoCMdatabase.commandRequestStatus)
+		{
+			if(eSUCCESS == gstUMtoCMdatabase.commandResponseStatus)
+			{
+				if(eACK == gstUMtoCMdatabase.acknowledgementReceived)
+				{
+					menu_gesture_flag_A007 =  gstUMtoCMdatabase.getParameterValue;
+					//
+				    // Reset command bit
+					//
+					gstUMtoCMdatabase.commandToControlBoard.bits.getParameter = 0;
+
+					//
+					// Reset Request and response status and acknowledgment status
+					//
+					gstUMtoCMdatabase.commandRequestStatus = eINACTIVE;
+					gstUMtoCMdatabase.commandResponseStatus = eNO_STATUS;
+					gstUMtoCMdatabase.acknowledgementReceived = eNO_ACK;
+
+					gUserModuleState = GET_SHUTTER_TYPE;
+				}
+			}
+
+			else if((gstUMtoCMdatabase.commandResponseStatus ==eTIME_OUT)||
+					(gstUMtoCMdatabase.commandResponseStatus ==eFAIL))
+			{
+				gstUMtoCMdatabase.commandToControlBoard.bits.getParameter = 0;
+
+				//
+				// Reset Request and response status and acknowledgment status
+				//
+				gstUMtoCMdatabase.commandRequestStatus = eINACTIVE;
+				gstUMtoCMdatabase.commandResponseStatus = eNO_STATUS;
+				gstUMtoCMdatabase.acknowledgementReceived = eNO_ACK;
+
+				gUserModuleState = GET_SHUTTER_A007;
+
+			}
+			//20170414      201703_No.4 end
+		}
+
+	break;
 
 	case GET_SHUTTER_TYPE :
 	{

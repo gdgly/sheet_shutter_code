@@ -41,6 +41,7 @@
 #include "logger.h"
 #include "parameterlist.h"
 #include "Gesture_Sensor/GP2AP054A_cyw.h"//add cyw
+#include "Gesture_Sensor/ram_cyw.h"
 
 /****************************************************************************/
 
@@ -347,6 +348,8 @@ uint8_t stateTypeParamRunTime()
 					else
 					{
 				      gCurrentParameterState = gstUMtoCMdatabase.getParameterValue;
+				      if(gstUMtoCMdatabase.dataToControlBoard.parameterNumber == 7)     //201806_Bug_No.10
+				    	  menu_gesture_flag_A007= gCurrentParameterState;
 					}
 					gGetParameterState = gCurrentParameterState;
 

@@ -933,5 +933,6 @@ unsigned int LCD_Count=0;
 unsigned char flag_stop=0;
 
 unsigned char menu_gesture_flag_cyw =0;//这个变量是用来表示手势使能的
+unsigned char menu_gesture_flag_A007;  //这个是读取A007的值     //201806_Bug_No.10
 
 uint8_t shoushi_cyw=0;

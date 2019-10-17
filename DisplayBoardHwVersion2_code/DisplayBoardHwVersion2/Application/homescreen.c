@@ -46,6 +46,7 @@
 #include "userinterface.h"
 #include "intertaskcommunication.h"
 #include "ledhandler.h"
+#include "Gesture_Sensor/ram_cyw.h"
 /****************************************************************************/
 
 /****************************************************************************
@@ -215,6 +216,7 @@ void operationKeysHandler(void)
 	static uint8_t lsui8OpenState = 0;
 	static uint8_t lsui8CloseState = 0;
 	static uint8_t lsui8StopState = 0;
+	static uint8_t lsui8StopState_count=0;   //201806_Bug_No.22
 
 	//
 	//	Added check to see whether system is in healthy state. If a fatal error has occurred then
@@ -297,7 +299,9 @@ void operationKeysHandler(void)
 			//
 			if(gstUMtoCMoperational.commandRequestStatus == eINACTIVE)
 			{
-				gKeysStatus.bits.Key_Stop_pressed = 0;
+				lsui8StopState_count++;     //201806_Bug_No.22    //ÈÃSTOP·¢2´ÎÃüÁî
+				if(lsui8StopState_count>=2)  //201806_Bug_No.22
+				    gKeysStatus.bits.Key_Stop_pressed = 0;
 				lsui8StopState = 1;
 				gstUMtoCMoperational.commandToControlBoard.bits.stopPressed = 1;
 				gstUMtoCMoperational.commandRequestStatus = eACTIVE;
@@ -312,6 +316,7 @@ void operationKeysHandler(void)
 			if(gstUMtoCMoperational.commandRequestStatus == eINACTIVE)
 			{
 				gKeysStatus.bits.Key_Stop_released = 0;
+				lsui8StopState_count=0;    //201806_Bug_No.22
 				lsui8StopState = 0;
 				gstUMtoCMoperational.commandToControlBoard.bits.stopReleased = 1;
 				gstUMtoCMoperational.commandRequestStatus = eACTIVE;
@@ -1232,7 +1237,7 @@ uint8_t homeScreenRunTime(void)
 				if((gstDriveBoardStatus.bits.drivePowerOnCalibration != 1)&&(gstDriveBoardStatus.bits.driveRunTimeCalibration!=1)&&
                                          (gstDriveBoardStatus.bits.driveInstallation!=1)&&(gstDriveBoardStatus.bits.driveFaultUnrecoverable!=1))
 				{
-                              if(menu_gesture_flag_cyw == 0)
+                              if((menu_gesture_flag_cyw == 0)&&(menu_gesture_flag_A007==0))  ////201806_Bug_No.10
                                {
                                        if(LCD_DISP_GUESTURE == 1)
                                        {
@@ -1490,7 +1495,7 @@ uint8_t homeScreenPaint(void)
 if((gstDriveBoardStatus.bits.drivePowerOnCalibration != 1)&&(gstDriveBoardStatus.bits.driveRunTimeCalibration!=1)&&
                                          (gstDriveBoardStatus.bits.driveInstallation!=1)&&(gstDriveBoardStatus.bits.driveFaultUnrecoverable!=1))
 {
-       if(menu_gesture_flag_cyw == 0)
+	   if((menu_gesture_flag_cyw == 0)&&(menu_gesture_flag_A007==0))   //201806_Bug_No.10
         {
         if(LCD_DISP_GUESTURE == 1)
         {

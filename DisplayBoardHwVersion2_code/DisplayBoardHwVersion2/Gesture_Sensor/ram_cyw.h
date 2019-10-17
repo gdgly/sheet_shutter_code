@@ -29,6 +29,7 @@ extern unsigned char warray_r[58];
 extern unsigned int LCD_Count;
 extern unsigned char flag_stop;
 extern unsigned char menu_gesture_flag_cyw;
+extern unsigned char menu_gesture_flag_A007;
 extern uint8_t shoushi_cyw;
 
 

@@ -2081,7 +2081,7 @@ void GP2A054A_calculation_cyw(void)
     if((warray_r[0]==0xff)&&(warray_r[1]==0xff)&&(warray_r[2]==0xff)&&(warray_r[3]==0xff)&&\
             (warray_r[4]==0xff)&&(warray_r[5]==0xff)&&(warray_r[6]==0xff)&&(warray_r[7]==0xff))
     {
-        warray_r[0]= warray_r[0];
+        //warray_r[0]= warray_r[0];
         return;//iic���˻��б�Ҫ����
     }
 #if (defined GUEST_DISP)||(defined GUEST_LEVELOUT)

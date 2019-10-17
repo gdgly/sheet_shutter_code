@@ -788,7 +788,7 @@ void main(void) {
 		Set_lcdlightOFF();
 		Out_of_settingmode_cyw();
 		communicationModuleControlBoard();
-		  if(menu_gesture_flag_cyw == 0)//菜单使能了手势cyw add
+		if((menu_gesture_flag_cyw == 0)&&(menu_gesture_flag_A007==0))//菜单使能了手势cyw add    //201806_Bug_No.10
 	     {//cyw add
 				            shoushi_cyw++;//cyw add
 				            if(shoushi_cyw>=5)//=6约2.4ms//cyw add
