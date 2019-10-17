@@ -8,7 +8,7 @@
 <stringAttribute key="com.ti.ccstudio.debug.debugModel.ATTR_PROJECT.Stellaris In-Circuit Debug Interface/CORTEX_M4_0" value="DisplayBoardHwVersion2"/>
 <stringAttribute key="com.ti.ccstudio.debug.debugModel.ATTR_PROJECT.Texas Instruments XDS100v2 USB Emulator_0/CORTEX_M4_0" value="DisplayBoardHwVersion2"/>
 <stringAttribute key="com.ti.ccstudio.debug.debugModel.ATTR_TARGET_CONFIG" value="${target_config_active_default:DisplayBoardHwVersion2}"/>
-<stringAttribute key="com.ti.ccstudio.debug.debugModel.MRU_PROGRAM.Texas Instruments XDS100v2 USB Emulator_0/CORTEX_M4_0" value="E:/Aoyagi\ehenyanwei\cywtry27\DisplayBoardHwVersion2\Debug\Binary\DisplayBoardHwVersion2.out"/>
+<stringAttribute key="com.ti.ccstudio.debug.debugModel.MRU_PROGRAM.Texas Instruments XDS100v2 USB Emulator_0/CORTEX_M4_0" value="E:/Aoyagi\ehenyanwei\cywtry28\DisplayBoardHwVersion2\Debug\Binary\DisplayBoardHwVersion2.out"/>
 <mapAttribute key="com.ti.ccstudio.debug.ui.displayFormats">
 <mapEntry key="Texas Instruments XDS100v2 USB Emulator_0/CORTEX_M4_0@##separator##@0" value="32-Bit Hex - TI Style"/>
 </mapAttribute>

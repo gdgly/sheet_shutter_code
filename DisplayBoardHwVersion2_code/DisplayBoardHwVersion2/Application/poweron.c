@@ -150,7 +150,7 @@ extern uint8_t  LCD_DISP_GUESTURE;
 // first byte = Not used, 		second byte = Not used,
 // third byte = Major Version 	fourth byte = Minor version
 //uint32_t gDisplayFirmwareVersion = 0x00000003;
-uint32_t gDisplayFirmwareVersion = 0x00000300;
+uint32_t gDisplayFirmwareVersion = 0x00000301;
 
 const uint8_t display_fw[][3]={{16,8,15},{16,9,02},{16,9,9},{16,9,14}};
 const uint8_t control_fw[][3]={{16,8,15},{16,9,02},{16,9,9},{16,9,14}};
@@ -305,7 +305,8 @@ uint8_t powerOnRunTime()
 		GrRectFIllBolymin(0, 127, 0, 63, 0x00, true);
 
 		//displayText(" B X   S H U T T E R S", 30, 0, false, false, false, false);
-		displayText("BX SHUTTERS", 18, 0, false, false, false, false,true,false);
+		//displayText("BX SHUTTERS", 18, 0, false, false, false, false,true,false);
+		displayText("BX", 58, 0, false, false, false, false,true,false);
 		GrLineDrawHorizontalBolymin(0, 126, 14, false);	// line draw function
 
 		gUserModuleState = GET_SHUTTER_TYPE;
@@ -378,7 +379,8 @@ uint8_t powerOnRunTime()
 		// Display first power on screen screen with shutter type received
 		//
 		//displayText(" B X   S H U T T E R S", 30, 0, false, false, false, false);
-		displayText("BX SHUTTERS", 18, 0, false, false, false, false,true,false);
+		//displayText("BX SHUTTERS", 18, 0, false, false, false, false,true,false);
+		displayText("BX", 58, 0, false, false, false, false,true,false);
 		GrLineDrawHorizontalBolymin(0, 126, 14, false);	// line draw function
 		displayText("MODEL: DAIMAJIN", 2, 16, false, false, false, false, false, false);
 
@@ -878,7 +880,8 @@ uint8_t powerOnRunTime()
 				// Display first power on screen screen with shutter type received
 				//
 				//displayText(" B X   S H U T T E R S", 30, 0, false, false, false, false);
-				displayText("BX SHUTTERS", 18, 0, false, false, false, false, true, false);
+				//displayText("BX SHUTTERS", 18, 0, false, false, false, false, true, false);
+				displayText("BX", 58, 0, false, false, false, false, true, false);
 				GrLineDrawHorizontalBolymin(0, 126, 14, false);	// line draw function
 
 				//
@@ -1085,7 +1088,8 @@ uint8_t powerOnRunTime()
 				// Display first power on screen screen with shutter type received
 				//
 				//displayText(" B X   S H U T T E R S", 30, 0, false, false, false, false);
-				displayText("BX SHUTTERS", 18, 0, false, false, false, false, true, false);
+				//displayText("BX SHUTTERS", 18, 0, false, false, false, false, true, false);
+				displayText("BX", 58, 0, false, false, false, false, true, false);
 				GrLineDrawHorizontalBolymin(0, 126, 14, false);	// line draw function
 
 				//
@@ -1178,7 +1182,8 @@ uint8_t powerOnRunTime()
 				// Display first power on screen screen with shutter type received
 				//
 				//displayText(" B X   S H U T T E R S", 30, 0, false, false, false, false);
-				displayText("BX SHUTTERS", 18, 0, false, false, false, false,true,false);
+				//displayText("BX SHUTTERS", 18, 0, false, false, false, false,true,false);
+				displayText("BX", 58, 0, false, false, false, false,true,false);
 				GrLineDrawHorizontalBolymin(0, 126, 14, false);	// line draw function
 
 				//
@@ -1215,7 +1220,8 @@ uint8_t powerOnRunTime()
 			// Display shutter system initializing message
 			//
 			//displayText(" B X   S H U T T E R S", 30, 0, false, false, false, false);
-			displayText("BX SHUTTERS", 18, 0, false, false, false, false,true,false);
+			//displayText("BX SHUTTERS", 18, 0, false, false, false, false,true,false);
+			displayText("BX", 58, 0, false, false, false, false,true,false);
 			if(gu8_language == Japanese_IDX)
 		//
 			displayText("ティーチングモード", 2, 16, false, false, false, false, false, false);

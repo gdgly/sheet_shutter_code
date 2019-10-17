@@ -220,14 +220,14 @@ const unsigned char cucCLOSE_OPR_STATE_english[][40] =
 const unsigned char cucSnow_Mode_State[][40] =
 {
 	"ÉmÅ[É}Éã",//"NORMAL",
-	"0.6sec"//"0.6sec",//"0.5 SEC",
-	"2sec"//"2sec"//"1 SEC"
+	"0.25sec",//"0.6sec",//"0.5 SEC",
+	"0.5sec"//"2sec"//"1 SEC"
 };
 const unsigned char cucSnow_Mode_State_english[][40] =
 {
 	"NORMAL",//"NORMAL",
-	"0.6sec",//"0.5 SEC",
-	"2sec"//"1 SEC"
+	"0.25sec",//"0.5 SEC",
+	"0.5sec"//"1 SEC"
 };
 const unsigned char language_Mode_State[][40] =
 {
