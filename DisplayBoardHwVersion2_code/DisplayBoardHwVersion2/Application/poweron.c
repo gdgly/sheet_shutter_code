@@ -150,11 +150,11 @@ extern uint8_t  LCD_DISP_GUESTURE;
 // first byte = Not used, 		second byte = Not used,
 // third byte = Major Version 	fourth byte = Minor version
 //uint32_t gDisplayFirmwareVersion = 0x00000003;
-uint32_t gDisplayFirmwareVersion = 0x00000100;
+uint32_t gDisplayFirmwareVersion = 0x00000200;
 
-const uint8_t display_fw[][3]={{16,8,15},{16,9,02}};
-const uint8_t control_fw[][3]={{16,8,15},{16,9,02}};
-const uint8_t drive_fw[][3]={{16,8,15},{16,9,02}};
+const uint8_t display_fw[][3]={{16,8,15},{16,9,02},{16,9,9}};
+const uint8_t control_fw[][3]={{16,8,15},{16,9,02},{16,9,9}};
+const uint8_t drive_fw[][3]={{16,8,15},{16,9,02},{16,9,9}};
 
 /*******************************************************
 Version 3 details
@@ -1222,6 +1222,8 @@ uint8_t powerOnRunTime()
 			else
 			displayText("TEACHING MODE", 2, 16, false, false, false, false, false, true);
 
+
+
 			//
 			// Change states
 			//
@@ -1288,11 +1290,30 @@ uint8_t powerOnRunTime()
 		//
 		operationKeysHandler();
 
+
+		if(gstControlBoardStatus.bits.s3PBS_stoppressd == 1)
+		{
+				if(gu8_language == Japanese_IDX)
+				{
+						displayText("ÉeÉCÉV ON", 2, 48, false, false, false, false, false, false);
+				}
+				else
+				{
+						displayText("STOP ON", 2, 48, false, false, false, false, false, true);
+				}
+
+		}
+		else
+		{
+				displayText("         ", 2, 48, false, false, false, false, false, false);
+		}
+
 		//
 		// Check for drive calibration flag reset
 		//
 		if(gstDriveBoardStatus.bits.drivePowerOnCalibration == 0)
 		{
+			displayText("         ", 2, 48, false, false, false, false, false, false);
 			//
 			// Set LEDs to default value
 			//

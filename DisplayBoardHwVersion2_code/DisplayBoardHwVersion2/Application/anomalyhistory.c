@@ -256,7 +256,7 @@ void displayAnomalies(void)
 
 void RecoveredAnomalies(void)
 {
-	uint8_t Tp_i =0,Tp_j=0,Tp_flag=0 ;
+	uint8_t Tp_i =0,Tp_j=0,Tp_flag=0,Tp_installation=0 ;
 	//uint8_t Tp_cyedata[6]={0x01,0x02,0x06,0x38,0x4e,0xa2};
 	//uint8_t Tp_cyedata[6]={0x01,0x02,0x06,0x13,0x51,0xe2};
 	//uint8_t Tp_cyedata[6]={0x01,0x02,0x06,0x55,0xa3,0x63};
@@ -280,6 +280,11 @@ void RecoveredAnomalies(void)
 			{
 				Tp_flag = 1;
 			}
+			if((gsActiveAnomalyList[Tp_i].errorCode ==  35)||(gsActiveAnomalyList[Tp_i].errorCode ==  36)||(gsActiveAnomalyList[Tp_i].errorCode ==  37)||(gsActiveAnomalyList[Tp_i].errorCode ==  38)||(gsActiveAnomalyList[Tp_i].errorCode ==  39))
+			{
+				Tp_installation = 1;
+				Tp_flag = 1;
+			}
 		}
 		if(Tp_flag==1)
 		{
@@ -290,6 +295,11 @@ void RecoveredAnomalies(void)
 			//lstCommunicationModuleInnerTaskComm.commandResponseStatus = eNO_STATUS;
 			//lstCommunicationModuleInnerTaskComm.commandToControlBoard.bits.recover_anomaly=1;
 		}
+	    if(Tp_installation ==1)
+	    {
+	    	psActiveFunctionalBlock = &gsInstallationFunctionalBlock;
+	    	psActiveFunctionalBlock->pfnPaintFirstScreen();
+	    }
 	}
 
 	for(Tp_i =0;Tp_i<20;Tp_i++)

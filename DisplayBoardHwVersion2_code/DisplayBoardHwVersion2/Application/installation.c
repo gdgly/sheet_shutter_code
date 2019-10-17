@@ -279,6 +279,8 @@ uint8_t installationRunTime(void)
 				//
 				gInstallationState = START_INSTALLATION;
 				setting_flag = 1;
+
+
 			}
 
 			break;
@@ -353,7 +355,22 @@ uint8_t installationRunTime(void)
 					}
 					//displayText("INSTALLATION", 2, 16, false, false, false, false);
 					//displayText("リミット_セッテイ_モード", 2, 16, false, false, false, false,false,false);
+					if(gstControlBoardStatus.bits.s3PBS_stoppressd == 1)
+					{
+						if(gu8_language == Japanese_IDX)
+						{
+								displayText("テイシ ON", 2, 48, false, false, false, false, false, false);
+						}
+						else
+						{
+								displayText("STOP ON", 2, 48, false, false, false, false, false, true);
+						}
 
+					}
+					else
+					{
+						displayText("         ", 2, 48, false, false, false, false, false, false);
+					}
 					//
 					// Capture time
 					//
@@ -1684,6 +1701,8 @@ uint8_t installationPaint(void)
 //	displayText(lBuff, 2, 32, false, false, false, false);
 	setting_flag = 1;
 	lsDelay500msGetCountStart_cyw = 1;
+
+
 	return 0;
 }
 

@@ -79,6 +79,7 @@ uint8_t A_gui8DownState = 0;
 uint8_t A_gui8EnterState = 0;
 uint8_t A_gui8OpenState = 0;
 uint8_t A_gui8CloseState = 0;
+uint8_t A_gui8ModeState=0;
 
 uint32_t wait_for_cleardrivedault_time = 0;
 
@@ -137,6 +138,23 @@ uint8_t apertureheightPaint(void)
 		setting_flag = 1;
 
 		APERT_TIME = g_ui32TickCount;
+
+		if(gstControlBoardStatus.bits.s3PBS_stoppressd == 1)
+		{
+			if(gu8_language == Japanese_IDX)
+			{
+				displayText("テイシ ON", 2, 48, false, false, false, false, false, false);
+			}
+			else
+			{
+				displayText("STOP ON", 2, 48, false, false, false, false, false, true);
+			}
+
+		}
+		else
+		{
+			displayText("         ", 2, 48, false, false, false, false, false, false);
+		}
 	//	lsDelay500msGetCountStart_cyw = 1;
 		return 0;
 }
@@ -1676,10 +1694,126 @@ uint8_t apertureheightMode(void)
 	{
 				gKeysStatus.bits.Key_Mode_pressed = 0;
 				//psActiveFunctionalBlock = psActiveFunctionalBlock->parentInternalFunctions;
-					//		psActiveFunctionalBlock->pfnPaintFirstScreen();
-				psActiveFunctionalBlock = &gsHomeScreenFunctionalBlock;
-												psActiveFunctionalBlock->pfnPaintFirstScreen();
+				//psActiveFunctionalBlock->pfnPaintFirstScreen();
+				//psActiveFunctionalBlock = &gsHomeScreenFunctionalBlock;
+				//psActiveFunctionalBlock->pfnPaintFirstScreen();
+				setting_flag = 1;
+
+				if(gstDriveBoardStatus.bits.driveApertureheight == 1)
+				{
+								if(gstUMtoCMoperational.commandRequestStatus == eINACTIVE)
+								{
+									 //Line uncommneted by YPG on 13 Jan to solve multiple "confirm substate installtion" command on "enter" press
+									A_gui8ModeState = 1;
+									gstUMtoCMoperational.commandToControlBoard.bits.enterPressed = 1;
+									gstUMtoCMoperational.commandRequestStatus = eACTIVE;
+
+									//gstUMtoCMdatabase.commandToControlBoard.bits.setParameter = 1;
+									//gstUMtoCMdatabase.dataToControlBoard.parameterNumber = 130;
+									//gstUMtoCMdatabase.dataToControlBoard.commandData.setParameterValue = A_gCurrentEncoderCount;
+									//gstUMtoCMdatabase.destination = eDestDriveBoard;
+
+									//gstUMtoCMdatabase.commandRequestStatus = eACTIVE;
+								}
+				}
+				else
+				{
+					psActiveFunctionalBlock = psActiveFunctionalBlock->parentInternalFunctions;
+					psActiveFunctionalBlock->pfnPaintFirstScreen();
+				}
+
+
 	}
+
+	if(A_gui8ModeState == 1)
+	{
+			if(gstUMtoCMoperational.commandRequestStatus == eACTIVE)
+			{
+				if(gstUMtoCMoperational.commandResponseStatus == eSUCCESS)
+				{
+					A_gui8ModeState = 0;
+					gstUMtoCMoperational.commandRequestStatus = eINACTIVE;
+					gstUMtoCMoperational.commandResponseStatus = eNO_STATUS;
+
+					if(gstUMtoCMoperational.commandToControlBoard.bits.enterPressed == 1)
+					{
+						gstUMtoCMoperational.commandToControlBoard.bits.enterPressed = 0;
+
+
+
+
+
+						//
+						// Display installation successful message
+						//
+
+
+
+						gApertureheightState = A_OUT_APERTURE_HEIGHT;
+
+						wait_for_cleardrivedault_time = g_ui32TickCount;
+
+					}
+					else if(gstUMtoCMoperational.commandToControlBoard.bits.enterReleased == 1)
+					{
+						gstUMtoCMoperational.commandToControlBoard.bits.enterReleased = 0;
+
+					//	gstUMtoCMoperational.commandRequestStatus = eINACTIVE;
+					//	gstUMtoCMoperational.commandResponseStatus = eNO_STATUS;
+					}
+				}
+
+				else if( (gstUMtoCMoperational.commandResponseStatus == eTIME_OUT) ||
+						 (gstUMtoCMoperational.commandResponseStatus == eFAIL)
+						)
+				{
+
+					A_gui8ModeState = 0;
+					gstUMtoCMoperational.commandRequestStatus = eINACTIVE;
+					gstUMtoCMoperational.commandResponseStatus = eNO_STATUS;
+
+
+					if(gstUMtoCMoperational.commandToControlBoard.bits.enterPressed == 1)
+					{
+						gstUMtoCMoperational.commandToControlBoard.bits.enterPressed = 0;
+
+						//
+						// Clear screen
+						//
+					   //GrRectFIllBolymin(0, 126, 0, 63, true, true);
+						GrRectFIllBolymin(0, 127, 0, 63, 0x00, true);
+
+						//
+						// Display Installation failed message
+						//
+						if(gu8_language == Japanese_IDX)
+						{
+
+							 displayText("ハンカイ_セッテイ", 2, 0, false, false, false, false, false, false);
+							 displayText("エラー", 2, 16, false, false, false, false, false, false);
+						}
+						else
+						{
+							displayText("APERTURE HEIGHT", 2, 0, false, false, false, false,false,true);
+							displayText("FAILED", 2, 16, false, false, false, false,false,true);
+						}
+						gTickCount3Seconds = g_ui32TickCount;
+
+						gApertureheightState = A_OUT_APERTURE_HEIGHT;
+						//gNextApertureheightState = A_OUT_APERTURE_HEIGHT;
+
+					}
+					else if(gstUMtoCMoperational.commandToControlBoard.bits.enterReleased == 1)
+					{
+						gstUMtoCMoperational.commandToControlBoard.bits.enterReleased = 0;
+
+						//gstUMtoCMoperational.commandRequestStatus = eINACTIVE;
+						//gstUMtoCMoperational.commandResponseStatus = eNO_STATUS;
+					}
+				}
+			}
+
+		}
 					return 0;
 }
 
