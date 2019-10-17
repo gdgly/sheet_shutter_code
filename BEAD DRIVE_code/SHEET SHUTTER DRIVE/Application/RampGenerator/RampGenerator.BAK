@@ -628,7 +628,8 @@ VOID initApertureProfileData(VOID)
     rampApertureUpProfile[i].rampGenFlags = upBrakeRelease; //value to remove brake
     rampApertureUpProfile[i].startPosition = uDriveCommonBlockEEP.stEEPDriveCommonBlock.lowerStoppingPos_A101;
 #ifdef MOTOR_750W_BD
-    rampApertureUpProfile[i].endPosition = (uDriveCommonBlockEEP.stEEPDriveCommonBlock.apertureHeightPos_A130 + 300);//APERPOS_OFFSET);      //20160906 bug_No.98
+    rampApertureUpProfile[i].endPosition = (uDriveCommonBlockEEP.stEEPDriveCommonBlock.apertureHeightPos_A130 + 350);//APERPOS_OFFSET);      //20161201 add
+//  rampApertureUpProfile[i].endPosition = (uDriveCommonBlockEEP.stEEPDriveCommonBlock.apertureHeightPos_A130 + 300);//APERPOS_OFFSET);      //20160906 bug_No.98
 #else
     rampApertureUpProfile[i].endPosition = (uDriveCommonBlockEEP.stEEPDriveCommonBlock.apertureHeightPos_A130 + 200);//APERPOS_OFFSET);
 #endif
@@ -1208,10 +1209,14 @@ VOID resetSensorStatus(VOID)
     {
         uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.microSwitch = FALSE;
     }
-    if(!tempSensTrigrd)
+	// When the regenerative resistance dose not work,the voltage. By IME 2016/12/14
+    //if(!tempSensTrigrd)
+
+    if(!tempSensTrigrd&&(gucOverVoltageFailFlag<MAXIMUM_DURATION))
     {
        uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorOverheat = FALSE;
     }
+
     if(!emergencySensorTrigrd)
     {
         uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.emergencyStop = FALSE;
@@ -1545,8 +1550,11 @@ VOID calculateDrift(BOOL sts)
                         - uDriveCommonBlockEEP.stEEPDriveCommonBlock.originSensorPosMonitor_A128;
                     rampStatusFlags.rampDriftCalculated = 1;
 */
-					hallCounts_bak = hallCounts;	// 2016/11/16 When Down , Missing Save Origin Position.
-                    hallCounts = uDriveCommonBlockEEP.stEEPDriveCommonBlock.originSensorPosMonitor_A128;
+					if((hallCounts_bak==0x7FFF)&&(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.originSensorStatus==0))  //20161202
+					{
+						hallCounts_bak = hallCounts;	// 2016/11/16 When Down , Missing Save Origin Position.
+                    	hallCounts = uDriveCommonBlockEEP.stEEPDriveCommonBlock.originSensorPosMonitor_A128;
+                    }
                 //}
             }
         }
@@ -1849,7 +1857,8 @@ VOID checkRampTripStatus(VOID)
             if(!rampTripSts.rampOrgSenToggled)
             {
                 //set the error flag
-                uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.osNotDetectUP = TRUE;
+                uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.osNotDetectUP = FALSE;
+//              uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.osNotDetectUP = TRUE;
             }
             else
             {
@@ -1883,7 +1892,8 @@ VOID checkRampTripStatus(VOID)
             if(!rampTripSts.rampOrgSenToggled)
             {
                 //set the error flag
-                uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.osNotDetectDown = TRUE;
+                uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.osNotDetectDown = FALSE;
+//              uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.osNotDetectDown = TRUE;
             }
             else
             {

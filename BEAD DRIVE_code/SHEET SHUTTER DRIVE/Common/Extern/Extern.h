@@ -93,6 +93,8 @@ extern BYTE gucShutterFalseDownMovementCount;
 EXTERN BYTE gucPowerFailFlag;
 EXTERN BYTE gucPowerRestoredFlag;
 EXTERN BYTE gucInstallationCalledFrom;
+// When the regenerative resistance dose not work,a flag for failing. By IME 2016/12/14
+EXTERN BYTE gucOverVoltageFailFlag;
 
 #ifdef DEBUG_SHUTTER_MOVEMENT_IN_WRONG_DIRECTION
 //	Debug count for false direction movement
@@ -109,4 +111,5 @@ EXTERN int cnt_motor_stop;
 EXTERN UINT8  ShutterInstallationStep;
 EXTERN BOOL ShutterInstallationEnabled;
 
-
+// When the regenerative resistance dose not work,the voltage. By IME 2016/12/19
+#define MAXIMUM_DURATION	25		// *20ms=1s

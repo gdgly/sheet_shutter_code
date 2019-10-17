@@ -1209,10 +1209,13 @@ VOID resetSensorStatus(VOID)
     {
         uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.microSwitch = FALSE;
     }
-    if(!tempSensTrigrd)
+	// When the regenerative resistance dose not work,the voltage. By IME 2016/12/14
+    //if(!tempSensTrigrd)
+    if(!tempSensTrigrd&&(gucOverVoltageFailFlag<MAXIMUM_DURATION))
     {
        uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorOverheat = FALSE;
     }
+
     if(!emergencySensorTrigrd)
     {
         uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.emergencyStop = FALSE;

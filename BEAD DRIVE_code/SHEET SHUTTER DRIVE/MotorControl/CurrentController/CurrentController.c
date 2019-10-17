@@ -52,6 +52,9 @@
 
 currCntrlFlg currControlFlag;
 
+// When the regenerative resistance dose not work,a flag for failing. By IME 2016/12/14
+BYTE gucOverVoltageFailFlag = 0;
+
 /* Variables used for offset calculation */
 SHORT measureItotalOffsetCnt;
 DWORD iTotalOffsetTot;
@@ -93,6 +96,9 @@ WORD phaseValue;
 #define MAX_PHASE_COMP  9646    //(PHASE_INC_STEP * 53)
 #define MIN_PHASE_COMP  0
 
+// When the regenerative resistance dose not work,the voltage. By IME 2016/12/19
+#define MAXIMUM_WORKING_VOLTAGE		312		// AC312V(DC430V)
+
 //	Added for implementation of power fail functionality on DC Bus for version 4 board- RN- NOV 2015
 #define	CONSIDER_AC_LINE_VOLTAGE		1		//	for power fail activity on 90VAC main line voltage
 #define	CONSIDER_DC_BUS_VOLTAGE			2			//	for power fail activity on 90VDC dc bus voltage
@@ -110,14 +116,20 @@ WORD phaseValue;
 //	Dc Bus voltage = 1.41 * AC line voltage
 float	considerAsPowerFail = CONSIDER_AS_POWER_FAIL * 1.41;
 float	minimumWorkingVoltage = MINIMUM_WORKING_VOLTAGE * 1.41;
+// When the regenerative resistance dose not work,the voltage. By IME 2016/12/14
+float	maximumWorkingVoltage = MAXIMUM_WORKING_VOLTAGE * 1.41;
 #define MINIMUM_DC_BUS_WORKING_VOLTAGE	100
 #elif	(POWER_FAIL_FUNCTIONALITY == CONSIDER_DC_BUS_VOLTAGE)
 float	considerAsPowerFail = CONSIDER_AS_POWER_FAIL;
 float	minimumWorkingVoltage = MINIMUM_WORKING_VOLTAGE;
+// When the regenerative resistance dose not work,the voltage. By IME 2016/12/14
+float	maximumWorkingVoltage = MAXIMUM_WORKING_VOLTAGE;
 #define MINIMUM_DC_BUS_WORKING_VOLTAGE	CONSIDER_AS_POWER_FAIL
 #else
 float	considerAsPowerFail = CONSIDER_AS_POWER_FAIL * 1.41;
 float	minimumWorkingVoltage = MINIMUM_WORKING_VOLTAGE * 1.41;
+// When the regenerative resistance dose not work,the voltage. By IME 2016/12/14
+float	maximumWorkingVoltage = MAXIMUM_WORKING_VOLTAGE * 1.41;
 #define MINIMUM_DC_BUS_WORKING_VOLTAGE	100
 #endif
 
@@ -166,6 +178,32 @@ void __attribute__((interrupt, no_auto_psv)) _AD2Interrupt (void)
     IFS1bits.AD2IF = 0;
 	//	Capture DC Bus volatage
 	lfDcBusVoltage = ADC2BUF0 / 2.25;	//	1V = 2.25 counts
+
+	// When the regenerative resistance dose not work,a flag for failing. By IME 2016/12/14
+	if(!gucOverVoltageFailFlag)
+	{
+		if(lfDcBusVoltage > maximumWorkingVoltage)
+		{
+			gucOverVoltageFailFlag = 1;
+		}
+	}
+	else
+	{
+		if(lfDcBusVoltage > maximumWorkingVoltage)
+		{
+			if(gucOverVoltageFailFlag<=MAXIMUM_DURATION)
+			{
+				gucOverVoltageFailFlag++;
+			}
+		}
+		else
+		{
+			if(gucOverVoltageFailFlag<=MAXIMUM_DURATION)
+			{
+				gucOverVoltageFailFlag = 0;
+			}
+		}
+	}
 
 	if(
 		(lfDcBusVoltage > minimumWorkingVoltage) &&

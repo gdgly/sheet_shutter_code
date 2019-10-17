@@ -88,7 +88,7 @@
 #define EXPECTED_CRC_CLEAN_ERROR                0xB253
 #define EXPECTED_CRC_APERTUREHEIGHT                0x7292
 
-CONST UINT32 drive_fw_version = 0x00000404;  //bug_NO.64
+CONST UINT32 drive_fw_version = 0x00000406;  //bug_NO.64
 
 
 enum {
@@ -1130,7 +1130,9 @@ BOOL readCurrSensorState(BOOL scanPE_Sensor)
         sts = TRUE;
     }
 
-    if(tempSensTrigrd)
+	// When the regenerative resistance dose not work,the voltage. By IME 2016/12/14
+	//if(tempSensTrigrd)
+    if(tempSensTrigrd||(gucOverVoltageFailFlag>MAXIMUM_DURATION))
     {
         uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorOverheat = TRUE;
         sts = TRUE;
