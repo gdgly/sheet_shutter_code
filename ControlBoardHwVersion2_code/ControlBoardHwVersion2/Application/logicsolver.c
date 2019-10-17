@@ -369,6 +369,7 @@ void logicSolver(void) {
 	static uint32_t suiTimeStampContinuousOperation;
 	static uint32_t suiTimeStampConfirmNonStoppedState;
 
+	static uint32_t  Time_gstDriveApplicationFault_peObstacle;
 	// *********************************************************************************************
 
 
@@ -1857,11 +1858,12 @@ void logicSolver(void) {
 						) &&
 
 						// Check any fault is not active on control board
-						((gstControlBoardStatus.bits.controlFault == 0) || (gstControlBoardStatus.bits.controlFaultUnrecoverable == 0)) &&
+						((gstControlBoardStatus.bits.controlFault == 0) || (gstControlBoardStatus.bits.controlFaultUnrecoverable == 0))
+						//&&   //20170505  201703_No.41 No.email
 
 						//(gstControlApplicationFault.bits.operationRestrictionTimer == 0) &&
 						// Check none of the safety signal is triggered
-						(gstDriveApplicationFault.bits.microSwitch == 0 && gstDriveApplicationFault.bits.peObstacle == 0 /*&& gstControlApplicationFault.bits.startupSafetySensor == 0*/)  //20160906 item 104
+						//(gstDriveApplicationFault.bits.microSwitch == 0 && gstDriveApplicationFault.bits.peObstacle == 0 /*&& gstControlApplicationFault.bits.startupSafetySensor == 0*/)  //20160906 item 104	  //20170505  201703_No.41  No.email
 
 						// Check last command sent not the same as the one which we are going to sent
 						//(sstLStoCMDrCmdSent.commandToDriveBoard.bits.openShutter == 0 && sstLStoCMDrCmdSent.commandToDriveBoard.bits.openShutterApperture == 0)
@@ -4918,12 +4920,36 @@ void logicSolver(void) {
 
 
 		// Error Output
-		if ((gstDriveStatus.bits.driveFault == 1) || (gstDriveStatus.bits.driveFaultUnrecoverable == 1) || (gstControlBoardStatus.bits.controlFault == 1) || (gstControlBoardStatus.bits.controlFaultUnrecoverable == 1))
+		/*if ((gstDriveStatus.bits.driveFault == 1) || (gstDriveStatus.bits.driveFaultUnrecoverable == 1) || (gstControlBoardStatus.bits.controlFault == 1) || (gstControlBoardStatus.bits.controlFaultUnrecoverable == 1))
 		{
+
 			gstBitwiseMultifuncOutput.bits.ErrorOutput = 1;
 		}
 		else
 		{
+			gstBitwiseMultifuncOutput.bits.ErrorOutput = 0;
+		}	*/
+
+		if (((gstDriveStatus.bits.driveFault == 1)&&(gstDriveApplicationFault.bits.peObstacle==0)) ||     //20170606  201703_No.80
+			(gstDriveStatus.bits.driveFaultUnrecoverable == 1) ||
+			((gstControlBoardStatus.bits.controlFault == 1)&&(gstControlApplicationFault.bits.ObstacleSensor==0)&&(gstControlApplicationFault.bits.startupSafetySensor==0)) ||
+			(gstControlBoardStatus.bits.controlFaultUnrecoverable == 1)
+			)
+		{
+			if((gstDriveStatus.bits.driveFault == 1)&&(gstDriveApplicationFault.bits.peObstacle==0))
+			{
+				if(get_timego(Time_gstDriveApplicationFault_peObstacle) >= 100)
+		           gstBitwiseMultifuncOutput.bits.ErrorOutput = 1;
+			}
+			else
+			{
+				Time_gstDriveApplicationFault_peObstacle = g_ui32TickCount;
+				gstBitwiseMultifuncOutput.bits.ErrorOutput = 1;
+			}
+		}
+		else
+		{
+			Time_gstDriveApplicationFault_peObstacle = g_ui32TickCount;
 			gstBitwiseMultifuncOutput.bits.ErrorOutput = 0;
 		}
 
