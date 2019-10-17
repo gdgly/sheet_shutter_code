@@ -1697,9 +1697,9 @@ VOID microSwSensorTiggered(BOOL sts)
 	//if(inputFlags.value == STOP_SHUTTER) return;	//20180704  201806_Bug_No19
 	//20180706 201806_Bug_No76
 	//if((inputFlags.value == STOP_SHUTTER)&&(!uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterUpperLimit)) return;	//20180704  201806_Bug_No19
-//    if((inputFlags.value == STOP_SHUTTER)&&
-//       (!(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterUpperLimit  ||
-//        uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterApertureHeight))) return;
+    if((inputFlags.value == STOP_SHUTTER)&&
+       (!(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterUpperLimit  ||
+        uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterApertureHeight))) return;
     uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.microSwitchSensorStatus = microSwSensorTrigrd;
     //micro switch is normally open, it is triggered when closed
     if(microSwSensorTrigrd)

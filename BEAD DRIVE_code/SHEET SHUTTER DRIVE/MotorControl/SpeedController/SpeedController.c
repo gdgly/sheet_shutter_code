@@ -218,8 +218,15 @@ void __attribute__((interrupt, no_auto_psv)) _T1Interrupt (void)
      {
         if (requiredDirection == CW || requiredDirection== CCW)
         {
-            currentSector = getCurrentSectorNo();
-            calculatePhaseValue(currentSector);
+			//20180730
+            //currentSector = getCurrentSectorNo();
+            //calculatePhaseValue(currentSector);
+			if((!((requiredDirection== CCW)&&uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterLowerLimit))
+				||rampStatusFlags.rampMaintainHoldingDuty)
+			{
+        	    currentSector = getCurrentSectorNo();
+            	calculatePhaseValue(currentSector);
+			}
         }
      }
 #endif
@@ -830,13 +837,22 @@ SHORT PhaseCurrentPosition;
 	{
 		if(requiredDirection == CW)
 		{
-		if(measuredSpeed < 100){phaseOffsetCW = PHASE_OFFSET_CW_START_LS;} //20180627 No54//20180515 No18
-		else phaseOffsetCW = PHASE_OFFSET_CW_LS; //20180627 No23
+//************************ Bug_201806_No98 **************************//
+			if(currentDirection==CCW)
+			{
+			    phaseOffsetCW = PHASE_OFFSET_CW_REV;
+				controlOutput += 1000;
+			    if(controlOutput>6000) controlOutput=4000;
+			}
+//*********************** Bug_201806_No98 **************************//
+			else if(measuredSpeed < 100){phaseOffsetCW = PHASE_OFFSET_CW_START_LS;} //20180627 No54//20180515 No18
+			else phaseOffsetCW = PHASE_OFFSET_CW_LS; //20180627 No23
 		}
 		else if(requiredDirection == CCW)
 		{
 			phaseOffsetCCW = PHASE_OFFSET_CCW_START; //20180515 LIMIT SETTEI NOISE 10192 No23
-			phaseOffsetCW = 182;                    //20180515 LIMIT SETTEI NOISE No23
+			//phaseOffsetCW = 182;                    //20180515 LIMIT SETTEI NOISE No23
+			phaseOffsetCW = 2002;                    //20180725 Bug_201806_No86
 		}
 	}
 	else if(requiredDirection == CW)
@@ -881,7 +897,7 @@ SHORT PhaseCurrentPosition;
 		{
    			if(currentDirection==CCW)
 			{
-			    phaseOffsetCW = 1638;
+			    phaseOffsetCW = PHASE_OFFSET_CW_REV; //Bug_201806_No98
 				controlOutput += 1000; //20180515 No4
 			if(controlOutput>6000) controlOutput=4000;//20180515 No4
 
@@ -917,6 +933,7 @@ SHORT PhaseCurrentPosition;
 		}
 		else
 		{
+			phaseOffsetCW = PHASE_OFFSET_CW;		//20180724 Bug_201806_No87
 			if(phaseOffsetCCW < PHASE_OFFSET_CCW_MAX)
 			    phaseOffsetCCW += PHASE_OFFSET_INC_STEP;
 			if(phaseOffsetCCW >= PHASE_OFFSET_CCW_MAX)
@@ -1180,7 +1197,11 @@ SHORT PhaseCurrentPosition;
 			}
 		}
 	}
-	if((requiredDirection == CW)&&(currentDirection==CCW)){measuredSpeed = 0;} //20180517 No16
+	if((requiredDirection == CW)&&(currentDirection==CCW)){
+		//measuredSpeed = 0;
+		measuredSpeed = -measuredSpeed;
+		rampStatusFlags.rampMaintainHoldingDuty = 1;
+	} //20180517 No16
     if((requiredDirection == CCW)&&(currentDirection==CW)){measuredSpeed = 0;} //20180517 No15
 
 	speedPIparms.qOutMin = -(currentLimitClamp);
@@ -1209,10 +1230,21 @@ SHORT PhaseCurrentPosition;
 	{
 		//speedPIparms.qOutMax = 6*measuredSpeed+5000;		//20180705
 		if(lfDcBusVoltage_f) speedPIparms.qOutMax = 6*measuredSpeed+7000;		//20180705
-		else speedPIparms.qOutMax = 6*measuredSpeed+5000;
+		else
+		{
+			if(measuredSpeed > 100) //Bug_201806_No99
+			{
+			    speedPIparms.qOutMax = 6*measuredSpeed+6000; //Bug_201806_No99
+			}
+			else
+			{
+				speedPIparms.qOutMax = 6*measuredSpeed+5000; //Bug_201806_No99
+			}
+		}
 	}
 	//	Added on 6 Aug 2015 to enable motor rotation in no load condition for bead type shutter (while shutter go down operation)
-	if(rampStatusFlags.rampMaintainHoldingDuty == 0 && monitorSectorRoatCnt > 150)
+	//if(rampStatusFlags.rampMaintainHoldingDuty == 0 && monitorSectorRoatCnt > 150)
+	if(rampStatusFlags.rampMaintainHoldingDuty == 0 && monitorSectorRoatCnt > 50)		//20180730
 	{
 		rampStatusFlags.rampMaintainHoldingDuty = 1;
 	}
@@ -1225,7 +1257,8 @@ SHORT PhaseCurrentPosition;
 									uDriveApplBlockEEP.stEEPDriveApplBlock.overrunProtection_A112))
 			{
 				//if(monitorSectorRoatCnt > 300)
-				if(monitorSectorRoatCnt > 200)		//20180702
+				//if(monitorSectorRoatCnt > 200)		//20180702
+				if(monitorSectorRoatCnt > 250)		//20180730
 				{
 					lockApply;
 					controlOutput = 0;

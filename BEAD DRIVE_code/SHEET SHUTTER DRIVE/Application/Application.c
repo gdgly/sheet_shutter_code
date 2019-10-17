@@ -139,7 +139,7 @@ UINT16 TIME_shutterLowerLimit_STOP=0;
 UINT8  FLAG_shutterLowerLimit_STOP=0;
 
 UINT8 Power_ON_igbtOverTemp=0;
-UINT16 Time_uart_count=0;  
+UINT16 Time_uart_count=0;
 UINT8 Flag_powerUpCalib_osToggle=0;
 /******************************************************************************
  * initApplication
@@ -585,7 +585,25 @@ VOID updateDriveStatusFlags(VOID)
                                                        uDriveApplBlockEEP.stEEPDriveApplBlock.overrunProtection_A112))
         {
 			// update drive status position to upper limit
-            uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterUpperLimit = TRUE;
+			/************* 20180726 Bug_No94,No95,No97 start */
+            //uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterUpperLimit = TRUE;
+			if((powerUpCalib.currentState==CALIB_SEARCH_ORG_UP_DIR)||
+				(shutterInstall.currentState==INSTALL_SEARCH_ORG))
+			{
+				if(rampOutputStatus.shutterCurrentPosition <= uDriveCommonBlockEEP.stEEPDriveCommonBlock.upperStoppingPos_A100)
+				{
+					uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterUpperLimit = TRUE;
+				}
+		        else
+        		{
+		            uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterUpperLimit = FALSE;
+        		}
+			}
+			else
+			{
+				uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterUpperLimit = TRUE;
+			}
+			/************* 20180726 Bug_No94,No95,No97 end */
 		}
         else
         {
@@ -1076,8 +1094,8 @@ VOID checkShutterPosition(VOID)
                         //stop calibration process
                         uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.drivePowerOnCalibration = FALSE;
                         uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveRuntimeCalibration = FALSE;
-                        uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveReady = TRUE;                
-            }            
+                        uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveReady = TRUE;
+            }
             //reset the calibration state machine
             powerUpCalib.currentState = CALIB_STATE_END;
             //reset input flag to ramp generator
@@ -1142,7 +1160,9 @@ VOID powerUpCalibration(VOID)
                     if(powerUpCalib.osToggle)
                     {
                         //update the target position and state machine
-                        powerUpCalib.targetPosition = powerUpCalib.currentPosition - HALL_COUNT(OS_VALIDATION_LENGTH);
+						//20180726 Bug_No94,No95,No97
+                        //powerUpCalib.targetPosition = powerUpCalib.currentPosition - HALL_COUNT(OS_VALIDATION_LENGTH);
+                        powerUpCalib.targetPosition = OS_VALIDATION_LENGTH;
                         powerUpCalib.currentState = CALIB_MOVE_UP_50MM;
                         //update input to ramp generator
                         inputFlags.value = OPEN_SHUTTER_JOG_50;
@@ -1665,7 +1685,9 @@ VOID shutterInstallation(VOID)
 						shutterInstall.osToggle = 0;
                         ShutterInstallationStepNeedSave = FALSE;  //bug_NO.43
                         //update the target position and state machine
-                        shutterInstall.targetPosition = shutterInstall.currentPosition - HALL_COUNT(OS_VALIDATION_LENGTH);
+						//20180726 Bug_No94,No95,No97
+                        //shutterInstall.targetPosition = shutterInstall.currentPosition - HALL_COUNT(OS_VALIDATION_LENGTH);
+                        shutterInstall.targetPosition = OS_VALIDATION_LENGTH;
                         shutterInstall.currentState = INSTALL_MOVE_UP_50MM;
                         //update input to ramp generator
                         inputFlags.value = OPEN_SHUTTER_JOG_50;
@@ -1674,7 +1696,9 @@ VOID shutterInstallation(VOID)
                     else
                     {
                         //check if we have reached to upper limit then set installation failed status
-                        if(shutterInstall.currentPosition <= shutterInstall.targetPosition)
+                        //20180726 Bug_No94,No95,No97
+                        //if(shutterInstall.currentPosition <= shutterInstall.targetPosition)
+                        if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterUpperLimit)
                         {
                             //set drive installation failed and abort installation process
                             uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveInstallationStatus.bits.installationFailed = TRUE;
@@ -1764,10 +1788,10 @@ VOID shutterInstallation(VOID)
 						//	If A112 is set to 0 it may increase the chances of installation fail - Dec 2015
 						//if(positionError <= uDriveApplBlockEEP.stEEPDriveApplBlock.overrunProtection_A112)
 #ifdef BUG_No87_upperStoppingPos_Limit    //20170626  201703_No.87
-                        if(positionError <= 20)                        
+                        if(positionError <= 20)
 #else
-                        if(positionError <= 10)                        
-#endif                        
+                        if(positionError <= 10)
+#endif
                         {
                             //shutter has reached to final position
                             //clear previous installation status bit
