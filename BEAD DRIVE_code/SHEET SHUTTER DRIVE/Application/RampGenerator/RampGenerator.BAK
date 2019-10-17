@@ -1211,7 +1211,6 @@ VOID resetSensorStatus(VOID)
     }
 	// When the regenerative resistance dose not work,the voltage. By IME 2016/12/14
     //if(!tempSensTrigrd)
-
     if(!tempSensTrigrd&&(gucOverVoltageFailFlag<MAXIMUM_DURATION))
     {
        uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorOverheat = FALSE;
@@ -1349,7 +1348,7 @@ void __attribute__((interrupt, no_auto_psv)) _T4Interrupt (void)//10ms
     IFS1bits.T4IF = 0;
     if(++cnt_motor_stop>10)
     {
-        measuredSpeed = 0;
+//        measuredSpeed = 0;
         cnt_motor_stop = 11;
     }
 

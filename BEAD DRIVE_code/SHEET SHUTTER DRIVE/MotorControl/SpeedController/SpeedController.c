@@ -72,8 +72,9 @@ UINT16 PhaseAdvance;
 #define CNT_10MS    10      /* Used as a timeout with no hall effect sensors */
                             /* transitions and Forcing steps according to the */
                             /* actual position of the motor */
-
-#define MS_500T 10000//1000//300//500          /* after this time has elapsed, the motor is    */ //20160804
+//2017/2/6 by IME
+//#define MS_500T 10000//1000//300//500          /* after this time has elapsed, the motor is    */ //20160804
+#define MS_500T 2000          /* after this time has elapsed, the motor is    */ //20160804
                             /* consider stalled and it's stopped    */
 
 /* PI parameters */
@@ -199,6 +200,7 @@ void __attribute__((interrupt, no_auto_psv)) _T1Interrupt (void)
 	{
 		measuredSpeed = 0;
 	}
+
 #ifdef ENABLE_MOTOR_CABLE_FAULT
 	// **********************************************************************************************************************************************************
 	// code to monitor "Motor cable fault" Error and stop the motor
@@ -924,19 +926,71 @@ VOID speedControl(VOID)
 
     if(rampStatusFlags.rampMaintainHoldingDuty)
     {
-        if(measuredSpeed < SHUTTER_SPEED_MIN_STOP)
+    //20170209***igbtfail
+       if((monitorSectorRoatCnt > 1000)&&(requiredDirection == CCW))
         {
-            controlOutput += HOLDING_DUTY_INC;
-				if(controlOutput >= 7000)
-				{
-					controlOutput = 7000;
-				}
-
+            lockApply;
+            rampOutputStatus.shutterMoving = 0;
+            rampStatusFlags.shutterOperationStart = 0;
+            rampStatusFlags.shutterOperationComplete = 1;
+            rampStatusFlags.rampBrakeOn = 1;
+            if(rampStatusFlags.rampBrakeOn)
+            {
+               if(controlOutput > 0)
+                {
+                 controlOutput -= 100;
+                  if(controlOutput <= 0)
+                  {
+                   controlOutput = 0;
+                    stopMotor();
+                    rampStatusFlags.rampMaintainHoldingDuty = 0;
+                  }
+                }
+               else
+                {
+                 controlOutput += 100;
+                  if(controlOutput >= 0)
+                  {
+                   controlOutput = 0;
+                    stopMotor();
+                    rampStatusFlags.rampMaintainHoldingDuty = 0;
+                  }
+                }
+                    //rampCurrentState = RAMP_STATE_END;
+                    //currentRampProfileNo = RAMP_PROFILE_END;
+            }
         }
+       else if((measuredSpeed < SHUTTER_SPEED_MIN_STOP) && (requiredDirection == CW))
+        {
+            hallValue = HALLA_BIT + (HALLB_BIT << 1) + (HALLC_BIT << 2);
+            sector = sectorTable[hallValue];
+    		currentSectorNo = lastSector = sector;
+    		calculatePhaseValue(currentSectorNo);
+            controlOutput += HOLDING_DUTY_INC;
+
+				if(controlOutput >= 7000) //20170209
+				{
+					controlOutput = 7000; //20170209
+				}
+        }
+       else if((measuredSpeed < SHUTTER_SPEED_MIN_STOP) && (requiredDirection == CCW))
+        {
+            hallValue = HALLA_BIT + (HALLB_BIT << 1) + (HALLC_BIT << 2);
+            sector = sectorTable[hallValue];
+    		currentSectorNo = lastSector = sector;
+    		calculatePhaseValue(currentSectorNo);
+            controlOutput += HOLDING_DUTY_INC;
+
+				if(controlOutput >= 7000) //20170209
+				{
+					controlOutput = 7000; //20170209
+				}
+        }
+     //20170209***igbtfail
         else
         {
             rampStatusFlags.rampMaintainHoldingDuty = 0;
-            speedPIparms.qInRef = measuredSpeed;
+            speedPIparms.qInRef = refSpeed; //20170209
             speedPIparms.qInMeas = measuredSpeed;
             speedPIparms.qdSum = (LONG)controlOutput << 15;
             speedPIparms.qOut = controlOutput;
