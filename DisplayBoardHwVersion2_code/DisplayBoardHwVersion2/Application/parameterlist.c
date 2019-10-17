@@ -89,6 +89,11 @@ const unsigned char cucYES_NO_State[][40] =
 	"ムコウ",
 	"ユウコウ"
 };
+const unsigned char cucYES_NO_State_1[][40] =
+{
+	"ゼンカイ",
+	"ハンカイ"
+};
 const unsigned char cucYES_NO_State_english[][40] =
 {
 	"NO",
@@ -280,9 +285,9 @@ const stParamDatabase gsParamDatabase[TOTAL_PARAMETERS] =
 		{   30   ,   true   ,    false  ,    false  ,  eDestDisplayBoard    ,   "A026 バックライト"            ,   eVAL_INT    ,   26 ,    {   0   ,   60  ,   (unsigned char *)cucUnitS               }   ,   {   0                                              ,   0   },"A026 LCD BACKLIGHT"    }  ,
 		{	31	,	 true	,	 false	,	 false	,	eDestDisplayBoard	,	"A041 テカザシ_センサ"		    ,	eSTATE		,	37	,	{	0	,	0	,	0										}	,	{	(unsigned char *)cucEnable_Disable_State		,	2,(unsigned char *)cucEnable_Disable_State_english	},"A041 EN GESTURE"	 }	,
 		{	32	,	 true	,	 false	,	 false	,	eDestDisplayBoard	,	"A042 ゲンゴ"		            ,	eSTATE		,	38	,	{	0	,	0	,	0										}	,	{	(unsigned char *)language_Mode_State		    ,	2,(unsigned char *)language_Mode_State	},"A042 LANGUAGE"	 }	,
-		{	33	,	 true	,	 false	,	 false	,	eDestControlBoard	,	"A061 センサON/OFF"			,	eSTATE		,	61	,	{	0	,	0	,	0										}	,	{	(unsigned char *)cucYES_NO_State				,	2,(unsigned char *)cucYES_NO_State_english	},"A061 SENSR IP SETING"	 }	,
-		{	34	,	 true	,	 false	,	 false	,	eDestControlBoard	,	"A062 1PBS　ON/OFF"		    ,	eSTATE		,	62	,	{	0	,	0	,	0										}	,	{	(unsigned char *)cucYES_NO_State				,	2,(unsigned char *)cucYES_NO_State_english	},"A062 1 PBS IP SETING"	 }	,
-		{	35	,	 true	,	 false	,	 false	,	eDestControlBoard	,	"A063 3PBS　ON/OFF"		    ,	eSTATE		,	63	,	{	0	,	0	,	0										}	,	{	(unsigned char *)cucYES_NO_State				,	2,(unsigned char *)cucYES_NO_State_english	},"A063 3 PBS IP SETING"	 }	,
+		{	33	,	 true	,	 false	,	 false	,	eDestControlBoard	,	"A061 センサON/OFF"			,	eSTATE		,	61	,	{	0	,	0	,	0										}	,	{	(unsigned char *)cucYES_NO_State_1				,	2,(unsigned char *)cucYES_NO_State_english	},"A061 SENSR IP SETING"	 }	,    //20170613  201703_No.52
+		{	34	,	 true	,	 false	,	 false	,	eDestControlBoard	,	"A062 1PBS　ON/OFF"		    ,	eSTATE		,	62	,	{	0	,	0	,	0										}	,	{	(unsigned char *)cucYES_NO_State_1				,	2,(unsigned char *)cucYES_NO_State_english	},"A062 1 PBS IP SETING"	 }	,    //20170613  201703_No.52
+		{	35	,	 true	,	 false	,	 false	,	eDestControlBoard	,	"A063 3PBS　ON/OFF"		    ,	eSTATE		,	63	,	{	0	,	0	,	0										}	,	{	(unsigned char *)cucYES_NO_State_1				,	2,(unsigned char *)cucYES_NO_State_english	},"A063 3 PBS IP SETING"	 }	,    //20170613  201703_No.52
 		{	36	,	 true	,	 false	,	 false	,	eDestControlBoard	,	"A071 OPリレー1"				,	eSTATE		,	71	,	{	0	,	0	,	0										}	,	{	(unsigned char *)cucMult_Func_Out_State			,	11,(unsigned char *)cucMult_Func_Out_State_english},"A071 MULTI FUNC OP 1"	 }	,
 		{	37	,	 true	,	 false	,	 false	,	eDestControlBoard	,	"A072 OPリレー2"				,	eSTATE		,	72	,	{	0	,	0	,	0										}	,	{	(unsigned char *)cucMult_Func_Out_State			,	11,(unsigned char *)cucMult_Func_Out_State_english},"A072 MULTI FUNC OP 2"	 }	,
 		{	38	,	 true	,	 false	,	 false	,	eDestControlBoard	,	"A073 OPリレー3"				,	eSTATE		,	73	,	{	0	,	0	,	0										}	,	{	(unsigned char *)cucMult_Func_Out_State			,	11,(unsigned char *)cucMult_Func_Out_State_english},"A073 MULTI FUNC OP 3" }	,

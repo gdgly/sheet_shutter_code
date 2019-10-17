@@ -103,6 +103,8 @@
 #define WAIT_FOR_SYS_INIT_CMD_RESPONSE		23
 #define STATE_UNDEFINED						24
 #define WAIT_FOR_SHUTTERTYPE                25
+#define SEND_POWER_ON_CMD					26
+#define WAIT_FOR_POWER_ON_CMD_RESPONSE		27
 
 
 #define POWER_ON_SEQ_INTERSCREEN_DELAY		100
@@ -151,7 +153,7 @@ extern uint8_t  LCD_DISP_GUESTURE;
 // third byte = Major Version 	fourth byte = Minor version
 //uint32_t gDisplayFirmwareVersion = 0x00000003;
 //uint32_t gDisplayFirmwareVersion = 0x00000501;//20170414      201703_No.29
-uint32_t gDisplayFirmwareVersion = 17042;//20170414      201703_No.29
+uint32_t gDisplayFirmwareVersion = 17061;//20170414      201703_No.29
 
 const uint8_t display_fw[][3]={{16,8,15},{16,9,02},{16,9,9},{16,9,14},{16,10,18},{17,04,14}};
 const uint8_t control_fw[][3]={{16,8,15},{16,9,02},{16,9,9},{16,9,14},{16,10,18}};
@@ -1310,7 +1312,8 @@ uint8_t powerOnRunTime()
 			// Change states
 			//
 			gUserModuleState = DELAY_3_SECONDS;
-			gNextUMState = WAIT_FOR_CALLIBRATION_TO_OVER;
+			//gNextUMState = WAIT_FOR_CALLIBRATION_TO_OVER;   //20170609  201703_No.73
+			gNextUMState = SEND_POWER_ON_CMD ;    //20170609  201703_No.73
 
 			stop_on_time_cyw = g_ui32TickCount ;
 
@@ -1366,6 +1369,77 @@ uint8_t powerOnRunTime()
 		break;
 	}
 
+	                                      /***************start 20170609  201703_No.73***********************/
+	case SEND_POWER_ON_CMD:
+	{
+		if(gstUMtoCMoperational.commandRequestStatus == eINACTIVE)
+		{
+			gstUMtoCMoperational.commandToControlBoard.bits.systemInitComplete = 1;
+			gstUMtoCMoperational.commandRequestStatus = eACTIVE;
+
+			gUserModuleState = WAIT_FOR_POWER_ON_CMD_RESPONSE;
+			//Set_lcdlightON();
+		}
+
+		break;
+	}
+
+	case WAIT_FOR_POWER_ON_CMD_RESPONSE:
+	{
+		if(gstUMtoCMoperational.commandRequestStatus == eACTIVE)
+		{
+			if(gstUMtoCMoperational.commandResponseStatus == eSUCCESS)
+			{
+				gstUMtoCMoperational.commandToControlBoard.val = 0;
+
+				gstUMtoCMoperational.commandRequestStatus = eINACTIVE;
+				gstUMtoCMoperational.commandResponseStatus = eNO_STATUS;
+
+				//
+				// Change state
+				//
+				gUserModuleState = WAIT_FOR_CALLIBRATION_TO_OVER;
+
+			}
+
+			else if( (gstUMtoCMoperational.commandResponseStatus == eTIME_OUT) ||
+					(gstUMtoCMoperational.commandResponseStatus == eFAIL)
+			)
+			{
+				gstUMtoCMoperational.commandRequestStatus = eINACTIVE;
+				gstUMtoCMoperational.commandResponseStatus = eNO_STATUS;
+
+				//
+				// Clear first 3 lines on screen
+				//
+				//GrRectFIllBolymin(0, 126, 0, 47, true, true);
+				GrRectFIllBolymin(0, 127, 0, 47, 0x00, true);
+				//
+				// Display first power on screen screen with shutter type received
+				//
+				//displayText(" B X   S H U T T E R S", 30, 0, false, false, false, false);
+				//displayText("BX SHUTTERS", 18, 0, false, false, false, false,true,false);
+				displayText("BX", 58, 0, false, false, false, false,true,false);
+				GrLineDrawHorizontalBolymin(0, 126, 14, false);	// line draw function
+
+				//
+				// Change states
+				//
+				gUserModuleState = DELAY_3_SECONDS;
+				gNextUMState = SEND_POWER_ON_CMD;
+
+				//
+				// Capture Time
+				//
+				gTickCount3Seconds = g_ui32TickCount;
+			}
+		}
+
+		break;
+	}
+	                                              /***************end 20170609  201703_No.73***********************/
+
+
 	case WAIT_FOR_CALLIBRATION_TO_OVER :
 	{
 
@@ -1376,24 +1450,31 @@ uint8_t powerOnRunTime()
 
 		if(get_timego(stop_on_time_cyw)>100)
 		{
-			stop_on_time_cyw = g_ui32TickCount ;
-		if(gstControlBoardStatus.bits.s3PBS_stoppressd == 1)
-		{
-				if(gu8_language == Japanese_IDX)
-				{
-						displayText("テイシ ON", 2, 48, false, false, false, false, false, false);
-				}
-				else
-				{
-						displayText("STOP ON", 2, 48, false, false, false, false, false, true);
-				}
+				stop_on_time_cyw = g_ui32TickCount ;
+			if(gstControlBoardStatus.bits.s3PBS_stoppressd == 1)
+			{
+					if(gu8_language == Japanese_IDX)
+					{
+							displayText("テイシ ON", 2, 48, false, false, false, false, false, false);
+					}
+					else
+					{
+							displayText("STOP ON", 2, 48, false, false, false, false, false, true);
+					}
 
-		}
-		else
-		{
-				//displayText("         ", 2, 48, false, false, false, false, false, false);
-				GrRectFIllBolymin(0, 127, 48, 63, 0x00, true);   //20161201
-		}
+			}
+			else
+			{
+					//displayText("         ", 2, 48, false, false, false, false, false, false);
+					GrRectFIllBolymin(0, 127, 48, 63, 0x00, true);   //20161201
+			}
+									  ///*************start 20170616  201703_No.64*****************/
+			displayText("BX", 58, 0, false, false, false, false,true,false);
+			if(gu8_language == Japanese_IDX)
+			  displayText("ティーチングモード", 2, 16, false, false, false, false, false, false);
+			else
+			  displayText("TEACHING MODE", 2, 16, false, false, false, false, false, true);
+									  ///*************end 20170616  201703_No.64*****************/
 		}
 
 		//
@@ -1422,6 +1503,7 @@ uint8_t powerOnRunTime()
 			LCD_DISP_GUESTURE = 0;
 
 		}
+
 		/*else
 		{
 

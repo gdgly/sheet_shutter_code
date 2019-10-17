@@ -543,6 +543,7 @@ stInternalFunctions gsParamResetA081FunctionalBlock =
 uint8_t paramResetPaintprocess(char *paramStr)
 {
 	uint8_t viewbuff[MAX_CHARS_IN_LINE];
+	uint8_t viewbuff_JAP[24];
 
 	//
 	// This is first screen paint function
@@ -554,8 +555,10 @@ uint8_t paramResetPaintprocess(char *paramStr)
 	if(gu8_language == Japanese_IDX)
 	{
 	//
-	usnprintf((char *)viewbuff, sizeof(viewbuff), "%s", paramStr);//参数名字
-	displayText(viewbuff, 2, 0, false, false, false, false, false, false);
+	//usnprintf((char *)viewbuff, sizeof(viewbuff), "%s", paramStr);//参数名字
+	//displayText(viewbuff, 2, 0, false, false, false, false, false, false);
+	usnprintf((char *)viewbuff_JAP, sizeof(viewbuff_JAP), "%s", paramStr);//参数名字       //20170613  201703_No.54
+	displayText(viewbuff_JAP, 2, 0, false, false, false, false, false, false);      //20170613  201703_No.54
 	usnprintf((char *)viewbuff, sizeof(viewbuff), "リセットシマスカ?");
 	displayText(viewbuff, 2, 16, false, false, false, false, false, false);
 

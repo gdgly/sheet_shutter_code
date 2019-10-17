@@ -921,7 +921,25 @@ uint8_t installationRunTime(void)
 						}
 
 					}
+                                                ///*****************start 20170616   201703_No.65******************/
+					if(gstControlBoardStatus.bits.s3PBS_stoppressd == 1)
+					{
+						if(gu8_language == Japanese_IDX)
+						{
+								displayText("ÉeÉCÉV ON", 2, 48, false, false, false, false, false, false);
+						}
+						else
+						{
+								displayText("STOP ON", 2, 48, false, false, false, false, false, true);
+						}
 
+					}
+					else
+					{
+						//displayText("         ", 2, 48, false, false, false, false, false, false);
+						GrRectFIllBolymin(0, 127, 48, 63, 0x00, true);   //20161201
+					}
+					                         ///*****************end 20170616   201703_No.65******************/
 					//
 					// Display current encoder count in 3rd line
 					//
