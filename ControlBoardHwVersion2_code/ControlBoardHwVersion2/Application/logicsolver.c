@@ -92,6 +92,8 @@ uint8_t OpenCmdForDistinguish = 0;//20160808 AOYAGI STT ; 1-open cmd、0-other c
 uint8_t select_apertureHeight_Instalation=0;
 /****************************************************************************/
 
+//20160906 item104
+uint8_t season_cyw=0;
 /****************************************************************************
  *  Global variables for other files:
  ****************************************************************************/
@@ -1820,7 +1822,7 @@ void logicSolver(void) {
 
 						//(gstControlApplicationFault.bits.operationRestrictionTimer == 0) &&
 						// Check none of the safety signal is triggered
-						(gstDriveApplicationFault.bits.microSwitch == 0 && gstDriveApplicationFault.bits.peObstacle == 0 && gstControlApplicationFault.bits.startupSafetySensor == 0)
+						(gstDriveApplicationFault.bits.microSwitch == 0 && gstDriveApplicationFault.bits.peObstacle == 0 /*&& gstControlApplicationFault.bits.startupSafetySensor == 0*/)  //20160906 item 104
 
 						// Check last command sent not the same as the one which we are going to sent
 						//(sstLStoCMDrCmdSent.commandToDriveBoard.bits.openShutter == 0 && sstLStoCMDrCmdSent.commandToDriveBoard.bits.openShutterApperture == 0)
@@ -1858,7 +1860,11 @@ void logicSolver(void) {
 
 					} else
 					{
-						if(gstDriveStatus.bits.shutterBetweenUplmtAphgt)
+						if(gstControlApplicationFault.bits.startupSafetySensor == 1)//20160906 item104
+						{
+							season_cyw = 1;
+						}
+						else if(gstDriveStatus.bits.shutterBetweenUplmtAphgt)
 						{
 							sstLStoCMDrCmdToBeSent.commandToDriveBoard.val = 0;
 							sstLStoCMDrCmdToBeSent.commandToDriveBoard.bits.openShutter = 1;
@@ -3024,6 +3030,67 @@ void logicSolver(void) {
 		// *********************************************************************************************
 
 		// Keep on monitoring the Safety Signal Triggered situation
+		//20160906 item 104
+					if (
+
+									(season_cyw == 1) &&
+
+									// Check for Safety Signal Trigger
+									(
+											gstDriveApplicationFault.bits.microSwitch == 1 								||
+											gstDriveApplicationFault.bits.peObstacle == 1  								||
+
+											// Check added for start sensor not to work below PE limit similar to PE Sensor
+											// 8 April 2015 - YPG
+											(
+													gstControlApplicationFault.bits.startupSafetySensor == 1 		&&
+
+														(
+																gstDriveStatus.bits.ignPhotoElecSensLimRchd == 0 &&
+																gstDriveStatus.bits.shutterLowerLimit == 0
+														)
+
+											)																			||
+											gstDriveApplicationFault.bits.airSwitch == 1
+									) &&
+
+									// Check shutter is not at upper limit
+									// Commented and replaced with below statement by YPG on 1 Sep 14 as shutter needs to be open till Upper Limit
+									//(gstDriveStatus.bits.shutterUpperLimit != 1 && gstDriveStatus.bits.shutterApertureHeight != 1) &&
+									(gstDriveStatus.bits.shutterUpperLimit != 1) &&
+
+									// Check shutter is moving not down
+									// ov  2014 - Shutter moving down check bypass for startup safety by YPG
+									((gstDriveStatus.bits.shutterMovingDown == 0) || (gstControlApplicationFault.bits.startupSafetySensor == 1)) &&
+
+									// Check shutter is in RUN state
+									(gstControlBoardStatus.bits.runStop == 1) &&
+
+									// Check LS to CMDr block is Free
+									(gstLStoCMDr.commandRequestStatus == eINACTIVE) &&
+
+									//Check for Emergency Signal Not Trigger
+									(gstDriveApplicationFault.bits.emergencyStop == 0)
+
+									//Check other fault bits are reset
+
+									)
+
+				{
+					season_cyw = 0;
+					gstLStoCMDr.commandRequestStatus = eACTIVE;
+					gstLStoCMDr.commandToDriveBoard.val = 0;
+
+					gstLStoCMDr.commandToDriveBoard.bits.openShutterJog = 1;
+					gstLStoCMDr.additionalCommandData = 50;
+					OpenCmdForDistinguish = 0;
+
+										// Update last command sent
+					sstLStoCMDrCmdSent.commandToDriveBoard.val = gstLStoCMDr.commandToDriveBoard.val;
+
+					seHandleSafetySignal = HandleSafetySignalWaitingReply;
+				}
+
 		if (
 
 				(seHandleSafetySignal == HandleSafetySignalInit) &&
