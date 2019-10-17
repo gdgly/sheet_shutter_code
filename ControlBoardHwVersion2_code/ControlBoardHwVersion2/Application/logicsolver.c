@@ -509,6 +509,7 @@ void logicSolver(void) {
 //			//sHandlePowerON_Init = HandlePowerOnInit_InstallationCmdSentToDrive;
 //
 //		}
+
 		else if (
 				(
 						(
@@ -519,7 +520,9 @@ void logicSolver(void) {
 						 			 gstCMDitoLS.commandDisplayBoardLS.bits.closePressed == 1
 						 	 )
 						 ) ||
-						 (gKeysStatus.bits.Key_Open_pressed == 1 || gKeysStatus.bits.Key_Close_pressed == 1 || gSensorStatus.bits.Sensor_1PBS_active == 1 ||(gSensorStatus.bits.Sensor_Obstacle_active && gstControlBoardStatus.bits.autoManual == 1))
+						 (gKeysStatus.bits.Key_Open_pressed == 1 || gKeysStatus.bits.Key_Close_pressed == 1 ||
+						  gKeysStatus.bits.Wireless_Open_pressed == 1 || gKeysStatus.bits.Wireless_Close_pressed == 1 ||     //20161201
+						  gSensorStatus.bits.Sensor_1PBS_active == 1 ||(gSensorStatus.bits.Sensor_Obstacle_active && gstControlBoardStatus.bits.autoManual == 1))
 				) &&
 				(gstLStoCMDr.commandRequestStatus == eINACTIVE) &&
 				(sHandlePowerON_Init == HandlePowerOnInit_Home) &&
@@ -5393,9 +5396,9 @@ uint32_t get_timego(uint32_t x_data_his)
 
 
 uint32_t his_flaglogintime=0;
-#define key_time 30
-#define key_time_3s  300
-#define key_time_1s  150
+#define key_time 3
+#define key_time_3s  120
+#define key_time_1s  20//150
 
 void wirelesslogin_cyw(void)
 {
@@ -5501,6 +5504,7 @@ void wirelesslogin_cyw(void)
   	   ROM_GPIOPinWrite(MULTI_FUNC_OUT_5_GPIO_BASE, MONIDENGLU_KEY, MONIDENGLU_KEY);
   	   	     his_flaglogintime = g_ui32TickCount10ms;
   	   	      flag_addlogin = 20;
+  	   	    //flag_addlogin=0;
   	   	break;
     case 20:
     	if(get_timego10ms(his_flaglogintime) > key_time_1s)
@@ -5527,7 +5531,5 @@ void wirelesslogin_cyw(void)
    default:
 	   break;
    }
-
-
 
 }

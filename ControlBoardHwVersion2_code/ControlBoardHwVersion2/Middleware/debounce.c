@@ -186,6 +186,8 @@ uint32_t get_timego(uint32_t x_data_his);
 extern uint16_t gsActiveAnomalylist[20];
 extern uint32_t his_rise_time;
 extern const _stErrorList gstErrorList [TOTAL_ERRORS];
+
+extern unsigned int suiTimeStampForOnePBS;
 /****************************************************************************/
 
 /****************************************************************************
@@ -2100,6 +2102,8 @@ void keysProcessFlags(uint8_t keyState, uint8_t keyChanged)
 					// Logic added to Latch the wireless signals for specific period of time after released 13 Jan 2015
 					suiTimeStmpWirelesOpnReleased = g_ui32TickCount;
 					sucWirelesOpnReleasedFlag = 1;
+
+					suiTimeStampForOnePBS = g_ui32TickCount; //20161201
 
 				}
 
