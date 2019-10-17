@@ -2174,6 +2174,7 @@ void logicSolver(void) {
 										gstDriveApplicationFault.bits.microSwitch == 0 &&
 										gstDriveApplicationFault.bits.peObstacle == 0 &&
 										gstControlApplicationFault.bits.startupSafetySensor == 0
+										&& gstControlApplicationFault.bits.ObstacleSensor ==0        //20170621   201703_No.00
 										//(gstDriveStatus.bits.shutterUpperLimit == 1 && gSensorStatus.bits.Sensor_Safety_active == true))
 								) ||
 								 (
