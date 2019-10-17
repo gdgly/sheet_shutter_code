@@ -411,7 +411,7 @@ enum commandResponseType formCMDrCommandPacket (void)
 
 void disable_move_cyw()
 {
-	if(gstControlApplicationFault.bits.operationRestrictionTimer == 1)
+	if((gstDriveStatus.bits.driveFaultUnrecoverable == 1)||(gstControlApplicationFault.bits.operationRestrictionTimer == 1))
 	{
 	lstCMDrInnerTaskComm.commandToDriveBoard.bits.openShutter = 0;
 	lstCMDrInnerTaskComm.commandToDriveBoard.bits.openShutterJog = 0;
