@@ -211,7 +211,7 @@ void logicSolver(void) {
 	};
 	static enum ShutterOpenCloseCmdState seShutterOpenCloseCmdState =
 			CmdNotDetected;
-	static enum ShutterOpenCloseCmdState seShutterOpenCloseCmdState_backup = CmdNotDetected;   //20170330_1
+	static enum ShutterOpenCloseCmdState seShutterOpenCloseCmdState_backup = CmdNotDetected;   //20170330_1   201703_No.16
 
 	// Following variable hold the command to be sent
 	// The variable mainly used in situation like "Open Shutter, Open Shutter Aperture like command"
@@ -1130,7 +1130,7 @@ void logicSolver(void) {
 				 (gstCMDitoLS.commandRequestStatus == eACTIVE  && gstCMDitoLS.commandResponseStatus == eNO_STATUS) ||
 
 				 (
-//						 (gKeysStatus.bits.Key_Open_pressed) 		||     //20170330_2
+//						 (gKeysStatus.bits.Key_Open_pressed) 		||     //20170330_2    201703_No.34
 //						 (gKeysStatus.bits.Key_Open_released) 		||
 //						 (gKeysStatus.bits.Key_Close_pressed) 		||
 //						 (gKeysStatus.bits.Key_Close_released) 		||
@@ -1643,7 +1643,7 @@ void logicSolver(void) {
 						 gSensorStatus.bits.Sensor_1PBS_inactive	||
 						 // 20 Oct Added check for auto mode for startup sensor by yogesh
 						// (gSensorStatus.bits.Sensor_Obstacle_active && gstControlBoardStatus.bits.autoManual == 1)		||
-						 (gSensorStatus.bits.Sensor_Obstacle_active && gstControlBoardStatus.bits.autoManual == 1 && seShutterOpenCloseCmdState==0 ) ||  //20170330_4
+						 (gSensorStatus.bits.Sensor_Obstacle_active && gstControlBoardStatus.bits.autoManual == 1 && seShutterOpenCloseCmdState==0 ) ||  //20170330_4    201703_No.14
 						 (gSensorStatus.bits.Sensor_Obstacle_inactive && gstControlBoardStatus.bits.autoManual == 1)	||
 
 						 // 17 Dec 14 Added to support wireless 3PBS & 1PBS functionality
@@ -1916,7 +1916,7 @@ void logicSolver(void) {
 									((gu8_en_oprdelay == 0 || gu8_en_oprdelay == 2) && gstControlBoardStatus.bits.autoManual == 1) ||
 									((gu8_en_oprdelay == 1 || gu8_en_oprdelay == 2) && gstControlBoardStatus.bits.autoManual == 0)) &&
 									//gu8_goup_oprdelay != 0 	&& gstDriveStatus.bits.shutterLowerLimit
-									(gu8_goup_oprdelay != 0 ||(gu8_goup_oprdelay==0 && gu8_intlck_valid==0 && gu8_intlck_prior == 1))	&& gstDriveStatus.bits.shutterLowerLimit    //20170406
+									(gu8_goup_oprdelay != 0 ||(gu8_goup_oprdelay==0 && gu8_intlck_valid==0 && gu8_intlck_prior == 1))	&& gstDriveStatus.bits.shutterLowerLimit    //20170406   201703_No.9
 							)
 					{
 
@@ -2536,7 +2536,7 @@ void logicSolver(void) {
 //		else if (seShutterOpenCloseCmdState == CmdUpDetectedWaitUpDelay
 //				|| seShutterOpenCloseCmdState == CmdDownDetectedWaitDownDelay)
 		else if ((seShutterOpenCloseCmdState == CmdUpDetectedWaitUpDelay
-				|| seShutterOpenCloseCmdState == CmdDownDetectedWaitDownDelay)		//20170330_1
+				|| seShutterOpenCloseCmdState == CmdDownDetectedWaitDownDelay)		//20170330_1    201703_No.16
 			    &&  (!(
 				    (gSensorStatus.bits.Sensor_InterlockIP_active == false)&&
 				    ((seShutterOpenCloseCmdState == CmdUpDetectedWaitUpDelay)||(seShutterOpenCloseCmdState == CmdDownDetectedWaitDownDelay))&&
@@ -2546,7 +2546,7 @@ void logicSolver(void) {
 				)
 		{
 			if( (seShutterOpenCloseCmdState_backup == CmdUpDetectedWaitUpDelay || seShutterOpenCloseCmdState_backup == CmdDownDetectedWaitDownDelay)
-				&&  gSensorStatus.bits.Sensor_InterlockIP_active == true  &&  gSensorStatus.bits.Sensor_Obstacle_active==0 )            //20170330_1
+				&&  gSensorStatus.bits.Sensor_InterlockIP_active == true  &&  gSensorStatus.bits.Sensor_Obstacle_active==0 )            //20170330_1   201703_No.16  201703_No.11
 				{
 				   seShutterOpenCloseCmdState_backup = CmdNotDetected;
 
@@ -2572,7 +2572,7 @@ void logicSolver(void) {
 			else if (((seShutterOpenCloseCmdState == CmdUpDetectedWaitUpDelay
 //					&& (get_timego( suiTimeStamp) >= ((uint32_t) gu8_goup_oprdelay * 1000)))
 
-					&& ((gu8_goup_oprdelay!=0 && (get_timego( suiTimeStamp) >= ((uint32_t) gu8_goup_oprdelay * 1000))) ||                  //20170406
+					&& ((gu8_goup_oprdelay!=0 && (get_timego( suiTimeStamp) >= ((uint32_t) gu8_goup_oprdelay * 1000))) ||                  //20170406    201703_No.9
 							(gu8_goup_oprdelay==0 && gu8_intlck_valid==0 && gu8_intlck_prior == 1 &&(get_timego( suiTimeStamp) >= ((uint32_t) 500)))  ))
 
 					|| (seShutterOpenCloseCmdState == CmdDownDetectedWaitDownDelay
@@ -3100,7 +3100,7 @@ void logicSolver(void) {
 						((gu8_intlck_prior == 1)||((gu8_intlck_prior==0)&&(gstDriveStatus.bits.shutterLowerLimit == 1)))&&
 						(gu8_intlck_valid==0)
 						)
-						seShutterOpenCloseCmdState_backup = seShutterOpenCloseCmdState;      //20170330_1
+						seShutterOpenCloseCmdState_backup = seShutterOpenCloseCmdState;      //20170330_1    201703_No.16  201703_No.11
 
 		// *********************************************************************************************
 		// Start sub-state 'Handle Safety Signal- Drive board' of 'Logic_Solver_Drive_Run'
@@ -4761,7 +4761,7 @@ void logicSolver(void) {
 					gstBitwiseMultifuncOutput.bits.Rising = 0;
 
 					//if(gstDriveStatus.bits.shutterLowerLimit == 1)gstBitwiseMultifuncOutput.bits.InterlockOutput = 1;	//20161206
-					if((gstDriveStatus.bits.shutterLowerLimit == 1)&&(sucInterlockOutputStatus == 0)&&(gstDriveStatus.bits.shutterMovingDown==0))gstBitwiseMultifuncOutput.bits.InterlockOutput = 1;	//20170330
+					if((gstDriveStatus.bits.shutterLowerLimit == 1)&&(sucInterlockOutputStatus == 0)&&(gstDriveStatus.bits.shutterMovingDown==0))gstBitwiseMultifuncOutput.bits.InterlockOutput = 1;	//20170330   201703_No.10
 				}
 		// Dropping
 		if ((gstDriveStatus.bits.shutterMovingDown == 1)||(seShutterOpenCloseCmdState == CmdDownDetectedWaitDownDelay)||(droping_count_cyw<relay_delay_cyw)
@@ -4789,12 +4789,12 @@ void logicSolver(void) {
 					gstBitwiseMultifuncOutput.bits.Dropping = 0;
 				}
 
-		// Operating             //20170330_3
+		// Operating             //20170330_3    201703_No.18
 		if(gstBitwiseMultifuncOutput.bits.Dropping==1 || gstBitwiseMultifuncOutput.bits.Rising == 1)
 		    gstBitwiseMultifuncOutput.bits.Operating = 1;
 		else  gstBitwiseMultifuncOutput.bits.Operating = 0;
 
-		// Green signal lamp         //20170330_3
+		// Green signal lamp         //20170330_3   201703_No.18
 		if(gstBitwiseMultifuncOutput.bits.Operating==0  &&
 			(gstDriveStatus.bits.shutterUpperLimit==1 || gstDriveStatus.bits.shutterApertureHeight == 1))
 		  gstBitwiseMultifuncOutput.bits.GreenSignalLamp = 1;
@@ -4819,7 +4819,7 @@ void logicSolver(void) {
 //			gstBitwiseMultifuncOutput.bits.GreenSignalLamp = 0;
 //		}
 
-		// Red signal lamp           //20170330_3
+		// Red signal lamp           //20170330_3   201703_No.18
 		gstBitwiseMultifuncOutput.bits.RedSignalLamp =!gstBitwiseMultifuncOutput.bits.GreenSignalLamp;
 
 //		if (gstDriveStatus.bits.shutterUpperLimit == 1)
