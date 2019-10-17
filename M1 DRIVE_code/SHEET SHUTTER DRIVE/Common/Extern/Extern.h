@@ -111,10 +111,13 @@ EXTERN BOOL ShutterInstallationEnabled;
 
 EXTERN UINT8 Power_ON_igbtOverTemp;
 EXTERN UINT16 Time_uart_count; 
+EXTERN UINT8 Flag_powerUpCalib_osToggle;
 
 //define Correction No.
 #define  BUG_No41_microSwSensorTrigrd             //20170606  201703_No.41
 #define  BUG_No81_microSwSensor_PowerON          //20170605  201703_No.81
 #define  BUG_No82_UartRxTimeOut1S                //20170606  201703_No.82
 #define  BUG_No83_igbtOverTemp                   //20170606  201703_No.83
-#define  BUG_No76_powerUpCalib_osToggle          //20170607  201703_No.76
+#define  BUG_No76or73_powerUpCalib_osToggle      //20170607  201703_No.76 or 73
+#define  BUG_No79_FaultPeObstacle                //20170608  201703_No.79
+#define  BUG_No51_SnowA008                       //20170612  201703_No.51

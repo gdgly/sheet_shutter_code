@@ -1203,7 +1203,12 @@ VOID monitorSafetySensors(VOID)
 VOID updatePhotoElectricDebounceTime(VOID)
 {
 #ifdef PROGRAMMABLE_DEBOUNCE
+  #ifdef BUG_No51_SnowA008    //20170612  201703_No.51
+    if(uDriveApplBlockEEP.stEEPDriveApplBlock.snowModePhotoelec_A008 !=0)
+      sensorActiveDebounceValue[PHOTOELECTRIC_SENSOR] = uDriveApplBlockEEP.stEEPDriveApplBlock.snowModePhotoelec_A008 *250;
+  #else
     sensorActiveDebounceValue[PHOTOELECTRIC_SENSOR] = uDriveApplBlockEEP.stEEPDriveApplBlock.snowModePhotoelec_A008;
+  #endif
 #endif
 }
 
@@ -1286,6 +1291,9 @@ VOID initSensorList(VOID)
     photoElecObsSensTrigrd = sensorList[PHOTOELECTRIC_SENSOR].sensorCurrSteadyVal;
     tempSensTrigrd = sensorList[TEMPERATURE_SENSOR].sensorCurrSteadyVal;
     originSensorDetected = sensorList[ORIGIN_SENSOR].sensorCurrSteadyVal;
+#ifdef  BUG_No51_SnowA008  //20170612  201703_No.51
+    updatePhotoElectricDebounceTime();    
+#endif    
 }
 #endif	//	PROGRAMMABLE_DEBOUNCE
 
