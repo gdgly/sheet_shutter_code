@@ -199,6 +199,8 @@ void logicSolver(void) {
 	static unsigned char sucWireless1PBSControl = 0;
 	static unsigned char sucStartupControl = 0;
 
+	static unsigned char sucStopKeyDisplay_Control_PowerON = 0;	   //20170621   201703_No.58 No.59
+
 	// Following variable hold the state of the Open / Close command sending activity
 	// The variable mainly used in situation like "Open Shutter, Open Shutter Aperture like command"
 	// which physically need to sent to drive board after go up operation delay
@@ -534,6 +536,7 @@ void logicSolver(void) {
 				//	Power on calibration command shall be initiated only when drivePowerOnCalibration bit is set - Added - Feb 2016
 				(gstDriveStatus.bits.drivePowerOnCalibration)
 				&& (gucSystemInitComplete == 3)    //20170609  201703_No.73
+				&&(sucStopKeyDisplay_Control_PowerON==0)   //20170620  201703_No.58 No.59
 			)
 		{
 
@@ -581,6 +584,7 @@ void logicSolver(void) {
 					) &&
 					gstLStoCMDr.commandRequestStatus == eINACTIVE &&
 					sHandlePowerON_Init == HandlePowerOnInit_Home
+					&& (gstDriveStatus.bits.drivePowerOnCalibration)    //20170620  201703_No.65
 				)
 		{
 
@@ -589,6 +593,7 @@ void logicSolver(void) {
 			gstLStoCMDr.commandToDriveBoard.bits.stopPowerOnCalibration = 1;
 			if(gKeysStatus.bits.Key_Stop_pressed==1)  gKeysStatus.bits.Key_Stop_pressed=0;  //20170609  201703_No.73
 			if(gKeysStatus.bits.Wireless_Stop_pressed==1)  gKeysStatus.bits.Wireless_Stop_pressed=0;  //20170609  201703_No.73
+			sucStopKeyDisplay_Control_PowerON= 1;       //20170620  201703_No.58 No.59
 
 			// Update last command sent
 			sstLStoCMDrCmdSent.commandToDriveBoard.val = gstLStoCMDr.commandToDriveBoard.val;
@@ -621,6 +626,7 @@ void logicSolver(void) {
 			                             /******************start 20170609  201703_No.73*******************/
 			if(gstCMDitoLS.commandDisplayBoardLS.bits.stopReleased == 1 || gKeysStatus.bits.Key_Stop_released==1   ||  gKeysStatus.bits.Wireless_Stop_released==1)
 			{
+				sucStopKeyDisplay_Control_PowerON= 0;       //20170620  201703_No.58 No.59
 				gstCMDitoLS.commandDisplayBoardLS.bits.stopReleased=0;
 				gKeysStatus.bits.Key_Stop_released=0;
 				gKeysStatus.bits.Wireless_Stop_released=0;
@@ -768,6 +774,11 @@ void logicSolver(void) {
 		}
 		else if (gstDriveStatus.bits.driveReady && gucSystemInitComplete == 2)
 		{
+			if(Power_ON_Sensor_Obstacle_active==1)    //20170620  201703_No.58 No.59
+			{
+				Power_ON_Sensor_Obstacle_active=0;
+				gSensorStatus.bits.Sensor_Obstacle_active=1;
+			}
 			eLogic_Solver_State = Logic_Solver_Drive_Run;
 		}
 
