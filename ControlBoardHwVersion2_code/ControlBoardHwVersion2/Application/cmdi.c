@@ -732,6 +732,16 @@ void communicationModuleDisplay(void)
 						//
 						slui32CaptureTimeAtCommandReceive = g_ui32TickCount;
 						sucCommunicationModuleDisplayState = eWaitBeforeSendingResponse;//eCommandReceivedFromDisplayWaitingForReply;
+
+						if((gstCMDitoCMDr.transmitCommandPacket[5]==0x19)&&(gstCMDitoCMDr.transmitCommandPacket[4]==0x02))    //A537-->shutter type(BEAD/M1/M2)     //20170421   201703_No.39
+						{
+						    if(gstControlProcessorFault.bits.watchdog==1)
+						    {
+							   gstControlProcessorFault.bits.watchdog = 0;
+							   gstControlBoardFault.bits.controlProcessor = 0;
+							   gstControlBoardStatus.bits.controlFault = 0;
+						    }
+						}
 					}	// CRC passed
 					else
 					{	//	CRC failed
@@ -1231,6 +1241,7 @@ void communicationModuleDisplay(void)
 					//	Response_ACK required
 					//
 					lucCommandSupportReponseAck = 1;
+
 				}
 
 				//

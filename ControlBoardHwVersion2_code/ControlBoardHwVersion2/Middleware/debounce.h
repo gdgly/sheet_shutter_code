@@ -179,6 +179,12 @@ extern "C"
 
 #ifdef VERSION_2HARDWARE
 
+    #ifdef Enable_WATCHDOG_CHECK
+        #define WATCHDOG_CHECK_GPIO_PERIPH     SYSCTL_PERIPH_GPIOD
+        #define WATCHDOG_CHECK_GPIO_BASE       GPIO_PORTD_BASE
+        #define WATCHDOG_CHECK_PE			   GPIO_PIN_3
+
+    #endif
 /*
  * 		3PBS pins configuration macros start here
  */

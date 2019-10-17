@@ -568,6 +568,11 @@ void main(void)
 		logicSolver();
 //		logicSolverToTestCMDrCMDi();
 
+#ifdef Enable_WATCHDOG_CHECK
+		if(GPIOPinRead(WATCHDOG_CHECK_GPIO_BASE, WATCHDOG_CHECK_PE)==0)
+			while(1);
+#endif
+
 #ifndef DISABLE_WATCHDOG
 		doWatchdogReset();
 #endif
@@ -810,7 +815,8 @@ void logWatchDogTimerError(void)
 
 	lui32ProcessorResetCause = ROM_SysCtlResetCauseGet();
 
-	if(lui32ProcessorResetCause & SYSCTL_CAUSE_SW)
+	//if(lui32ProcessorResetCause & SYSCTL_CAUSE_SW)
+	if(lui32ProcessorResetCause & (SYSCTL_CAUSE_SW || SYSCTL_CAUSE_LDO ||SYSCTL_CAUSE_WDOG1 ||SYSCTL_CAUSE_WDOG0 ||SYSCTL_CAUSE_WDOG ||SYSCTL_CAUSE_BOR ||SYSCTL_CAUSE_EXT))
 	{
 		gstControlProcessorFault.bits.watchdog = 1;
 		gstControlBoardFault.bits.controlProcessor = 1;
