@@ -404,7 +404,30 @@ VOID initCommandHandler(VOID)
 
     PORTCbits.RC4 = 0;
 
+    configureUART2(RTDM_ASSIGNED_UART_CHANNEL);   //20170527 test
 	configureUART(APPL_ASSIGNED_UART_CHANNEL);
+
+	txAnomalyHistInProgress = FALSE;
+
+
+}
+VOID initCommandHandler_1(VOID)
+{
+	UINT8 index;
+
+    txInProgress = FALSE;
+
+	// initialize the current command to all zero
+	for(index = 0; index < (COMMAND_RX_BUFFER_SIZE + CMD_STATE_SIZE); index++)
+	{
+		uCBCommand.command[index] = 0;
+	}
+
+	initUARTBuffers();
+
+    PORTCbits.RC4 = 0;
+
+	//configureUART(APPL_ASSIGNED_UART_CHANNEL);
 
 	txAnomalyHistInProgress = FALSE;
 
@@ -421,7 +444,8 @@ VOID checkSerialTxCompleted(VOID)
         if(++txResetCount > 2)
         {
             txResetCount=0;
-            initCommandHandler();
+            //initCommandHandler();
+            initCommandHandler_1();
         }
     }
     

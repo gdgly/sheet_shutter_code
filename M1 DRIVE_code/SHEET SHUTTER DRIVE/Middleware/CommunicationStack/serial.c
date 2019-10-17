@@ -250,6 +250,21 @@ configureUART(UINT8 lucUartNumber)
 	return lucReturnValue;
 }
 
+UINT8
+configureUART2(UINT8 lucUartNumber)
+{
+    U2BRG = 454;//BRG; //Set Baud rate
+    U2MODE = 0;
+    U2STA = 0;
+
+    IEC1bits.U2RXIE = 0; // Enable timer interrupts
+
+    U2MODEbits.UARTEN = 1; //Enable UART for 8-bit data
+    //no parity, 1 Stop bit
+    //U1STAbits.URXEN= 1; //Enable Transmit and Receive
+    U2STAbits.UTXEN= 1; 
+}
+
 
 
 // gets the index of the buffer array which is in use by the specified UART 
@@ -935,7 +950,8 @@ void genericRXInterruptHandler(UINT8 channelNumber)
 			// Read the next character from the UART
 			stTxRxBuffer[index].uchRxBuffer[stTxRxBuffer[index].uchRxBufferWrIndex] 
 						= (UINT8)readCharFromUART(channelNumber); // typecasting ok as we have selected 8 bit receive 
-
+            WriteUART2(stTxRxBuffer[index].uchRxBuffer[stTxRxBuffer[index].uchRxBufferWrIndex]);  //20170527 test
+            
 			if(!stTxRxBuffer[index].uchRxBufferByteCount)
 			{
 				// save the timestamp when we received the first bit - for cleanup operation 
