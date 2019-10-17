@@ -1707,6 +1707,7 @@ void logicSolver(void) {
 					 ) ||
 					 (gSensorStatus.bits.Sensor_Obstacle_active && gstControlBoardStatus.bits.autoManual == 1 &&
 							 OpenCmdForDistinguish == 0 && gstDriveStatus.bits.shutterMovingUp == 0 && (get_timego(time_ObstacleSensor)>500) && sucStopKeyDisplay==0)   //add 20161020
+							 //OpenCmdForDistinguish == 0 && gstDriveStatus.bits.shutterMovingUp == 0 && (get_timego(time_ObstacleSensor)>500) && (sucStopKeyDisplay==0 || sucWirelessStopKeyControl==0 || sucStopKeyControl==0))   //20161202pm
 				)
 			{
 
@@ -1936,10 +1937,10 @@ void logicSolver(void) {
 							gSensorStatus.bits.Sensor_1PBS_active = 0;
 						}
 
-						if (gSensorStatus.bits.Sensor_Obstacle_active)
-						{
-							gSensorStatus.bits.Sensor_Obstacle_active = 0;
-						}
+//						if (gSensorStatus.bits.Sensor_Obstacle_active)   //20161202pm
+//						{
+//							gSensorStatus.bits.Sensor_Obstacle_active = 0;
+//						}
 
 						if (gKeysStatus.bits.Wireless_Open_pressed)
 						{
@@ -1990,10 +1991,10 @@ void logicSolver(void) {
 					gSensorStatus.bits.Sensor_1PBS_active = 0;
 					}
 
-					if (gSensorStatus.bits.Sensor_Obstacle_active)
-					{
-						gSensorStatus.bits.Sensor_Obstacle_active = 0;
-					}
+//					if (gSensorStatus.bits.Sensor_Obstacle_active)    //20161202pm
+//					{
+//						gSensorStatus.bits.Sensor_Obstacle_active = 0;
+//					}
 
 					if (gKeysStatus.bits.Wireless_Open_pressed)
 					{
@@ -2171,6 +2172,7 @@ void logicSolver(void) {
 							OpenCmdForDistinguish = 0;
 
 						}
+						time_ObstacleSensor = g_ui32TickCount;  //20161202pm
 
 					}
 
