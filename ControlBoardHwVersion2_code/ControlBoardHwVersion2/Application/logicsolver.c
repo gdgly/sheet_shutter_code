@@ -4753,7 +4753,17 @@ void logicSolver(void) {
 		// Rising
 		if ((gstDriveStatus.bits.shutterMovingUp == 1)||(seShutterOpenCloseCmdState == CmdUpDetectedWaitUpDelay)||(rasing_count_cyw<relay_delay_cyw))
 				{
-					gstBitwiseMultifuncOutput.bits.Rising = 1;
+					//gstBitwiseMultifuncOutput.bits.Rising = 1;
+			        if((seShutterOpenCloseCmdState_backup==CmdUpDetectedWaitUpDelay )&&
+			        		gSensorStatus.bits.Sensor_InterlockIP_active == false
+			           )   //20170411  201703_No.16
+			        	{
+			        	  gstBitwiseMultifuncOutput.bits.Rising = 0;
+			        	  rasing_count_cyw=relay_delay_cyw;
+			        	}
+			        else
+			       {gstBitwiseMultifuncOutput.bits.Rising = 1;
+
 					if(seShutterOpenCloseCmdState == CmdUpDetectedWaitUpDelay)
 					{
 						rasing_count_cyw = 0;
@@ -4765,6 +4775,7 @@ void logicSolver(void) {
 							rasing_count_cyw ++;
 						}
 					}
+			       }
 				}
 				else
 				{
@@ -4774,6 +4785,7 @@ void logicSolver(void) {
 					//if(gstDriveStatus.bits.shutterLowerLimit == 1)gstBitwiseMultifuncOutput.bits.InterlockOutput = 1;	//20161206
 					if((gstDriveStatus.bits.shutterLowerLimit == 1)&&(sucInterlockOutputStatus == 0)&&(gstDriveStatus.bits.shutterMovingDown==0))gstBitwiseMultifuncOutput.bits.InterlockOutput = 1;	//20170330   201703_No.10
 				}
+
 		// Dropping
 		if ((gstDriveStatus.bits.shutterMovingDown == 1)||(seShutterOpenCloseCmdState == CmdDownDetectedWaitDownDelay)||(droping_count_cyw<relay_delay_cyw)
 			 ||((seHandleUpperLimitStopTimeState == UpperLimitStopTimeStarted ) &&(get_timego(suiTimeStampForOnePBS) > ((uint32_t)gu8_upplim_stptime* 1000)))    //20161206_1
