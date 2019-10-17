@@ -3018,7 +3018,9 @@ void logicSolver(void) {
 					(seHandleUpperLimitStopTimeState == UpperLimitStopTimeStarted ) &&
 					//	Add gu8_godn_oprdelay to gu8_upplim_stptime before shutter go down command - Jan 2016
 					//(get_timego(suiTimeStampForOnePBS) > ((gu8_upplim_stptime  + gu8_godn_oprdelay)* 1000)) &&
-					(get_timego(suiTimeStampForOnePBS) > (((uint32_t)gu8_upplim_stptime  + (uint32_t)gu8_godn_oprdelay)* 1000)) &&    //20161206_1
+					//(get_timego(suiTimeStampForOnePBS) > (((uint32_t)gu8_upplim_stptime  + (uint32_t)gu8_godn_oprdelay)* 1000)) &&    //20161206_1
+					(((get_timego(suiTimeStampForOnePBS) > (((uint32_t)gu8_upplim_stptime  + (uint32_t)gu8_godn_oprdelay)* 1000))&& gu8_en_oprdelay != 1) ||
+					 ((get_timego(suiTimeStampForOnePBS) > (((uint32_t)gu8_upplim_stptime )* 1000))&& gu8_en_oprdelay == 1)     )&&                 //20170414   201703_No.38
 					(gstLStoCMDr.commandRequestStatus == eINACTIVE))
 		{
 
