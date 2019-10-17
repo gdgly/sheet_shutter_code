@@ -1815,7 +1815,8 @@ void logicSolver(void) {
 						// Stop and close keys are not pressed
 						(
 //								sucCloseKeyDisplay == 0 && sucCloseKeyControl == 0 	&&
-								sucStopKeyDisplay == 0 && sucStopKeyControl == 0
+								//sucStopKeyDisplay == 0 &&
+								sucStopKeyControl == 0   //20161205
 //								&&  sucWirelessCloseKeyControl == 0    //20161204
 						) &&
 
@@ -1884,7 +1885,8 @@ void logicSolver(void) {
 
 					} else
 					{
-						if(gstControlApplicationFault.bits.startupSafetySensor == 1)//20160906 item104
+						//if(gstControlApplicationFault.bits.startupSafetySensor == 1)  //20160906 item104
+						if((gstControlApplicationFault.bits.startupSafetySensor == 1)&&(gstDriveStatus.bits.shutterUpperLimit != 1))  //20161205
 						{
 							season_cyw = 1;
 						}
@@ -2963,9 +2965,10 @@ void logicSolver(void) {
 		} // Keep on monitoring the condition to stop the "Upper Limit Stoppage Time"
 		  // Wait till "Upper Limit Stoppage Time" to expired
 		else if (
-					(seHandleUpperLimitStopTimeState == UpperLimitStopTimeStarted) &&
+					(seHandleUpperLimitStopTimeState == UpperLimitStopTimeStarted ) &&
 					//	Add gu8_godn_oprdelay to gu8_upplim_stptime before shutter go down command - Jan 2016
-					(get_timego(suiTimeStampForOnePBS) > ((gu8_upplim_stptime + gu8_godn_oprdelay)* 1000)) &&
+					//(get_timego(suiTimeStampForOnePBS) > ((gu8_upplim_stptime  + gu8_godn_oprdelay)* 1000)) &&
+					(get_timego(suiTimeStampForOnePBS) > (((uint32_t)gu8_upplim_stptime  + (uint32_t)gu8_godn_oprdelay)* 1000)) &&    //20161206_1
 					(gstLStoCMDr.commandRequestStatus == eINACTIVE))
 		{
 
@@ -4616,6 +4619,7 @@ void logicSolver(void) {
 
 		uint8_t lucLoop;
 
+		static uint32_t InterlockOutput_count_cyw=relay_delay_cyw;
 		static uint32_t operationing_count_cyw=relay_delay_cyw;
 		static uint32_t rasing_count_cyw=relay_delay_cyw;
 		static uint32_t droping_count_cyw=relay_delay_cyw;
@@ -4648,14 +4652,14 @@ void logicSolver(void) {
 		}
 
 		// Interlock Output
-		if (sucInterlockOutputStatus == 0)
-		{
-			gstBitwiseMultifuncOutput.bits.InterlockOutput = 1;
-		}
-		else
-		{
-			gstBitwiseMultifuncOutput.bits.InterlockOutput = 0;
-		}
+//		if (sucInterlockOutputStatus == 0)   //20161206
+//		{
+//			gstBitwiseMultifuncOutput.bits.InterlockOutput = 1;
+//		}
+//		else
+//		{
+//			gstBitwiseMultifuncOutput.bits.InterlockOutput = 0;
+//		}
 
 		// Operating
 		if (
@@ -4684,7 +4688,7 @@ void logicSolver(void) {
 			}
 
 
-
+		gstBitwiseMultifuncOutput.bits.InterlockOutput = 0;     //20161206
 		// Rising
 		if ((gstDriveStatus.bits.shutterMovingUp == 1)||(seShutterOpenCloseCmdState == CmdUpDetectedWaitUpDelay)||(rasing_count_cyw<relay_delay_cyw))
 				{
@@ -4705,12 +4709,18 @@ void logicSolver(void) {
 				{
 					rasing_count_cyw=relay_delay_cyw;
 					gstBitwiseMultifuncOutput.bits.Rising = 0;
+
+					if(gstDriveStatus.bits.shutterLowerLimit == 1)gstBitwiseMultifuncOutput.bits.InterlockOutput = 1;	//20161206
 				}
 		// Dropping
-		if ((gstDriveStatus.bits.shutterMovingDown == 1)||(seShutterOpenCloseCmdState == CmdDownDetectedWaitDownDelay)||(droping_count_cyw<relay_delay_cyw))
+		if ((gstDriveStatus.bits.shutterMovingDown == 1)||(seShutterOpenCloseCmdState == CmdDownDetectedWaitDownDelay)||(droping_count_cyw<relay_delay_cyw)
+			 ||((seHandleUpperLimitStopTimeState == UpperLimitStopTimeStarted ) &&(get_timego(suiTimeStampForOnePBS) > ((uint32_t)gu8_upplim_stptime* 1000)))    //20161206_1
+		    )
 				{
 					gstBitwiseMultifuncOutput.bits.Dropping = 1;
-					if(seShutterOpenCloseCmdState == CmdDownDetectedWaitDownDelay)
+					if((seShutterOpenCloseCmdState == CmdDownDetectedWaitDownDelay)
+					    ||((seHandleUpperLimitStopTimeState == UpperLimitStopTimeStarted ) &&(get_timego(suiTimeStampForOnePBS) > ((uint32_t)gu8_upplim_stptime* 1000)))    //20161206_1
+					  )
 					{
 						droping_count_cyw=0;
 					}

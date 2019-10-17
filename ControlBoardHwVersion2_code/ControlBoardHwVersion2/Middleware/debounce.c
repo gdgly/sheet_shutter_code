@@ -49,6 +49,7 @@
 #include "Middleware/serial.h"
 #include "Middleware/paramdatabase.h"
 #include "Middleware/sensorsdebounce.h"
+
 /****************************************************************************/
 
 /****************************************************************************
@@ -188,6 +189,7 @@ extern uint32_t his_rise_time;
 extern const _stErrorList gstErrorList [TOTAL_ERRORS];
 
 extern unsigned int suiTimeStampForOnePBS;
+
 /****************************************************************************/
 
 /****************************************************************************
