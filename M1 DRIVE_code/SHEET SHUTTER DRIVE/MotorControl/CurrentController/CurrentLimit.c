@@ -13,7 +13,7 @@
 #define C_CURRENT_LIMIT_PI 0x7FFF
 #define MAX_CURRENT_LIMIT_PI 31128   //95% of max value ie 32767
 
-#define TARGET_CURRENT_LIMIT   15000//12000//7000   
+#define TARGET_CURRENT_LIMIT   15000//12000//7000
 
 #define SUSTAINED_OVER_CURRENT_TIMEOUT      10//100 //100ms
 #define SUSTAINED_OVER_CURRENT_VALUE        20000 //1A = 1000mA
@@ -33,29 +33,29 @@ VOID initCurrentLimitPI(VOID)
     sustainedOcTimer = 0;
     sustainedOcFlg = FALSE;
     outputDecRate = 0;
-    
+
     refCurrentLimit = TARGET_CURRENT_LIMIT;
     feedbackCurrent = 0;
     currentLimitClamp = MAX_CURRENT_LIMIT_PI;
-    
+
     initPiNew(&currentLimitPIparms,P_CURRENT_LIMIT_PI,I_CURRENT_LIMIT_PI,C_CURRENT_LIMIT_PI,MAX_CURRENT_LIMIT_PI,0,0);
 }
 
-VOID runCurrentLimitPI(VOID) 
-{   
+VOID runCurrentLimitPI(VOID)
+{
     //Execute current limit only when sustained overcurrent and PWM coasting not required
     if(!sustainedOcFlg && !pwmCostingReq)
     {
         currentLimitPIparms.qInRef = refCurrentLimit;
         currentLimitPIparms.qInMeas = feedbackCurrent;
-        calcPiNew(&currentLimitPIparms);        
+        calcPiNew(&currentLimitPIparms);
         //set current limit PI output as clamp for speed and current PI
         currentLimitClamp = currentLimitPIparms.qOut;
     }
-    
+
     //Check PWM coasting is required or not
     checkPwmCoastingRequired();
-    
+
     //Check sustained overcurrent occured or not
     checkSustainedOvercurrent();
 }
@@ -64,7 +64,7 @@ VOID checkSustainedOvercurrent(VOID)
 {
     //check measured current is more than allowed current
     if(sustainedOcFlg == FALSE)
-    {   
+    {
         //check sustained over current
         if(feedbackCurrent > SUSTAINED_OVER_CURRENT_VALUE)
         {
@@ -102,6 +102,9 @@ VOID checkSustainedOvercurrent(VOID)
         {
             currentLimitClamp = 0;
             forceStopShutter();
+			// 2016/11/16 When Down , Missing Save Origin Position.
+			hallCounts_bak = 0x7FFF;
+
             uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorSusOC = TRUE;
         }
     }
