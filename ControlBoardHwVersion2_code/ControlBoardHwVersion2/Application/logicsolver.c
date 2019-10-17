@@ -94,6 +94,7 @@ uint8_t select_apertureHeight_Instalation=0;
 
 //20160906 item104
 uint8_t season_cyw=0;
+static unsigned int time_ObstacleSensor;   //add 20161020
 /****************************************************************************
  *  Global variables for other files:
  ****************************************************************************/
@@ -1701,7 +1702,7 @@ void logicSolver(void) {
 							 (gstDriveStatus.bits.shutterUpperLimit == 0)
 					 ) ||
 					 (gSensorStatus.bits.Sensor_Obstacle_active && gstControlBoardStatus.bits.autoManual == 1 &&
-							 gstDriveStatus.bits.shutterMovingUp == 0 && OpenCmdForDistinguish == 0)
+							 OpenCmdForDistinguish == 0 && gstDriveStatus.bits.shutterMovingUp == 0 && (get_timego(time_ObstacleSensor)>500) && sucStopKeyDisplay==0)   //add 20161020
 				)
 			{
 
@@ -2308,7 +2309,7 @@ void logicSolver(void) {
 
 						)
 				{
-
+					time_ObstacleSensor = g_ui32TickCount;  //add 20161020
 					gstLStoCMDr.commandRequestStatus = eACTIVE;
 					gstLStoCMDr.commandToDriveBoard.val = 0;
 					gstLStoCMDr.commandToDriveBoard.bits.stopShutter = 1;
@@ -2591,10 +2592,10 @@ void logicSolver(void) {
 						gSensorStatus.bits.Sensor_1PBS_active = 0;
 					}
 
-					if (gSensorStatus.bits.Sensor_Obstacle_active)
-					{
-						gSensorStatus.bits.Sensor_Obstacle_active = 0;
-					}
+//					if (gSensorStatus.bits.Sensor_Obstacle_active)     //add 20161020
+//					{
+//						gSensorStatus.bits.Sensor_Obstacle_active = 0;
+//					}
 
 					//Added on 17 Dec by Yogesh to support wireless functionalities
 					if (gKeysStatus.bits.Wireless_Open_pressed)

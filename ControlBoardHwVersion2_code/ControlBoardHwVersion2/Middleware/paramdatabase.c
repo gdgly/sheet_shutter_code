@@ -145,7 +145,7 @@ const uint8_t gu8_en_apheight_ctl_DEF = 0;
 // Format:
 // First byte = Not used, 		Second Byte = Not used
 // Third byte = Major Version, 	Fourth byte = Minor version
-const uint32_t gu32_ctrl_fwver_DEF = 0x00000400; //Read Default Firmware Version
+const uint32_t gu32_ctrl_fwver_DEF = 0x00000401; //Read Default Firmware Version
 
 // In dbhandler.c the gu32_ctrl_fwver_DEF variable is used to send response to the display board for version information
 //*******************************************
