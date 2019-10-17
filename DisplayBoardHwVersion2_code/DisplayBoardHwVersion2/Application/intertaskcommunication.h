@@ -114,11 +114,12 @@ struct errorDB
 {
 	uint16_t errorCode;
 	//unsigned char errordescription[15];
-	unsigned char errordescription[30];
+	unsigned char errordescription_jananese[30];
 	uint8_t errorType;
 	// errorType = 0 for no error
 	// errorType = 1 for recoverable error
 	// errorType = 2 for non-recoverable error
+    unsigned char errordescripition_english[30];  //20170414      201703_other
 };
 
 typedef enum destinationAddress

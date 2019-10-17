@@ -198,7 +198,7 @@ int dumpLogsToSDCard(PARAM_DISP AHorCSH_Idx)
 #if 1
 int dumpLogsToSDCard(PARAM_DISP AHorCSH_Idx)
 {
-	PARAM_DISP readIndex = AHorCSH_Idx;
+	PARAM_DISP readIndex = AHorCSH_Idx,readIndexop;//20170414      201703_No.31
 	uint8_t psize = guc_Paramsize_Disp[AHorCSH_Idx];
 	uint8_t iSize, mSize;
 	uint8_t param_EEP_Read_Val[_MAX_EEPROM_READVALSIZE];
@@ -228,11 +228,13 @@ int dumpLogsToSDCard(PARAM_DISP AHorCSH_Idx)
 		if(gui8_AnomalyHistory_ParamIdx > 1)
 		{
 			readIndex = (PARAM_DISP)Tp_ANOMHIST_START_IDX[gui8_AnomalyHistory_ParamIdx - 2];
+			readIndexop = (PARAM_DISP)(gui8_AnomalyHistory_ParamIdx - 2 + A910ANOMHIST_OP1);//20170414      201703_No.31
 			//readIndex --;
 		}
 		else
 		{
 			readIndex = (PARAM_DISP)Tp_ANOMHIST_START_IDX[ANOMHIST_END_IDX];
+			readIndexop = A929ANOMHIST_OP20;//20170414      201703_No.31
 		}
 	}
 	else
@@ -273,6 +275,8 @@ int dumpLogsToSDCard(PARAM_DISP AHorCSH_Idx)
 						memset(&anomhistlog, 0, sizeof(anomhistlog));
 						if(!(readParameterFromDB(readIndex, (uint8_t*)&anomhistlog) == _SUCCESS))
 							return 1;
+						if(!(readParameterFromDB(readIndexop, (uint8_t*)&anomhistlog.operationCount) == _SUCCESS))//20170414      201703_No.31
+							return 1;//20170414      201703_No.31
 					}
 					else {
 						memset(&chgsetglog, 0, sizeof(chgsetglog));
@@ -311,12 +315,13 @@ int dumpLogsToSDCard(PARAM_DISP AHorCSH_Idx)
 					memset(gucfilewritebuff, 0, sizeof(gucfilewritebuff));
 					if(AHorCSH_Idx == ANOMHIST_START_IDX) {
 //						usnprintf(gucfilewritebuff, sizeof(gucfilewritebuff), "%u,%u,%s,%02u%02u%04u%02u%02u%02u\r\n", iSize + 1, anomhistlog.anomalyCode, anomhistlog.errorDetails, logDateTime.tm_mday, logDateTime.tm_mon + 1, logDateTime.tm_year + 1900, logDateTime.tm_hour, logDateTime.tm_min, logDateTime.tm_sec);
-
+						//20170414      201703_No.31 start
 						usnprintf((char *)gucfilewritebuff, sizeof(gucfilewritebuff),
-								"A%03u (LOG%u)\r\nAnomaly Code: E%03u\r\n%s\r\n%02u/%02u/%04u %02u:%02u:%02u\r\n\r\n",
-								gui_ParamNo_Disp[readIndex], iSize + 1, anomhistlog.anomalyCode, anomhistlog.errorDetails,
-								logDateTime.tm_mday, logDateTime.tm_mon + 1, logDateTime.tm_year + 1900, logDateTime.tm_hour,
+								"(LOG%u)\r\nAnomaly Code: E%03u\r\n%s\r\n%07u\r\n%02u/%02u/%04u %02u:%02u:%02u\r\n\r\n",
+								 iSize + 1, anomhistlog.anomalyCode, anomhistlog.errorDetails,
+								 anomhistlog.operationCount,logDateTime.tm_mday, logDateTime.tm_mon + 1, logDateTime.tm_year + 1900, logDateTime.tm_hour,
 								logDateTime.tm_min, logDateTime.tm_sec);
+						//20170414      201703_No.31 end
 					}
 					else {
 //						usnprintf(gucfilewritebuff, sizeof(gucfilewritebuff), "%u,%u,%02u%02u%04u%02u%02u%02u,%u,%u\r\n", iSize + 1, chgsetglog.parameterNumber, logDateTime.tm_mday, logDateTime.tm_mon + 1, logDateTime.tm_year + 1900, logDateTime.tm_hour, logDateTime.tm_min, logDateTime.tm_sec, chgsetglog.oldValue, chgsetglog.newValue);
@@ -333,16 +338,19 @@ int dumpLogsToSDCard(PARAM_DISP AHorCSH_Idx)
 						if(readIndex == ANOMHIST_START_IDX)
 						{
 							readIndex = (PARAM_DISP)Tp_ANOMHIST_START_IDX[ANOMHIST_END_IDX];
+							readIndexop = (PARAM_DISP)A929ANOMHIST_OP20;//20170414      201703_No.31
 						}
 						else
 						{
 							if(readIndex == A900ANOMHIST_11)
 							{
 								readIndex = A039ANOMHIST_10;
+								readIndexop = A919ANOMHIST_OP10;//20170414      201703_No.31
 							}
 							else
 							{
 							readIndex--;
+							readIndexop--;//20170414      201703_No.31
 							}
 						}
 					}
@@ -425,7 +433,7 @@ int dumpLogsToSDCard(PARAM_DISP AHorCSH_Idx)
 		usnprintf(gcfilenamestr, sizeof(gcfilenamestr), "%s%02u%02u%04u%02u%02u.txt\0", gcfilenamestr, currDateTime.tm_mday, currDateTime.tm_mon + 1, currDateTime.tm_year + 1900, currDateTime.tm_hour, currDateTime.tm_min);
 
 
-		for (iSize = 0; iSize < _MAX_ANOMALY_LOGS; iSize++)
+		for (iSize = 0; iSize < _MAX_CHGSETHIST_LOGS; iSize++) //20170414      201703_other
 		{
 			/*if(readIndex >= (_MAX_ANOMALY_LOGS))
 			{
@@ -493,8 +501,8 @@ int dumpLogsToSDCard(PARAM_DISP AHorCSH_Idx)
 						else {
 	//						usnprintf(gucfilewritebuff, sizeof(gucfilewritebuff), "%u,%u,%02u%02u%04u%02u%02u%02u,%u,%u\r\n", iSize + 1, chgsetglog.parameterNumber, logDateTime.tm_mday, logDateTime.tm_mon + 1, logDateTime.tm_year + 1900, logDateTime.tm_hour, logDateTime.tm_min, logDateTime.tm_sec, chgsetglog.oldValue, chgsetglog.newValue);
 							usnprintf((char *)gucfilewritebuff, sizeof(gucfilewritebuff),
-									"A%03u (LOG%u) A%03u\r\nOLD VALUE: %u\r\nNEW VALUE: %u\r\n%02u/%02u/%04u %02u:%02u:%02u,\r\n\r\n",
-									gui_ParamNo_Disp[readIndex], iSize + 1, chgsetglog.parameterNumber, chgsetglog.oldValue,
+									"(LOG%u) A%03u\r\nOLD VALUE: %u\r\nNEW VALUE: %u\r\n%02u/%02u/%04u %02u:%02u:%02u,\r\n\r\n",
+									iSize + 1, chgsetglog.parameterNumber, chgsetglog.oldValue,
 									chgsetglog.newValue, logDateTime.tm_mday, logDateTime.tm_mon + 1, logDateTime.tm_year + 1900,
 									logDateTime.tm_hour, logDateTime.tm_min, logDateTime.tm_sec);
 						}
@@ -542,7 +550,7 @@ int dumpLogsToSDCard(PARAM_DISP AHorCSH_Idx)
 			} //if readParameter
 		} //outer for loop
 
-		if((mSize == psize) || (iSize == _MAX_ANOMALY_LOGS))
+		if((mSize == psize) || (iSize == _MAX_CHGSETHIST_LOGS)) //20170414      201703_other
 		{
 			if(iSize == 0)
 				return 2;
@@ -721,8 +729,8 @@ int dumpLogsToSDCard(PARAM_DISP AHorCSH_Idx)
 void showLogs(PARAM_DISP AHorCSH_Idx)
 {
 
-	uint8_t viewbuff[MAX_CHARS_IN_LINE];
-	uint8_t lBuff_cyw[MAX_CHARS_IN_LINE]={0};
+	uint8_t viewbuff[MAX_CHARS_IN_LINE+2];             //20170414      201703_No.31
+	uint8_t lBuff_cyw[MAX_CHARS_IN_LINE+6]={0};        //20170414      201703_No.31
 	const unsigned char jiantou[3] = "->";
 	const unsigned char para_setting_japanese[17] = "<セッテイ_リレキ";
 	const unsigned char fankuo[2] =">";
@@ -758,14 +766,26 @@ void showLogs(PARAM_DISP AHorCSH_Idx)
 
 		logReadIndex = (gstUMtoLM_read.historyOrAnomalyIndex > (getLogIndex(ANOMHIST_START_IDX)-1)) ? (_MAX_ANOMALY_LOGS - (gstUMtoLM_read.historyOrAnomalyIndex - getLogIndex(ANOMHIST_START_IDX))) : (getLogIndex(ANOMHIST_START_IDX) - gstUMtoLM_read.historyOrAnomalyIndex);
 		  memset(lBuff_cyw,0,sizeof(lBuff_cyw));
-		usnprintf((char *)viewbuff, sizeof(viewbuff), "ANOMALY CODE:E%03u", gstUMtoLM_read.anomalyHistory.anomalyCode);
-       // displayText(viewbuff, 2, 16, false, false, false, false, false, true);
-	 if(gu8_language == Japanese_IDX)
-	   memcpy(lBuff_cyw,cuowu_japanese,14);
-	 else
-	   memcpy(lBuff_cyw,cuowu_english,14);
-
-       memcpy(lBuff_cyw+strlen(lBuff_cyw),viewbuff+13,5);
+		usnprintf((char *)viewbuff, sizeof(viewbuff), "E%03u:", gstUMtoLM_read.anomalyHistory.anomalyCode);
+       memcpy(lBuff_cyw,viewbuff,5);
+       //20170414      201703_No.31 start
+       for(Tp_error = 0;Tp_error<TOTAL_ERRORS;Tp_error++)
+       	{
+       				if(gstErrorList[Tp_error].errorCode == gstUMtoLM_read.anomalyHistory.anomalyCode)
+       				{
+       					 if(gu8_language == Japanese_IDX)
+       					 {
+       						 memcpy(gstUMtoLM_read.anomalyHistory.errorDetails,gstErrorList[Tp_error].errorName_japanese,30);
+       					 }
+       					 else
+       					 {
+       						 memcpy(gstUMtoLM_read.anomalyHistory.errorDetails,gstErrorList[Tp_error].errorName_english,30);
+       					 }
+       					 break;
+       				}
+       	}
+       memcpy(lBuff_cyw+5,gstUMtoLM_read.anomalyHistory.errorDetails,strlen(gstUMtoLM_read.anomalyHistory.errorDetails));
+       //20170414      201703_No.31 end
        if(gu8_language == Japanese_IDX)
        displayText(lBuff_cyw, 2, 16, false, false, false, false, false, false);
        else
@@ -787,23 +807,9 @@ void showLogs(PARAM_DISP AHorCSH_Idx)
 				disphour += 12;
 
 #if 1	// Display error details
-			for(Tp_error = 0;Tp_error<TOTAL_ERRORS;Tp_error++)
-			{
-				if(gstErrorList[Tp_error].errorCode == gstUMtoLM_read.anomalyHistory.anomalyCode)
-				{
-					 if(gu8_language == Japanese_IDX)
-					 {
-						 memcpy(gstUMtoLM_read.anomalyHistory.errorDetails,gstErrorList[Tp_error].errorName_japanese,30);
-					 }
-					 else
-					 {
-						 memcpy(gstUMtoLM_read.anomalyHistory.errorDetails,gstErrorList[Tp_error].errorName_english,30);
-					 }
-					 break;
-				}
-			}
 
-			usnprintf((char *)viewbuff, sizeof(viewbuff), "%s", gstUMtoLM_read.anomalyHistory.errorDetails);
+
+			usnprintf((char *)viewbuff, sizeof(viewbuff), "%07u", gstUMtoLM_read.anomalyHistory.operationCount);
 			 if(gu8_language == Japanese_IDX)
 			displayText(viewbuff, 2, 32, false, false, false, false, false, false);
 			 else
@@ -859,6 +865,16 @@ void showLogs(PARAM_DISP AHorCSH_Idx)
 		logReadIndex = (gstUMtoLM_read.historyOrAnomalyIndex > (getLogIndex(CHGSETHIST_START_IDX)-1)) ? (_MAX_CHGSETHIST_LOGS - (gstUMtoLM_read.historyOrAnomalyIndex - getLogIndex(CHGSETHIST_START_IDX))) : (getLogIndex(CHGSETHIST_START_IDX) - gstUMtoLM_read.historyOrAnomalyIndex);
 
         memset(lBuff_cyw,0,sizeof(lBuff_cyw));
+        if(0/*(gstUMtoLM_read.changeSettingHistory.parameterNumber==100)||(gstUMtoLM_read.changeSettingHistory.parameterNumber==101)||
+        		(gstUMtoLM_read.changeSettingHistory.parameterNumber==102)*/)
+        {
+        	usnprintf((char *)viewbuff, sizeof(viewbuff), "NEW VALUE:%u", gstUMtoLM_read.changeSettingHistory.newValue);
+        	//displayText(viewbuff, 2, 32, false, false, false, false, true, false);
+        	memcpy(lBuff_cyw,viewbuff+10, strlen(viewbuff)-10);
+        	displayText(lBuff_cyw, 2, 32, false, false, false, false, false, true);
+        }
+        else
+        {
 		usnprintf((char *)viewbuff, sizeof(viewbuff), "OLD VALUE:%u", gstUMtoLM_read.changeSettingHistory.oldValue);
 		//displayText(viewbuff, 2, 16, false, false, false, false, true, false);
         memcpy(lBuff_cyw,viewbuff+10, strlen(viewbuff)-10);
@@ -867,6 +883,7 @@ void showLogs(PARAM_DISP AHorCSH_Idx)
 		//displayText(viewbuff, 2, 32, false, false, false, false, true, false);
 		 memcpy(lBuff_cyw+strlen(lBuff_cyw),viewbuff+10, strlen(viewbuff)-10);
 		 displayText(lBuff_cyw, 2, 32, false, false, false, false, false, true);
+        }
 		//Handled Odd Timestamp
 		if(umktime(&logDateTime) != (unsigned long)-1) {
 			int disphour;

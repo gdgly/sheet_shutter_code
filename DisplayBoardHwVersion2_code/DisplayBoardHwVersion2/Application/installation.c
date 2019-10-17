@@ -29,6 +29,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include <driverlib/gpio.h>
+#include "inc/hw_types.h" //20170414      201703_No.32
 #include "Application/ustdlib.h"
 #include "Middleware/display.h"
 #include "grlib/grlib.h"
@@ -44,6 +45,7 @@
 #include "parameterlist.h"
 #include "errormodule.h"
 #include "Middleware/paramdatabase.h"
+#include "logger.h"           //20170414      201703_No.32
 
 /****************************************************************************/
 
@@ -121,6 +123,14 @@ uint8_t gui8CloseState = 0;
 // Change shutter type
 //**************************************************************************
 uint8_t gucShutterTypeChangedFlag = 0;
+
+
+uint32_t A100_his_cyw=0;		//20170414      201703_No.32
+//static uint8_t AXXX_flag_cyw=0;
+ uint32_t A101_his_cyw=0;		//20170414      201703_No.32
+//static uint8_t Aover_flag_cyw=0;
+uint32_t A102_his_cyw=0;		//20170414      201703_No.32
+//static uint8_t A102_flag_cyw;
 
 /****************************************************************************/
 
@@ -261,16 +271,28 @@ uint8_t installationRunTime(void)
 
 	unsigned char lBuff[21];
 	Set_lcdlightON();
+
+
+
+
+
+
 	switch(gInstallationState)
 	{
 		case CHECK_SHUTTER_STATE:
 		{
+
+
 			if(gstDriveBoardStatus.bits.driveInstallation == 1)
 			{
 				//
 				// Change state
 				//
+
 				gInstallationState = KEY_PRESS_HANDLE;
+				//AXXX_flag_cyw = 0;
+
+
 			}
 			else
 			{
@@ -279,6 +301,7 @@ uint8_t installationRunTime(void)
 				//
 				gInstallationState = START_INSTALLATION;
 				setting_flag = 1;
+
 
 
 			}
@@ -864,6 +887,7 @@ uint8_t installationRunTime(void)
 						{
 						displayText("UPPER LIMIT", 2, 16, false, false, false, false,false,true);
 						}
+
 					}
 					else if(gstDriveInstallation.bits.installA101 == 1)
 					{
@@ -879,6 +903,7 @@ uint8_t installationRunTime(void)
 						{
 						displayText("LOWER LIMIT", 2, 16, false, false, false, false,false,true);
 						}
+
 					}
 					else if(gstDriveInstallation.bits.installA102 == 1)
 					{
@@ -894,6 +919,7 @@ uint8_t installationRunTime(void)
 						{
 						displayText("PHOTO CUTTOF LIMIT", 2, 16, false, false, false, false,false,true);
 						}
+
 					}
 
 					//
@@ -1696,6 +1722,12 @@ uint8_t installationPaint(void)
 	gstLEDcontrolRegister.faultLED = 0;
 	gstLEDcontrolRegister.powerLED = 0;
 
+
+
+
+
+
+
 	//
 	// Display current encoder count in 3rd line
 	//
@@ -1903,6 +1935,47 @@ uint8_t installationEnter(void)
 
 				gstUMtoCMoperational.commandRequestStatus = eINACTIVE;
 				gstUMtoCMoperational.commandResponseStatus = eNO_STATUS;
+				//20170414      201703_No.32  start
+				if(gstDriveInstallation.bits.installA100 == 1)
+				{
+
+					gstUMtoLM_write.commandRequestStatus = eACTIVE;
+					gstUMtoLM_write.commandResponseStatus = eNO_STATUS;
+					gstUMtoLM_write.commandToLMwrite.bits.changeSettingHistory = 1;
+					gstUMtoLM_write.changeSetting.newValue = gCurrentEncoderCount;
+					gstUMtoLM_write.changeSetting.oldValue = A100_his_cyw;
+					gstUMtoLM_write.changeSetting.parameterNumber =100;//gsParamDatabase[gHighlightedItemIndex].paramEEPROMIndex;
+				    gstUMtoLM_write.changeSetting.timeStamp = (HWREG(0x400FC000));
+					writeChangeSettingsHistory();
+					A100_his_cyw = gCurrentEncoderCount;
+				}
+				if(gstDriveInstallation.bits.installA101 == 1)
+				{
+
+					gstUMtoLM_write.commandRequestStatus = eACTIVE;
+					gstUMtoLM_write.commandResponseStatus = eNO_STATUS;
+					gstUMtoLM_write.commandToLMwrite.bits.changeSettingHistory = 1;
+					gstUMtoLM_write.changeSetting.newValue = gCurrentEncoderCount;
+					gstUMtoLM_write.changeSetting.oldValue = A101_his_cyw;
+					gstUMtoLM_write.changeSetting.parameterNumber =101;//gsParamDatabase[gHighlightedItemIndex].paramEEPROMIndex;
+				    gstUMtoLM_write.changeSetting.timeStamp = (HWREG(0x400FC000));
+					writeChangeSettingsHistory();
+					A101_his_cyw = gCurrentEncoderCount;
+				}
+				if(gstDriveInstallation.bits.installA102 == 1)
+				{
+
+					gstUMtoLM_write.commandRequestStatus = eACTIVE;
+					gstUMtoLM_write.commandResponseStatus = eNO_STATUS;
+					gstUMtoLM_write.commandToLMwrite.bits.changeSettingHistory = 1;
+					gstUMtoLM_write.changeSetting.newValue = gCurrentEncoderCount;
+					gstUMtoLM_write.changeSetting.oldValue = A102_his_cyw;
+					gstUMtoLM_write.changeSetting.parameterNumber =102;//gsParamDatabase[gHighlightedItemIndex].paramEEPROMIndex;
+					gstUMtoLM_write.changeSetting.timeStamp = (HWREG(0x400FC000));
+					writeChangeSettingsHistory();
+					A102_his_cyw = gCurrentEncoderCount;
+				}
+				//20170414      201703_No.32 end
 			}
 			else if(gstUMtoCMoperational.commandToControlBoard.bits.enterReleased == 1)
 			{

@@ -131,7 +131,7 @@ void initDispBoardGlobalRegisters(void)
 	gstDisplayBoardFault.val = 0;
 	gstDisplayCommunicationFault.val = 0;
 	gstDisplayBoardHwFault.val = 0;
-	gstDisplayBoardHwFault.bits.powerOnIndication = 1;		//	Added to log system power on event as requested by Bx on 21Apr2015
+	//gstDisplayBoardHwFault.bits.powerOnIndication = 1;		// //20170414      201703_No.31 	Added to log system power on event as requested by Bx on 21Apr2015
 	gstDisplayApplicationFault.val = 0;
 	gstDisplayProcessorFault.val = 0;
 

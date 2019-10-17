@@ -27,6 +27,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include <driverlib/gpio.h>
+#include "inc/hw_types.h"
 #include "Application/ustdlib.h"
 #include "Middleware/display.h"
 #include "grlib/grlib.h"
@@ -42,6 +43,7 @@
 #include "parameterlist.h"
 #include "errormodule.h"
 #include "Middleware/paramdatabase.h"
+#include "logger.h"
 
 #define A_CHECK_SHUTTER_STATE						0
 #define A_START_APERTURE_HEIGHT						1
@@ -92,6 +94,8 @@ uint32_t A_gTickCount3Seconds_cyw=0;
 extern uint32_t gTickCount3Seconds;
 uint32_t A_wait_for_current_time=0;
 void guest_reinit(void);
+static uint32_t Ap_his_cyw;
+static uint8_t Ap_flag_cyw;
 /******************************************************************************
  * FunctionName: apertureheightPaint
  *
@@ -136,7 +140,15 @@ uint8_t apertureheightPaint(void)
 	//	usnprintf((char*)lBuff, sizeof(lBuff), "%04d", gCurrentEncoderCount);
 	//	displayText(lBuff, 2, 32, false, false, false, false);
 		setting_flag = 1;
+		if(eINACTIVE == gstUMtoCMdatabase.commandRequestStatus)
+		{
+						gstUMtoCMdatabase.commandToControlBoard.bits.getParameter = 1;
+						gstUMtoCMdatabase.dataToControlBoard.parameterNumber = 130;
 
+						gstUMtoCMdatabase.destination = eDestDriveBoard;
+
+						gstUMtoCMdatabase.commandRequestStatus = eACTIVE;
+		}
 		APERT_TIME = g_ui32TickCount;
 
 		if(gstControlBoardStatus.bits.s3PBS_stoppressd == 1)
@@ -189,10 +201,39 @@ uint8_t apertureheightRunTime(void)
 	switch(gApertureheightState)
 	{
 	case A_CHECK_SHUTTER_STATE:
+		if( (eACTIVE == gstUMtoCMdatabase.commandRequestStatus) && (1 == gstUMtoCMdatabase.commandToControlBoard.bits.getParameter) )
+		{
+						if(eSUCCESS == gstUMtoCMdatabase.commandResponseStatus)
+						{
+						    if(eACK == gstUMtoCMdatabase.acknowledgementReceived)
+							{
+						    	Ap_his_cyw = gstUMtoCMdatabase.getParameterValue ;
 
+						    	gstUMtoCMdatabase.commandToControlBoard.bits.getParameter = 0;
+						    	gstUMtoCMdatabase.commandRequestStatus = eINACTIVE;
+						    	gstUMtoCMdatabase.commandResponseStatus = eNO_STATUS;
+						    	gstUMtoCMdatabase.acknowledgementReceived = eNO_ACK;
+
+
+							}
+						}
+						else if((gstUMtoCMdatabase.commandResponseStatus ==eFAIL)||(gstUMtoCMdatabase.commandResponseStatus ==eTIME_OUT))
+						{
+							Ap_his_cyw = 0;
+
+							gstUMtoCMdatabase.commandToControlBoard.bits.getParameter = 0;
+							gstUMtoCMdatabase.commandRequestStatus = eINACTIVE;
+							gstUMtoCMdatabase.commandResponseStatus = eNO_STATUS;
+							gstUMtoCMdatabase.acknowledgementReceived = eNO_ACK;
+						}
+		}
 		if(gstDriveBoardStatus.bits.driveApertureheight == 1)
 		{
 			gApertureheightState = A_KEY_PRESS_HANDLE;
+
+
+
+
 		}
 		else
 		{
@@ -201,6 +242,7 @@ uint8_t apertureheightRunTime(void)
 			//
 			gApertureheightState = A_START_APERTURE_HEIGHT;
 			setting_flag = 1;
+			//Ap_flag_cyw = 0;
 		}
 		break;
 	case A_START_APERTURE_HEIGHT:
@@ -1254,6 +1296,19 @@ uint8_t apertureheightRunTime(void)
 							gstUMtoCMdatabase.commandRequestStatus = eINACTIVE;
 							gstUMtoCMdatabase.commandResponseStatus = eNO_STATUS;
 							gstUMtoCMdatabase.commandToControlBoard.bits.setParameter =0;
+
+
+							gstUMtoLM_write.commandRequestStatus = eACTIVE;
+						    gstUMtoLM_write.commandResponseStatus = eNO_STATUS;
+							gstUMtoLM_write.commandToLMwrite.bits.changeSettingHistory = 1;
+							gstUMtoLM_write.changeSetting.newValue = A_gCurrentEncoderCount;
+							gstUMtoLM_write.changeSetting.oldValue = Ap_his_cyw;
+							gstUMtoLM_write.changeSetting.parameterNumber = (gsParamDatabase[13].paramName_english[1]-'0')*100 +
+							                                                (gsParamDatabase[13].paramName_english[2]-'0')*10  +
+														                    (gsParamDatabase[13].paramName_english[3]-'0');//gsParamDatabase[gHighlightedItemIndex].paramEEPROMIndex;
+							gstUMtoLM_write.changeSetting.timeStamp = (HWREG(0x400FC000));
+						    writeChangeSettingsHistory();
+
 							//
 							// Clear screen
 							//

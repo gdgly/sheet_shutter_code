@@ -36,7 +36,11 @@
 #include "intertaskcommunication.h"
 #include "Middleware/serial.h"
 #include "logger.h"
-
+extern uint32_t A100_his_cyw;    //20170414      201703_No.32
+//static uint8_t AXXX_flag_cyw=0;
+extern  uint32_t A101_his_cyw;   //20170414      201703_No.32
+//static uint8_t Aover_flag_cyw=0;
+extern uint32_t A102_his_cyw;    //20170414      201703_No.32
 /****************************************************************************/
 
 /****************************************************************************
@@ -44,7 +48,7 @@
 ****************************************************************************/
 #define ERROR_LED_INDICATION_OVERRIDE_INSTALLATION	0
 #define UPDATE_COMM_ERROR_TIME 	200
-
+#define OPERATION_CNT_PARAM_NUM		600 //20170414      201703_No.31
 /****************************************************************************/
 
 /****************************************************************************
@@ -123,6 +127,7 @@ uint32_t luiLastDriveInstallation = 0;
 uint8_t gucCallMonitorLED_Handler = 0;
 uint8_t gucCallEMtoLM_Module = 0;
 
+extern uint32_t ui32OperationCount;//20170414      201703_No.31
 //const _stErrorList gstErrorList [TOTAL_ERRORS] =
 //{
 //		/*DISPLAY BOARD ERROR LIST*/
@@ -278,7 +283,8 @@ const _stErrorList gstErrorList[TOTAL_ERRORS] =
 		{	103	,	"CONTR UART ERR"	,	RECOVERABLE		,	NONRECORDABLE_ANOMALY	,	OFF						,	OFF						,	NO_DISPLAY_INDICATION	,	CTRL	,	0	,	&guiControlCommunicationFaultCopy	,	3	,	&luiLastControlCommunicationFault	,	3	,"UARTエラー1"			,NONE_OPEN_CLOSE}	,
 		{	111	,	"OPR RESTRICT"		,	NONRECOVERABLE	,	RECORDABLE_ANOMALY		,	ON						,	_FLASH_STATUS_COUNT_1	,	DISPLAY_INDICATION		,	CTRL	,	1	,	&guiControlApplicationFaultCopy		,	0	,	&luiLastControlApplicationFault		,	0	,"ドウサセイゲンタイマ"	,NONE_OPEN_CLOSE}	,
 		{	113	,	"OBSTACLE"		    ,	RECOVERABLE		,	NONRECORDABLE_ANOMALY	,	OFF						,	_FLASH_STATUS_COUNT_1	,	DISPLAY_INDICATION		,	CTRL	,	1	,	&guiControlApplicationFaultCopy		,	1	,	&luiLastControlApplicationFault		,	1	,"アンゼンセンサON"		,OPEN_ONLY}	,
-		{	112	,	"STARTUP ERR"	    ,	RECOVERABLE		,	NONRECORDABLE_ANOMALY	,	OFF						,	_FLASH_STATUS_COUNT_1	,	DISPLAY_INDICATION		,	CTRL	,	1	,	&guiControlApplicationFaultCopy		,	2	,	&luiLastControlApplicationFault		,	2	,"キドウセンサON"		,OPEN_ONLY}	,
+		//20170414      201703_No.25
+		{	112	,	"STARTUP"	    	,	RECOVERABLE		,	NONRECORDABLE_ANOMALY	,	OFF						,	_FLASH_STATUS_COUNT_1	,	DISPLAY_INDICATION		,	CTRL	,	1	,	&guiControlApplicationFaultCopy		,	2	,	&luiLastControlApplicationFault		,	2	,"キドウセンサON"		,OPEN_ONLY}	,
 		{	121	,	"PARAM DB CRC"		,	RECOVERABLE		,	RECORDABLE_ANOMALY		,	ON						,	_FLASH_STATUS_COUNT_1	,	DISPLAY_INDICATION		,	CTRL	,	1	,	&guiControlProcessorFaultCopy		,	0	,	&luiLastControlProcessorFault		,	0	,"パラメータリードエラー1"	,NONE_OPEN_CLOSE}	,
 		{	122	,	"EEPROM PROGRAM"	,	RECOVERABLE		,	RECORDABLE_ANOMALY		,	ON						,	_FLASH_STATUS_COUNT_1	,	DISPLAY_INDICATION		,	CTRL	,	1	,	&guiControlProcessorFaultCopy		,	2	,	&luiLastControlProcessorFault		,	2	,"EEPロムエラー1"		,NONE_OPEN_CLOSE}	,
 		{	123	,	"EEPROM ERASE"		,	RECOVERABLE		,	RECORDABLE_ANOMALY		,	ON						,	_FLASH_STATUS_COUNT_1	,	DISPLAY_INDICATION		,	CTRL	,	1	,	&guiControlProcessorFaultCopy		,	3	,	&luiLastControlProcessorFault		,	3	,"EEPロムエラー2"		,NONE_OPEN_CLOSE}	,
@@ -332,7 +338,8 @@ const _stErrorList gstErrorList[TOTAL_ERRORS] =
 		{	23	,	"HIGH INPUT VTG"	,	RECOVERABLE		,	RECORDABLE_ANOMALY		,	ON						,	_FLASH_STATUS_COUNT_8	,	DISPLAY_INDICATION		,	DRIV	,	1	,	&guiDriveApplicationFaultCopy	,	2	,	&luiLastDriveApplicationFault	,	2	,"カデンアツ"					,NONE_OPEN_CLOSE}	,
 		{	24	,	"HALL SENSOR"		,	RECOVERABLE		,	RECORDABLE_ANOMALY		,	ON						,	_FLASH_STATUS_COUNT_7	,	DISPLAY_INDICATION		,	DRIV	,	1	,	&guiDriveApplicationFaultCopy	,	3	,	&luiLastDriveApplicationFault	,	3	,"ホールICエラー"				,NONE_OPEN_CLOSE}	,
 		{	26	,	"WRAP AROUND"		,	RECOVERABLE		,	RECORDABLE_ANOMALY		,	OFF						,	OFF						,	DISPLAY_INDICATION		,	DRIV	,	0	,	&guiDriveApplicationFaultCopy	,	4	,	&luiLastDriveApplicationFault	,	4	,"WRAP AROUND"				,NONE_OPEN_CLOSE}	,
-		{	27	,	"MICRO SWITCH"		,	RECOVERABLE		,	RECORDABLE_ANOMALY	    ,	OFF						,	OFF						,	NO_DISPLAY_INDICATION	,	DRIV	,	0	,	&guiDriveApplicationFaultCopy	,	5	,	&luiLastDriveApplicationFault	,	5	,"マイクロセンサON"				,OPEN_ONLY}	,
+		//20170414      201703_No.26
+		{	27	,	"MICRO SWITCH"		,	RECOVERABLE		,	RECORDABLE_ANOMALY	    ,	OFF						,	OFF						,	DISPLAY_INDICATION		,	DRIV	,	0	,	&guiDriveApplicationFaultCopy	,	5	,	&luiLastDriveApplicationFault	,	5	,"マイクロセンサON"				,OPEN_ONLY}	,
 		{	28	,	"AIR SW TRIGGER"	,	RECOVERABLE		,	NONRECORDABLE_ANOMALY	,	OFF						,	OFF						,	NO_DISPLAY_INDICATION	,	DRIV	,	0	,	&guiDriveApplicationFaultCopy	,	6	,	&luiLastDriveApplicationFault	,	6	,"エアスイッチON"				,NONE_OPEN_CLOSE}	,
 		{	29	,	"EMERGENCY STOP"	,	RECOVERABLE		,	RECORDABLE_ANOMALY		,	ON						,	_FLASH_STATUS_COUNT_1	,	DISPLAY_INDICATION		,	DRIV	,	1	,	&guiDriveApplicationFaultCopy	,	7	,	&luiLastDriveApplicationFault	,	7	,"エマゼンスイッチON"				,NONE_OPEN_CLOSE}	,
 		{	30	,	"CALLIB FAIL"		,	NONRECOVERABLE	,	RECORDABLE_ANOMALY		,	ON						,	_FLASH_STATUS_COUNT_1	,	DISPLAY_INDICATION		,	DRIV	,	1	,	&guiDriveApplicationFaultCopy	,	13	,	&luiLastDriveApplicationFault	,	13	,"ホセイエラー"					,NONE_OPEN_CLOSE}	,
@@ -437,7 +444,234 @@ void updateCTtoDR_CommErrorBit(void);
 void updateDItoCT_CommErrorBit(void);
 
 /********************************************************************************/
+//20170414      201703_No.32 and 31 start
+static uint8_t operation_flag_forE213 = 0;
+void get_operatecount(void)
+{
 
+static uint8_t Tp_err=0;
+	switch(operation_flag_forE213)
+	{
+	case 0:
+		Tp_err = 0;
+		if(gstUMtoCMdatabase.commandRequestStatus == eINACTIVE)
+				   	{
+				   					//
+				   					// Select GET_PARAMETER command to initiate
+				   					//
+					               operation_flag_forE213 = 1;
+
+					                gstUMtoCMdatabase.commandToControlBoard.bits.getParameter = 1;
+
+				   					//
+				   					// Supply input parameter number
+				   					//
+				   					gstUMtoCMdatabase.dataToControlBoard.parameterNumber = OPERATION_CNT_PARAM_NUM; // operation count parameter number
+
+				   					//
+				   					// Add destination ID
+				   					//
+				   					gstUMtoCMdatabase.destination = eDestDriveBoard;
+
+				   					//
+				   					// Set command request status active
+				   					//
+				   					gstUMtoCMdatabase.commandRequestStatus = eACTIVE;
+				   					//gstUMtoCMdatabase.commandRequestStatus = eINACTIVE;
+				   					//gstUMtoCMdatabase.commandResponseStatus = eNO_STATUS;
+				   					//gstUMtoCMdatabase.commandToControlBoard.val = 0;
+				   	}
+	    break;
+	case 1:
+		 if((gstUMtoCMdatabase.commandRequestStatus == eACTIVE)&&(gstUMtoCMdatabase.dataToControlBoard.parameterNumber == OPERATION_CNT_PARAM_NUM)&&
+					   (gstUMtoCMdatabase.commandToControlBoard.bits.getParameter == 1))
+			   	{
+			   				//
+			   				// Check for response success
+			   				//
+			   				if(gstUMtoCMdatabase.commandResponseStatus == eSUCCESS)
+			   				{
+			   					//
+			   					// store received operation count value
+			   					//
+			   					ui32OperationCount = gstUMtoCMdatabase.getParameterValue;
+
+			   					//
+			   					// Reset request and response status
+			   					//
+			   					gstUMtoCMdatabase.commandRequestStatus = eINACTIVE;
+			   					gstUMtoCMdatabase.commandResponseStatus = eNO_STATUS;
+			   					gstUMtoCMdatabase.commandToControlBoard.val = 0;
+			   					gstUMtoCMdatabase.commandToControlBoard.bits.getParameter = 0;
+			   					operation_flag_forE213 =2;
+			   				}
+			   				else if((gstUMtoCMdatabase.commandResponseStatus == eFAIL)||(gstUMtoCMdatabase.commandResponseStatus == eTIME_OUT))
+			   				{
+			   					ui32OperationCount = 0;
+
+			   					   					//
+			   					   					// Reset request and response status
+			   					   					//
+			   					  gstUMtoCMdatabase.commandRequestStatus = eINACTIVE;
+			   					  gstUMtoCMdatabase.commandResponseStatus = eNO_STATUS;
+			   					  gstUMtoCMdatabase.commandToControlBoard.val = 0;
+			   					  gstUMtoCMdatabase.commandToControlBoard.bits.getParameter = 0;
+			   					  operation_flag_forE213 =8;
+			   					Tp_err = 1;
+			   				}
+			   	}
+		break;
+	case 2:
+		if(eINACTIVE == gstUMtoCMdatabase.commandRequestStatus)
+			 {
+							gstUMtoCMdatabase.commandToControlBoard.bits.getParameter = 1;
+							gstUMtoCMdatabase.dataToControlBoard.parameterNumber = 100;
+							gstUMtoCMdatabase.destination = eDestDriveBoard;
+							gstUMtoCMdatabase.commandRequestStatus = eACTIVE;
+							operation_flag_forE213 = 3;
+
+			 }
+		break;
+	case 3:
+
+		   if( (eACTIVE == gstUMtoCMdatabase.commandRequestStatus) && (1 == gstUMtoCMdatabase.commandToControlBoard.bits.getParameter)&&
+		   										(gstUMtoCMdatabase.dataToControlBoard.parameterNumber == 100))
+		   	{
+		   										if(eSUCCESS == gstUMtoCMdatabase.commandResponseStatus)
+		   										{
+		   											 if(eACK == gstUMtoCMdatabase.acknowledgementReceived)
+		   											{
+		   												 A100_his_cyw = gstUMtoCMdatabase.getParameterValue ;
+
+		   												 gstUMtoCMdatabase.commandToControlBoard.bits.getParameter = 0;
+		   												 gstUMtoCMdatabase.commandRequestStatus = eINACTIVE;
+		   												 gstUMtoCMdatabase.commandResponseStatus = eNO_STATUS;
+		   												 gstUMtoCMdatabase.acknowledgementReceived = eNO_ACK;
+		   												operation_flag_forE213 = 4;
+		   											}
+
+		   										}
+		   										else if((gstUMtoCMdatabase.commandResponseStatus ==eFAIL)||(gstUMtoCMdatabase.commandResponseStatus ==eTIME_OUT))
+		   										{
+		   											    A100_his_cyw = 0;
+
+		   												gstUMtoCMdatabase.commandToControlBoard.bits.getParameter = 0;
+		   												gstUMtoCMdatabase.commandRequestStatus = eINACTIVE;
+		   												gstUMtoCMdatabase.commandResponseStatus = eNO_STATUS;
+		   												gstUMtoCMdatabase.acknowledgementReceived = eNO_ACK;
+		   												operation_flag_forE213 =8;
+		   												Tp_err = 1;
+		   										}
+		   			}
+		break;
+	case 4:
+		if(eINACTIVE == gstUMtoCMdatabase.commandRequestStatus)
+		  		 {
+		  						gstUMtoCMdatabase.commandToControlBoard.bits.getParameter = 1;
+		  						gstUMtoCMdatabase.dataToControlBoard.parameterNumber = 101;
+		  						gstUMtoCMdatabase.destination = eDestDriveBoard;
+		  						gstUMtoCMdatabase.commandRequestStatus = eACTIVE;
+		  						operation_flag_forE213 = 5;
+
+		  		 }
+		break;
+	case 5:
+		if( (eACTIVE == gstUMtoCMdatabase.commandRequestStatus) && (1 == gstUMtoCMdatabase.commandToControlBoard.bits.getParameter)&&
+			   				(gstUMtoCMdatabase.dataToControlBoard.parameterNumber == 101))
+			   	{
+			   													if(eSUCCESS == gstUMtoCMdatabase.commandResponseStatus)
+			   													{
+			   														 if(eACK == gstUMtoCMdatabase.acknowledgementReceived)
+			   														{
+			   															 A101_his_cyw = gstUMtoCMdatabase.getParameterValue ;
+
+			   															 gstUMtoCMdatabase.commandToControlBoard.bits.getParameter = 0;
+			   															 gstUMtoCMdatabase.commandRequestStatus = eINACTIVE;
+			   															 gstUMtoCMdatabase.commandResponseStatus = eNO_STATUS;
+			   															 gstUMtoCMdatabase.acknowledgementReceived = eNO_ACK;
+			   															operation_flag_forE213 = 6;
+
+			   														}
+
+
+			   													}
+			   													else if((gstUMtoCMdatabase.commandResponseStatus ==eFAIL)||(gstUMtoCMdatabase.commandResponseStatus ==eTIME_OUT))
+			   													{
+			   														    A101_his_cyw = 0;
+
+			   															gstUMtoCMdatabase.commandToControlBoard.bits.getParameter = 0;
+			   															gstUMtoCMdatabase.commandRequestStatus = eINACTIVE;
+			   															gstUMtoCMdatabase.commandResponseStatus = eNO_STATUS;
+			   															gstUMtoCMdatabase.acknowledgementReceived = eNO_ACK;
+			   															operation_flag_forE213 = 8;
+			   															Tp_err = 1;
+			   													}
+			   				}
+		break;
+	case 6:
+		if(eINACTIVE == gstUMtoCMdatabase.commandRequestStatus)
+			   	  		 {
+			   	  						gstUMtoCMdatabase.commandToControlBoard.bits.getParameter = 1;
+			   	  						gstUMtoCMdatabase.dataToControlBoard.parameterNumber = 102;
+			   	  						gstUMtoCMdatabase.destination = eDestDriveBoard;
+			   	  						gstUMtoCMdatabase.commandRequestStatus = eACTIVE;
+			   	  						operation_flag_forE213 = 7;
+
+			   	  		 }
+		break;
+	case 7:
+	 	if( (eACTIVE == gstUMtoCMdatabase.commandRequestStatus) && (1 == gstUMtoCMdatabase.commandToControlBoard.bits.getParameter)&&
+		   				(gstUMtoCMdatabase.dataToControlBoard.parameterNumber == 102))
+		   				{
+		   													if(eSUCCESS == gstUMtoCMdatabase.commandResponseStatus)
+		   													{
+		   														 if(eACK == gstUMtoCMdatabase.acknowledgementReceived)
+		   														{
+		   															 A102_his_cyw = gstUMtoCMdatabase.getParameterValue ;
+
+		   															 gstUMtoCMdatabase.commandToControlBoard.bits.getParameter = 0;
+		   															 gstUMtoCMdatabase.commandRequestStatus = eINACTIVE;
+		   															 gstUMtoCMdatabase.commandResponseStatus = eNO_STATUS;
+		   															 gstUMtoCMdatabase.acknowledgementReceived = eNO_ACK;
+		   															operation_flag_forE213 =8;
+		   														}
+
+		   													}
+		   													else if((gstUMtoCMdatabase.commandResponseStatus ==eFAIL)||(gstUMtoCMdatabase.commandResponseStatus ==eTIME_OUT))
+		   													{
+		   														    A102_his_cyw = 0;
+
+		   															gstUMtoCMdatabase.commandToControlBoard.bits.getParameter = 0;
+		   															gstUMtoCMdatabase.commandRequestStatus = eINACTIVE;
+		   															gstUMtoCMdatabase.commandResponseStatus = eNO_STATUS;
+		   															gstUMtoCMdatabase.acknowledgementReceived = eNO_ACK;
+		   															operation_flag_forE213 =8;
+		   															Tp_err = 1;
+		   													}
+		   			}
+		break;
+	case 8:
+		if(Tp_err == 1)
+		{
+			Tp_err = 0;
+			operation_flag_forE213 = 0;
+		}
+		else
+		{
+			gstDisplayBoardHwFault.bits.powerOnIndication = 1;		//	Added to log system power on event as requested by Bx on 21Apr2015
+		}
+		break;
+	default:
+	break;
+	}
+
+
+
+
+
+
+}
+//20170414      201703_No.32 and 31 end
 
 /******************************************************************************
  * errorModule
@@ -463,6 +697,8 @@ void errorModule(void)
 	uint8_t lucCount = 0;
 //	uint8_t lucTemp = 0;
 
+
+
 	//
 	// Added on 15 Sep 2014 to avoid communication error logging
 	// during power fail condition
@@ -475,6 +711,11 @@ void errorModule(void)
 	//
 	updateCTtoDR_CommErrorBit();
 
+	//20170414      201703_No.32 and 31 start
+	get_operatecount();
+	if(operation_flag_forE213!=8)
+			return;
+	//20170414      201703_No.32 and 31 end
 
 	guiControlCommunicationFaultCopy = (uint32_t) gstControlCommunicationFault.val;
 	guiControlApplicationFaultCopy = (uint32_t) gstControlApplicationFault.val;
@@ -529,6 +770,8 @@ void errorModule(void)
 					//	Copy current timestamp value from HW register
 					//
 					gstEMtoLM.errorToLM.timeStamp = (HWREG(0x400FC000));
+					gstEMtoLM.errorToLM.operationCount = ui32OperationCount;//ui32OperationCount;
+
 				}
 
 				// Display error on OLED if indication on display is to be given
@@ -536,14 +779,15 @@ void errorModule(void)
 				{
 					errorDetails.errorCode = gstErrorList[lucCount].errorCode;
 					errorDetails.errorType = gstErrorList[lucCount].recoveryType;
-					if(gu8_language == Japanese_IDX)
-					{
-						memcpy(errorDetails.errordescription,gstErrorList[lucCount].errorName_japanese,sizeof(errorDetails.errordescription));
-					}
-					else
-					{
-						memcpy(errorDetails.errordescription,gstErrorList[lucCount].errorName_english,sizeof(errorDetails.errordescription));
-					}
+					//20170414    201703_other
+					//if(gu8_language == Japanese_IDX)
+					//{
+						memcpy(errorDetails.errordescription_jananese,gstErrorList[lucCount].errorName_japanese,sizeof(errorDetails.errordescription_jananese));
+					//}
+					//else
+					//{
+						memcpy(errorDetails.errordescripition_english,gstErrorList[lucCount].errorName_english,sizeof(errorDetails.errordescripition_english));
+					//}
 					//
 					// Add anomaly to display active anomaly list
 					//
@@ -726,7 +970,9 @@ enum functionReturnValue logError(void)
 			// Set command flag
 			//gstEMtoLM.commandRequestStatus = eACTIVE;
 			logErrorState = eWaitingForReply;
-			writeAnomalyHistory();
+
+			 //if(operation_flag_forE213==8)
+			 writeAnomalyHistory();
 		}
 		break;
 	case eWaitingForReply:

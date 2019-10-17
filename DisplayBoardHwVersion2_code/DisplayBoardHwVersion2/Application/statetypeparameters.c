@@ -876,7 +876,11 @@ uint8_t stateTypeParamEnter()
     				    		gstUMtoLM_write.commandToLMwrite.bits.changeSettingHistory = 1;
     				    		gstUMtoLM_write.changeSetting.newValue = gCurrentParameterState;
     				    		gstUMtoLM_write.changeSetting.oldValue = gGetParameterState;
-    				    		gstUMtoLM_write.changeSetting.parameterNumber = gsParamDatabase[gHighlightedItemIndex].paramEEPROMIndex;
+    				    		//20170414      201703_No.28 start
+    				    		gstUMtoLM_write.changeSetting.parameterNumber = (gsParamDatabase[gHighlightedItemIndex].paramName_english[1]-'0')*100 +
+    				    				                                        (gsParamDatabase[gHighlightedItemIndex].paramName_english[2]-'0')*10  +
+																				(gsParamDatabase[gHighlightedItemIndex].paramName_english[3]-'0');//gsParamDatabase[gHighlightedItemIndex].paramEEPROMIndex;
+    				    		//20170414      201703_No.28 end
     				    		gstUMtoLM_write.changeSetting.timeStamp = (HWREG(0x400FC000));
     				    		writeChangeSettingsHistory();
     				    		GrRectFIllBolymin(0, 127, 0, 63, 0, true);

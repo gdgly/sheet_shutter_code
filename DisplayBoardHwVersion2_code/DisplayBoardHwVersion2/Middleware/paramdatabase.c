@@ -57,7 +57,8 @@
 const uint8_t guc_Paramsize_Disp[_NO_OF_PARAMS] =
 {
 		28,	28,	28,	28,	28,	28,	28,	28,	28,	28,	1, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 1, 4, 4, 2, 2, 2,
-		28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 1,  1
+		28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 1,  1, 4 , 4 ,  4,  4,  4,  4,  4,  4,  4, 4, 4 , 4 ,  4,  4,//20170414      201703_No.31
+		4,  4,  4,  4,  4, 4
 };
 
 // Display Parameter Address Table
@@ -65,8 +66,9 @@ const uint8_t guc_Paramsize_Disp[_NO_OF_PARAMS] =
 const uint32_t gui_ParamAddr_Disp[_NO_OF_PARAMS] =
 {
 		0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 303, 321, 339, 357, 375, 393, 411, 429, 447, 465, 483, 486, 492, 498, 502, 506,
-		510,540,570,600,630,660,690,720,750,780,810,813
-};
+		510,540,570,600,630,660,690,720,750,780,810, 813, 816, 822, 828, 834, 840 , 846,852,858,864,870,876,882,888,894,900,906,912, 918,
+		924,930
+};////20170414      201703_No.31
 
 // Display Board Parameters Number Table
 const uint16_t gui_ParamNo_Disp[_NO_OF_PARAMS] =
@@ -115,7 +117,28 @@ const struct stControlAnomaly gstAH_anomhist_17_DEF = {0x00000000, 0x0000, 0x00,
 const struct stControlAnomaly gstAH_anomhist_18_DEF = {0x00000000, 0x0000, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00000000};
 const struct stControlAnomaly gstAH_anomhist_19_DEF = {0x00000000, 0x0000, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00000000};
 const struct stControlAnomaly gstAH_anomhist_20_DEF = {0x00000000, 0x0000, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00000000};
-
+//20170414      201703_No.31 start
+const uint32_t gu32_Anomaly_OP_1_DEF = 0;
+const uint32_t gu32_Anomaly_OP_2_DEF = 0;
+const uint32_t gu32_Anomaly_OP_3_DEF = 0;
+const uint32_t gu32_Anomaly_OP_4_DEF = 0;
+const uint32_t gu32_Anomaly_OP_5_DEF = 0;
+const uint32_t gu32_Anomaly_OP_6_DEF = 0;
+const uint32_t gu32_Anomaly_OP_7_DEF = 0;
+const uint32_t gu32_Anomaly_OP_8_DEF = 0;
+const uint32_t gu32_Anomaly_OP_9_DEF = 0;
+const uint32_t gu32_Anomaly_OP_10_DEF = 0;
+const uint32_t gu32_Anomaly_OP_11_DEF = 0;
+const uint32_t gu32_Anomaly_OP_12_DEF = 0;
+const uint32_t gu32_Anomaly_OP_13_DEF = 0;
+const uint32_t gu32_Anomaly_OP_14_DEF = 0;
+const uint32_t gu32_Anomaly_OP_15_DEF = 0;
+const uint32_t gu32_Anomaly_OP_16_DEF = 0;
+const uint32_t gu32_Anomaly_OP_17_DEF = 0;
+const uint32_t gu32_Anomaly_OP_18_DEF = 0;
+const uint32_t gu32_Anomaly_OP_19_DEF = 0;
+const uint32_t gu32_Anomaly_OP_20_DEF = 0;
+//20170414      201703_No.31 end
 
 //Pointer to Default values in Display Board
 uint8_t * const guc_ptrParamDefault_Disp[_NO_OF_PARAMS] =
@@ -159,6 +182,28 @@ uint8_t * const guc_ptrParamDefault_Disp[_NO_OF_PARAMS] =
 		(uint8_t*)&gstAH_anomhist_20_DEF,
 		(uint8_t*)&gu8_guestue_DEF,
 		(uint8_t*)&gu8_language_DEF,
+		//20170414      201703_No.31 start
+		(uint8_t*)&gu32_Anomaly_OP_1_DEF,
+		(uint8_t*)&gu32_Anomaly_OP_2_DEF,
+		(uint8_t*)&gu32_Anomaly_OP_3_DEF,
+		(uint8_t*)&gu32_Anomaly_OP_4_DEF,
+		(uint8_t*)&gu32_Anomaly_OP_5_DEF,
+		(uint8_t*)&gu32_Anomaly_OP_6_DEF,
+		(uint8_t*)&gu32_Anomaly_OP_7_DEF,
+		(uint8_t*)&gu32_Anomaly_OP_8_DEF,
+		(uint8_t*)&gu32_Anomaly_OP_9_DEF,
+		(uint8_t*)&gu32_Anomaly_OP_10_DEF,
+		(uint8_t*)&gu32_Anomaly_OP_11_DEF,
+		(uint8_t*)&gu32_Anomaly_OP_12_DEF,
+		(uint8_t*)&gu32_Anomaly_OP_13_DEF,
+		(uint8_t*)&gu32_Anomaly_OP_14_DEF,
+		(uint8_t*)&gu32_Anomaly_OP_15_DEF,
+		(uint8_t*)&gu32_Anomaly_OP_16_DEF,
+		(uint8_t*)&gu32_Anomaly_OP_17_DEF,
+		(uint8_t*)&gu32_Anomaly_OP_18_DEF,
+		(uint8_t*)&gu32_Anomaly_OP_19_DEF,
+		(uint8_t*)&gu32_Anomaly_OP_20_DEF,
+		//20170414      201703_No.31 end
 };
 
 //Parameter Global Variables

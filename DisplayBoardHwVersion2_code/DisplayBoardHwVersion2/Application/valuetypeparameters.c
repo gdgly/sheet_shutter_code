@@ -1049,7 +1049,7 @@ uint8_t valueTypeParamEnter()
     	gKeysStatus.bits.Key_Enter_pressed = 0;
 
     	if((gHighlightedItemIndex == 56)||(gHighlightedItemIndex == 13))     //20161208
-    	{
+    	{//ap
     		if(gstUMtoCMoperational.commandRequestStatus == eINACTIVE)
     		{
     				gui8SettingsModeStatus = SERVICED;
@@ -1192,7 +1192,11 @@ uint8_t valueTypeParamEnter()
 		    		gstUMtoLM_write.commandToLMwrite.bits.changeSettingHistory = 1;
 		    		gstUMtoLM_write.changeSetting.newValue = gCurrentParameterValue;
 		    		gstUMtoLM_write.changeSetting.oldValue = gGetParameterValue;
-		    		gstUMtoLM_write.changeSetting.parameterNumber = gsParamDatabase[gHighlightedItemIndex].paramEEPROMIndex;
+		    		//20170414      201703_No.28 start
+		    		gstUMtoLM_write.changeSetting.parameterNumber = (gsParamDatabase[gHighlightedItemIndex].paramName_english[1]-'0')*100 +
+                                                                    (gsParamDatabase[gHighlightedItemIndex].paramName_english[2]-'0')*10  +
+							                                        (gsParamDatabase[gHighlightedItemIndex].paramName_english[3]-'0');//gsParamDatabase[gHighlightedItemIndex].paramEEPROMIndex;
+		    		//20170414      201703_No.28 end
 		    		gstUMtoLM_write.changeSetting.timeStamp = (HWREG(0x400FC000));
 		    		writeChangeSettingsHistory();
 
@@ -1575,7 +1579,11 @@ uint8_t valueTypeParamEnter()
 				gstUMtoLM_write.commandToLMwrite.bits.changeSettingHistory = 1;
 				gstUMtoLM_write.changeSetting.newValue = gCurrentParameterValue;
 				gstUMtoLM_write.changeSetting.oldValue = gGetParameterValue;
-				gstUMtoLM_write.changeSetting.parameterNumber = gsParamDatabase[gHighlightedItemIndex].paramEEPROMIndex;
+				//20170414      201703_No.28 start
+				gstUMtoLM_write.changeSetting.parameterNumber = (gsParamDatabase[gHighlightedItemIndex].paramName_english[1]-'0')*100 +
+                                                                (gsParamDatabase[gHighlightedItemIndex].paramName_english[2]-'0')*10  +
+                                                                (gsParamDatabase[gHighlightedItemIndex].paramName_english[3]-'0');//gsParamDatabase[gHighlightedItemIndex].paramEEPROMIndex;// gsParamDatabase[gHighlightedItemIndex].paramEEPROMIndex;
+				//20170414      201703_No.28 end
 				gstUMtoLM_write.changeSetting.timeStamp = (HWREG(0x400FC000));
 				writeChangeSettingsHistory();
 

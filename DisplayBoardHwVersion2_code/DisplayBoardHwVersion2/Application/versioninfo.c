@@ -263,10 +263,9 @@ stInternalFunctions gsDrvVerInfoFunctionalBlock =
 
 uint8_t VerInfoPaintprocess(uint8_t stridx)
 {
-	//unsigned char viewbuff[MAX_CHARS_IN_LINE];
-	unsigned char viewbuff[MAX_CHARS_IN_LINE+2]={0};   //20170412  201703_No.30
+	unsigned char viewbuff[MAX_CHARS_IN_LINE+2]={0};//20170414     201703_No.30
 	uBoardVersion luBoardVer;
-
+   static  uint16_t Tp_version=0;                   //20170414      201703_No.29
 	// Clear Screen.
 	GrRectFIllBolymin(0, 126, 0, 63, true, true);
 	if(gu8_language == Japanese_IDX)
@@ -296,36 +295,59 @@ uint8_t VerInfoPaintprocess(uint8_t stridx)
 	luBoardVer.ui32VersionWord = *ptrBoardVersions[stridx*2 + 1];
 	//usnprintf((char *)viewbuff, sizeof(viewbuff), "FW VERSION: %04u", *ptrBoardVersions[stridx*2 + 1]);
 	//usnprintf((char *)viewbuff, sizeof(viewbuff), "FW VERSION: 1.%u", luBoardVer.ui8VersionBytes[0] );
+
+	//20170414      201703_No.29 start
+	Tp_version = (luBoardVer.ui8VersionBytes[1]<<8)+luBoardVer.ui8VersionBytes[0];
+	if((Tp_version/1000)>=17 )//new
+	{
+		 if(gu8_language == Japanese_IDX)
+		 {
+			 usnprintf((char *)viewbuff, sizeof(viewbuff), "FWバージョン:%02u%02u.%u",Tp_version/1000,(Tp_version/10)%100,Tp_version%10 );
+		 }
+		 else
+		 {
+			 usnprintf((char *)viewbuff, sizeof(viewbuff), "FW VERSION:%02u%02u.%u", Tp_version/1000,(Tp_version/10)%100,Tp_version%10 );
+		 }
+	}
+	else//old
+	{
 	 switch(stridx)
 	 {
 	 case _IDX_CTRLVER:
 		 if(gu8_language == Japanese_IDX)
-			 usnprintf((char *)viewbuff, sizeof(viewbuff), "FWバージョン:%u%u%u.%u", control_fw[luBoardVer.ui8VersionBytes[1]][0],control_fw[luBoardVer.ui8VersionBytes[1]][1],control_fw[luBoardVer.ui8VersionBytes[1]][2],luBoardVer.ui8VersionBytes[0] );
+			 usnprintf((char *)viewbuff, sizeof(viewbuff), "FWバージョン:%02u%02u%02u.%u", control_fw[luBoardVer.ui8VersionBytes[1]][0],control_fw[luBoardVer.ui8VersionBytes[1]][1],control_fw[luBoardVer.ui8VersionBytes[1]][2],luBoardVer.ui8VersionBytes[0] );
 		 else
-			 usnprintf((char *)viewbuff, sizeof(viewbuff), "FW VERSION:%u%u%u.%u", control_fw[luBoardVer.ui8VersionBytes[1]][0],control_fw[luBoardVer.ui8VersionBytes[1]][1],control_fw[luBoardVer.ui8VersionBytes[1]][2],luBoardVer.ui8VersionBytes[0] );
+			 usnprintf((char *)viewbuff, sizeof(viewbuff), "FW VERSION:%02u%02u%02u.%u", control_fw[luBoardVer.ui8VersionBytes[1]][0],control_fw[luBoardVer.ui8VersionBytes[1]][1],control_fw[luBoardVer.ui8VersionBytes[1]][2],luBoardVer.ui8VersionBytes[0] );
 		 break;
 	 case _IDX_DISPVER:
 		if(gu8_language == Japanese_IDX)
-			usnprintf((char *)viewbuff, sizeof(viewbuff), "FWバージョン:%u%u%u.%u", display_fw[luBoardVer.ui8VersionBytes[1]][0],display_fw[luBoardVer.ui8VersionBytes[1]][1],display_fw[luBoardVer.ui8VersionBytes[1]][2],luBoardVer.ui8VersionBytes[0] );
+			usnprintf((char *)viewbuff, sizeof(viewbuff), "FWバージョン:%02u%02u%02u.%u", display_fw[luBoardVer.ui8VersionBytes[1]][0],display_fw[luBoardVer.ui8VersionBytes[1]][1],display_fw[luBoardVer.ui8VersionBytes[1]][2],luBoardVer.ui8VersionBytes[0] );
 		else
-			usnprintf((char *)viewbuff, sizeof(viewbuff), "FW VERSION:%u%u%u.%u", display_fw[luBoardVer.ui8VersionBytes[1]][0],display_fw[luBoardVer.ui8VersionBytes[1]][1],display_fw[luBoardVer.ui8VersionBytes[1]][2],luBoardVer.ui8VersionBytes[0] );
+			usnprintf((char *)viewbuff, sizeof(viewbuff), "FW VERSION:%02u%02u%02u.%u", display_fw[luBoardVer.ui8VersionBytes[1]][0],display_fw[luBoardVer.ui8VersionBytes[1]][1],display_fw[luBoardVer.ui8VersionBytes[1]][2],luBoardVer.ui8VersionBytes[0] );
 		break;
 	 case _IDX_DRVVER:
 		if(gu8_language == Japanese_IDX)
-			usnprintf((char *)viewbuff, sizeof(viewbuff), "FWバージョン:%u%u%u.%u", drive_fw[luBoardVer.ui8VersionBytes[1]][0],drive_fw[luBoardVer.ui8VersionBytes[1]][1],drive_fw[luBoardVer.ui8VersionBytes[1]][2],luBoardVer.ui8VersionBytes[0] );
+			usnprintf((char *)viewbuff, sizeof(viewbuff), "FWバージョン:%02u%02u%02u.%u", drive_fw[luBoardVer.ui8VersionBytes[1]][0],drive_fw[luBoardVer.ui8VersionBytes[1]][1],drive_fw[luBoardVer.ui8VersionBytes[1]][2],luBoardVer.ui8VersionBytes[0] );
 		else
-			usnprintf((char *)viewbuff, sizeof(viewbuff), "FW VERSION:%u%u%u.%u",drive_fw[luBoardVer.ui8VersionBytes[1]][0],drive_fw[luBoardVer.ui8VersionBytes[1]][1],drive_fw[luBoardVer.ui8VersionBytes[1]][2],luBoardVer.ui8VersionBytes[0]  );
+			usnprintf((char *)viewbuff, sizeof(viewbuff), "FW VERSION:%02u%02u%02u.%u",drive_fw[luBoardVer.ui8VersionBytes[1]][0],drive_fw[luBoardVer.ui8VersionBytes[1]][1],drive_fw[luBoardVer.ui8VersionBytes[1]][2],luBoardVer.ui8VersionBytes[0]  );
 		break;
 	 default:break;
 	 }
+	}//20170414      201703_No.29 end
+
 	//displayText(viewbuff, 2, 32, false, false, false, false, false, false);
 	//memset(lBuff_cyw,0x20,sizeof(lBuff_cyw));
 
 	//usnprintf_UU_cyw(lBuff_cyw,uu_number[stridx],(char *)viewbuff);
 	if(gu8_language == Japanese_IDX)
+	{
     displayText((unsigned char*)viewbuff, 2, 32, false, false, false, false, false, false);
-	else
-    displayText((unsigned char*)viewbuff, 2, 32, false, false, false, false, false, true);
+   // displayText((unsigned char*)(viewbuff+13),66, 32, false, false, false, false, true, true);
 
+	}
+	else
+	{
+    displayText((unsigned char*)viewbuff, 2, 32, false, false, false, false, false, true);
+	}
 	return 0;
 }

@@ -102,6 +102,7 @@ uint8_t KEY_PRESS_3SEC_ENT_FLAG_CYW=0;
 uint8_t KEY_PRESS_3SEC_ENT_FORRESET_CYW=0;
 uint8_t KEY_PRESS_3SEC_MODE_FLAG_CYW=0;
 uint8_t KEY_PRESS_3SEC_STOP_FLAG_CYW=0;
+uint8_t KEY_PRESS_3SEC_STOP_FLAG_CYW_1 = 0;//20170414      201703_No.27
 /****************************************************************************
  *  Constant definitions
 ****************************************************************************/
@@ -1503,6 +1504,7 @@ void keysProcessFlags(uint8_t keyState, uint8_t keyChanged)
 		if((KEY_STOP == pressedState) && (currentTickCount_stop_cyw++ == SYSTICK_3SEC_KEYPRESS))
 		{
 			KEY_PRESS_3SEC_STOP_FLAG_CYW = true;
+			KEY_PRESS_3SEC_STOP_FLAG_CYW_1 = true; //20170414      201703_No.27
 			currentTickCount_stop_cyw = 0;
 		}
 		//Stop pressed for 3 sec //Added 4 Jun 2014

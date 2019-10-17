@@ -150,9 +150,10 @@ extern uint8_t  LCD_DISP_GUESTURE;
 // first byte = Not used, 		second byte = Not used,
 // third byte = Major Version 	fourth byte = Minor version
 //uint32_t gDisplayFirmwareVersion = 0x00000003;
-uint32_t gDisplayFirmwareVersion = 0x00000404;
+//uint32_t gDisplayFirmwareVersion = 0x00000501;//20170414      201703_No.29
+uint32_t gDisplayFirmwareVersion = 17041;//20170414      201703_No.29
 
-const uint8_t display_fw[][3]={{16,8,15},{16,9,02},{16,9,9},{16,9,14},{16,10,18}};
+const uint8_t display_fw[][3]={{16,8,15},{16,9,02},{16,9,9},{16,9,14},{16,10,18},{17,04,14}};
 const uint8_t control_fw[][3]={{16,8,15},{16,9,02},{16,9,9},{16,9,14},{16,10,18}};
 const uint8_t drive_fw[][3]={{16,8,15},{16,9,02},{16,9,9},{16,9,14},{16,10,18}};
 
@@ -364,6 +365,23 @@ uint8_t powerOnRunTime()
 					gUserModuleState = DISPLAY_SHUTTER_TYPE;
 				}
 			}
+			//20170414      201703_No.4 start
+			else if((gstUMtoCMdatabase.commandResponseStatus ==eTIME_OUT)||//20170410
+					(gstUMtoCMdatabase.commandResponseStatus ==eFAIL))
+			{
+				gstUMtoCMdatabase.commandToControlBoard.bits.getParameter = 0;
+
+				//
+				// Reset Request and response status and acknowledgment status
+				//
+				gstUMtoCMdatabase.commandRequestStatus = eINACTIVE;
+				gstUMtoCMdatabase.commandResponseStatus = eNO_STATUS;
+				gstUMtoCMdatabase.acknowledgementReceived = eNO_ACK;
+
+				gUserModuleState = GET_SHUTTER_TYPE;
+
+			}
+			//20170414      201703_No.4 end
 		}
 
 	break;
@@ -648,16 +666,36 @@ uint8_t powerOnRunTime()
 		memset(&luBoardVer, 0, sizeof(uBoardVersion));
 		luBoardVer.ui32VersionWord = gControlFirmwareVersion;
 		//usnprintf(lBuff, sizeof(lBuff), "FW VERSION: %u", gControlFirmwareVersion);
+		//20170414      201703_No.29 start
+		if((gControlFirmwareVersion/1000)>=17)//new
+		{
+			if(gu8_language == Japanese_IDX)
+			{
+				usnprintf(lBuff, sizeof(lBuff), "FWバージョン:%02u%02u.%u",gControlFirmwareVersion/1000,(gControlFirmwareVersion/10)%100,gControlFirmwareVersion%10);
+				displayText((unsigned char*)lBuff, 2, 32, false, false, false, false, false, false);
+
+			}
+			else
+			{
+				usnprintf(lBuff, sizeof(lBuff), "FW VERSION: %02u%02u.%u",gControlFirmwareVersion/1000,(gControlFirmwareVersion/10)%100,gControlFirmwareVersion%10 );
+				displayText((unsigned char*)lBuff, 2, 32, false, false, false, false, false, true);
+
+			}
+		}
+		else//old
+		{
 		if(gu8_language == Japanese_IDX)
 		{
-		usnprintf(lBuff, sizeof(lBuff), "FWバージョン:%u%u%u.%u", control_fw[luBoardVer.ui8VersionBytes[1]][0],control_fw[luBoardVer.ui8VersionBytes[1]][1],control_fw[luBoardVer.ui8VersionBytes[1]][2],luBoardVer.ui8VersionBytes[0] );
+		usnprintf(lBuff, sizeof(lBuff), "FWバージョン:%02u%02u%02u.%u", control_fw[luBoardVer.ui8VersionBytes[1]][0],control_fw[luBoardVer.ui8VersionBytes[1]][1],control_fw[luBoardVer.ui8VersionBytes[1]][2],luBoardVer.ui8VersionBytes[0] );
 		displayText((unsigned char*)lBuff, 2, 32, false, false, false, false, false, false);
 		}
 		else
 		{
-		usnprintf(lBuff, sizeof(lBuff), "FW VERSION: %u%u%u.%u", control_fw[luBoardVer.ui8VersionBytes[1]][0],control_fw[luBoardVer.ui8VersionBytes[1]][1],control_fw[luBoardVer.ui8VersionBytes[1]][2],luBoardVer.ui8VersionBytes[0] );
+		usnprintf(lBuff, sizeof(lBuff), "FW VERSION: %02u%02u%02u.%u", control_fw[luBoardVer.ui8VersionBytes[1]][0],control_fw[luBoardVer.ui8VersionBytes[1]][1],control_fw[luBoardVer.ui8VersionBytes[1]][2],luBoardVer.ui8VersionBytes[0] );
 		displayText((unsigned char*)lBuff, 2, 32, false, false, false, false, false, true);
 		}
+		}
+		//20170414      201703_No.29 end
 	//	memset(lBuff_cyw,0x20,sizeof(lBuff_cyw));
 		//memcpy(lBuff_cyw,lBuff,sizeof(lBuff));
 	//	usnprintf_UU_cyw(lBuff_cyw,2,lBuff);
@@ -757,16 +795,36 @@ uint8_t powerOnRunTime()
 		//
 		memset(&luBoardVer, 0, sizeof(uBoardVersion));
 		luBoardVer.ui32VersionWord = gDriveFirmwareVersion;
+		//20170414      201703_No.29 start
+		if((gDriveFirmwareVersion/1000)>=17)//new
+		{
+			if(gu8_language == Japanese_IDX)
+			{
+				usnprintf(lBuff, sizeof(lBuff), "FWバージョン:%02u%02u.%u", gDriveFirmwareVersion/1000,(gDriveFirmwareVersion/10)%100,gDriveFirmwareVersion%10);
+			    displayText((unsigned char*)lBuff, 2, 32, false, false, false, false, false, false);
+
+			}
+			else
+			{
+				usnprintf(lBuff, sizeof(lBuff), "FW VERSION: %02u%02u.%u", gDriveFirmwareVersion/1000,(gDriveFirmwareVersion/10)%100,gDriveFirmwareVersion%10 );
+				displayText((unsigned char*)lBuff, 2, 32, false, false, false, false, false, true);
+
+			}
+		}
+		else//old
+		{
 		if(gu8_language == Japanese_IDX)
 		{
-		usnprintf(lBuff, sizeof(lBuff), "FWバージョン:%u%u%u.%u", drive_fw[luBoardVer.ui8VersionBytes[1]][0], drive_fw[luBoardVer.ui8VersionBytes[1]][1], drive_fw[luBoardVer.ui8VersionBytes[1]][2],luBoardVer.ui8VersionBytes[0] );
+		usnprintf(lBuff, sizeof(lBuff), "FWバージョン:%02u%02u%02u.%u", drive_fw[luBoardVer.ui8VersionBytes[1]][0], drive_fw[luBoardVer.ui8VersionBytes[1]][1], drive_fw[luBoardVer.ui8VersionBytes[1]][2],luBoardVer.ui8VersionBytes[0] );
 		displayText((unsigned char*)lBuff, 2, 32, false, false, false, false, false, false);
 		}
 		else
 		{
-		usnprintf(lBuff, sizeof(lBuff), "FW VERSION: %u%u%u.%u", drive_fw[luBoardVer.ui8VersionBytes[1]][0], drive_fw[luBoardVer.ui8VersionBytes[1]][1], drive_fw[luBoardVer.ui8VersionBytes[1]][2],luBoardVer.ui8VersionBytes[0] );
+		usnprintf(lBuff, sizeof(lBuff), "FW VERSION: %02u%02u%02u.%u", drive_fw[luBoardVer.ui8VersionBytes[1]][0], drive_fw[luBoardVer.ui8VersionBytes[1]][1], drive_fw[luBoardVer.ui8VersionBytes[1]][2],luBoardVer.ui8VersionBytes[0] );
 		displayText((unsigned char*)lBuff, 2, 32, false, false, false, false, false, true);
 		}
+		}
+		//20170414      201703_No.29 end
 		//memset(lBuff_cyw,0x20,sizeof(lBuff_cyw));
 				//memcpy(lBuff_cyw,lBuff,sizeof(lBuff));
 	//	usnprintf_UU_cyw(lBuff_cyw,5,lBuff);
@@ -972,16 +1030,34 @@ uint8_t powerOnRunTime()
 		memset(&luBoardVer, 0, sizeof(uBoardVersion));
 		luBoardVer.ui32VersionWord = gu32_disp_fwver;
 		//usnprintf(lBuff, sizeof(lBuff), "FW VERSION: 1.%u", luBoardVer.ui8VersionBytes[0] );
+		//20170414      201703_No.29 start
+		if((gDisplayFirmwareVersion/1000)>=17)//new
+		{
 		if(gu8_language == Japanese_IDX)
 		{
-		usnprintf(lBuff, sizeof(lBuff), "FWバージョン:%u%u%u.%u",display_fw[((gDisplayFirmwareVersion >> 8) & 0x000000FF)][0],display_fw[((gDisplayFirmwareVersion >> 8) & 0x000000FF)][1],display_fw[((gDisplayFirmwareVersion >> 8) & 0x000000FF)][2], (gDisplayFirmwareVersion & 0x000000FF) );
+			usnprintf(lBuff, sizeof(lBuff), "FWバージョン:%02u%02u.%u", gDisplayFirmwareVersion/1000,(gDisplayFirmwareVersion/10)%100,gDisplayFirmwareVersion%10);
+			displayText((unsigned char*)lBuff, 2, 32, false, false, false, false, false, false);
+		}
+	   else
+	   {
+			usnprintf(lBuff, sizeof(lBuff), "FW VERSION: %02u%02u.%u",gDisplayFirmwareVersion/1000,(gDisplayFirmwareVersion/10)%100,gDisplayFirmwareVersion%10);
+			displayText((unsigned char*)lBuff, 2, 32, false, false, false, false, false, true);
+		}
+		}
+		else//old
+		{
+		if(gu8_language == Japanese_IDX)
+		{
+		usnprintf(lBuff, sizeof(lBuff), "FWバージョン:%02u%02u%02u.%u",display_fw[((gDisplayFirmwareVersion >> 8) & 0x000000FF)][0],display_fw[((gDisplayFirmwareVersion >> 8) & 0x000000FF)][1],display_fw[((gDisplayFirmwareVersion >> 8) & 0x000000FF)][2], (gDisplayFirmwareVersion & 0x000000FF) );
 		displayText((unsigned char*)lBuff, 2, 32, false, false, false, false, false, false);
 		}
 		else
 		{
-		usnprintf(lBuff, sizeof(lBuff), "FW VERSION: %u%u%u.%u",display_fw[((gDisplayFirmwareVersion >> 8) & 0x000000FF)][0],display_fw[((gDisplayFirmwareVersion >> 8) & 0x000000FF)][1],display_fw[((gDisplayFirmwareVersion >> 8) & 0x000000FF)][2], (gDisplayFirmwareVersion & 0x000000FF) );
+		usnprintf(lBuff, sizeof(lBuff), "FW VERSION: %02u%02u%02u.%u",display_fw[((gDisplayFirmwareVersion >> 8) & 0x000000FF)][0],display_fw[((gDisplayFirmwareVersion >> 8) & 0x000000FF)][1],display_fw[((gDisplayFirmwareVersion >> 8) & 0x000000FF)][2], (gDisplayFirmwareVersion & 0x000000FF) );
 		displayText((unsigned char*)lBuff, 2, 32, false, false, false, false, false, true);
 		}
+		}
+		//20170414      201703_No.29 end
 	//	memset(lBuff_cyw,0x20,sizeof(lBuff_cyw));
 				//memcpy(lBuff_cyw,lBuff,sizeof(lBuff));
 	//	usnprintf_UU_cyw(lBuff_cyw,2,lBuff);

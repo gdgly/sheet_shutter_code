@@ -49,7 +49,7 @@
 //gstUMtoLM_read;
 uint8_t gui8_AnomalyHistory_ParamIdx;
 uint8_t gui8_ChgSettHistory_ParamIdx;
-
+extern uint32_t ui32OperationCount;  //20170414      201703_No.31
 /****************************************************************************/
 
 
@@ -122,8 +122,13 @@ void writeAnomalyHistory(void)
 
 	if((gstEMtoLM.commandRequestStatus == eACTIVE) && (gstEMtoLM.commandResponseStatus == eNO_STATUS))
 	{
-			if(writeParameterUpdateInDB((PARAM_DISP)(Tp_ANOMHIST_START_IDX[gui8_AnomalyHistory_ParamIdx - 1]),
-					(uint8_t*)&gstEMtoLM.errorToLM) == _SUCCESS)
+		   gstEMtoLM.errorToLM.operationCount = ui32OperationCount;
+		   //20170414      201703_No.31 start
+		  if((writeParameterUpdateInDB((PARAM_DISP)(Tp_ANOMHIST_START_IDX[gui8_AnomalyHistory_ParamIdx - 1]),
+					(uint8_t*)&gstEMtoLM.errorToLM) == _SUCCESS)&&
+		    (writeParameterUpdateInDB((PARAM_DISP)(gui8_AnomalyHistory_ParamIdx-1+A910ANOMHIST_OP1),
+				  					(uint8_t*)&gstEMtoLM.errorToLM.operationCount)==_SUCCESS))
+			  //20170414      201703_No.31 end
 			{
 				gstEMtoLM.commandResponseStatus = eSUCCESS;
 				gui8_AnomalyHistory_ParamIdx++;
@@ -135,6 +140,9 @@ void writeAnomalyHistory(void)
 			{
 				gstEMtoLM.commandResponseStatus = eFAIL;
 			}
+
+
+			;
 
 			//15 May 2014 - UM will control the flag
 //			gstEMtoLM.commandRequestStatus = eINACTIVE;
@@ -204,11 +212,15 @@ void readAnomalyHistory(void)
 
 			uint8_t logReadIndex;
 			logReadIndex = (gstUMtoLM_read.historyOrAnomalyIndex > (gui8_AnomalyHistory_ParamIdx-1)) ? (_MAX_ANOMALY_LOGS - (gstUMtoLM_read.historyOrAnomalyIndex - gui8_AnomalyHistory_ParamIdx)) : (gui8_AnomalyHistory_ParamIdx - gstUMtoLM_read.historyOrAnomalyIndex);
-
-			if(readParameterFromDB((PARAM_DISP)(Tp_ANOMHIST_IDX[logReadIndex - 1]), (uint8_t*)&gstUMtoLM_read.anomalyHistory) == _SUCCESS)
+			//20170414      201703_No.31 start
+			if((readParameterFromDB((PARAM_DISP)(Tp_ANOMHIST_IDX[logReadIndex - 1]), (uint8_t*)&gstUMtoLM_read.anomalyHistory) == _SUCCESS)&&
+					(readParameterFromDB((PARAM_DISP)(logReadIndex - 1 + A910ANOMHIST_OP1),(uint8_t*)&gstUMtoLM_read.anomalyHistory.operationCount)==_SUCCESS))
+				//20170414      201703_No.31 end
 				gstUMtoLM_read.commandResponseStatus = eSUCCESS;
 			else
 				gstUMtoLM_read.commandResponseStatus = eFAIL;
+
+
 
 			//15 May 2014 - UM will control the flag
 //			gstUMtoLM_read.commandRequestStatus = eINACTIVE;

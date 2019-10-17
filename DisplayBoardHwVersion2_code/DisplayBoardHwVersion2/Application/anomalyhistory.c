@@ -63,6 +63,7 @@ extern _CommunicationModuleInnerTaskComm lstCommunicationModuleInnerTaskComm;
 bool bFatalErrorOccurred = false;
 extern uint8_t KEY_PRESS_3SEC_ENT_FLAG_CYW;
 extern const _stErrorList gstErrorList[TOTAL_ERRORS];
+extern uint8_t KEY_PRESS_3SEC_STOP_FLAG_CYW_1; ////20170414      201703_No.27
 /****************************************************************************
  *  Structures:
 ****************************************************************************/
@@ -190,25 +191,60 @@ void displayAnomalies(void)
 				//
 				// Display anomaly log on fourth line.
 				//
+
+				//20170414      201703_other
+			   if(gu8_language == Japanese_IDX)
+			   {
 				usnprintf((char*)lbuff, sizeof(lbuff), "E%03d:%s", gsActiveAnomalyList[lsAnomalyIndex].errorCode,
-						gsActiveAnomalyList[lsAnomalyIndex].errordescription);
+						gsActiveAnomalyList[lsAnomalyIndex].errordescription_jananese);
+			   }
+			   else
+			   {
+			   	usnprintf((char*)lbuff, sizeof(lbuff), "E%03d:%s", gsActiveAnomalyList[lsAnomalyIndex].errorCode,
+			   			gsActiveAnomalyList[lsAnomalyIndex].errordescripition_english);
+			   }
 			//	memset(lbuff_cyw,0x20,sizeof(lbuff_cyw));
 				//usnprintf_E03_cyw((char*)lbuff_cyw,sizeof(lbuff_cyw),(char*)lbuff);
 				//memcpy((char*)(lbuff+5),(char*)(gsActiveAnomalyList[lsAnomalyIndex].errordescription),26);
-				for(tp_i=0;tp_i<26;tp_i++)
-					lbuff[tp_i + 5] = gsActiveAnomalyList[lsAnomalyIndex].errordescription[tp_i];
-
-				memcpy(CCCC,lbuff,5);
-				if(gu8_language == Japanese_IDX)
+			   //20170414      201703_No.25 start
+				if((gsActiveAnomalyList[lsAnomalyIndex].errorCode==27)||(gsActiveAnomalyList[lsAnomalyIndex].errorCode==21)||
+						(gsActiveAnomalyList[lsAnomalyIndex].errorCode==112)||(gsActiveAnomalyList[lsAnomalyIndex].errorCode==113))
 				{
-				displayText(CCCC, 1, 48, false, false, false, false, true, true);
-				displayText(lbuff+5, 30, 48, false, false, false, false, true, false);
+
+			       memset(lbuff,0,sizeof(lbuff));
+				   if(gu8_language == Japanese_IDX)
+				   {
+					   	memcpy(lbuff,gsActiveAnomalyList[lsAnomalyIndex].errordescription_jananese,strlen(gsActiveAnomalyList[lsAnomalyIndex].errordescription_jananese));
+				   		displayText(lbuff, 1, 48, false, false, false, false, true, false);
+				   	}
+				  	else
+				   {
+				  		memcpy(lbuff,gsActiveAnomalyList[lsAnomalyIndex].errordescripition_english,strlen(gsActiveAnomalyList[lsAnomalyIndex].errordescripition_english));
+				  		displayText(lbuff, 1, 48, false, false, false, false, false, true);
+				   }
+
 				}
 				else
 				{
-				displayText(CCCC, 1, 48, false, false, false, false, false, true);
-				displayText(lbuff+5, 30, 48, false, false, false, false, false, true);
+
+
+
+				   memcpy(CCCC,lbuff,5);
+				   	if(gu8_language == Japanese_IDX)
+				   	{
+				   		memcpy(lbuff +5,gsActiveAnomalyList[lsAnomalyIndex].errordescription_jananese,strlen(gsActiveAnomalyList[lsAnomalyIndex].errordescription_jananese));
+				   		displayText(CCCC, 1, 48, false, false, false, false, true, true);
+				   		displayText(lbuff+5, 30, 48, false, false, false, false, true, false);
+				   	}
+				   	else
+				   	{
+				   		memcpy(lbuff +5,gsActiveAnomalyList[lsAnomalyIndex].errordescripition_english,strlen(gsActiveAnomalyList[lsAnomalyIndex].errordescripition_english));
+				   		displayText(CCCC, 1, 48, false, false, false, false, false, true);
+				   	   displayText(lbuff+5, 30, 48, false, false, false, false, false, true);
+				   	}
 				}
+				//20170414      201703_No.25 end
+
 				//
 				// Capture time.
 				//
@@ -265,10 +301,11 @@ void RecoveredAnomalies(void)
 	open_disable_enable_cyw=0;
 	close_disable_enable_cyw=0;
 	//if(gKeysStatus.bits.Key_3secEnter_pressed == true)
-	if(KEY_PRESS_3SEC_ENT_FLAG_CYW == true)
+	if((KEY_PRESS_3SEC_ENT_FLAG_CYW == true)||(KEY_PRESS_3SEC_STOP_FLAG_CYW_1==true))//20170414      201703_No.27
 	{
 		//gKeysStatus.bits.Key_3secEnter_pressed = false;
 		KEY_PRESS_3SEC_ENT_FLAG_CYW = false;
+		KEY_PRESS_3SEC_STOP_FLAG_CYW_1 = false;            //20170414      201703_No.27
 	//	uartSendTxBuffer(UART_control,Tp_cyedata,6);
 		for(Tp_i =0;Tp_i<20;Tp_i++)
 		{
@@ -372,8 +409,11 @@ uint8_t addToActiveAnomaly(struct errorDB* pstActiveAnomalyData)
 	gsActiveAnomalyList[gui8ActiveAnomalyWriteIndex].errorType = pstActiveAnomalyData->errorType;
 	//memcpy(gsActiveAnomalyList[gui8ActiveAnomalyWriteIndex].errordescription,
 	//		pstActiveAnomalyData->errordescription, 15);
-	memcpy(gsActiveAnomalyList[gui8ActiveAnomalyWriteIndex].errordescription,
-				pstActiveAnomalyData->errordescription, 30);
+	//20170414      201703_other
+	memcpy(gsActiveAnomalyList[gui8ActiveAnomalyWriteIndex].errordescripition_english,
+				pstActiveAnomalyData->errordescripition_english, 30);
+	memcpy(gsActiveAnomalyList[gui8ActiveAnomalyWriteIndex].errordescription_jananese,
+					pstActiveAnomalyData->errordescription_jananese, 30);
 //	memcpy(gsActiveAnomalyList[gui8ActiveAnomalyWriteIndex].errordescription,
 //			pstActiveAnomalyData->errordescription,
 //			(MAX_STRING_LEN)*(sizeof(char)) );
@@ -464,8 +504,12 @@ uint8_t deleteFromActiveAnomaly(uint16_t lui16ErrorCode, bool bClearList)
 		{
 			gsActiveAnomalyList[i].errorCode = gsActiveAnomalyList[i+1].errorCode;
 			gsActiveAnomalyList[i].errorType = gsActiveAnomalyList[i+1].errorType;
-			memcpy(&gsActiveAnomalyList[i].errordescription,
-					&gsActiveAnomalyList[i+1].errordescription,
+			//20170414      201703_other
+			memcpy(&gsActiveAnomalyList[i].errordescripition_english,
+					&gsActiveAnomalyList[i+1].errordescripition_english,
+					(MAX_STRING_LEN)*(sizeof(char)) );
+			memcpy(&gsActiveAnomalyList[i].errordescription_jananese,
+					&gsActiveAnomalyList[i+1].errordescription_jananese,
 					(MAX_STRING_LEN)*(sizeof(char)) );
 		}
 		memset(&gsActiveAnomalyList[ANOMALY_LIST_LEN - 1], 0 , sizeof(struct errorDB));
