@@ -1641,7 +1641,8 @@ void logicSolver(void) {
 						 gSensorStatus.bits.Sensor_1PBS_active		||
 						 gSensorStatus.bits.Sensor_1PBS_inactive	||
 						 // 20 Oct Added check for auto mode for startup sensor by yogesh
-						 (gSensorStatus.bits.Sensor_Obstacle_active && gstControlBoardStatus.bits.autoManual == 1)		||
+						// (gSensorStatus.bits.Sensor_Obstacle_active && gstControlBoardStatus.bits.autoManual == 1)		||
+						 (gSensorStatus.bits.Sensor_Obstacle_active && gstControlBoardStatus.bits.autoManual == 1 && seShutterOpenCloseCmdState==0 ) ||  //20170330_4
 						 (gSensorStatus.bits.Sensor_Obstacle_inactive && gstControlBoardStatus.bits.autoManual == 1)	||
 
 						 // 17 Dec 14 Added to support wireless 3PBS & 1PBS functionality
@@ -1930,20 +1931,20 @@ void logicSolver(void) {
 
 						}
 
-						if (gKeysStatus.bits.Key_Open_pressed)
-						{
-							gKeysStatus.bits.Key_Open_pressed = 0;
-						}
+//						if (gKeysStatus.bits.Key_Open_pressed)   //20170331
+//						{
+//							gKeysStatus.bits.Key_Open_pressed = 0;
+//						}
 
 						if (gSensorStatus.bits.Sensor_1PBS_active)
 						{
 							gSensorStatus.bits.Sensor_1PBS_active = 0;
 						}
 
-						if (gSensorStatus.bits.Sensor_Obstacle_active)   //20161202pm   //20170330_4
-						{
-							gSensorStatus.bits.Sensor_Obstacle_active = 0;
-						}
+//						if (gSensorStatus.bits.Sensor_Obstacle_active)   //20161202pm
+//						{
+//							gSensorStatus.bits.Sensor_Obstacle_active = 0;
+//						}
 
 						if (gKeysStatus.bits.Wireless_Open_pressed)
 						{
@@ -1984,10 +1985,10 @@ void logicSolver(void) {
 
 					}
 
-					if (gKeysStatus.bits.Key_Open_pressed)
-					{
-						gKeysStatus.bits.Key_Open_pressed = 0;
-					}
+//					if (gKeysStatus.bits.Key_Open_pressed)   //20170331
+//					{
+//						gKeysStatus.bits.Key_Open_pressed = 0;
+//					}
 
 					if (gSensorStatus.bits.Sensor_1PBS_active)
 					{
@@ -2530,8 +2531,17 @@ void logicSolver(void) {
 
 		} // Check for active command from display board or control board
 		  // check waiting "Open Shutter" command for "Go Up Delay" and Close Shutter" command for "Go Down Delay"
-		else if (seShutterOpenCloseCmdState == CmdUpDetectedWaitUpDelay
-				|| seShutterOpenCloseCmdState == CmdDownDetectedWaitDownDelay)
+//		else if (seShutterOpenCloseCmdState == CmdUpDetectedWaitUpDelay
+//				|| seShutterOpenCloseCmdState == CmdDownDetectedWaitDownDelay)
+		else if ((seShutterOpenCloseCmdState == CmdUpDetectedWaitUpDelay
+				|| seShutterOpenCloseCmdState == CmdDownDetectedWaitDownDelay)		//20170330_1
+			    &&  (!(
+				    (gSensorStatus.bits.Sensor_InterlockIP_active == false)&&
+				    ((seShutterOpenCloseCmdState == CmdUpDetectedWaitUpDelay)||(seShutterOpenCloseCmdState == CmdDownDetectedWaitDownDelay))&&
+				    ((gu8_intlck_prior == 1)||((gu8_intlck_prior==0)&&(gstDriveStatus.bits.shutterLowerLimit == 1)))&&
+				    (gu8_intlck_valid==0)
+				    ))
+				)
 		{
 
 			if (((seShutterOpenCloseCmdState == CmdUpDetectedWaitUpDelay
@@ -2592,10 +2602,10 @@ void logicSolver(void) {
 				if (gstLStoCMDr.commandToDriveBoard.bits.openShutter || gstLStoCMDr.commandToDriveBoard.bits.openShutterApperture)
 				{
 
-					if (gKeysStatus.bits.Key_Open_pressed)
-					{
-						gKeysStatus.bits.Key_Open_pressed = 0;
-					}
+//					if (gKeysStatus.bits.Key_Open_pressed)    //20170331
+//					{
+//						gKeysStatus.bits.Key_Open_pressed = 0;
+//					}
 
 					if (gSensorStatus.bits.Sensor_1PBS_active)
 					{
@@ -2717,10 +2727,10 @@ void logicSolver(void) {
 				gstCMDitoLS.acknowledgementReceived = eNACK;
 			}
 
-			if (gKeysStatus.bits.Key_Open_pressed)
-			{
-				gKeysStatus.bits.Key_Open_pressed = 0;
-			}
+//			if (gKeysStatus.bits.Key_Open_pressed)    //20170331
+//			{
+//				gKeysStatus.bits.Key_Open_pressed = 0;
+//			}
 
 			if (gKeysStatus.bits.Key_Close_pressed)
 			{
@@ -3292,12 +3302,12 @@ void logicSolver(void) {
 		// *********************************************************************************************
 
 		// Reset the flag which indicate either Up or Down  and Go UP or Go Down delay is in progress
-		if (
-			(gSensorStatus.bits.Sensor_InterlockIP_active == false)&&
-			((seShutterOpenCloseCmdState == CmdUpDetectedWaitUpDelay)||(seShutterOpenCloseCmdState == CmdDownDetectedWaitDownDelay))&&
-			((gu8_intlck_prior == 1)||((gu8_intlck_prior==0)&&(gstDriveStatus.bits.shutterLowerLimit == 1)))
-			)
-			seShutterOpenCloseCmdState = CmdNotDetected;      //20170330_1
+//		if (
+//			(gSensorStatus.bits.Sensor_InterlockIP_active == false)&&
+//			((seShutterOpenCloseCmdState == CmdUpDetectedWaitUpDelay)||(seShutterOpenCloseCmdState == CmdDownDetectedWaitDownDelay))&&
+//			((gu8_intlck_prior == 1)||((gu8_intlck_prior==0)&&(gstDriveStatus.bits.shutterLowerLimit == 1)))
+//			)
+//			seShutterOpenCloseCmdState = CmdNotDetected;      //20170330_1
 		// Keep on monitoring the Interlock Input Signal De-activated when shutter is moving and Interlock is valid and Non Priority set
 		if (
 
@@ -4671,33 +4681,33 @@ void logicSolver(void) {
 //			gstBitwiseMultifuncOutput.bits.InterlockOutput = 0;
 //		}
 
-		// Operating
-		if (
-									(seShutterOpenCloseCmdState == CmdUpDetectedWaitUpDelay) 	 ||
-									(seShutterOpenCloseCmdState == CmdDownDetectedWaitDownDelay) ||
-									(seHandleUpperLimitStopTimeState == UpperLimitStopTimeStarted )||   //20170330_3
-									(gstDriveStatus.bits.shutterUpperLimit == 1 && gstControlBoardStatus.bits.autoManual == 1) ||  //20170330_3
-								    (gstDriveStatus.bits.shutterMovingUp == 1) 					 ||
-									(gstDriveStatus.bits.shutterMovingDown == 1)                 ||
-									(operationing_count_cyw <relay_delay_cyw)
-			)
-		    {
-					if((seShutterOpenCloseCmdState == CmdUpDetectedWaitUpDelay)||(seShutterOpenCloseCmdState == CmdDownDetectedWaitDownDelay))
-					{
-						operationing_count_cyw=0;
-					}
-					if((seShutterOpenCloseCmdState!=CmdUpDetectedWaitUpDelay)&&(seShutterOpenCloseCmdState != CmdDownDetectedWaitDownDelay))
-					{
-						if(operationing_count_cyw < relay_delay_cyw)
-						    operationing_count_cyw++;
-					}
-					gstBitwiseMultifuncOutput.bits.Operating = 1;
-		    }
-			else
-			{
-					operationing_count_cyw=relay_delay_cyw;
-					gstBitwiseMultifuncOutput.bits.Operating = 0;
-			}
+//		// Operating
+//		if (
+//									(seShutterOpenCloseCmdState == CmdUpDetectedWaitUpDelay) 	 ||
+//									(seShutterOpenCloseCmdState == CmdDownDetectedWaitDownDelay) ||
+//									//(seHandleUpperLimitStopTimeState == UpperLimitStopTimeStarted )||   //20170330_3
+//									//(gstDriveStatus.bits.shutterUpperLimit == 1 && gstControlBoardStatus.bits.autoManual == 1) ||  //20170330_3
+//								    (gstDriveStatus.bits.shutterMovingUp == 1) 					 ||
+//									(gstDriveStatus.bits.shutterMovingDown == 1)                 ||
+//									(operationing_count_cyw <relay_delay_cyw)
+//			)
+//		    {
+//					if((seShutterOpenCloseCmdState == CmdUpDetectedWaitUpDelay)||(seShutterOpenCloseCmdState == CmdDownDetectedWaitDownDelay))
+//					{
+//						operationing_count_cyw=0;
+//					}
+//					if((seShutterOpenCloseCmdState!=CmdUpDetectedWaitUpDelay)&&(seShutterOpenCloseCmdState != CmdDownDetectedWaitDownDelay))
+//					{
+//						if(operationing_count_cyw < relay_delay_cyw)
+//						    operationing_count_cyw++;
+//					}
+//					gstBitwiseMultifuncOutput.bits.Operating = 1;
+//		    }
+//			else
+//			{
+//					operationing_count_cyw=relay_delay_cyw;
+//					gstBitwiseMultifuncOutput.bits.Operating = 0;
+//			}
 
 
 		gstBitwiseMultifuncOutput.bits.InterlockOutput = 0;     //20161206
@@ -4751,81 +4761,92 @@ void logicSolver(void) {
 					gstBitwiseMultifuncOutput.bits.Dropping = 0;
 				}
 
+		// Operating             //20170330_3
+		if(gstBitwiseMultifuncOutput.bits.Dropping==1 || gstBitwiseMultifuncOutput.bits.Rising == 1)
+		    gstBitwiseMultifuncOutput.bits.Operating = 1;
+		else  gstBitwiseMultifuncOutput.bits.Operating = 0;
 
-		// Green signal lamp
-		if (gstDriveStatus.bits.shutterUpperLimit == 1)
-		{
-			gstBitwiseMultifuncOutput.bits.GreenSignalLamp = 1;
-		}
-		else if (gstDriveStatus.bits.shutterApertureHeight == 1 && sucLastOpenCommandType == 1)
-		{
-			gstBitwiseMultifuncOutput.bits.GreenSignalLamp = 1;
-		}
-		else if (seShutterOpenCloseCmdState == CmdUpDetectedWaitUpDelay || seShutterOpenCloseCmdState == CmdDownDetectedWaitDownDelay)
-		{
+		// Green signal lamp         //20170330_3
+		if(gstBitwiseMultifuncOutput.bits.Operating==0  &&
+			(gstDriveStatus.bits.shutterUpperLimit==1 || gstDriveStatus.bits.shutterApertureHeight == 1))
+		  gstBitwiseMultifuncOutput.bits.GreenSignalLamp = 1;
+		else gstBitwiseMultifuncOutput.bits.GreenSignalLamp = 0;
 
-			gstBitwiseMultifuncOutput.bits.GreenSignalLamp = 0;
+//		if (gstDriveStatus.bits.shutterUpperLimit == 1)
+//		{
+//			gstBitwiseMultifuncOutput.bits.GreenSignalLamp = 1;
+//		}
+//		else if (gstDriveStatus.bits.shutterApertureHeight == 1 && sucLastOpenCommandType == 1)
+//		{
+//			gstBitwiseMultifuncOutput.bits.GreenSignalLamp = 1;
+//		}
+//		else if (seShutterOpenCloseCmdState == CmdUpDetectedWaitUpDelay || seShutterOpenCloseCmdState == CmdDownDetectedWaitDownDelay)
+//		{
+//
+//			gstBitwiseMultifuncOutput.bits.GreenSignalLamp = 0;
+//
+//		}
+//		else
+//		{
+//			gstBitwiseMultifuncOutput.bits.GreenSignalLamp = 0;
+//		}
 
-		}
-		else
-		{
-			gstBitwiseMultifuncOutput.bits.GreenSignalLamp = 0;
-		}
+		// Red signal lamp           //20170330_3
+		gstBitwiseMultifuncOutput.bits.RedSignalLamp =!gstBitwiseMultifuncOutput.bits.GreenSignalLamp;
 
-		// Red signal lamp
-		if (gstDriveStatus.bits.shutterUpperLimit == 1)
-				{
-					if((seShutterOpenCloseCmdState == CmdDownDetectedWaitDownDelay)||( reding_count_openall_cyw<relay_delay_cyw))
-					{
-						gstBitwiseMultifuncOutput.bits.RedSignalLamp = 1;
-						if(seShutterOpenCloseCmdState == CmdDownDetectedWaitDownDelay)
-						{
-							reding_count_openall_cyw = 0;
-						}
-						if(seShutterOpenCloseCmdState != CmdDownDetectedWaitDownDelay)
-						{
-							if(reding_count_openall_cyw<relay_delay_cyw)
-								reding_count_openall_cyw ++;
-						}
-					}
-					else
-					{
-						reding_count_openall_cyw=relay_delay_cyw;
-						gstBitwiseMultifuncOutput.bits.RedSignalLamp = 0;
-					}
-				}
-				else if (gstDriveStatus.bits.shutterApertureHeight == 1 && sucLastOpenCommandType == 1)
-				{
-
-					if((seShutterOpenCloseCmdState == CmdDownDetectedWaitDownDelay)||( reding_count_openhalf_cyw<relay_delay_cyw))
-					{
-					    gstBitwiseMultifuncOutput.bits.RedSignalLamp = 1;
-					    if(seShutterOpenCloseCmdState == CmdDownDetectedWaitDownDelay)
-					    {
-					    	reding_count_openhalf_cyw = 0;
-					    }
-					    if(seShutterOpenCloseCmdState != CmdDownDetectedWaitDownDelay)
-					    {
-					    	if(reding_count_openhalf_cyw<relay_delay_cyw)
-					    		reding_count_openhalf_cyw ++;
-					    }
-					}
-					else
-					{
-						reding_count_openhalf_cyw=relay_delay_cyw;
-						gstBitwiseMultifuncOutput.bits.RedSignalLamp = 0;
-					}
-				}
-				else if (seShutterOpenCloseCmdState == CmdUpDetectedWaitUpDelay || seShutterOpenCloseCmdState == CmdDownDetectedWaitDownDelay)
-				{
-
-					gstBitwiseMultifuncOutput.bits.RedSignalLamp = 1;
-
-				}
-				else
-				{
-					gstBitwiseMultifuncOutput.bits.RedSignalLamp = 1;
-				}
+//		if (gstDriveStatus.bits.shutterUpperLimit == 1)
+//				{
+//					if((seShutterOpenCloseCmdState == CmdDownDetectedWaitDownDelay)||( reding_count_openall_cyw<relay_delay_cyw))
+//					{
+//						gstBitwiseMultifuncOutput.bits.RedSignalLamp = 1;
+//						if(seShutterOpenCloseCmdState == CmdDownDetectedWaitDownDelay)
+//						{
+//							reding_count_openall_cyw = 0;
+//						}
+//						if(seShutterOpenCloseCmdState != CmdDownDetectedWaitDownDelay)
+//						{
+//							if(reding_count_openall_cyw<relay_delay_cyw)
+//								reding_count_openall_cyw ++;
+//						}
+//					}
+//					else
+//					{
+//						reding_count_openall_cyw=relay_delay_cyw;
+//						gstBitwiseMultifuncOutput.bits.RedSignalLamp = 0;
+//					}
+//				}
+//				else if (gstDriveStatus.bits.shutterApertureHeight == 1 && sucLastOpenCommandType == 1)
+//				{
+//
+//					if((seShutterOpenCloseCmdState == CmdDownDetectedWaitDownDelay)||( reding_count_openhalf_cyw<relay_delay_cyw))
+//					{
+//					    gstBitwiseMultifuncOutput.bits.RedSignalLamp = 1;
+//					    if(seShutterOpenCloseCmdState == CmdDownDetectedWaitDownDelay)
+//					    {
+//					    	reding_count_openhalf_cyw = 0;
+//					    }
+//					    if(seShutterOpenCloseCmdState != CmdDownDetectedWaitDownDelay)
+//					    {
+//					    	if(reding_count_openhalf_cyw<relay_delay_cyw)
+//					    		reding_count_openhalf_cyw ++;
+//					    }
+//					}
+//					else
+//					{
+//						reding_count_openhalf_cyw=relay_delay_cyw;
+//						gstBitwiseMultifuncOutput.bits.RedSignalLamp = 0;
+//					}
+//				}
+//				else if (seShutterOpenCloseCmdState == CmdUpDetectedWaitUpDelay || seShutterOpenCloseCmdState == CmdDownDetectedWaitDownDelay)
+//				{
+//
+//					gstBitwiseMultifuncOutput.bits.RedSignalLamp = 1;
+//
+//				}
+//				else
+//				{
+//					gstBitwiseMultifuncOutput.bits.RedSignalLamp = 1;
+//				}
 
 
 		// Automatic Mode & Manual Mode
