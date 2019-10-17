@@ -137,6 +137,8 @@ float	maximumWorkingVoltage = MAXIMUM_WORKING_VOLTAGE * 1.41;
 #define MINIMUM_DC_BUS_WORKING_VOLTAGE	100
 #endif
 
+SHORT lfDcBusVoltage_f = 0;		//20180705
+
 /* This function is current PI controller */
 VOID currentControl(VOID);
 
@@ -182,6 +184,9 @@ void __attribute__((interrupt, no_auto_psv)) _AD2Interrupt (void)
     IFS1bits.AD2IF = 0;
 	//	Capture DC Bus volatage
 	lfDcBusVoltage = ADC2BUF0 / 2.25;	//	1V = 2.25 counts
+
+	if(lfDcBusVoltage<(200*1.41)) lfDcBusVoltage_f = 1;
+	else lfDcBusVoltage_f = 0;
 
 	// When the regenerative resistance dose not work,a flag for failing. By IME 2016/12/14
 	if(!gucOverVoltageFailFlag)

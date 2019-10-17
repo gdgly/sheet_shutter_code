@@ -61,6 +61,7 @@
 UINT16 PhaseAdvance;
 extern SHORT currentRampProfileNo;
 extern BOOL shtrMinDistReqFlg;		//20180704 201806_Bug_No66
+extern SHORT lfDcBusVoltage_f;		//20180705
 
 /*******************************************************************************/
 /* These Phase values represent the base Phase value of the sinewave for each  */
@@ -1191,7 +1192,9 @@ SHORT PhaseCurrentPosition;
 		if(measurediTotal<4000)
 		{
 			FLAG_overLoad = 0;
-			speedPIparms.qOutMax = 6*measuredSpeed+5000;
+			//speedPIparms.qOutMax = 6*measuredSpeed+5000;		//20180705
+			if(lfDcBusVoltage_f) speedPIparms.qOutMax = 6*measuredSpeed+7000;		//20180705
+			else speedPIparms.qOutMax = 6*measuredSpeed+5000;
 		}
 		else if(measurediTotal>15000)
 		{
@@ -1204,7 +1207,9 @@ SHORT PhaseCurrentPosition;
 	}
 	else
 	{
-		speedPIparms.qOutMax = 6*measuredSpeed+5000;
+		//speedPIparms.qOutMax = 6*measuredSpeed+5000;		//20180705
+		if(lfDcBusVoltage_f) speedPIparms.qOutMax = 6*measuredSpeed+7000;		//20180705
+		else speedPIparms.qOutMax = 6*measuredSpeed+5000;
 	}
 	//	Added on 6 Aug 2015 to enable motor rotation in no load condition for bead type shutter (while shutter go down operation)
 	if(rampStatusFlags.rampMaintainHoldingDuty == 0 && monitorSectorRoatCnt > 150)
