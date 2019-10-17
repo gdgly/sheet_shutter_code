@@ -1732,6 +1732,7 @@ void logicSolver(void) {
 						// Check shutter is not at aperture height and command received for opening shutter till aperture height
 						(
 								(gu8_en_apheight_ctl == 0) ||//半开模式未使能
+								((gu8_en_apheight_ctl == 1) && (gstControlBoardStatus.bits.autoManual == 0))||              //20160906   bug_No。87
 
 								(
 
@@ -3140,6 +3141,10 @@ void logicSolver(void) {
 				//seHandleSafetySignal = HandleSafetySignalInit;
 				seHandleSafetySignal = HandleSafetySignalWaitingSafetySigToReset;
 
+			}
+			if(gstDriveStatus.bits.shutterMovingDown==1)//20160906 item for 79
+			{
+				seHandleSafetySignal = HandleSafetySignalWaitingSafetySigToReset;
 			}
 
 		} // Waiting for shutter to reach upper limit
