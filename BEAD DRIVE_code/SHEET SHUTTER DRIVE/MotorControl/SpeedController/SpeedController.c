@@ -59,6 +59,7 @@
 #define MAX_PH_ADV_DEG      1
 #define MAX_PH_ADV 		(int)(((float)MAX_PH_ADV_DEG / 360.0) * 65536.0)
 UINT16 PhaseAdvance;
+extern SHORT currentRampProfileNo;
 
 /*******************************************************************************/
 /* These Phase values represent the base Phase value of the sinewave for each  */
@@ -80,7 +81,7 @@ UINT16 PhaseAdvance;
 //#define MS_500T 10000//1000//300//500          /* after this time has elapsed, the motor is    */ //20160804
 // Measures against overcurrent error 20180330 by IME
 //#define MS_500T 2000          /* after this time has elapsed, the motor is    */ //20160804
-#define MS_500T 500          /* after this time has elapsed, the motor is    */ //20160804
+#define MS_500T 300 //20180627 No56 Motorlock 500->300          /* after this time has elapsed, the motor is    */ //20160804
                             /* consider stalled and it's stopped    */
 
 /* PI parameters */
@@ -98,7 +99,7 @@ UINT16 PhaseAdvance;
 //SHORT phaseOffsetCW  = PHASE_OFFSET_CW;
 //SHORT phaseOffsetCCW = PHASE_OFFSET_CCW;
 SHORT phaseOffsetCW  = PHASE_OFFSET_CW_START;
-SHORT phaseOffsetCCW = PHASE_OFFSET_CCW_MAX;
+SHORT phaseOffsetCCW = PHASE_OFFSET_CCW_START;
 
 /* Period filter for speed measurement */
 DWORD periodFilter;
@@ -175,6 +176,7 @@ SHORT previousSectorNo;
 SHORT phaseInc;
 
 BOOL  FLAG_overLoad =FALSE;
+BOOL  down_controlOutput_flag =FALSE;	// 20180607 by IME
 
 /* This function is used to measure actual running speed of motor */
 VOID measureActualSpeed(VOID);
@@ -209,7 +211,8 @@ void __attribute__((interrupt, no_auto_psv)) _T1Interrupt (void)
 	measureActualSpeed();
     // 2016/3/3 Motor Stal & PWM Cost
 #ifdef BUG_No88_M2overcurrentfault
-     if(cnt_motor_stop>10)
+//     if(cnt_motor_stop>10)
+     if((cnt_motor_stop%10)==0)		//20180629 from > to =  No56 retry
      {
         if (requiredDirection == CW || requiredDirection== CCW)
         {
@@ -461,6 +464,7 @@ void __attribute__((interrupt, no_auto_psv)) _IC1Interrupt (void)
 	unsigned char lucSectorDiffrence = 0;
 
     IFS0bits.IC1IF = 0;
+    cnt_motor_stop = 0;		//20180629 No56 retry
 
     currentSector = getCurrentSectorNo();
 
@@ -703,6 +707,7 @@ void __attribute__((interrupt, no_auto_psv)) _IC3Interrupt (void)
 	unsigned char lucSectorDiffrence = 0;
 
     IFS2bits.IC3IF = 0;
+    cnt_motor_stop = 0;		//20180629 No56 retry
 
     currentSector = getCurrentSectorNo();
 
@@ -823,37 +828,42 @@ SHORT PhaseCurrentPosition;
 	{
 		if(requiredDirection == CW)
 		{
-			phaseOffsetCW = 1456;
+		if(measuredSpeed < 100){phaseOffsetCW = PHASE_OFFSET_CW_START_LS;} //20180627 No54//20180515 No18
+		else phaseOffsetCW = PHASE_OFFSET_CW_LS; //20180627 No23
 		}
 		else if(requiredDirection == CCW)
 		{
-			phaseOffsetCCW = 10192;
+			phaseOffsetCCW = PHASE_OFFSET_CCW_START; //20180515 LIMIT SETTEI NOISE 10192 No23
+			phaseOffsetCW = 182;                    //20180515 LIMIT SETTEI NOISE No23
 		}
 	}
 	else if(requiredDirection == CW)
 	{
-		if(PhaseCurrentPosition>uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.riseChangeGearPos1_A103)
+		if(PhaseCurrentPosition>uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.riseChangeGearPos1_A103) //under A103
 		{
-			if(currentDirection==CCW)
-			{
-			    phaseOffsetCW = PHASE_OFFSET_CW_START;
-			}
-			else if((inputFlags.value==OPEN_SHUTTER_APERTURE)&&
-				(PhaseCurrentPosition<(uDriveCommonBlockEEP.stEEPDriveCommonBlock.apertureHeightPos_A130+350)))
+			// 20180607 by IME
+//			if((inputFlags.value==OPEN_SHUTTER_APERTURE)&&
+			if((currentRampProfileNo==RAMP_APERTURE_UP_PROFILE)&&
+				(PhaseCurrentPosition<(uDriveCommonBlockEEP.stEEPDriveCommonBlock.apertureHeightPos_A130
+					+uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.riseChangeGearPos1_A103)))
 			{
 				if(phaseOffsetCW > PHASE_OFFSET_CW)
 				    phaseOffsetCW -= PHASE_OFFSET_DEC_STEP;
 				if(phaseOffsetCW <= PHASE_OFFSET_CW)
 				    phaseOffsetCW = PHASE_OFFSET_CW;
+
 			}
-	    	else if(measuredSpeed < 100)
+	    	/* else if(measuredSpeed < 100) //20180627 No56 Motorlock
 			{
 				phaseOffsetCW = PHASE_OFFSET_CW_START;
+
 			}
+			*/
 	    	else if(measuredSpeed < 500)
 			{
 				if(phaseOffsetCW < PHASE_OFFSET_CW_MAX)
-					phaseOffsetCW++;
+					//phaseOffsetCW++;
+					  phaseOffsetCW += PHASE_OFFSET_INC_STEP; //20180627 No56 Motorlock
 				if(phaseOffsetCW >= PHASE_OFFSET_CW_MAX)
 					phaseOffsetCW = PHASE_OFFSET_CW_MAX;
 			}
@@ -867,11 +877,14 @@ SHORT PhaseCurrentPosition;
 		}
 		else
 		{
-			if(currentDirection==CCW)
+   			if(currentDirection==CCW)
 			{
 			    phaseOffsetCW = 1638;
+				controlOutput += 1000; //20180515 No4
+			if(controlOutput>6000) controlOutput=4000;//20180515 No4
+
 			}
-			else if(phaseOffsetCW > PHASE_OFFSET_CW)
+			if(phaseOffsetCW > PHASE_OFFSET_CW)
 			    phaseOffsetCW -= PHASE_OFFSET_DEC_STEP;
 			if(phaseOffsetCW <= PHASE_OFFSET_CW)
 			    phaseOffsetCW = PHASE_OFFSET_CW;
@@ -993,6 +1006,8 @@ VOID measureActualSpeed(VOID)
 	periodStateVar+= ((period - periodFilter)*(periodFilterConstant));
 	periodFilter = periodStateVar>>15;
 	measuredSpeed = __builtin_divud(SPEED_RPM_CALC,periodFilter);
+
+
     phaseInc = __builtin_divud(PHASE_INC_CALC,periodFilter);
 
     register int a_reg asm("A");
@@ -1005,6 +1020,8 @@ VOID measureActualSpeed(VOID)
 VOID speedControl(VOID)
 {
 // Measures against overcurrent error 20180330 by IME
+SHORT PhaseCurrentPosition;
+    PhaseCurrentPosition = hallCounts;
 /*
     speedPIparms.qInRef = refSpeed;
     speedPIparms.qInMeas = measuredSpeed;
@@ -1161,14 +1178,23 @@ VOID speedControl(VOID)
 			}
 		}
 	}
+	if((requiredDirection == CW)&&(currentDirection==CCW)){measuredSpeed = 0;} //20180517 No16
+    if((requiredDirection == CCW)&&(currentDirection==CW)){measuredSpeed = 0;} //20180517 No15
+
+	speedPIparms.qOutMin = -(currentLimitClamp);
     speedPIparms.qInRef = refSpeed;
     speedPIparms.qInMeas = measuredSpeed;
 	if(FLAG_overLoad)
 	{
+		// 20180607 by IME
 		if(measurediTotal<4000)
 		{
 			FLAG_overLoad = 0;
-			speedPIparms.qOutMax = 6*measuredSpeed+7000;
+			speedPIparms.qOutMax = 6*measuredSpeed+5000;
+		}
+		else if(measurediTotal>15000)
+		{
+			speedPIparms.qOutMax = 5000;
 		}
 		else
 		{
@@ -1179,7 +1205,6 @@ VOID speedControl(VOID)
 	{
 		speedPIparms.qOutMax = 6*measuredSpeed+5000;
 	}
-	speedPIparms.qOutMin = -(currentLimitClamp);
 	//	Added on 6 Aug 2015 to enable motor rotation in no load condition for bead type shutter (while shutter go down operation)
 	if(rampStatusFlags.rampMaintainHoldingDuty == 0 && monitorSectorRoatCnt > 150)
 	{
@@ -1208,9 +1233,9 @@ VOID speedControl(VOID)
 			if(measuredSpeed < 300)
 	        {
     	        controlOutput += HOLDING_DUTY_INC;
-				if(controlOutput >= 7000) //20170209
+				if(controlOutput >= 5000) //20180627 No56 motorlock 7000->5000 //20170209
 				{
-					controlOutput = 7000; //20170209
+					controlOutput = 5000; //20180627 No56 motorlock 7000->5000 //20170209
 				}
     	    }
 	        else
@@ -1224,12 +1249,18 @@ VOID speedControl(VOID)
             	    controlOutput = speedPIparms.qOut;
 	        }
         }
-        else if(measuredSpeed < 300)//SHUTTER_SPEED_MIN_STOP)
+        else if(measuredSpeed < 100)//SHUTTER_SPEED_MIN_STOP) //20180627 No56 motorlock torq
         {
-            controlOutput += HOLDING_DUTY_INC;
-			if(controlOutput >= 7000) //20170209
+            controlOutput += HOLDING_DUTY_INC_CW; //No56 Motorlock torq LS
+			if(FLAG_overLoad&&(measurediTotal>15000))
 			{
-				controlOutput = 7000; //20170209
+				if(controlOutput>5000) {controlOutput=5000;}
+			}
+			else
+			{
+
+				if(controlOutput>6000) {controlOutput=4000;} //20180627 No56 motorlock 7000->60004000
+
 			}
         }
         else

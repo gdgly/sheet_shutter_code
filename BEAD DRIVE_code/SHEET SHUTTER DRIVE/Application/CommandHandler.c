@@ -89,7 +89,7 @@
 #define EXPECTED_CRC_APERTUREHEIGHT                0x7292
 
 //CONST UINT32 drive_fw_version = 0x00000408;  //bug_NO.64
-CONST UINT32 drive_fw_version = 18060;    //Drive version 1806.0        20170418   201703_No.29
+CONST UINT32 drive_fw_version = 18044;    //Drive version 1804.4        20170418   201703_No.29
 
 enum {
 	no_error = 0,
@@ -503,30 +503,30 @@ VOID commandHandler(VOID)
                             gui8StopKeyPressed = 1;
                             stopShutter();
                         /*************add 20161017 end************************/
-#ifdef BUG_201806_No26_origin_E037
-                        if((uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorStall)||
-                           (uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorExceedingTorque)||
-                           (uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorSusOC)||
-                           (uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorPWMCosting)||
+                        /*************add No26 20180629 start************************/
+                            if((uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorStall)||
+                               (uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorExceedingTorque)||
+                               (uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorSusOC)||
+                               (uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorPWMCosting)||
 
-                           (uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.osNotDetectUP)||           
-                           (uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.osNotDetectDown)||
-                           (uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.osDetectOnUp)||
-                           (uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.osDetectOnDown)||
-                           (uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.osFailValidation))
-                        {
-                            uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorStall = FALSE;
-                            uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorExceedingTorque = FALSE;
-                            uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorSusOC = FALSE;
-                            uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorPWMCosting = FALSE;
+                               (uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.osNotDetectUP)||
+                               (uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.osNotDetectDown)||
+                               (uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.osDetectOnUp)||
+                               (uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.osDetectOnDown)||
+                               (uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.osFailValidation))
+                            {
+                                uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorStall = FALSE;
+                                uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorExceedingTorque = FALSE;
+                                uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorSusOC = FALSE;
+                                uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorPWMCosting = FALSE;
 
-                            uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.osNotDetectUP = FALSE;      
-                            uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.osNotDetectDown = FALSE;
-                            uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.osDetectOnUp = FALSE;
-                            uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.osDetectOnDown = FALSE;
-                            uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.osFailValidation = FALSE;
-                        }                              
-#endif                          
+                                uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.osNotDetectUP = FALSE;
+                                uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.osNotDetectDown = FALSE;
+                                uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.osDetectOnUp = FALSE;
+                                uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.osDetectOnDown = FALSE;
+                                uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.osFailValidation = FALSE;
+                            }
+                        /*************add 20180629 end************************/
                     break;
                 case  start_apertureHeight:
                        startApertureHeight();
@@ -657,13 +657,8 @@ VOID commandHandler(VOID)
                                 //if(((uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterLowerLimit ||
                                    //uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterBetweenLowlmtAphgt))&&(inputFlags.value!=OPEN_SHUTTER_APERTURE))
 							    //if((!uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterUpperLimit)&&(inputFlags.value!=OPEN_SHUTTER_APERTURE)) //20161202 //20170318
-#ifndef BUG_201806_No20_open_aperture
                                 if((!uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterUpperLimit)&&(inputFlags.value!=OPEN_SHUTTER_APERTURE)&&(inputFlags.value!=OPEN_SHUTTER_JOG_10)&&(inputFlags.value!=OPEN_SHUTTER_JOG_50))
-#else
-                                if((((!uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterUpperLimit)&&(FLAG_StartApertureCorrection==1))||
-                                   ((!uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterApertureHeight)&&(FLAG_StartApertureCorrection==0)))     
-                                        &&(inputFlags.value!=OPEN_SHUTTER_APERTURE)&&(inputFlags.value!=OPEN_SHUTTER_JOG_10)&&(inputFlags.value!=OPEN_SHUTTER_JOG_50))
-#endif                                
+
                                 {
                                     if(FLAG_StartApertureCorrection==1){FLAG_StartApertureCorrection++;inputFlags.value = OPEN_SHUTTER; }   //bug_No.12
                                     else if(FLAG_StartApertureCorrection>1){FLAG_StartApertureCorrection=0;inputFlags.value = OPEN_SHUTTER_APERTURE;}
@@ -836,6 +831,7 @@ VOID commandHandler(VOID)
                     //{
                     //    status = nack;
                     //}
+					TIME_CMD_close_shutter=160; //20180515 No15
                     FLAG_CMD_open_shutter=0;
                     inputFlags.value = STOP_SHUTTER;
                     //If drive is ready then travel min distance before stop

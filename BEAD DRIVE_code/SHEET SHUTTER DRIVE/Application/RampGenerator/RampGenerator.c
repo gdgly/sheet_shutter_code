@@ -80,7 +80,8 @@
 #define	MAX_FALSE_MOVEMENT_COUNT_LIMIT		162
 
 /* Enumaration for ramp profile */
-typedef enum rampProfileNo
+// 20180608 Move "RampGenerator.h" by IME
+/*typedef enum rampProfileNo
 {
     RAMP_INCH_UP_PROFILE,
     RAMP_INCH_DN_PROFILE,
@@ -92,7 +93,7 @@ typedef enum rampProfileNo
     RAMP_GOING_DN_PROFILE,
     RAMP_PROFILE_END
 }rampProfileNo_en;
-
+*/
 //Declare array of sensors
 #ifndef PROGRAMMABLE_DEBOUNCE
 safetySensors_t sensorList[SAFETY_SENSOR_END] =
@@ -677,7 +678,8 @@ VOID initApertureProfileData(VOID)
     rampApertureDnProfile[i].startPosition = rampApertureDnProfile[i-1].endPosition;
     rampApertureDnProfile[i].endPosition = uDriveCommonBlockEEP.stEEPDriveCommonBlock.lowerStoppingPos_A101;
     rampApertureDnProfile[i].startSpeed = rampApertureDnProfile[i-1].endSpeed;
-    rampApertureDnProfile[i].endSpeed = SHUTTER_SPEED_MIN_STOP;
+    //rampApertureDnProfile[i].endSpeed = SHUTTER_SPEED_MIN_STOP;
+    rampApertureDnProfile[i].endSpeed = uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.s3Up_A524; //350 20180510
     rampApertureDnProfile[i].speedChangeRate = gs16DownDecelaration;
 }
 
@@ -1388,7 +1390,8 @@ void __attribute__((interrupt, no_auto_psv)) _T4Interrupt (void)//10ms
     if(++cnt_motor_stop>10)
     {
         measuredSpeed = 0;
-        cnt_motor_stop = 11;
+//        cnt_motor_stop = 11;
+        if(cnt_motor_stop>30) cnt_motor_stop = 0;		//20180629 No56 retry
     }
 
     //checkParamUpdateToEEP();
@@ -1689,15 +1692,9 @@ VOID checkPhotoElecObsLevel(BOOL sts)
 VOID microSwSensorTiggered(BOOL sts)
 {
     microSwSensorTrigrd = sts;
-
-#ifndef BUG_201806_No19_microSw
-    if(inputFlags.value == STOP_SHUTTER) return;
-#else
-    if((inputFlags.value == STOP_SHUTTER)&&
-       (!(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterUpperLimit  ||
-        uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterApertureHeight))) return;
-#endif
-	   
+    
+    //if(inputFlags.value == STOP_SHUTTER) return;
+	if((inputFlags.value == STOP_SHUTTER)&&(!uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterUpperLimit)) return;
     uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.microSwitchSensorStatus = microSwSensorTrigrd;
     //micro switch is normally open, it is triggered when closed
     if(microSwSensorTrigrd)
@@ -2178,7 +2175,7 @@ VOID forceStopShutter(VOID)
 VOID startShutter(VOID)
 {
 	phaseOffsetCW  = PHASE_OFFSET_CW_START;
-	phaseOffsetCCW = PHASE_OFFSET_CCW_MAX;
+	phaseOffsetCCW = PHASE_OFFSET_CCW_START;
     //Select profile for execution
     rampCurrentStep = 0;
     if(inputFlags.bits.shutterOpen && (inputFlags.bits.jogPercentage == 0))
@@ -2630,7 +2627,8 @@ VOID runShutterToReqSpeed(VOID)
                         //Disable current loop
                         rampStatusFlags.rampCurrentControlRequired = 0;
                         //set the speed reference
-                        refSpeed += gs16UpDecelaration;
+                        //refSpeed += gs16UpDecelaration;
+                        refSpeed += 60;
                         //check boundary of max speed
                         if(refSpeed > RAMP_STARTING_SPEED_MAX)
                         {
@@ -2942,8 +2940,11 @@ VOID stopShutter(VOID)
 #if 1
 VOID stopShutter(VOID)
 {
-	phaseOffsetCW  = PHASE_OFFSET_CW_START;
-	phaseOffsetCCW = PHASE_OFFSET_CCW_MAX;
+	if((uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveInstallation == TRUE)&&(requiredDirection == CCW)){measuredSpeed = 200;} //20180604No24
+	phaseOffsetCCW = PHASE_OFFSET_CCW_START;
+	if(requiredDirection == CCW){ phaseOffsetCW  = PHASE_OFFSET_CW_START; } //20180521 No23 LS stop NOISE
+	else{ phaseOffsetCW  = 182; } //20180521 No23 LS stop NOISE
+
 	//  Logic related to increasing I gain while stoping the shutter is tuned to optimize value - YG - Nov 15
 	#if 1
     static SHORT I_gainForStop = 0;		//	current gain during stop operation
@@ -3090,7 +3091,9 @@ VOID stopShutter(VOID)
 
         if(!rampStatusFlags.rampDcInjectionOn)
         {
-            controlOutput = SHUTTER_LOAD_HOLDING_DUTY;
+            if(requiredDirection == CW){controlOutput = SHUTTER_LOAD_HOLDING_DUTY;} //20180528 No24
+			else{controlOutput = controlOutput;} //20180627 No53
+
             rampStatusFlags.rampDcInjectionOn = 1;
             DCInjectionON();
             rampOutputStatus.shutterMoving = 0; //indicate shutter stopped
@@ -3769,7 +3772,8 @@ VOID executeRampProfile(VOID)
                         rampStatusFlags.rampCurrentControlRequired = 0;
                         //set the speed reference
 
-						refSpeed += currentRampProfile.speedChangeRate;
+						//refSpeed += currentRampProfile.speedChangeRate;
+						refSpeed += 60;
 #if 0
 						refSpeed += lshSpeedChangeRate;
 #endif

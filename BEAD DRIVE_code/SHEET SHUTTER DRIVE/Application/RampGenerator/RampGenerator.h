@@ -46,6 +46,7 @@
     //#define SHUTTER_LOAD_HOLDING_DUTY        2000
     //#define SHUTTER_LOAD_HOLDING_DUTY        1557   //5%
     #define SHUTTER_LOAD_HOLDING_DUTY          3200   //7%
+	#define SHUTTER_LOAD_HOLDING_DUTY_DOWN_STOP    0 //20180627 No53 //20180528 No24
     //#define SHUTTER_LOAD_HOLDING_DUTY        3200   //10%
     //#define SHUTTER_LOAD_HOLDING_DUTY        4700   //15%
     //#define SHUTTER_LOAD_HOLDING_DUTY        6400   //20%
@@ -57,6 +58,7 @@
 
 #ifdef MOTOR_750W_BD
     #define HOLDING_DUTY_INC    15//10//20//200 //20160915
+    #define HOLDING_DUTY_INC_CW    30 //20180628 No56 MotorLock Torq
 #endif
 #ifdef MOTOR_750W_M1
     #define HOLDING_DUTY_INC    40//10//20//200 //20160809 AOYAGI EMAIL
@@ -296,6 +298,20 @@ typedef struct _safetySensors
     VOID (*sensorFuncPtr)(BOOL);
 }safetySensors_t;
 #endif	//	PROGRAMMABLE_DEBOUNCE
+
+// 201806008 To move from "RampGenerator.c" by IME
+typedef enum rampProfileNo
+{
+    RAMP_INCH_UP_PROFILE,
+    RAMP_INCH_DN_PROFILE,
+    RAMP_JOG_UP_PROFILE,
+    RAMP_JOG_DN_PROFILE,
+    RAMP_APERTURE_UP_PROFILE,
+    RAMP_APERTURE_DN_PROFILE,
+    RAMP_GOING_UP_PROFILE,
+    RAMP_GOING_DN_PROFILE,
+    RAMP_PROFILE_END
+}rampProfileNo_en;
 
 EXTERN InputFlags_u inputFlags;     /* Application Input flags */
 EXTERN InputFlags_u inputFlags_Installation;
