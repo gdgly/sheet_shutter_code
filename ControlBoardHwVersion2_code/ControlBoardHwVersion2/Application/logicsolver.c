@@ -201,6 +201,8 @@ void logicSolver(void) {
 
 	static unsigned char sucStopKeyDisplay_Control_PowerON = 0;	   //20170621   201703_No.58 No.59
 
+	static unsigned char Flag_OpenCmdsend=0;      //20170627   201703_No.CQ05
+
 	// Following variable hold the state of the Open / Close command sending activity
 	// The variable mainly used in situation like "Open Shutter, Open Shutter Aperture like command"
 	// which physically need to sent to drive board after go up operation delay
@@ -1890,6 +1892,7 @@ void logicSolver(void) {
 //								sucCloseKeyDisplay == 0 && sucCloseKeyControl == 0 	&&
 								//sucStopKeyDisplay == 0 &&
 								sucStopKeyControl == 0   //20161205
+								&&  gstControlBoardStatus.bits.s3PBS_stoppress==0     //20170627  201703_No.CQ03
 //								&&  sucWirelessCloseKeyControl == 0    //20161204
 						) &&
 
@@ -2073,11 +2076,6 @@ void logicSolver(void) {
 						gKeysStatus.bits.Key_Open_pressed = 0;
 					}
 
-					if (gSensorStatus.bits.Sensor_1PBS_active)
-					{
-					gSensorStatus.bits.Sensor_1PBS_active = 0;
-					}
-
 //					if (gSensorStatus.bits.Sensor_Obstacle_active)    //20161202pm
 //					{
 //						gSensorStatus.bits.Sensor_Obstacle_active = 0;
@@ -2087,11 +2085,16 @@ void logicSolver(void) {
 					{
 						gKeysStatus.bits.Wireless_Open_pressed = 0;
 					}
-
-					if (gSensorStatus.bits.Sensor_Wireless_1PBS_active)
-					{
-						gSensorStatus.bits.Sensor_Wireless_1PBS_active = 0;
-					}
+					                            //20170627   201703_No.CQ05
+//					if (gSensorStatus.bits.Sensor_1PBS_active)
+//					{
+//					    gSensorStatus.bits.Sensor_1PBS_active = 0;
+//					}
+//
+//					if (gSensorStatus.bits.Sensor_Wireless_1PBS_active)
+//					{
+//						gSensorStatus.bits.Sensor_Wireless_1PBS_active = 0;
+//					}
 
 				} //
 
@@ -2146,6 +2149,7 @@ void logicSolver(void) {
 										// 23 Oct Added condition to allow 1 PBS to close shutter from Upper Limit only in case of Manual mode
 										// In Auto mode closing the shutter from upper limit using 1 PBS not required
 										(gstControlBoardStatus.bits.autoManual == 0)
+										&& (Flag_OpenCmdsend==0)   //20170627   201703_No.CQ05
 								)
 						) &&
 #if 0					//	Commented to disable startup sensor check during open close operation on 21 Oct 2014
@@ -2261,6 +2265,7 @@ void logicSolver(void) {
 
 						}
 						time_ObstacleSensor = g_ui32TickCount;  //20161202pm
+						Flag_OpenCmdsend= 1;     //20170627   201703_No.CQ05
 
 					}
 
@@ -2349,21 +2354,20 @@ void logicSolver(void) {
 						gKeysStatus.bits.Key_Close_pressed = 0;
 					}
 
-					if (gSensorStatus.bits.Sensor_1PBS_active)
-					{
-						gSensorStatus.bits.Sensor_1PBS_active = 0;
-					}
-
 					// Added on 17 Dec 14 to support wireless functionality
 					if (gKeysStatus.bits.Wireless_Close_pressed)
 					{
 						gKeysStatus.bits.Wireless_Close_pressed = 0;
 					}
-
-					if (gSensorStatus.bits.Sensor_Wireless_1PBS_active)
-					{
-						gSensorStatus.bits.Sensor_Wireless_1PBS_active = 0;
-					}
+                                                                    //20170627   201703_No.CQ05
+//					if (gSensorStatus.bits.Sensor_1PBS_active)
+//					{
+//						gSensorStatus.bits.Sensor_1PBS_active = 0;
+//					}
+//					if (gSensorStatus.bits.Sensor_Wireless_1PBS_active)
+//					{
+//						gSensorStatus.bits.Sensor_Wireless_1PBS_active = 0;
+//					}
 
 				} //
 
@@ -2472,12 +2476,6 @@ void logicSolver(void) {
 					gKeysStatus.bits.Key_Open_released = 0;
 				}
 
-				if (gSensorStatus.bits.Sensor_1PBS_inactive)
-				{
-					suc1PBSControl = 0;
-					gSensorStatus.bits.Sensor_1PBS_inactive = 0;
-				}
-
 				if (gSensorStatus.bits.Sensor_Obstacle_inactive)
 				{
 					sucStartupControl = 0;
@@ -2491,10 +2489,18 @@ void logicSolver(void) {
 					gKeysStatus.bits.Wireless_Open_released = 0;
 				}
 
+				if (gSensorStatus.bits.Sensor_1PBS_inactive)
+				{
+					suc1PBSControl = 0;
+					gSensorStatus.bits.Sensor_1PBS_inactive = 0;
+					Flag_OpenCmdsend=0;   //20170627   201703_No.CQ05
+				}
+
 				if (gSensorStatus.bits.Sensor_Wireless_1PBS_inactive)
 				{
 					sucWireless1PBSControl = 0;
 					gSensorStatus.bits.Sensor_Wireless_1PBS_inactive = 0;
+					Flag_OpenCmdsend=0;   //20170627   201703_No.CQ05
 				}
 
 			} // Open button released

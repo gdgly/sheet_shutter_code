@@ -189,7 +189,6 @@ extern uint32_t his_rise_time;
 extern const _stErrorList gstErrorList [TOTAL_ERRORS];
 
 extern unsigned int suiTimeStampForOnePBS;
-
 /****************************************************************************/
 
 /****************************************************************************
@@ -1489,7 +1488,6 @@ void keysProcessFlags(uint8_t keyState, uint8_t keyChanged)
 	static unsigned char sucWirelesOpnReleasedFlag = 0,sucWirelesClseReleasedFlag = 0,sucWirelesStpReleasedFlag = 0,sucWireles1pbsReleasedFlag = 0;
 	#define	KEY_RELEASED_LATCH_TIME	1000
 
-	static uint8_t Flag_ControlBoardKEYstoppress_PowerON=0;      //20170623   201703_No.CQ03
 
 
 #ifdef VERSION_1HARDWARE
@@ -1826,14 +1824,7 @@ void keysProcessFlags(uint8_t keyState, uint8_t keyChanged)
 
 				keyPressedEvent |= KEY_3PBS_STOP;
 				gstControlBoardStatus.bits.s3PBS_stoppress = 1;//for item bug_No.106 20160909
-				                             ///*******************start  20170623   201703_No.CQ03***********/
-//				if(Flag_ControlBoardKEYstoppress_PowerON==0)
-//				{
-//					Flag_ControlBoardKEYstoppress_PowerON= 1;
-//					gKeysStatus.bits.Key_Stop_pressed = true;
-//					gKeysStatus.bits.Key_Stop_released = false;
-//				}
-				                            ///*******************end  20170623   201703_No.CQ03***********/
+
 			}
 		}
 
@@ -1849,12 +1840,7 @@ void keysProcessFlags(uint8_t keyState, uint8_t keyChanged)
 
 				keyReleasedEvent |= KEY_3PBS_STOP;
 				gstControlBoardStatus.bits.s3PBS_stoppress = 0;//for item bug_No.106 20160909
-								///*******************start  20170623   201703_No.CQ03***********/
-//				if(Flag_ControlBoardKEYstoppress_PowerON==0)
-//				{
-//				   Flag_ControlBoardKEYstoppress_PowerON= 1;
-//				}
-							   ///*******************end  20170623   201703_No.CQ03***********/
+
 			}
 
 
