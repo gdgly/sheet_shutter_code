@@ -1129,10 +1129,10 @@ void logicSolver(void) {
 				 (gstCMDitoLS.commandRequestStatus == eACTIVE  && gstCMDitoLS.commandResponseStatus == eNO_STATUS) ||
 
 				 (
-						 (gKeysStatus.bits.Key_Open_pressed) 		||
-						 (gKeysStatus.bits.Key_Open_released) 		||
-						 (gKeysStatus.bits.Key_Close_pressed) 		||
-						 (gKeysStatus.bits.Key_Close_released) 		||
+//						 (gKeysStatus.bits.Key_Open_pressed) 		||     //20170330_2
+//						 (gKeysStatus.bits.Key_Open_released) 		||
+//						 (gKeysStatus.bits.Key_Close_pressed) 		||
+//						 (gKeysStatus.bits.Key_Close_released) 		||
 						 (gKeysStatus.bits.Wireless_Stop_pressed) 	||
 
 					(
@@ -1826,7 +1826,7 @@ void logicSolver(void) {
 								(gstCMDitoLS.commandDisplayBoardLS.bits.openPressed == 0) ||
 								(gstCMDitoLS.commandDisplayBoardLS.bits.openPressed	&& gu8_en_switchpan == 0 /*open & close buttons on the Display panel enabled*/)
 						) &&
-#if 0					//	Commented to disable startup sensor check during open close operation on 21 Oct 2014
+#if 0	                //	Commented to disable startup sensor check during open close operation on 21 Oct 2014
 						//	as Yogesh found issue during onsite testing
 						// check startup sensor not active OR startup sensor active then mode should be auto mode
 						(
@@ -1834,7 +1834,7 @@ void logicSolver(void) {
 								// in order to allow open in manual mode even startup sensor is active
 								//(gSensorStatus.bits.Sensor_Obstacle_active == 0) ||
 								(gstControlBoardStatus.bits.autoManual == 0) ||
-								(gSensorStatus.bits.Sensor_Obstacle_active && gstControlBoardStatus.bits.autoManual == 1)
+								(gSensorStatus.bits.Sensor_Obstacle_active==1 && gstControlBoardStatus.bits.autoManual == 1)
 						) &&
 #endif
 
@@ -1864,7 +1864,7 @@ void logicSolver(void) {
 							(
 								(gu8_en_apheight_ctl == 1) &&//半开模式使能
 								(
-									(gu8_sensor_in == 0 && gSensorStatus.bits.Sensor_Obstacle_active) 	||//传感器设置未使能 &&障碍物传感器触发
+									(gu8_sensor_in == 0 && gSensorStatus.bits.Sensor_Obstacle_active ) 	||//传感器设置未使能 &&障碍物传感器触发
 									(
 											gu8_1pb_in == 0 &&//1pbs设置不使能 && (控制板1pbs触发 || 无线遥控1pbs触发）
 											(gSensorStatus.bits.Sensor_1PBS_active || gSensorStatus.bits.Sensor_Wireless_1PBS_active)
@@ -1882,7 +1882,7 @@ void logicSolver(void) {
 						sstLStoCMDrCmdToBeSent.commandToDriveBoard.bits.openShutter = 1;
 						sucLastOpenCommandType = 0;
 						OpenCmdForDistinguish = 1;
-						//static unsigned char sucLastOpenCommandType = 0; // 0 == Open command,1 == Open Aperture height command
+						static unsigned char sucLastOpenCommandType = 0; // 0 == Open command,1 == Open Aperture height command
 
 					} else
 					{
@@ -1940,10 +1940,10 @@ void logicSolver(void) {
 							gSensorStatus.bits.Sensor_1PBS_active = 0;
 						}
 
-//						if (gSensorStatus.bits.Sensor_Obstacle_active)   //20161202pm
-//						{
-//							gSensorStatus.bits.Sensor_Obstacle_active = 0;
-//						}
+						if (gSensorStatus.bits.Sensor_Obstacle_active)   //20161202pm   //20170330_4
+						{
+							gSensorStatus.bits.Sensor_Obstacle_active = 0;
+						}
 
 						if (gKeysStatus.bits.Wireless_Open_pressed)
 						{
@@ -2298,8 +2298,8 @@ void logicSolver(void) {
 				if (gKeysStatus.bits.Key_Stop_pressed)
 				{
 					sucStopKeyControl = 1;
-					// Reset the flag which indicate either Up  and Go UP  delay is in progress
-					if (seShutterOpenCloseCmdState == CmdUpDetectedWaitUpDelay)seShutterOpenCloseCmdState = CmdNotDetected;      //20170328
+					// Reset the flag which indicate either Up or Down  and Go UP or Go Down delay is in progress
+					if ((seShutterOpenCloseCmdState == CmdUpDetectedWaitUpDelay)||(seShutterOpenCloseCmdState == CmdDownDetectedWaitDownDelay))seShutterOpenCloseCmdState = CmdNotDetected;      //20170328
 				}
 
 				if (gKeysStatus.bits.Wireless_Stop_pressed)
@@ -3291,6 +3291,13 @@ void logicSolver(void) {
 		// Start sub-state 'Handle Interlock Input Signal' of 'Logic_Solver_Drive_Run'
 		// *********************************************************************************************
 
+		// Reset the flag which indicate either Up or Down  and Go UP or Go Down delay is in progress
+		if (
+			(gSensorStatus.bits.Sensor_InterlockIP_active == false)&&
+			((seShutterOpenCloseCmdState == CmdUpDetectedWaitUpDelay)||(seShutterOpenCloseCmdState == CmdDownDetectedWaitDownDelay))&&
+			((gu8_intlck_prior == 1)||((gu8_intlck_prior==0)&&(gstDriveStatus.bits.shutterLowerLimit == 1)))
+			)
+			seShutterOpenCloseCmdState = CmdNotDetected;      //20170330_1
 		// Keep on monitoring the Interlock Input Signal De-activated when shutter is moving and Interlock is valid and Non Priority set
 		if (
 
@@ -3328,6 +3335,7 @@ void logicSolver(void) {
 			sstLStoCMDrCmdSent.commandToDriveBoard.val = gstLStoCMDr.commandToDriveBoard.val;
 
 			seHandleInterlockInput = HandleInterlockWaitingReply;
+
 
 		} // Keep on monitoring the Safety Signal Triggered situation
 		  // Handle the response for command sent through 'Handle Safety Signal'
@@ -4654,7 +4662,7 @@ void logicSolver(void) {
 		}
 
 		// Interlock Output
-//		if (sucInterlockOutputStatus == 0)   //20161206
+//		if (sucInterlockOutputStatus == 0)  //20161206
 //		{
 //			gstBitwiseMultifuncOutput.bits.InterlockOutput = 1;
 //		}
@@ -4667,6 +4675,8 @@ void logicSolver(void) {
 		if (
 									(seShutterOpenCloseCmdState == CmdUpDetectedWaitUpDelay) 	 ||
 									(seShutterOpenCloseCmdState == CmdDownDetectedWaitDownDelay) ||
+									(seHandleUpperLimitStopTimeState == UpperLimitStopTimeStarted )||   //20170330_3
+									(gstDriveStatus.bits.shutterUpperLimit == 1 && gstControlBoardStatus.bits.autoManual == 1) ||  //20170330_3
 								    (gstDriveStatus.bits.shutterMovingUp == 1) 					 ||
 									(gstDriveStatus.bits.shutterMovingDown == 1)                 ||
 									(operationing_count_cyw <relay_delay_cyw)
@@ -4712,7 +4722,8 @@ void logicSolver(void) {
 					rasing_count_cyw=relay_delay_cyw;
 					gstBitwiseMultifuncOutput.bits.Rising = 0;
 
-					if(gstDriveStatus.bits.shutterLowerLimit == 1)gstBitwiseMultifuncOutput.bits.InterlockOutput = 1;	//20161206
+					//if(gstDriveStatus.bits.shutterLowerLimit == 1)gstBitwiseMultifuncOutput.bits.InterlockOutput = 1;	//20161206
+					if((gstDriveStatus.bits.shutterLowerLimit == 1)&&(sucInterlockOutputStatus == 0)&&(gstDriveStatus.bits.shutterMovingDown==0))gstBitwiseMultifuncOutput.bits.InterlockOutput = 1;	//20170330
 				}
 		// Dropping
 		if ((gstDriveStatus.bits.shutterMovingDown == 1)||(seShutterOpenCloseCmdState == CmdDownDetectedWaitDownDelay)||(droping_count_cyw<relay_delay_cyw)
