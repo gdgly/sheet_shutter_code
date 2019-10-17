@@ -1705,7 +1705,8 @@ void logicSolver(void) {
 							 //stt ((gu8_1pb_in == 0 && gstDriveStatus.bits.shutterUpperLimit == 0) || (gu8_1pb_in == 1 && gstDriveStatus.bits.shutterApertureHeight == 0))
 							 (gstDriveStatus.bits.shutterUpperLimit == 0)
 					 ) ||
-					 (gSensorStatus.bits.Sensor_Obstacle_active && gstControlBoardStatus.bits.autoManual == 1 &&
+					 //(gSensorStatus.bits.Sensor_Obstacle_active && gstControlBoardStatus.bits.autoManual == 1 &&
+					 (gSensorStatus.bits.Sensor_Obstacle_active && gstControlBoardStatus.bits.autoManual == 1 &&  sucStopKeyControl==0 &&       //20161208
 							 //OpenCmdForDistinguish == 0 && gstDriveStatus.bits.shutterMovingUp == 0 && (get_timego(time_ObstacleSensor)>500) && sucStopKeyDisplay==0)   //add 20161020
 							 OpenCmdForDistinguish == 0 && gstDriveStatus.bits.shutterMovingUp == 0 && (get_timego(time_ObstacleSensor)>500) && sucStopKeyDisplay==0 &&(((gstDriveStatus.bits.shutterUpperLimit != 1)&&(gu8_en_apheight_ctl==0))||((gstDriveStatus.bits.shutterApertureHeight != 1)&&(gu8_en_apheight_ctl==1))) )   //20161204
 				)
