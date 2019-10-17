@@ -222,6 +222,7 @@ BOOL pwmCostingReq = FALSE;
 DWORD fanOnCnt;
 
 UINT16 MicroCnt = 0;
+UINT16 Time_uart_count=0;    //20170502  201703_No.xx
 
 // Added for displaying errors on display screen in case of false movement - RN - NOV 2015
 //	Flag to monitor shutter fall
