@@ -73,7 +73,7 @@
                                                 //50% of S1UP speed.
 
 //	Maximum count allowed if shutter is moving in wrong direction
-#define	MAX_FALSE_MOVEMENT_COUNT_LIMIT		54  // Number of hall pulses / mechanical revolution  X allowed false revolution
+#define	MAX_FALSE_MOVEMENT_COUNT_LIMIT		162 //54  // Number of hall pulses / mechanical revolution  X allowed false revolution
 												// 18 (750W motor) X 3
 
 
@@ -4055,7 +4055,10 @@ VOID brakingRequired(VOID)
 
     if(requiredDirection == CW)
     {
-        if(rampCurrentPosition <= currentRampProfile.endPosition)
+        //if(rampCurrentPosition <= currentRampProfile.endPosition)
+        if((rampCurrentPosition <= currentRampProfile.endPosition)||
+           (uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterApertureHeight == TRUE)||
+           (uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterUpperLimit == TRUE))
         {
             applyBrake = TRUE;
         }
