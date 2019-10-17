@@ -1692,9 +1692,8 @@ VOID checkPhotoElecObsLevel(BOOL sts)
 VOID microSwSensorTiggered(BOOL sts)
 {
     microSwSensorTrigrd = sts;
-    
-    //if(inputFlags.value == STOP_SHUTTER) return;
-	if((inputFlags.value == STOP_SHUTTER)&&(!uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterUpperLimit)) return;
+
+	if(inputFlags.value == STOP_SHUTTER) return;
     uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.microSwitchSensorStatus = microSwSensorTrigrd;
     //micro switch is normally open, it is triggered when closed
     if(microSwSensorTrigrd)

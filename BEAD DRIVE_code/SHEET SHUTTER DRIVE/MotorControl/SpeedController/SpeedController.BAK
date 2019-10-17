@@ -1218,7 +1218,6 @@ SHORT PhaseCurrentPosition;
 			if(rampOutputStatus.shutterCurrentPosition >= (uDriveCommonBlockEEP.stEEPDriveCommonBlock.lowerStoppingPos_A101 -
 									uDriveApplBlockEEP.stEEPDriveApplBlock.overrunProtection_A112))
 			{
-				//if(monitorSectorRoatCnt > 300)
 				if(monitorSectorRoatCnt > 200)		//20180702
 				{
 					lockApply;
