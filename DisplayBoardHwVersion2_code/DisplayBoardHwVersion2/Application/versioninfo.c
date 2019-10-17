@@ -263,7 +263,8 @@ stInternalFunctions gsDrvVerInfoFunctionalBlock =
 
 uint8_t VerInfoPaintprocess(uint8_t stridx)
 {
-	unsigned char viewbuff[MAX_CHARS_IN_LINE];
+	//unsigned char viewbuff[MAX_CHARS_IN_LINE];
+	unsigned char viewbuff[MAX_CHARS_IN_LINE+2]={0};   //20170412  201703_No.30
 	uBoardVersion luBoardVer;
 
 	// Clear Screen.
