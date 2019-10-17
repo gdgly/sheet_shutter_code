@@ -517,7 +517,7 @@ VOID updateDriveStatusFlags(VOID)
             uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.upDecelStartReached = FALSE;
         }
     }
-
+    
     if(rampOutputStatus.shutterCurrentPosition >= uDriveCommonBlockEEP.stEEPDriveCommonBlock.photoElecPosMonitor_A102)
     {
         // update drive status position to ignore photo-electric sensor input reached
@@ -558,14 +558,13 @@ VOID updateDriveStatusFlags(VOID)
         else
         {
             uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterApertureHeight = FALSE;
-        }
-
+        }      
 		//if(uDriveCommonBlockEEP.stEEPDriveCommonBlock.upperStoppingPos_A100 <= rampOutputStatus.shutterCurrentPosition)
 		if(rampOutputStatus.shutterCurrentPosition <= (uDriveCommonBlockEEP.stEEPDriveCommonBlock.upperStoppingPos_A100 +
-                                                       uDriveApplBlockEEP.stEEPDriveApplBlock.overrunProtection_A112))
-        {
+                                                       uDriveApplBlockEEP.stEEPDriveApplBlock.overrunProtection_A112))                    
+        {         
 			// update drive status position to upper limit
-            uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterUpperLimit = TRUE;
+            uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterUpperLimit = TRUE;            
 		}
         else
         {

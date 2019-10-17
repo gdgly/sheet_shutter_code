@@ -1174,6 +1174,13 @@ VOID monitorSafetySensors(VOID)
 						sensorList[i].sensorFuncPtr(sensorList[i].sensorCurrSteadyVal);
 						sensorList[i].sensorPrevSteadyVal = sensorList[i].sensorCurrSteadyVal;
 					}
+#ifdef BUG_No89_PHOTOELECTRIC_SENSOR
+                    else if((i==2)&&(sensorList[i].sensorPrevSteadyVal==sensorList[i].sensorCurrSteadyVal)&&(photElecSensorFault ==FALSE))
+                    {
+						sensorList[i].sensorFuncPtr(sensorList[i].sensorCurrSteadyVal);
+						sensorList[i].sensorPrevSteadyVal = sensorList[i].sensorCurrSteadyVal;                        
+                    }
+#endif                    
 				}
 			}
 			else if(sensorList[i].sensorCurrVal == LOW)
@@ -1616,7 +1623,15 @@ VOID checkPhotoElecObsLevel(BOOL sts)
                 if(rampOutputStatus.shutterMoving && (requiredDirection == CCW))
                    {
                        //if current shutter position is above ignore PE level then only trigger stop shutter
-                       if(rampCurrentPosition < uDriveCommonBlockEEP.stEEPDriveCommonBlock.photoElecPosMonitor_A102)
+#ifdef BUG_No89_PHOTOELECTRIC_SENSOR
+                    if((rampCurrentPosition < uDriveCommonBlockEEP.stEEPDriveCommonBlock.photoElecPosMonitor_A102)&&
+                        //(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterUpperLimit == FALSE))
+                        (rampOutputStatus.shutterCurrentPosition > (uDriveCommonBlockEEP.stEEPDriveCommonBlock.upperStoppingPos_A100 +
+                                                       uDriveApplBlockEEP.stEEPDriveApplBlock.overrunProtection_A112)))    
+#else
+                    if(rampCurrentPosition < uDriveCommonBlockEEP.stEEPDriveCommonBlock.photoElecPosMonitor_A102)
+#endif
+                       
                        {
 //                           rampCurrentState = RAMP_STOP; //Set the current state to ramp stop
 //                           calcShtrMinDistValue();
