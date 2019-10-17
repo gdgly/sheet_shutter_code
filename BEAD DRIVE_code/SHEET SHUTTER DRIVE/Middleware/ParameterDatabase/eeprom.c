@@ -473,7 +473,7 @@ VOID writeBYTE(UINT16 address, UINT8 byte)
     //if write is not sucessful then set eeprom write error flag
     if(!writeSucess)
     {
-        //uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveProcessorFault.bits.eepromProgramming = TRUE;
+        uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveProcessorFault.bits.eepromProgramming = TRUE;
         //PORTAbits.RA7 = 0;
     }
 }

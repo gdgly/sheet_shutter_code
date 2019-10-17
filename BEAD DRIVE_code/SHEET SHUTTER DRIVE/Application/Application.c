@@ -141,6 +141,8 @@ UINT8  FLAG_shutterLowerLimit_STOP=0;
 UINT8 Power_ON_igbtOverTemp=0;
 UINT16 Time_uart_count=0;
 UINT8 Flag_powerUpCalib_osToggle=0;
+
+UINT16 TIME_test_eeprom=60*200;  //n*200,n is s
 /******************************************************************************
  * initApplication
  *
@@ -249,6 +251,19 @@ void __attribute__((interrupt, no_auto_psv)) _T6Interrupt (void)
     //calibration
     powerUpCalibration();
 
+    if(TIME_test_eeprom)TIME_test_eeprom--;
+    if(TIME_test_eeprom==0)
+    {
+        TIME_test_eeprom=1*200;
+        
+        if((uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterMovingUp == FALSE)&&
+          (uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterMovingDown == FALSE))       
+        {        
+            writeDWORD(EEP_OPERATION_COUNT,uDriveApplBlockEEP.stEEPDriveApplBlock.operationCount_A600);
+            uDriveApplBlockEEP.stEEPDriveApplBlock.operationCount_A600++;
+        }
+    }
+    
     if(TIME_CMD_open_shutter)TIME_CMD_open_shutter--;
     if(TIME_CMD_close_shutter)TIME_CMD_close_shutter--;
 }
