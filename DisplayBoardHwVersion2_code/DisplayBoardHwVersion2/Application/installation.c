@@ -369,7 +369,8 @@ uint8_t installationRunTime(void)
 					}
 					else
 					{
-						displayText("         ", 2, 48, false, false, false, false, false, false);
+						//displayText("         ", 2, 48, false, false, false, false, false, false);
+						GrRectFIllBolymin(0, 127, 48, 63, 0x00, true);   //20161201
 					}
 					//
 					// Capture time

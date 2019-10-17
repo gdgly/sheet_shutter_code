@@ -150,7 +150,7 @@ extern uint8_t  LCD_DISP_GUESTURE;
 // first byte = Not used, 		second byte = Not used,
 // third byte = Major Version 	fourth byte = Minor version
 //uint32_t gDisplayFirmwareVersion = 0x00000003;
-uint32_t gDisplayFirmwareVersion = 0x00000400;
+uint32_t gDisplayFirmwareVersion = 0x00000402;
 
 const uint8_t display_fw[][3]={{16,8,15},{16,9,02},{16,9,9},{16,9,14},{16,10,18}};
 const uint8_t control_fw[][3]={{16,8,15},{16,9,02},{16,9,9},{16,9,14},{16,10,18}};
@@ -1315,7 +1315,8 @@ uint8_t powerOnRunTime()
 		}
 		else
 		{
-				displayText("         ", 2, 48, false, false, false, false, false, false);
+				//displayText("         ", 2, 48, false, false, false, false, false, false);
+				GrRectFIllBolymin(0, 127, 48, 63, 0x00, true);   //20161201
 		}
 		}
 
@@ -1324,7 +1325,8 @@ uint8_t powerOnRunTime()
 		//
 		if(gstDriveBoardStatus.bits.drivePowerOnCalibration == 0)
 		{
-			displayText("         ", 2, 48, false, false, false, false, false, false);
+			//displayText("         ", 2, 48, false, false, false, false, false, false);
+			GrRectFIllBolymin(0, 127, 48, 63, 0x00, true);   //20161201
 			//
 			// Set LEDs to default value
 			//
