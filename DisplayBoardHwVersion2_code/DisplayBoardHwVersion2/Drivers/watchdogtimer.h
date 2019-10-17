@@ -54,6 +54,7 @@ extern volatile bool g_bFeedWatchdog;
 void initWatchdog(void);
 void WatchdogIntHandler(void);
 void doWatchdogReset(void);
+void doWatchdogReset_powerON(void);     //20170421  201703_No.39
 /********************************************************************************/
 
 #endif /*__WATCHDOGTIMER_H__*/

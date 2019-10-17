@@ -394,6 +394,11 @@ uint8_t addToActiveAnomaly(struct errorDB* pstActiveAnomalyData)
 	// Check whether anomaly code exists
 	// if yes, then return
 	//
+	if((pstActiveAnomalyData->errorCode==52)||(pstActiveAnomalyData->errorCode==124))       //20170421  201703_No.39
+	{
+		doWatchdogReset_powerON();
+		while(1);
+	}
 	for( i = 0; i < ANOMALY_LIST_LEN; i++ )
 	{
 		if( gsActiveAnomalyList[i].errorCode == pstActiveAnomalyData->errorCode )

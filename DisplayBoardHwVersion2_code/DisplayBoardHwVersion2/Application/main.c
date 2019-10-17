@@ -1018,22 +1018,22 @@ uint8_t defaultFunction() {
 
 void logWatchDogTimerError(void) {
 	uint32_t lui32ProcessorResetCause = 0;
-
-	lui32ProcessorResetCause = ROM_SysCtlResetCauseGet();
-
-	if (lui32ProcessorResetCause & SYSCTL_CAUSE_SW) {
-		gstDisplayProcessorFault.bits.watchdog = 1;
-		gstDisplayBoardFault.bits.displayProcessor = 1;
-		gstDisplayBoardStatus.bits.displayFault = 1;
-		ROM_SysCtlResetCauseClear(lui32ProcessorResetCause);
-	} else {
-		gstDisplayProcessorFault.bits.watchdog = 0;
-		if (gstDisplayProcessorFault.val == 0) {
-			gstDisplayBoardFault.bits.displayProcessor = 0;
-		}
-		if (gstDisplayBoardFault.val == 0) {
-			gstDisplayBoardStatus.bits.displayFault = 0;
-		}
-	}
+                                                                 //20170421  201703_No.39
+//	lui32ProcessorResetCause = ROM_SysCtlResetCauseGet();
+//
+//	if (lui32ProcessorResetCause & SYSCTL_CAUSE_SW) {
+//		gstDisplayProcessorFault.bits.watchdog = 1;
+//		gstDisplayBoardFault.bits.displayProcessor = 1;
+//		gstDisplayBoardStatus.bits.displayFault = 1;
+//		ROM_SysCtlResetCauseClear(lui32ProcessorResetCause);
+//	} else {
+//		gstDisplayProcessorFault.bits.watchdog = 0;
+//		if (gstDisplayProcessorFault.val == 0) {
+//			gstDisplayBoardFault.bits.displayProcessor = 0;
+//		}
+//		if (gstDisplayBoardFault.val == 0) {
+//			gstDisplayBoardStatus.bits.displayFault = 0;
+//		}
+//	}
 }
 

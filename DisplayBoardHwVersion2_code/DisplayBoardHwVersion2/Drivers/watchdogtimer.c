@@ -105,9 +105,13 @@ void WatchdogIntHandler(void)
 void doWatchdogReset(void)
 {
 	ROM_WatchdogReloadSet(WATCHDOG0_BASE, 0xFFFFFFFF);
+	//ROM_WatchdogReloadSet(WATCHDOG0_BASE, ROM_SysCtlClockGet()*5);
 }
 
-
+void doWatchdogReset_powerON(void)      //20170421  201703_No.39
+{
+	ROM_WatchdogReloadSet(WATCHDOG0_BASE, ROM_SysCtlClockGet());
+}
 /******************************************************************************
  * FunctionName: initWatchdog
  *
