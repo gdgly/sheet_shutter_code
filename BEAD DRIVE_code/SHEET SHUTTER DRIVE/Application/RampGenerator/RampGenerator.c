@@ -4167,7 +4167,7 @@ VOID brakingRequired(VOID)
                 lockApply;
                 rampStatusFlags.rampBrakeOn = 1;
 // Measures against overcurrent error 20180330 by IME
-                applyBrake_bake = FALSE;
+//                applyBrake_bake = FALSE;	// 20190225 DC Injection Bug
             }
 
             //If mechanical brake is ON decrement DC injection duty.
