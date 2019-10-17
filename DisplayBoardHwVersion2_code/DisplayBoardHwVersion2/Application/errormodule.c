@@ -337,7 +337,7 @@ const _stErrorList gstErrorList[TOTAL_ERRORS] =
 		{	29	,	"EMERGENCY STOP"	,	RECOVERABLE		,	RECORDABLE_ANOMALY		,	ON						,	_FLASH_STATUS_COUNT_1	,	DISPLAY_INDICATION		,	DRIV	,	1	,	&guiDriveApplicationFaultCopy	,	7	,	&luiLastDriveApplicationFault	,	7	,"エマゼンスイッチON"				,NONE_OPEN_CLOSE}	,
 		{	30	,	"CALLIB FAIL"		,	NONRECOVERABLE	,	RECORDABLE_ANOMALY		,	ON						,	_FLASH_STATUS_COUNT_1	,	DISPLAY_INDICATION		,	DRIV	,	1	,	&guiDriveApplicationFaultCopy	,	13	,	&luiLastDriveApplicationFault	,	13	,"ホセイエラー"					,NONE_OPEN_CLOSE}	,
 		{	31	,	"MICRO SW LIMIT"	,	RECOVERABLE		,	RECORDABLE_ANOMALY		,	_BLINK_STATUS_50_MSEC	,	_BLINK_STATUS_50_MSEC	,	DISPLAY_INDICATION		,	DRIV	,	1	,	&guiDriveApplicationFaultCopy	,	14	,	&luiLastDriveApplicationFault	,	14	,"マイクロカウンタトウタツ"			,ENABLE_OPEN_CLOSE}	,
-		{	32	,	"OPR COUNT LIMIT"	,	RECOVERABLE		,	NONRECORDABLE_ANOMALY	,	OFF						,	OFF						,	NO_DISPLAY_INDICATION	,	DRIV	,	0	,	&guiDriveApplicationFaultCopy	,	15	,	&luiLastDriveApplicationFault	,	15	,"メンテカウントトウタツ"			,ENABLE_OPEN_CLOSE}	,
+		{	32	,	"OPR COUNT LIMIT"	,	RECOVERABLE		,	NONRECORDABLE_ANOMALY	,	ON						,	_FLASH_STATUS_COUNT_1	,	DISPLAY_INDICATION	    ,	DRIV	,	1	,	&guiDriveApplicationFaultCopy	,	15	,	&luiLastDriveApplicationFault	,	15	,"メンテカウントトウタツ"			,ENABLE_OPEN_CLOSE}	,
 		// "POWER FAIL" will use to indicate the situation during power fail - YG - NOV 15
 		{	33	,	"POWER FAIL"		,	RECOVERABLE		,	NONRECORDABLE_ANOMALY	,	OFF						,	_FLASH_STATUS_COUNT_1	,	DISPLAY_INDICATION		,	DRIV	,	1	,	&guiDriveApplicationFaultCopy	,	17	,	&luiLastDriveApplicationFault	,	17	,"デンアツブソ ク"				,NONE_OPEN_CLOSE}	,
 		{	50	,	"FLASH IMG CRC"		,	RECOVERABLE		,	NONRECORDABLE_ANOMALY	,	OFF						,	OFF						,	NO_DISPLAY_INDICATION	,	DRIV	,	0	,	&guiDriveProcessorfaultCopy		,	0	,	&luiLastDriveProcessorfault		,	0	,"フラッシュイメージエラー"			,NONE_OPEN_CLOSE}	,
@@ -355,7 +355,7 @@ const _stErrorList gstErrorList[TOTAL_ERRORS] =
 		//	Two new errors added to monitor false shutter movement - YG - NOV 2015
 		{	40	,	"WRONG MOVE UP"		,	NONRECOVERABLE	,	RECORDABLE_ANOMALY		,	ON						,	_FLASH_STATUS_COUNT_1	,	DISPLAY_INDICATION		,	DRIV	,	1	,	&guiDriveApplicationFaultCopy	,	18	,	&luiLastDriveApplicationFault	,	18	,"イジョウ　ジョウショウ"			,NONE_OPEN_CLOSE}	,
 		{	41	,	"WRONG MOVE DOWN"	,	NONRECOVERABLE	,	RECORDABLE_ANOMALY		,	ON						,	_FLASH_STATUS_COUNT_1	,	DISPLAY_INDICATION		,	DRIV	,	1	,	&guiDriveApplicationFaultCopy	,	19	,	&luiLastDriveApplicationFault	,	19	,"イジョウ　カコウ"				,NONE_OPEN_CLOSE}	,
-		{	42	,	"MTR CABLE FAULT"	,	NONRECOVERABLE	,	RECORDABLE_ANOMALY		,	ON						,	_FLASH_STATUS_COUNT_1	,	DISPLAY_INDICATION		,	DRIV	,	1	,	&guiDriveApplicationFaultCopy	,	20	,	&luiLastDriveApplicationFault	,	20	,"MTR CABLE FAULT"			,NONE_OPEN_CLOSE}	,
+		{	42	,	"MTR CABLE FAULT"	,	NONRECOVERABLE	,	RECORDABLE_ANOMALY		,	ON						,	_FLASH_STATUS_COUNT_1	,	DISPLAY_INDICATION		,	DRIV	,	1	,	&guiDriveApplicationFaultCopy	,	20	,	&luiLastDriveApplicationFault	,	20	,"Mユニット　エラー"			,NONE_OPEN_CLOSE}	,
 };
 /****************************************************************************/
 
