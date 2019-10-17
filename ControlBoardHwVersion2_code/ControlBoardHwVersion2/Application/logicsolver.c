@@ -1944,7 +1944,7 @@ void logicSolver(void) {
 
 						}
 
-						if (gKeysStatus.bits.Key_Open_pressed)   //20170331
+						if (gKeysStatus.bits.Key_Open_pressed)
 						{
 							gKeysStatus.bits.Key_Open_pressed = 0;
 						}
@@ -1998,7 +1998,7 @@ void logicSolver(void) {
 
 					}
 
-					if (gKeysStatus.bits.Key_Open_pressed)   //20170331
+					if (gKeysStatus.bits.Key_Open_pressed)
 					{
 						gKeysStatus.bits.Key_Open_pressed = 0;
 					}
@@ -2639,7 +2639,7 @@ void logicSolver(void) {
 				if (gstLStoCMDr.commandToDriveBoard.bits.openShutter || gstLStoCMDr.commandToDriveBoard.bits.openShutterApperture)
 				{
 
-					if (gKeysStatus.bits.Key_Open_pressed)    //20170331
+					if (gKeysStatus.bits.Key_Open_pressed)
 					{
 						gKeysStatus.bits.Key_Open_pressed = 0;
 					}
@@ -2746,7 +2746,8 @@ void logicSolver(void) {
 		{
 
 			// Reject key event....
-			if (gstCMDitoLS.commandDisplayBoardLS.bits.openPressed)
+			//if (gstCMDitoLS.commandDisplayBoardLS.bits.openPressed)
+			if (gstCMDitoLS.commandDisplayBoardLS.bits.openPressed)   //20170411  201703_No.11
 			{
 				gstCMDitoLS.commandResponseStatus = eSUCCESS;
 				gstCMDitoLS.acknowledgementReceived = eNACK;
@@ -2764,10 +2765,10 @@ void logicSolver(void) {
 				gstCMDitoLS.acknowledgementReceived = eNACK;
 			}
 
-			if (gKeysStatus.bits.Key_Open_pressed)    //20170331
-			{
-				gKeysStatus.bits.Key_Open_pressed = 0;
-			}
+//			if (gKeysStatus.bits.Key_Open_pressed)    //20170411  201703_No.11
+//			{
+//				gKeysStatus.bits.Key_Open_pressed = 0;
+//			}
 
 			if (gKeysStatus.bits.Key_Close_pressed)
 			{
@@ -2779,7 +2780,7 @@ void logicSolver(void) {
 				gKeysStatus.bits.Key_Stop_pressed = 0;
 			}
 
-			if (gSensorStatus.bits.Sensor_1PBS_active)
+			if (gSensorStatus.bits.Sensor_1PBS_active)    //20170411  201703_No.11
 			{
 				gSensorStatus.bits.Sensor_1PBS_active = 0;
 			}
