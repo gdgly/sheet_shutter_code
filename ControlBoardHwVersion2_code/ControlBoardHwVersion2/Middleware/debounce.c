@@ -2918,11 +2918,11 @@ uint32_t ValidateDebounce(uint32_t luintDelta,uint32_t luintLastState,uint8_t *l
 			{
 				if (gu8_snow_mode == 1)
 				{
-					luiSnowModeTiming = 500; // 0.5 sec
+					luiSnowModeTiming = 250; // 0.25 sec    20160919 bug_No
 				}
 				else
 				{
-					luiSnowModeTiming = 1000; //1 sec
+					luiSnowModeTiming = 500; //0.5 sec     20160919 bug_No
 				}
 
 			}
