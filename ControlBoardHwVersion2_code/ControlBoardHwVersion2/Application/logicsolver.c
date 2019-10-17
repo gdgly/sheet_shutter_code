@@ -1140,7 +1140,7 @@ void logicSolver(void) {
 
 									(
 											(
-												(gstDriveInstallation.bits.installA100 == 1 || gstDriveInstallation.bits.installA101 == 1 || gstDriveInstallation.bits.installA102 == 1) &&// || gstDriveInstallation.bits.installationValid == 1) &&
+												(gstDriveInstallation.bits.installA100 == 1 || gstDriveInstallation.bits.installA101 == 1 || gstDriveInstallation.bits.installA102 == 1  ) &&
 												(
 														gstCMDitoLS.commandDisplayBoardLS.bits.upPressed 		||
 														gstCMDitoLS.commandDisplayBoardLS.bits.upReleased 		||
@@ -1164,10 +1164,31 @@ void logicSolver(void) {
 									)
 
 							) ||
+							(gstCMDitoLS.commandRequestStatus == eACTIVE &&
+																		(
+																			(gstDriveInstallation.bits.installationValid == 1) &&
+																			(
+																					gstCMDitoLS.commandDisplayBoardLS.bits.upPressed 		||
+																					gstCMDitoLS.commandDisplayBoardLS.bits.downPressed 		||
+																					gstCMDitoLS.commandDisplayBoardLS.bits.openPressed 		||
+																					gstCMDitoLS.commandDisplayBoardLS.bits.closePressed 	||
+																					gstCMDitoLS.commandDisplayBoardLS.bits.stopPressed
+																			)
+																		)
+
+							)||
+							((gstDriveInstallation.bits.installationValid == 1) &&
+									                                            (
+																						(gKeysStatus.bits.Key_Open_pressed) 	||
+																						(gKeysStatus.bits.Key_Close_pressed) 	||
+																						(gKeysStatus.bits.Key_Stop_pressed)
+																				)
+							)||
+
 
 							(
 									(
-											(gstDriveInstallation.bits.installA100 == 1 || gstDriveInstallation.bits.installA101 == 1 || gstDriveInstallation.bits.installA102 == 1) &&// || gstDriveInstallation.bits.installationValid == 1) &&
+											(gstDriveInstallation.bits.installA100 == 1 || gstDriveInstallation.bits.installA101 == 1 || gstDriveInstallation.bits.installA102 == 1) &&
 
 											(
 													(gKeysStatus.bits.Key_Open_pressed) 	||
@@ -1203,13 +1224,13 @@ void logicSolver(void) {
 			{
 
 				// Process Up key Pressed, Open key Pressed from Display board and Open Key Pressed from Control board
-				if (
+				if ((
 						(
 								gstCMDitoLS.commandRequestStatus == eACTIVE &&
 								(gstCMDitoLS.commandDisplayBoardLS.bits.upPressed || gstCMDitoLS.commandDisplayBoardLS.bits.openPressed)
 						)
 						|| gKeysStatus.bits.Key_Open_pressed
-					) //&& (gstDriveInstallation.bits.installA100 == 1 || gstDriveInstallation.bits.installA101 == 1 || gstDriveInstallation.bits.installA102 == 1))
+					) && (gstDriveInstallation.bits.installA100 == 1 || gstDriveInstallation.bits.installA101 == 1 || gstDriveInstallation.bits.installA102 == 1))
 				{
 					gstLStoCMDr.commandRequestStatus = eACTIVE;
 					gstLStoCMDr.commandToDriveBoard.val = 0;
@@ -1221,13 +1242,13 @@ void logicSolver(void) {
 
 				}
 				// Process Down key Pressed, Close key Pressed from Display board and Close Key Pressed from Control board
-				else if (
+				else if ((
 							(
 							gstCMDitoLS.commandRequestStatus == eACTIVE &&
 							(gstCMDitoLS.commandDisplayBoardLS.bits.downPressed || gstCMDitoLS.commandDisplayBoardLS.bits.closePressed)
 							)
 							|| gKeysStatus.bits.Key_Close_pressed)
-						 //&& (gstDriveInstallation.bits.installA100 == 1 || gstDriveInstallation.bits.installA101 == 1 || gstDriveInstallation.bits.installA102 == 1))
+						  &&(gstDriveInstallation.bits.installA100 == 1 || gstDriveInstallation.bits.installA101 == 1 || gstDriveInstallation.bits.installA102 == 1))
 				{
 					gstLStoCMDr.commandRequestStatus = eACTIVE;
 					gstLStoCMDr.commandToDriveBoard.val = 0;
@@ -1239,13 +1260,13 @@ void logicSolver(void) {
 
 				}
 				// Process Up key Released, Open key Released,Down key Released, Close key Released from Display board and Open Key Released, Close key Released from Control board
-				else if (
+				else if ((
 							(
 							 gstCMDitoLS.commandRequestStatus == eACTIVE &&
 							(gstCMDitoLS.commandDisplayBoardLS.bits.upReleased || gstCMDitoLS.commandDisplayBoardLS.bits.openReleased || gstCMDitoLS.commandDisplayBoardLS.bits.downReleased || gstCMDitoLS.commandDisplayBoardLS.bits.closeReleased || gstCMDitoLS.commandDisplayBoardLS.bits.stopPressed)
 							) ||
 							(gKeysStatus.bits.Key_Open_released || gKeysStatus.bits.Key_Close_released || gKeysStatus.bits.Key_Stop_pressed)
-						) //&& (gstDriveInstallation.bits.installA100 == 1 || gstDriveInstallation.bits.installA101 == 1 || gstDriveInstallation.bits.installA102 == 1))
+						) && (gstDriveInstallation.bits.installA100 == 1 || gstDriveInstallation.bits.installA101 == 1 || gstDriveInstallation.bits.installA102 == 1))
 				{
 					gstLStoCMDr.commandRequestStatus = eACTIVE;
 					gstLStoCMDr.commandToDriveBoard.val = 0;
@@ -1264,7 +1285,7 @@ void logicSolver(void) {
 								(gstDriveInstallation.bits.installA102 && gKeysStatus.bits.Key_3secStp_pressed) 				||
 								(gstDriveInstallation.bits.installationSuccess && gKeysStatus.bits.Key_3secStp_pressed)
 						)
-						) //&& (gstDriveInstallation.bits.installA100 == 1 || gstDriveInstallation.bits.installA101 == 1 || gstDriveInstallation.bits.installA102 == 1))
+						)
 				{
 					gstLStoCMDr.commandRequestStatus = eACTIVE;
 					gstLStoCMDr.commandToDriveBoard.val = 0;
@@ -1279,9 +1300,9 @@ void logicSolver(void) {
 
 				}
 				// add by st aoyagi 20160812  START
-				else if(//gstCMDitoLS.commandRequestStatus == eACTIVE &&
-						gstDriveInstallation.bits.installationValid &&
-						gstCMDitoLS.commandDisplayBoardLS.bits.stopPressed)
+				else if(((gstCMDitoLS.commandRequestStatus == eACTIVE && gstCMDitoLS.commandDisplayBoardLS.bits.stopPressed)
+						||(gKeysStatus.bits.Key_Stop_pressed))
+					  && gstDriveInstallation.bits.installationValid )
 				{
 					/*gstLStoCMDr.commandRequestStatus = eACTIVE;
 					gstLStoCMDr.commandToDriveBoard.val = 0;
@@ -1298,9 +1319,11 @@ void logicSolver(void) {
 					sstLStoCMDrCmdSent.commandToDriveBoard.val = gstLStoCMDr.commandToDriveBoard.val;
 
 				}
-				else if(gstCMDitoLS.commandRequestStatus == eACTIVE && gstDriveInstallation.bits.installationValid &&
-						gstDriveStatus.bits.shutterStopped &&
-							(gstCMDitoLS.commandDisplayBoardLS.bits.closePressed || gstCMDitoLS.commandDisplayBoardLS.bits.openPressed))
+				else if((
+						(gstCMDitoLS.commandRequestStatus == eACTIVE &&
+						    (gstCMDitoLS.commandDisplayBoardLS.bits.closePressed || gstCMDitoLS.commandDisplayBoardLS.bits.openPressed || gstCMDitoLS.commandDisplayBoardLS.bits.upPressed || gstCMDitoLS.commandDisplayBoardLS.bits.downPressed)
+					    )|| gKeysStatus.bits.Key_Open_pressed || gKeysStatus.bits.Key_Close_pressed)
+					  && gstDriveInstallation.bits.installationValid  && gstDriveStatus.bits.shutterStopped)
 				{
 					/*gstLStoCMDr.commandRequestStatus = eACTIVE;
 					gstLStoCMDr.commandToDriveBoard.val = 0;
