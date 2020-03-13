@@ -145,7 +145,7 @@ extern uint8_t gu8_en_oprdelay;
 extern uint8_t gu8_modefix;
 extern uint8_t gu8_en_switchpan;
 extern uint8_t gu8_opr_rsrttmr;
-extern uint8_t gu32_intlck_deltmr; //version 0.7D of C file
+extern uint32_t gu32_intlck_deltmr; //version 0.7D of C file
 extern uint8_t gu8_close_oprset;
 extern uint8_t gu8_opr_cntres;
 extern uint8_t gu8_init_valueset;
