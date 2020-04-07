@@ -55,7 +55,7 @@
 // 1 == Interlock delay timer enabled for close and relay open operation
 
 
-#define ENTER_CMD_ONLY_ONCE_PER_INSTALLATION_STATE	0        //20160914   bug_No。99
+#define ENTER_CMD_ONLY_ONCE_PER_INSTALLATION_STATE	0        //20160914   bug_No.99
 // 0 = Enter command can go multiple times per installation state
 // 1 = Logic added to make sure Enter command to go single times per installation state
 
@@ -88,7 +88,7 @@ typedef union unMultifunctionOutput
 #define relay_delay_cyw 6000
 uint8_t runing_a009_dir_cyw=0;
 
-uint8_t OpenCmdForDistinguish = 0;//20160808 AOYAGI STT ; 1-open cmd、0-other cmd
+uint8_t OpenCmdForDistinguish = 0;//20160808 AOYAGI STT ; 1-open cmd.0-other cmd
 uint8_t select_apertureHeight_Instalation=0;
 /****************************************************************************/
 
@@ -422,13 +422,13 @@ void logicSolver(void) {
 #define ContineousOperationDelay 5000 // 5 Sec
 #endif
 
-//#if ENTER_CMD_ONLY_ONCE_PER_INSTALLATION_STATE    //20160914   bug_No。99
+//#if ENTER_CMD_ONLY_ONCE_PER_INSTALLATION_STATE    //20160914   bug_No.99
 
 		static unsigned char sucConfSubStateCmdAllowedFlag = 0;
 		static unsigned char sucConfSubStateCmdAllowedFlagCopy = 0;
 		// 1 = Confirm substate allowed to sent
 		// 0 = Confirm substate not allowed to sent
-//#endif                //20160914   bug_No。99
+//#endif                //20160914   bug_No.99
 
 		static unsigned char Power_ON_Sensor_Obstacle_active=0;
 
@@ -2251,7 +2251,7 @@ void logicSolver(void) {
 										&& gstControlApplicationFault.bits.ObstacleSensor ==0        //20170621   201703_No.CQ01
 										&& gSensorStatus.bits.Sensor_Safety_active == 0
 										//(gstDriveStatus.bits.shutterUpperLimit == 1 && gSensorStatus.bits.Sensor_Safety_active == true))
-								) ||
+								)/* ||
 								 (
 										 (
 												 gu8_close_oprset == 1 										&&
@@ -2259,11 +2259,13 @@ void logicSolver(void) {
 												 gSensorStatus.bits.Sensor_Wireless_1PBS_active == 0
 										 ) &&
 										 (
-												 gstDriveApplicationFault.bits.microSwitch == 1 			||
-												 gstDriveApplicationFault.bits.peObstacle == 1 				||
-												 gstControlApplicationFault.bits.startupSafetySensor == 1
+													gstDriveApplicationFault.bits.microSwitch == 0 &&
+													gstDriveApplicationFault.bits.peObstacle == 0 &&
+													gstControlApplicationFault.bits.startupSafetySensor == 0
+													&& gstControlApplicationFault.bits.ObstacleSensor ==0
+													&& gSensorStatus.bits.Sensor_Safety_active == 0
 										)
-								)
+								)*/
 						)
 
 						//check other drive and control board errors are not active
@@ -2273,25 +2275,6 @@ void logicSolver(void) {
 
 						)
 				{
-
-					// if Close operation setting should be enabled, then trigger JOG Close command
-					if (
-							(gu8_close_oprset == 1) /*&&                             //20161012
-							(gstDriveApplicationFault.bits.microSwitch == 1 ||
-							 gstDriveApplicationFault.bits.wraparound == 1 ||
-							 gstDriveApplicationFault.bits.peObstacle == 1  ||
-							 gstControlApplicationFault.bits.startupSafetySensor == 1)*/
-					   )
-					{
-
-						sstLStoCMDrCmdToBeSent.commandToDriveBoard.val = 0;
-						sstLStoCMDrCmdToBeSent.commandToDriveBoard.bits.closeShutterJog = 1;
-						sstLStoCMDrCmdToBeSent.additionalCommandData = 50;
-						OpenCmdForDistinguish = 0;
-
-					}
-					else
-					{
 
 						// Check Aperture setting to disabled
 						if (
@@ -2328,7 +2311,6 @@ void logicSolver(void) {
 						time_ObstacleSensor = g_ui32TickCount;  //20161202pm
 						Flag_OpenCmdsend= 1;     //20170627   201703_No.CQ05
 
-					}
 
 					// Check whether Go down operation delay need to start or not. Also check operating mode to activate Go down operation delay.
 					// A005 - Mode setting for enabling the Go-up and Go-Down delay timers = 0: Enabled only in auto mode, 1: Enabled only in manual mode,2: Enabled in both auto and manual modes
@@ -2604,7 +2586,8 @@ void logicSolver(void) {
 
 						) &&
 						(gstDriveStatus.bits.shutterLowerLimit == 0) &&
-						(sstLStoCMDrCmdSent.commandToDriveBoard.bits.closeShutterJog == 1)
+						((sstLStoCMDrCmdSent.commandToDriveBoard.bits.closeShutter == 1)||(sstLStoCMDrCmdSent.commandToDriveBoard.bits.closeShutterApperture ==1))&&
+						(gu8_close_oprset==1)
 					)
 			{
 
@@ -3105,7 +3088,7 @@ void logicSolver(void) {
 				// Check shutter is at upper limit
 				//static unsigned char sucLastOpenCommandType = 0; // 0 == Open command,1 == Open Aperture height command
 				(
-						(gstDriveStatus.bits.shutterUpperLimit == 1 /*&& sucLastOpenCommandType == 0*/) ||    //20160913   bug_No。108
+						(gstDriveStatus.bits.shutterUpperLimit == 1 /*&& sucLastOpenCommandType == 0*/) ||    //20160913   bug_No.108
 						(gstDriveStatus.bits.shutterApertureHeight == 1 && sucLastOpenCommandType == 1)
 				) &&
 
@@ -3402,7 +3385,7 @@ void logicSolver(void) {
 				(gstDriveStatus.bits.shutterUpperLimit != 1) &&
 
 				// Check shutter is moving not down
-				//�ov� 2014 - Shutter moving down check bypass for startup safety by YPG
+				//2014 - Shutter moving down check bypass for startup safety by YPG
 				((gstDriveStatus.bits.shutterMovingDown == 0) || (gstControlApplicationFault.bits.startupSafetySensor == 1)) &&
 
 				// Check shutter is in RUN state
@@ -4981,7 +4964,7 @@ void logicSolver(void) {
 					//if(gstDriveStatus.bits.shutterLowerLimit == 1)gstBitwiseMultifuncOutput.bits.InterlockOutput = 1;	//20161206
 					//if((gstDriveStatus.bits.shutterLowerLimit == 1)&&(sucInterlockOutputStatus == 0)&&(gstDriveStatus.bits.shutterMovingDown==0))gstBitwiseMultifuncOutput.bits.InterlockOutput = 1;	//20170330   201703_No.10
 				}
-		       if((gstDriveStatus.bits.shutterLowerLimit == 1)&&(gstBitwiseMultifuncOutput.bits.Rising == 0)&&(sucInterlockOutputStatus == 0)&&(gstDriveStatus.bits.shutterMovingDown==0))gstBitwiseMultifuncOutput.bits.InterlockOutput = 1;	//20170412  201703_No.16-①
+		       if((gstDriveStatus.bits.shutterLowerLimit == 1)&&(gstBitwiseMultifuncOutput.bits.Rising == 0)&&(sucInterlockOutputStatus == 0)&&(gstDriveStatus.bits.shutterMovingDown==0))gstBitwiseMultifuncOutput.bits.InterlockOutput = 1;	//20170412  201703_No.16-
 
 		// Dropping
 		if ((gstDriveStatus.bits.shutterMovingDown == 1)||(seShutterOpenCloseCmdState == CmdDownDetectedWaitDownDelay)||(droping_count_cyw<relay_delay_cyw)
