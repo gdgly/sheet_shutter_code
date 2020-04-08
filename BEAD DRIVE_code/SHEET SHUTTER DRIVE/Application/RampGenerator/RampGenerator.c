@@ -1638,7 +1638,7 @@ VOID checkPhotoElecObsLevel(BOOL sts)
         if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveReady)
         {
             //Sense photo electric only during Ramp down going profile
-            if((currentRampProfileNo == RAMP_GOING_DN_PROFILE) || (currentRampProfileNo == RAMP_APERTURE_DN_PROFILE))
+            if((currentRampProfileNo == RAMP_GOING_DN_PROFILE) || (currentRampProfileNo == RAMP_APERTURE_DN_PROFILE)||(currentRampProfileNo == RAMP_JOG_DN_PROFILE))
             {
                 //If shutter is moving in closing direction then only use photo electric trigger
                 if(rampOutputStatus.shutterMoving && (requiredDirection == CCW))
@@ -1705,7 +1705,7 @@ VOID microSwSensorTiggered(BOOL sts)
     if(microSwSensorTrigrd)
     {
         //Sense micro switch only during Ramp up/down going profile
-        if((currentRampProfileNo == RAMP_GOING_UP_PROFILE) || (currentRampProfileNo == RAMP_GOING_DN_PROFILE))
+        if((currentRampProfileNo == RAMP_GOING_UP_PROFILE) || (currentRampProfileNo == RAMP_GOING_DN_PROFILE)||(currentRampProfileNo == RAMP_JOG_DN_PROFILE))
         {
             //if micro SW sensor is triggered the stop shutter immediately
             rampCurrentState = RAMP_STOP; //Set the current state to ramp stop
@@ -1716,7 +1716,7 @@ VOID microSwSensorTiggered(BOOL sts)
             stopShutter(); //stop shutter immediately
             //set mocro switch error flag
             uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.microSwitch = TRUE;
-            if((currentRampProfileNo == RAMP_GOING_DN_PROFILE)&&(rampOutputStatus.shutterMoving))   //bug_No.84
+            if(((currentRampProfileNo == RAMP_GOING_DN_PROFILE) ||(currentRampProfileNo == RAMP_JOG_DN_PROFILE))&&(rampOutputStatus.shutterMoving))   //bug_No.84
             {
                 inputFlags.value = OPEN_SHUTTER_JOG_50;
                 rampCurrentState = RAMP_START;
