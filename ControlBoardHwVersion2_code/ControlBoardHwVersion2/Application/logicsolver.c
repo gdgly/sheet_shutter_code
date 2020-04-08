@@ -2259,9 +2259,11 @@ void logicSolver(void) {
 												 gSensorStatus.bits.Sensor_Wireless_1PBS_active == 0
 										 ) &&
 										 (
-												 gstDriveApplicationFault.bits.microSwitch == 1 			||
-												 gstDriveApplicationFault.bits.peObstacle == 1 				||
-												 gstControlApplicationFault.bits.startupSafetySensor == 1
+												gstDriveApplicationFault.bits.microSwitch == 0 &&
+												gstDriveApplicationFault.bits.peObstacle == 0 &&
+												gstControlApplicationFault.bits.startupSafetySensor == 0
+												&& gstControlApplicationFault.bits.ObstacleSensor ==0
+												&& gSensorStatus.bits.Sensor_Safety_active == 0
 										)
 								)
 						)
@@ -2604,6 +2606,8 @@ void logicSolver(void) {
 
 						) &&
 						(gstDriveStatus.bits.shutterLowerLimit == 0) &&
+						// Check any fault is not active on drive board
+						(gstDriveStatus.bits.driveFault == 0) && (gstDriveStatus.bits.driveFaultUnrecoverable == 0) &&						
 						(sstLStoCMDrCmdSent.commandToDriveBoard.bits.closeShutterJog == 1)
 					)
 			{
