@@ -73,7 +73,8 @@ UINT16 PhaseAdvance;
                             /* transitions and Forcing steps according to the */
                             /* actual position of the motor */
 
-#define MS_500T 10000//1000//300//500          /* after this time has elapsed, the motor is    */ //20160804
+//#define MS_500T 10000//1000//300//500          /* after this time has elapsed, the motor is    */ //20160804
+#define MS_500T 500              /* after this time has elapsed, the motor is    */
                             /* consider stalled and it's stopped    */
 
 /* PI parameters */
