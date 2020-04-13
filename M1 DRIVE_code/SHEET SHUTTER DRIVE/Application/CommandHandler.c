@@ -89,7 +89,7 @@
 #define EXPECTED_CRC_APERTUREHEIGHT                0x7292
 
 //CONST UINT32 drive_fw_version = 0x00000406;  //bug_NO.64
-CONST UINT32 drive_fw_version = 18045;    //Drive version 1804.5        20170418   201703_No.29
+CONST UINT32 drive_fw_version = 18046;    //Drive version 1804.6        20170418   201703_No.29
 
 enum {
 	no_error = 0,
@@ -663,8 +663,10 @@ VOID commandHandler(VOID)
                                ((!uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterApertureHeight)&&(FLAG_StartApertureCorrection==0)))
                                     &&(inputFlags.value!=OPEN_SHUTTER_APERTURE)&&(inputFlags.value!=OPEN_SHUTTER_JOG_10)&&(inputFlags.value!=OPEN_SHUTTER_JOG_50))
                             {
-                                if(FLAG_StartApertureCorrection==1){FLAG_StartApertureCorrection++;inputFlags.value = OPEN_SHUTTER; }   //bug_No.12
-                                else if(FLAG_StartApertureCorrection>1){FLAG_StartApertureCorrection=0;inputFlags.value = OPEN_SHUTTER_APERTURE;}
+								//20180709 Bug_201806_No80
+                                //if(FLAG_StartApertureCorrection==1){FLAG_StartApertureCorrection++;inputFlags.value = OPEN_SHUTTER; }   //bug_No.12
+                                //else if(FLAG_StartApertureCorrection>1){FLAG_StartApertureCorrection=0;inputFlags.value = OPEN_SHUTTER_APERTURE;}
+                                if(FLAG_StartApertureCorrection>0){inputFlags.value = OPEN_SHUTTER; }
                                 else inputFlags.value = OPEN_SHUTTER_APERTURE;
                                 TIME_CMD_open_shutter=100;
                                 bUpApertureCmdRecd = TRUE;

@@ -80,7 +80,6 @@
 												// 18 (750W motor) X 3
 #define	MAX_FALSE_MOVEMENT_COUNT_LIMIT		162
 
-
 /* Enumaration for ramp profile */
 // 20180608 Move "RampGenerator.h" by IME
 /*typedef enum rampProfileNo
@@ -640,7 +639,6 @@ VOID initApertureProfileData(VOID)
 #else
     rampApertureUpProfile[i].endPosition = (uDriveCommonBlockEEP.stEEPDriveCommonBlock.apertureHeightPos_A130 + 300);//APERPOS_OFFSET);		//20161201 add
 //  rampApertureUpProfile[i].endPosition = (uDriveCommonBlockEEP.stEEPDriveCommonBlock.apertureHeightPos_A130 + 200);//APERPOS_OFFSET);
-
 #endif
 
     rampApertureUpProfile[i].startSpeed = RAMP_START_SPEED;
@@ -1255,6 +1253,7 @@ VOID resetSensorStatus(VOID)
     {
        uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorOverheat = FALSE;
     }
+
     if(!emergencySensorTrigrd)
     {
         uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.emergencyStop = FALSE;
@@ -1391,7 +1390,8 @@ void __attribute__((interrupt, no_auto_psv)) _T4Interrupt (void)//10ms
     if(++cnt_motor_stop>10)
     {
         measuredSpeed = 0;
-        cnt_motor_stop = 11;
+//        cnt_motor_stop = 11;
+        if(cnt_motor_stop>30) cnt_motor_stop = 0;		//20180629 No56 retry
     }
 
     //checkParamUpdateToEEP();
@@ -1600,6 +1600,7 @@ VOID calculateDrift(BOOL sts)
 					{
 						hallCounts_bak = hallCounts;	// 2016/11/16 When Down , Missing Save Origin Position.
                     	hallCounts = uDriveCommonBlockEEP.stEEPDriveCommonBlock.originSensorPosMonitor_A128;
+                    	FLAG_StartApertureCorrection = 0;		//20180709 Bug_201806_No80
                     }
                 //}
             }

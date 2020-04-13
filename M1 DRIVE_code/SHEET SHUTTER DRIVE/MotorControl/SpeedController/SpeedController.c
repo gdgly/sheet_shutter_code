@@ -218,7 +218,8 @@ void __attribute__((interrupt, no_auto_psv)) _T1Interrupt (void)
 
 // 2016/3/3 Motor Stal & PWM Cost
 #ifdef BUG_No88_M2overcurrentfault
-     if(cnt_motor_stop>10)
+//     if(cnt_motor_stop>10)
+     if((cnt_motor_stop%10)==0)		//20180629 from > to =  No56 retry
      {
         if (requiredDirection == CW || requiredDirection== CCW)
         {
@@ -470,6 +471,7 @@ void __attribute__((interrupt, no_auto_psv)) _IC1Interrupt (void)
 	unsigned char lucSectorDiffrence = 0;
 
     IFS0bits.IC1IF = 0;
+    cnt_motor_stop = 0;		//20180629 No56 retry
 
     currentSector = getCurrentSectorNo();
 
@@ -714,6 +716,7 @@ void __attribute__((interrupt, no_auto_psv)) _IC3Interrupt (void)
 	unsigned char lucSectorDiffrence = 0;
 
     IFS2bits.IC3IF = 0;
+    cnt_motor_stop = 0;		//20180629 No56 retry
 
     currentSector = getCurrentSectorNo();
 
@@ -989,7 +992,7 @@ VOID measureActualSpeed(VOID)
         totalTimePeriod = 0;
         hall2Triggered = 0;
 // 2016/3/3 Motor Stal & PWM Cost
-		cnt_motor_stop = 0;
+//		cnt_motor_stop = 0;		//20180629 delete
     }
 	if (period < MINPERIOD)
 		period = MINPERIOD;
