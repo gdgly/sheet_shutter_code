@@ -1941,7 +1941,11 @@ VOID checkRampCommand(VOID)
         else
         {
             if(
-				((!rampStatusFlags.rampOpenInProgress) && (!rampOutputStatus.shutterMoving)) ||
+#ifdef BUG_No94_M2closeTOopen
+				((!rampStatusFlags.rampOpenInProgress) && (!rampOutputStatus.shutterMoving)&&(measuredSpeed<=1000)) ||                    
+#else
+				((!rampStatusFlags.rampOpenInProgress) && (!rampOutputStatus.shutterMoving)) ||                    
+#endif                    
 				// Added to overcome installation issue (A100) - RN- NOV 2015
 				(gucInstallationInitiated && (inputFlags.value == OPEN_SHUTTER_JOG_10))
 			)
