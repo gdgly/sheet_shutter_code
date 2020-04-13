@@ -441,6 +441,7 @@ void __attribute__((interrupt, no_auto_psv)) _IC1Interrupt (void)
     SHORT currentSector;
 
     IFS0bits.IC1IF = 0;
+    PORTAbits.RA7=!PORTAbits.RA7;
 
     currentSector = getCurrentSectorNo();
 
@@ -510,6 +511,7 @@ void __attribute__((interrupt, no_auto_psv)) _IC2Interrupt (void)
 	SHORT currentSector;
 
     IFS0bits.IC2IF = 0;
+    PORTAbits.RA7=!PORTAbits.RA7;
 
 	// 2016/3/3 Motor Stal & PWM Cost
 	cnt_motor_stop = 0;
@@ -588,6 +590,7 @@ void __attribute__((interrupt, no_auto_psv)) _IC3Interrupt (void)
     SHORT currentSector;
 
     IFS2bits.IC3IF = 0;
+    PORTAbits.RA7=!PORTAbits.RA7;
 
     currentSector = getCurrentSectorNo();
 
