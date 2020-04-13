@@ -219,12 +219,13 @@ void __attribute__((interrupt, no_auto_psv)) _T1Interrupt (void)
             currentSector = getCurrentSectorNo();
             calculatePhaseValue(currentSector);
         }
-     }    
-#endif
+     } 
+#endif    
      if(cnt_motor_stop>10)  
      {
          measuredSpeed = 0;
      }    
+
 
 #ifdef ENABLE_MOTOR_CABLE_FAULT
 	// **********************************************************************************************************************************************************
@@ -374,10 +375,17 @@ VOID monitorSectorRotation(VOID)
         //check if we have crossed the sector rotation time required then immediately stop motor.
         if(monitorSectorRoatCnt > MS_500T)
         {
+#ifdef BUG_CQxx_BD_IGBTdamage
+            //if emergency switch is triggered the stop shutter immediately
+            forceStopShutter();
+			// 2016/11/16 When Down , Missing Save Origin Position.
+			hallCounts_bak = 0x7FFF;            
+#else
             rampCurrentState = RAMP_PWM_COASTING;
             pwmCostingReq = TRUE;
             currentLimitClamp = controlOutput;
-            outputDecRate = __builtin_divud(currentLimitClamp, PWM_COASTING_TIME);
+            outputDecRate = __builtin_divud(currentLimitClamp, PWM_COASTING_TIME);            
+#endif             
             uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorStall = TRUE;
         }
         else

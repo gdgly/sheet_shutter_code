@@ -1598,7 +1598,7 @@ VOID checkPhotoElecObsLevel(BOOL sts)
                            //set fault status
                            //uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.peObstacle = TRUE;   //bug_No.78
                            inputFlags.value = OPEN_SHUTTER_JOG_50;
-                           rampCurrentState = RAMP_START;
+                           rampCurrentState = RAMP_START;     
                           //2016/09/03 PHOTOELECTRIC_SENSOR 2nd input after not reverce
                           uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.peSensorStatus = photoElecObsSensTrigrd;   //bug_No.97
 
@@ -1941,11 +1941,24 @@ VOID checkRampCommand(VOID)
         else
         {
             if(
-				((!rampStatusFlags.rampOpenInProgress) && (!rampOutputStatus.shutterMoving)) ||
+#ifdef BUG_No94_M2closeTOopen
+				((!rampStatusFlags.rampOpenInProgress) && (!rampOutputStatus.shutterMoving)&&(measuredSpeed<500)) ||   //1000-->500 20171027  close to open retset phase for shengzheng   
 				// Added to overcome installation issue (A100) - RN- NOV 2015
 				(gucInstallationInitiated && (inputFlags.value == OPEN_SHUTTER_JOG_10))
 			)
             {
+                if(rampStatusFlags.rampDcInjectionOn)
+                {
+                    rampDcInjectionOnCounter=0;
+                }
+                phaseOffsetCW=2366;  //add 20171027  close to open retset phase for shengzheng                    
+#else
+				((!rampStatusFlags.rampOpenInProgress) && (!rampOutputStatus.shutterMoving)) ||     
+				// Added to overcome installation issue (A100) - RN- NOV 2015
+				(gucInstallationInitiated && (inputFlags.value == OPEN_SHUTTER_JOG_10))
+			)
+            {                    
+#endif                    
 				gucInstallationInitiated = SERVICED;
                 rampCurrentState = RAMP_START;
                 rampStatusFlags.rampOpenInProgress = 1;
