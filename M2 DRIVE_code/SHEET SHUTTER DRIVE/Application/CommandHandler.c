@@ -88,7 +88,7 @@
 #define EXPECTED_CRC_APERTUREHEIGHT                0x7292
 
 //CONST UINT32 drive_fw_version = 0x00000406;
-CONST UINT32 drive_fw_version = 18046;    //Drive version 1804.6        20170418   201703_No.29
+CONST UINT32 drive_fw_version = 18047;    //Drive version 1804.7        20170418   201703_No.29
 
 enum {
 	no_error = 0,
@@ -546,7 +546,11 @@ VOID commandHandler(VOID)
                             else status = nack;
                         }
 #ifdef BUG_NoCQ07_Limit_enterCmdRcvd    //20170627  201703_No.CQ07
-                        else if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveInstallationStatus.bits.installationValidation == TRUE)
+						//20180718 Bug_1807_No45,No82
+                        //else if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveInstallationStatus.bits.installationValidation == TRUE)
+                        else if((uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveInstallationStatus.bits.installationValidation == TRUE)||
+                             (uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveInstallationStatus.bits.installationFailed == TRUE)||
+                                 ((uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveInstallationStatus.bits.installA102 == TRUE)&&(originSensorSts)))
                             shutterInstall.enterCmdRcvd = FALSE;
                         else
 #else
