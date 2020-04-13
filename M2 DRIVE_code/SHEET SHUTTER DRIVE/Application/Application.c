@@ -1096,7 +1096,9 @@ VOID powerUpCalibration(VOID)
                     if(powerUpCalib.osToggle)
                     {
                         //update the target position and state machine
-                        powerUpCalib.targetPosition = powerUpCalib.currentPosition - HALL_COUNT(OS_VALIDATION_LENGTH);
+						//20180726 Bug_No94,No95,No97
+                        //powerUpCalib.targetPosition = powerUpCalib.currentPosition - HALL_COUNT(OS_VALIDATION_LENGTH);
+                        powerUpCalib.targetPosition = OS_VALIDATION_LENGTH;
                         powerUpCalib.currentState = CALIB_MOVE_UP_50MM;
                         //update input to ramp generator
                         inputFlags.value = OPEN_SHUTTER_JOG_50;
@@ -1304,25 +1306,25 @@ VOID checkShutterInstallation(VOID)
     ShutterInstallationStep = readBYTE(EEP_SHUTTER_INSTALLATION_STEP);
     if(ShutterInstallationStep == 0)
     {
-    if(uDriveCommonBlockEEP.stEEPDriveCommonBlock.lowerStoppingPos_A101 <=
-       uDriveCommonBlockEEP.stEEPDriveCommonBlock.upperStoppingPos_A100)
-    {
-        triggerInstallation = TRUE;
-    }
-    else if(uDriveCommonBlockEEP.stEEPDriveCommonBlock.photoElecPosMonitor_A102 <=
+        if(uDriveCommonBlockEEP.stEEPDriveCommonBlock.lowerStoppingPos_A101 <=
             uDriveCommonBlockEEP.stEEPDriveCommonBlock.upperStoppingPos_A100)
-    {
-        triggerInstallation = TRUE;
-    }
-    else if(uDriveCommonBlockEEP.stEEPDriveCommonBlock.photoElecPosMonitor_A102 >=
-            uDriveCommonBlockEEP.stEEPDriveCommonBlock.lowerStoppingPos_A101)
-    {
-        triggerInstallation = TRUE;
-    }
-    else
-    {
-        triggerInstallation = FALSE;
-    }
+        {
+            triggerInstallation = TRUE;
+        }
+        else if(uDriveCommonBlockEEP.stEEPDriveCommonBlock.photoElecPosMonitor_A102 <=
+                uDriveCommonBlockEEP.stEEPDriveCommonBlock.upperStoppingPos_A100)
+        {
+            triggerInstallation = TRUE;
+        }
+        else if(uDriveCommonBlockEEP.stEEPDriveCommonBlock.photoElecPosMonitor_A102 >=
+                uDriveCommonBlockEEP.stEEPDriveCommonBlock.lowerStoppingPos_A101)
+        {
+            triggerInstallation = TRUE;
+        }
+        else
+        {
+            triggerInstallation = FALSE;
+        }
     }
     else
     {
@@ -1609,7 +1611,9 @@ VOID shutterInstallation(VOID)
 						shutterInstall.osToggle = 0;
                         ShutterInstallationStepNeedSave = FALSE;
                         //update the target position and state machine
-                        shutterInstall.targetPosition = shutterInstall.currentPosition - HALL_COUNT(OS_VALIDATION_LENGTH);
+						//20180726 Bug_No94,No95,No97
+                        //shutterInstall.targetPosition = shutterInstall.currentPosition - HALL_COUNT(OS_VALIDATION_LENGTH);
+                        shutterInstall.targetPosition = OS_VALIDATION_LENGTH;
                         shutterInstall.currentState = INSTALL_MOVE_UP_50MM;
                         //update input to ramp generator
                         inputFlags.value = OPEN_SHUTTER_JOG_50;
@@ -1618,7 +1622,9 @@ VOID shutterInstallation(VOID)
                     else
                     {
                         //check if we have reached to upper limit then set installation failed status
-                        if(shutterInstall.currentPosition <= shutterInstall.targetPosition)
+                        //20180726 Bug_No94,No95,No97
+                        //if(shutterInstall.currentPosition <= shutterInstall.targetPosition)
+                        if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterUpperLimit)
                         {
                             //set drive installation failed and abort installation process
                             uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveInstallationStatus.bits.installationFailed = TRUE;
@@ -1678,7 +1684,7 @@ VOID shutterInstallation(VOID)
                     break;
                 }
             case INSTALL_MOVE_TO_UP_LIMIT:
-            case INSTALL_MOVE_TO_DN_LIMIT:
+//            case INSTALL_MOVE_TO_DN_LIMIT:
                 {
                     //move the shutter 500mm up to detect upper limit. if upper limit is not detected within this
                     //range then set calibration faliled error flag
