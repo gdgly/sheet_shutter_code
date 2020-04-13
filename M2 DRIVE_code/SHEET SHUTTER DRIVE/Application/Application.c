@@ -111,7 +111,12 @@ BYTE gucInstallationCalledFrom = 0;
 //20160806 AOYAGI
 	#define RISE_GEAR_POS1_OFFSET    900//600//850//300//500 20160915   //add 20161018
 	#define RISE_GEAR_POS2_OFFSET    400//300//450//200//450 20160915   //add 20161018
+  #ifdef BUG_No84_M2speed_Change           //20170614  201703_No.84
+	#define RISE_GEAR_POS3_OFFSET    0
+  #else
 	#define RISE_GEAR_POS3_OFFSET    200//100//200
+  #endif
+
 
 	#define FALL_GEAR_POS1_OFFSET    900//600//1150//300//500 20160915  //add 20161018
 	#define FALL_GEAR_POS2_OFFSET    400//300//450//200//450 20160915   //add 20161018
@@ -143,7 +148,8 @@ UINT8  FLAG_StartApertureCorrection = 0;   //bug_No.12
 UINT8  FLAG_open_shutter_one = 0;
 
 UINT8 Power_ON_igbtOverTemp=0;
-UINT16 Time_uart_count=0;    
+UINT16 Time_uart_count=0;  
+UINT8 Flag_powerUpCalib_osToggle=0;
 /******************************************************************************
  * initApplication
  *

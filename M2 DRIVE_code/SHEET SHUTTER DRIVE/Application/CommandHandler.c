@@ -88,7 +88,7 @@
 #define EXPECTED_CRC_APERTUREHEIGHT                0x7292
 
 //CONST UINT32 drive_fw_version = 0x00000406;
-CONST UINT32 drive_fw_version = 17062;    //Drive version 1704.1        20170418   201703_No.29
+CONST UINT32 drive_fw_version = 17063;    //Drive version 1704.1        20170418   201703_No.29
 enum {
 	no_error = 0,
 	UART_channel_disabled,
@@ -845,6 +845,10 @@ VOID commandHandler(VOID)
                             {
                                 parameter  = drive_fw_version;
                             }
+#ifdef BUG_No76or73_powerUpCalib_osToggle      //20170607  201703_No.76 or 73      
+                            if(paramIndex == 537)
+                                        Flag_powerUpCalib_osToggle=1;                  
+#endif                            
                            if((paramIndex == 605)&&(FLAG_StartApertureCorrection>0))
                             {
                                if((parameter&0x00000040)==0x00000040)
@@ -981,8 +985,12 @@ VOID commandHandler(VOID)
                             uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveRuntimeCalibration)
                     {
                                         powerOnCalibration = INITIATED;
-#ifdef BUG_No76_powerUpCalib_osToggle      //20170607  201703_No.76
-                                        powerUpCalib.osToggle=0;                  
+#ifdef BUG_No76or73_powerUpCalib_osToggle      //20170607  201703_No.76  
+                                        if(Flag_powerUpCalib_osToggle==1)
+                                        {
+                                           Flag_powerUpCalib_osToggle=0;
+                                           powerUpCalib.osToggle=0;  
+                                        }
 #endif                                        
                     }
                     if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveInstallation)
@@ -1134,8 +1142,11 @@ BOOL readCurrSensorState(BOOL scanPE_Sensor)
         sts = TRUE;
     }
 
-
-    if(photoElecObsSensTrigrd && scanPE_Sensor == TRUE)
+#ifdef BUG_No79_FaultPeObstacle     //20170608  201703_No.79
+    if(photoElecObsSensTrigrd && scanPE_Sensor == TRUE && (rampCurrentPosition < uDriveCommonBlockEEP.stEEPDriveCommonBlock.photoElecPosMonitor_A102))    
+#else
+    if(photoElecObsSensTrigrd && scanPE_Sensor == TRUE)    
+#endif
     {
         uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.peObstacle = TRUE;
         sts = TRUE;

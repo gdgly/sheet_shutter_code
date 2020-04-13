@@ -1,5 +1,6 @@
 
 #include "eeprom.h"
+#include "./Common/Extern/Extern.h"
 
 //Bead shutter default parameters
 //CONST _EEPDriveMotorCtrlBlock uEEP_BeadDriveMotorCtrlBlockDefault =
@@ -105,7 +106,11 @@ CONST _EEPDriveMotorCtrlBlock uEEP_M2DriveMotorCtrlBlockDefault =
 #if 1
 		900,//600,//850,    //UINT16 riseChangeGearPos1_A103; //20160915  //add 20161018
 		400,//300,//450,    //UINT16 riseChangeGearPos2_A104; //20160915  //add 20161018
-		200,      //UINT16 riseChangeGearPos3_A105;
+   #ifdef BUG_No84_M2speed_Change              //20170614  201703_No.84
+		0,      //UINT16 riseChangeGearPos3_A105;        
+   #else
+		200,      //UINT16 riseChangeGearPos3_A105;        
+   #endif
 		900,//600,//1150,    //UINT16 fallChangeGearPos1_A106; //20160915  //add 20161018
 		400,//300,//450,    //UINT16 fallChangeGearPos2_A107; //20160915   //add 20161018
 		200,      //UINT16 fallChangeGearPos3_A108;

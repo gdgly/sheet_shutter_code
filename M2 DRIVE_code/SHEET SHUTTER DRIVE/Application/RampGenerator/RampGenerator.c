@@ -531,7 +531,11 @@ VOID initJogProfileData(VOID)
     rampJogUpProfile[i].startPosition = rampJogUpProfile[i-1].endPosition;
     rampJogUpProfile[i].endPosition = uDriveCommonBlockEEP.stEEPDriveCommonBlock.upperStoppingPos_A100;
     rampJogUpProfile[i].startSpeed = rampJogUpProfile[i-1].endSpeed;
+#ifdef BUG_No84_M2speed_Change          //20170614  201703_No.84
+    rampJogUpProfile[i].endSpeed = 500;
+#else
     rampJogUpProfile[i].endSpeed = SHUTTER_SPEED_MIN_STOP;
+#endif    
     rampJogUpProfile[i].speedChangeRate = gs16UpDecelaration;
 
     //Initialize Jog down going profile
@@ -1149,7 +1153,13 @@ VOID monitorSafetySensors(VOID)
 VOID updatePhotoElectricDebounceTime(VOID)
 {
 #ifdef PROGRAMMABLE_DEBOUNCE
+  #ifdef BUG_No51_SnowA008    //20170612  201703_No.51
+    if(uDriveApplBlockEEP.stEEPDriveApplBlock.snowModePhotoelec_A008 !=0)
+      sensorActiveDebounceValue[PHOTOELECTRIC_SENSOR] = uDriveApplBlockEEP.stEEPDriveApplBlock.snowModePhotoelec_A008 *250;
+  #else
     sensorActiveDebounceValue[PHOTOELECTRIC_SENSOR] = uDriveApplBlockEEP.stEEPDriveApplBlock.snowModePhotoelec_A008;
+  #endif
+
 #endif
 }
 
@@ -1232,6 +1242,10 @@ VOID initSensorList(VOID)
     photoElecObsSensTrigrd = sensorList[PHOTOELECTRIC_SENSOR].sensorCurrSteadyVal;
     tempSensTrigrd = sensorList[TEMPERATURE_SENSOR].sensorCurrSteadyVal;
     originSensorDetected = sensorList[ORIGIN_SENSOR].sensorCurrSteadyVal;
+    
+#ifdef  BUG_No51_SnowA008  //20170612  201703_No.51
+    updatePhotoElectricDebounceTime();    
+#endif    
 }
 #endif	//	PROGRAMMABLE_DEBOUNCE
 
