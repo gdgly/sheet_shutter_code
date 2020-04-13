@@ -176,8 +176,6 @@ SHORT phaseInc;
 
 BOOL  FLAG_overLoad =FALSE;
 WORD  OverLoad_cnt=0;
-WORD  HALL_cnt=0;
-WORD  TIME_HALL_cnt=0;
 
 /* This function is used to measure actual running speed of motor */
 VOID measureActualSpeed(VOID);
@@ -221,14 +219,12 @@ void __attribute__((interrupt, no_auto_psv)) _T1Interrupt (void)
             currentSector = getCurrentSectorNo();
             calculatePhaseValue(currentSector);
         }
-        measuredSpeed = 0;
      }    
-#else
+#endif
      if(cnt_motor_stop>10)  
      {
          measuredSpeed = 0;
      }    
-#endif
 
 #ifdef ENABLE_MOTOR_CABLE_FAULT
 	// **********************************************************************************************************************************************************
@@ -333,32 +329,6 @@ SHORT getCurrentSectorNo(VOID)
 
 VOID monitorSectorRotation(VOID)
 {
-#ifdef BUG_No97_IGBT_Foult
-    WORD def_HALL_cnt=24;
-    if(flags.motorRunning==0)
-    {
-        HALL_cnt=0;
-        TIME_HALL_cnt=0;
-    }
-    else TIME_HALL_cnt++;
-    //check if The Hall count is less than 24 in 2 seconds then immediately stop motor
-    if((uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveInstallation == FALSE)&&
-            (HALL_cnt<def_HALL_cnt)&&(TIME_HALL_cnt>=2000))
-    {
-            //if emergency switch is triggered the stop shutter immediately
-            forceStopShutter();
-			// 2016/11/16 When Down , Missing Save Origin Position.
-			hallCounts_bak = 0x7FFF;
-
-            //set emergency stop error flag
-            uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorStall = TRUE;        
-    }
-    else if(HALL_cnt>=def_HALL_cnt)
-    {
-        HALL_cnt=0;
-        TIME_HALL_cnt=0;        
-    }
-#endif    
     if((!rampStatusFlags.rampDcInjectionOn)&&(!rampStatusFlags.rampBrakeOn))
     {
         //currentSectorNo = sector;
@@ -436,10 +406,6 @@ void monitorShutterFalseMovement(void)
 {
 	static BYTE lsucUp = 0;
 	static BYTE lsucDown = 0;
-    
-#ifdef BUG_No97_IGBT_Foult
-    HALL_cnt++;
-#endif    
 	// Added for displaying errors on display screen in case of false movement - RN - NOV 2015
 	if(currentDirection == requiredDirection)
 	{

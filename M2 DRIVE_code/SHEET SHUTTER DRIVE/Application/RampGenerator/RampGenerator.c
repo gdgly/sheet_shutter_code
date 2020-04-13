@@ -986,11 +986,6 @@ VOID stopMotor(VOID)
 #endif
     AD1CON1bits.ADON = 0;   //turn OFF ADC module
 	flags.motorRunning = 0;	/* Indicate that the motor has been stopped */
-    
-#ifdef BUG_No97_IGBT_Foult
-    HALL_cnt=0;
-    TIME_HALL_cnt=0;    
-#endif    
 }
 
 /******************************************************************************
@@ -1946,11 +1941,7 @@ VOID checkRampCommand(VOID)
         else
         {
             if(
-#ifdef BUG_No94_M2closeTOopen
-				((!rampStatusFlags.rampOpenInProgress) && (!rampOutputStatus.shutterMoving)&&(measuredSpeed<=1000)) ||                    
-#else
-				((!rampStatusFlags.rampOpenInProgress) && (!rampOutputStatus.shutterMoving)) ||                    
-#endif                    
+				((!rampStatusFlags.rampOpenInProgress) && (!rampOutputStatus.shutterMoving)) ||
 				// Added to overcome installation issue (A100) - RN- NOV 2015
 				(gucInstallationInitiated && (inputFlags.value == OPEN_SHUTTER_JOG_10))
 			)
