@@ -73,7 +73,7 @@ UINT16 PhaseAdvance;
                             /* transitions and Forcing steps according to the */
                             /* actual position of the motor */
 
-#define MS_500T 10000//1000//300//500          /* after this time has elapsed, the motor is    */ //20160804
+//#define MS_500T 10000//1000//300//500          /* after this time has elapsed, the motor is    */ //20160804
 #define MS_500T 300		//20180903
                             /* consider stalled and it's stopped    */
 
@@ -998,7 +998,8 @@ VOID initSpeedControllerVariables(VOID)
 	SHORT lshCurrentLimitClampNew;
 
     hall2Triggered = 0;
-    totalTimePeriod = 0;
+//    totalTimePeriod = 0;		// 20190319 delete to kahuka error
+    totalTimePeriod = MAXPERIOD;	// 20190319 add to kahuka error
     measuredSpeed = 0;
 //    if(uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.shutterType_A537 == BEAD_SHUTTER)
 //    {
