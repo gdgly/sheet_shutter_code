@@ -291,6 +291,20 @@ typedef struct _safetySensors
 }safetySensors_t;
 #endif	//	PROGRAMMABLE_DEBOUNCE
 
+// 201806008 To move from "RampGenerator.c" by IME
+typedef enum rampProfileNo
+{
+    RAMP_INCH_UP_PROFILE,
+    RAMP_INCH_DN_PROFILE,
+    RAMP_JOG_UP_PROFILE,
+    RAMP_JOG_DN_PROFILE,
+    RAMP_APERTURE_UP_PROFILE,
+    RAMP_APERTURE_DN_PROFILE,
+    RAMP_GOING_UP_PROFILE,
+    RAMP_GOING_DN_PROFILE,
+    RAMP_PROFILE_END
+}rampProfileNo_en;
+
 EXTERN InputFlags_u inputFlags;     /* Application Input flags */
 EXTERN InputFlags_u inputFlags_Installation;
 EXTERN StatusFlags_t flags;         /* Application status flag */

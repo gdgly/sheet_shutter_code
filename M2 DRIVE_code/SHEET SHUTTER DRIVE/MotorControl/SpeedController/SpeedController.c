@@ -30,6 +30,7 @@
 #include "./Middleware/ParameterDatabase/eeprom.h"
 #include "./Common/Delay/Delay.h"
 #include "./DMCI/RtdmInterface.h"
+#include "./Application/CommandHandler.h"
 
 //	Macro to enable feature of motor cable fault - Dec 2015
 #define ENABLE_MOTOR_CABLE_FAULT
@@ -51,11 +52,12 @@
 //#define PHASE_OFFSET_CCW_MAX 9828 //5096     //2016/08/17 Down Moving after Over Current by IME
 //#define PHASE_OFFSET_INC_STEP 1
 //#define PHASE_OFFSET_DEC_STEP 20
-#define PHASE_OFFSET_CCW 5096
+/*#define PHASE_OFFSET_CCW 5096
 #define PHASE_OFFSET_CW_MAX 8008
 #define PHASE_OFFSET_CCW_MAX 8554
 #define PHASE_OFFSET_INC_STEP 10
 #define PHASE_OFFSET_DEC_STEP 5
+*/
 #else
 #define PHASE_OFFSET_CW 10000
 #define PHASE_OFFSET_CCW 0
@@ -65,7 +67,7 @@
 #define MAX_PH_ADV_DEG      1
 #define MAX_PH_ADV 		(int)(((float)MAX_PH_ADV_DEG / 360.0) * 65536.0)
 UINT16 PhaseAdvance;
-
+extern SHORT currentRampProfileNo;
 
 /*******************************************************************************/
 /* These Phase values represent the base Phase value of the sinewave for each  */
@@ -88,7 +90,7 @@ UINT16 PhaseAdvance;
 //#define MS_500T 10000//5000//1000//300//500          /* after this time has elapsed, the motor is    */
 // Measures against overcurrent error 20180305 by IME
 //#define MS_500T 2000		// 2017/06/13 by IME
-#define MS_500T 500
+#define MS_500T 300 //20180627 No56 Motorlock 500->300          /* after this time has elapsed, the motor is    */ //20160804
                             /* consider stalled and it's stopped    */
 
 /* PI parameters */
@@ -185,6 +187,7 @@ SHORT nextSectorNo;
 SHORT previousSectorNo;
 SHORT phaseInc;
 
+BOOL  down_controlOutput_flag =FALSE;
 BOOL  FLAG_overLoad =FALSE;
 WORD  OverLoad_cnt=0;
 
@@ -223,7 +226,8 @@ void __attribute__((interrupt, no_auto_psv)) _T1Interrupt (void)
 
 // 2016/3/3 Motor Stal & PWM Cost
 #ifdef BUG_No88_M2overcurrentfault
-     if(cnt_motor_stop>5)
+//     if(cnt_motor_stop>5)
+     if((cnt_motor_stop%5)==0)		//20180629 from > to =  No56 retry
      {
         if (requiredDirection == CW || requiredDirection== CCW)
         {
@@ -471,6 +475,7 @@ void __attribute__((interrupt, no_auto_psv)) _IC1Interrupt (void)
     SHORT currentSector;
 
     IFS0bits.IC1IF = 0;
+    cnt_motor_stop = 0;		//20180629 No56 retry
 
     currentSector = getCurrentSectorNo();
 
@@ -618,6 +623,7 @@ void __attribute__((interrupt, no_auto_psv)) _IC3Interrupt (void)
     SHORT currentSector;
 
     IFS2bits.IC3IF = 0;
+    cnt_motor_stop = 0;		//20180629 No56 retry
 
     currentSector = getCurrentSectorNo();
 
@@ -671,6 +677,8 @@ void __attribute__((interrupt, no_auto_psv)) _IC3Interrupt (void)
 VOID calculatePhaseValue(WORD sectorNo)
 {
 // Measures against overcurrent error 20180305 by IME
+SHORT PhaseCurrentPosition;
+    PhaseCurrentPosition = hallCounts;
 /*
     if(measuredSpeed >= 500)
     {
@@ -701,15 +709,38 @@ VOID calculatePhaseValue(WORD sectorNo)
             phaseOffsetCCW = PHASE_OFFSET_CCW;
     }
 */
-	if(requiredDirection == CW)
+	if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.drivePowerOnCalibration
+		|| uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveRuntimeCalibration
+		|| uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveInstallation)
 	{
-		if(hallCounts>uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.riseChangeGearPos1_A103)
+		if(requiredDirection == CW)
 		{
-	    	if(measuredSpeed < 100)
+			phaseOffsetCW = PHASE_OFFSET_CW_START;
+		}
+		else if(requiredDirection == CCW)
+		{
+			phaseOffsetCCW = PHASE_OFFSET_CCW_MAX;
+		}
+	}
+	else if(requiredDirection == CW)
+	{
+		if(PhaseCurrentPosition>uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.riseChangeGearPos1_A103)
+		{
+			// 20180607 by IME
+			if((currentRampProfileNo==RAMP_APERTURE_UP_PROFILE)&&
+				(PhaseCurrentPosition<(uDriveCommonBlockEEP.stEEPDriveCommonBlock.apertureHeightPos_A130
+					+uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.riseChangeGearPos1_A103)))
 			{
-				phaseOffsetCW = PHASE_OFFSET_CW;
+				if(phaseOffsetCW > PHASE_OFFSET_CW)
+				    phaseOffsetCW -= PHASE_OFFSET_DEC_STEP;
+				if(phaseOffsetCW <= PHASE_OFFSET_CW)
+				    phaseOffsetCW = PHASE_OFFSET_CW;
 			}
-	    	else if(measuredSpeed < 500)
+	    	if(measuredSpeed < 400)
+			{
+				phaseOffsetCW = PHASE_OFFSET_CW_START;
+			}
+	    	else if(measuredSpeed < 700)
 			{
 				if(phaseOffsetCW < PHASE_OFFSET_CW_MAX)
 					phaseOffsetCW++;
@@ -734,11 +765,11 @@ VOID calculatePhaseValue(WORD sectorNo)
 	}
 	else if(requiredDirection == CCW)
 	{
-		if(hallCounts<uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.fallChangeGearPos1_A106)
+		if(PhaseCurrentPosition<uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.fallChangeGearPos1_A106)
 		{
-	    	if(measuredSpeed < 100)
+	    	if(measuredSpeed < 300)
 	    	{
-				phaseOffsetCCW = PHASE_OFFSET_CCW_MAX;
+				phaseOffsetCCW = PHASE_OFFSET_CCW_START;
 			}
 	    	else if(measuredSpeed < 500)
 			{
@@ -837,7 +868,7 @@ VOID measureActualSpeed(VOID)
         totalTimePeriod = 0;
         hall2Triggered = 0;
 // 2016/3/3 Motor Stal & PWM Cost
-		cnt_motor_stop = 0;
+//		cnt_motor_stop = 0;		//20180629 delete
     }
 	if (period < MINPERIOD)
 		period = MINPERIOD;
@@ -860,6 +891,8 @@ VOID speedControl(VOID)
 {
      //***********************20160906_add over load start************************
 // Measures against overcurrent error 20180305 by IME
+SHORT PhaseCurrentPosition;
+    PhaseCurrentPosition = hallCounts;
 /*
     SHORT  refSpeed_80_pct;
     refSpeed_80_pct = refSpeed*5/10;     //50%
@@ -943,6 +976,7 @@ VOID speedControl(VOID)
 			}
 		}
 	}
+	speedPIparms.qOutMin = -(currentLimitClamp);
     speedPIparms.qInRef = refSpeed;
     speedPIparms.qInMeas = measuredSpeed;
 	if(FLAG_overLoad)
@@ -952,16 +986,19 @@ VOID speedControl(VOID)
 			FLAG_overLoad = 0;
 			speedPIparms.qOutMax = 4*measuredSpeed+5000;
 		}
-		else
+		else if(measurediTotal>15000)
 		{
 			speedPIparms.qOutMax = 5000;
+		}
+		else
+		{
+			speedPIparms.qOutMax = 7000;
 		}
 	}
 	else
 	{
 		speedPIparms.qOutMax = 4*measuredSpeed+5000;
 	}
-	speedPIparms.qOutMin = -(currentLimitClamp);
 	//	Added on 6 Aug 2015 to enable motor rotation in no load condition for bead type shutter (while shutter go down operation)
 	if(rampStatusFlags.rampMaintainHoldingDuty == 0 && monitorSectorRoatCnt > 150)
 	{
@@ -970,18 +1007,55 @@ VOID speedControl(VOID)
 
     if(rampStatusFlags.rampMaintainHoldingDuty)
     {
-        if(measuredSpeed < 300)//SHUTTER_SPEED_MIN_STOP)
+    //20170209***igbtfail
+		if(requiredDirection == CCW)
+		{
+			if(rampOutputStatus.shutterCurrentPosition >= (uDriveCommonBlockEEP.stEEPDriveCommonBlock.lowerStoppingPos_A101 -
+									uDriveApplBlockEEP.stEEPDriveApplBlock.overrunProtection_A112))
+			{
+				if(monitorSectorRoatCnt > 300)
+				{
+					lockApply;
+					controlOutput = 0;
+					stopMotor();
+					rampStatusFlags.rampMaintainHoldingDuty = 0;
+					rampOutputStatus.shutterMoving = 0;
+					rampStatusFlags.shutterOperationStart = 0;
+					rampStatusFlags.shutterOperationComplete = 1;
+					rampStatusFlags.rampBrakeOn = 1;
+				}
+			}
+			if(measuredSpeed < 500)
+			{
+			    controlOutput += HOLDING_DUTY_INC;
+				if(controlOutput>5000) controlOutput=5000;
+			}
+			else
+			{
+				rampStatusFlags.rampMaintainHoldingDuty = 0;
+				speedPIparms.qdSum = (LONG)controlOutput << 15;
+				speedPIparms.qOut = controlOutput;
+
+				calcPiNew(&speedPIparms);
+				if(flags.speedControl)
+					controlOutput = speedPIparms.qOut;
+			}
+		}
+		else if(measuredSpeed < 500)
         {
             controlOutput += HOLDING_DUTY_INC;
-         	if(controlOutput>5000){
-				controlOutput=5000;
+			if(FLAG_overLoad&&(measurediTotal>15000))
+			{
+				if(controlOutput>5000) controlOutput=5000;
+			}
+			else
+			{
+				if(controlOutput>5000) controlOutput=5000;
 			}
         }
         else
         {
             rampStatusFlags.rampMaintainHoldingDuty = 0;
-            speedPIparms.qInRef = measuredSpeed;
-            speedPIparms.qInMeas = measuredSpeed;
             speedPIparms.qdSum = (LONG)controlOutput << 15;
             speedPIparms.qOut = controlOutput;
 

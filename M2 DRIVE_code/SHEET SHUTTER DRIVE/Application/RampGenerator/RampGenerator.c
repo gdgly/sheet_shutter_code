@@ -40,6 +40,7 @@
 #include "./Application/Application.h"
 #include "./Application/CommandHandler.h"
 #include "./MotorControl/CurrentController/CurrentLimit.h"
+#include "./MotorControl/SpeedController/SpeedController.h"
 
 #define CHARGE_BOOTSTRAP_CAP    1
 
@@ -57,7 +58,7 @@
 #define RAMP_STARTING_CURRENT_STEP  500         //Current change step is 200mA
 //2016/09/27 Overun
 //#define RAMP_STARTING_SPEED_MAX     3600        //Limit starting speed to 3600rpm
-#define RAMP_STARTING_SPEED_MAX     2600        //Limit starting speed to 2600rpm
+#define RAMP_STARTING_SPEED_MAX     2450//2600        //Limit starting speed to 2600rpm //20180510
 
 #define MECHANICAL_LOCK_ACTIVATION_DELAY    50//100//500//1000    //Time delay required to energize mechanical lock 20160915
 #define MECHANICAL_LOCK_DEACTIVATION_DELAY  50      //Time delay required to de-energize mechanical lock
@@ -81,7 +82,8 @@
 												// 18 (750W motor) X 3
 
 /* Enumaration for ramp profile */
-typedef enum rampProfileNo
+// 20180608 Move "RampGenerator.h"
+/*typedef enum rampProfileNo
 {
     RAMP_INCH_UP_PROFILE,
     RAMP_INCH_DN_PROFILE,
@@ -93,7 +95,7 @@ typedef enum rampProfileNo
     RAMP_GOING_DN_PROFILE,
     RAMP_PROFILE_END
 }rampProfileNo_en;
-
+*/
 //Declare array of sensors
 #ifndef PROGRAMMABLE_DEBOUNCE
 safetySensors_t sensorList[SAFETY_SENSOR_END] =
@@ -135,6 +137,8 @@ safetySensors_t sensorList[SAFETY_SENSOR_END] =
 
 //	Ingnore false debounce time
 #define	FALSE_DEBOUNCE_TIME					5//20	//	Reduced to handle "offset at upper & lower limit"
+
+#define	LOWERSTOPPINGPOS_OFFSET		15		//20180629 No58 over run
 
 safetySensors_t sensorList[SAFETY_SENSOR_END] =
 {
@@ -235,6 +239,9 @@ BYTE gucShutterFalseDownMovementCount = 0;
 //	Debug count to monitor movement of shutter in wrong direction
 BYTE gucTempFalseMovementCount = 0;
 #endif
+
+// Measures against overcurrent error 20180123 by IME
+extern BOOL  FLAG_overLoad;
 
 /******************************************************************************
  * initRampGenerator
@@ -376,7 +383,9 @@ VOID initRampProfileData(VOID)
     {
         rampUpGoingProfile[i].rampGenFlags = upBrakeApply; //Value to apply brake
         rampUpGoingProfile[i].startPosition = rampUpGoingProfile[i-1].endPosition;
-        rampUpGoingProfile[i].endPosition = uDriveCommonBlockEEP.stEEPDriveCommonBlock.upperStoppingPos_A100;
+//20180629 No58 over run
+//        rampUpGoingProfile[i].endPosition = uDriveCommonBlockEEP.stEEPDriveCommonBlock.upperStoppingPos_A100;
+        rampUpGoingProfile[i].endPosition = uDriveCommonBlockEEP.stEEPDriveCommonBlock.upperStoppingPos_A100 + LOWERSTOPPINGPOS_OFFSET;
         rampUpGoingProfile[i].startSpeed = rampUpGoingProfile[i-1].endSpeed;
         rampUpGoingProfile[i].endSpeed = SHUTTER_SPEED_MIN_STOP;
         rampUpGoingProfile[i].speedChangeRate = gs16UpDecelaration;
@@ -401,7 +410,9 @@ VOID initRampProfileData(VOID)
         i++;
         rampUpGoingProfile[i].rampGenFlags = upBrakeApply; //Value to apply brake
         rampUpGoingProfile[i].startPosition = rampUpGoingProfile[i-1].endPosition;
-        rampUpGoingProfile[i].endPosition = uDriveCommonBlockEEP.stEEPDriveCommonBlock.upperStoppingPos_A100;
+//20180629 No58 over run
+//        rampUpGoingProfile[i].endPosition = uDriveCommonBlockEEP.stEEPDriveCommonBlock.upperStoppingPos_A100;
+        rampUpGoingProfile[i].endPosition = uDriveCommonBlockEEP.stEEPDriveCommonBlock.upperStoppingPos_A100 + LOWERSTOPPINGPOS_OFFSET;
         rampUpGoingProfile[i].startSpeed = rampUpGoingProfile[i-1].endSpeed;
         rampUpGoingProfile[i].endSpeed = SHUTTER_SPEED_MIN_STOP;
         rampUpGoingProfile[i].speedChangeRate = gs16UpDecelaration;
@@ -414,14 +425,14 @@ VOID initRampProfileData(VOID)
     rampDnGoingProfile[i].endPosition = uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.fallChangeGearPos1_A106;
     rampDnGoingProfile[i].startSpeed = RAMP_START_SPEED;
     rampDnGoingProfile[i].endSpeed = uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.s1Down_A528;
-	// lowerStoppingPos_A101-1600 20170624 by IME
+/*	// lowerStoppingPos_A101-1600 20170624 by IME
     if((rampCurrentPosition>
     		(uDriveCommonBlockEEP.stEEPDriveCommonBlock.lowerStoppingPos_A101-1600))
     		&&(rampDnGoingProfile[i].endSpeed>1900))
 	{
 		rampDnGoingProfile[i].endSpeed *= 3;
 		rampDnGoingProfile[i].endSpeed /= 4;	// 75%
-	}
+	}*/
     rampDnGoingProfile[i].speedChangeRate = gs16DownAccelaration; //20160809 aoyagi for test
     i++;
     rampDnGoingProfile[i].rampGenFlags = dnRunMode;
@@ -450,7 +461,9 @@ VOID initRampProfileData(VOID)
     {
         rampDnGoingProfile[i].rampGenFlags = dnBrakeApply; //Value to apply brake
         rampDnGoingProfile[i].startPosition = rampDnGoingProfile[i-1].endPosition;
-        rampDnGoingProfile[i].endPosition = uDriveCommonBlockEEP.stEEPDriveCommonBlock.lowerStoppingPos_A101;
+//20180629 No58 over run
+//        rampDnGoingProfile[i].endPosition = uDriveCommonBlockEEP.stEEPDriveCommonBlock.lowerStoppingPos_A101;
+        rampDnGoingProfile[i].endPosition = uDriveCommonBlockEEP.stEEPDriveCommonBlock.lowerStoppingPos_A101 - LOWERSTOPPINGPOS_OFFSET;
         rampDnGoingProfile[i].startSpeed = rampDnGoingProfile[i-1].endSpeed;
         rampDnGoingProfile[i].endSpeed = SHUTTER_SPEED_MIN_STOP;
         rampDnGoingProfile[i].speedChangeRate = gs16DownDecelaration;
@@ -475,9 +488,12 @@ VOID initRampProfileData(VOID)
         i++;
         rampDnGoingProfile[i].rampGenFlags = dnBrakeApply; //Value to apply brake
         rampDnGoingProfile[i].startPosition = rampDnGoingProfile[i-1].endPosition;
-        rampDnGoingProfile[i].endPosition = uDriveCommonBlockEEP.stEEPDriveCommonBlock.lowerStoppingPos_A101;
+//20180629 No58 over run
+//        rampDnGoingProfile[i].endPosition = uDriveCommonBlockEEP.stEEPDriveCommonBlock.lowerStoppingPos_A101;
+        rampDnGoingProfile[i].endPosition = uDriveCommonBlockEEP.stEEPDriveCommonBlock.lowerStoppingPos_A101 - LOWERSTOPPINGPOS_OFFSET;
         rampDnGoingProfile[i].startSpeed = rampDnGoingProfile[i-1].endSpeed;
-        rampDnGoingProfile[i].endSpeed = SHUTTER_SPEED_MIN_STOP;
+//        rampDnGoingProfile[i].endSpeed = SHUTTER_SPEED_MIN_STOP;
+        rampDnGoingProfile[i].endSpeed = 500;
         rampDnGoingProfile[i].speedChangeRate = gs16DownDecelaration;
     }
 }
@@ -613,7 +629,7 @@ VOID initApertureProfileData(VOID)
     rampApertureUpProfile[i].startPosition = rampApertureUpProfile[i-1].endPosition;
     rampApertureUpProfile[i].endPosition = uDriveCommonBlockEEP.stEEPDriveCommonBlock.apertureHeightPos_A130;
     rampApertureUpProfile[i].startSpeed = rampApertureUpProfile[i-1].endSpeed;
-    rampApertureUpProfile[i].endSpeed = 600; //20161130 add
+    rampApertureUpProfile[i].endSpeed = 500; //20161130 add
 //  rampApertureUpProfile[i].endSpeed = SHUTTER_SPEED_MIN_STOP;
     rampApertureUpProfile[i].speedChangeRate = gs16UpDecelaration;
     //Initialize Aperture down going profile
@@ -885,12 +901,12 @@ VOID chargeBootstraps(VOID)
 #ifdef IGBT_LowActive_IR
     IOCON1 = 0xC780;
 	IOCON2 = 0xC780;
-	IOCON3 = 0xC780;    
-#endif    
+	IOCON3 = 0xC780;
+#endif
 #ifdef IGBT_HighActive_ROME
-    IOCON1 = 0xC740;   
+    IOCON1 = 0xC740;
 	IOCON2 = 0xC740;
-	IOCON3 = 0xC740;     
+	IOCON3 = 0xC740;
 #endif
     PTCONbits.PTEN = 1;
     pwmBufferControl(ENABLE);
@@ -899,12 +915,12 @@ VOID chargeBootstraps(VOID)
 #ifdef IGBT_LowActive_IR
     IOCON1 = 0xF000;
     IOCON2 = 0xF000;
-    IOCON3 = 0xF000;    
-#endif    
+    IOCON3 = 0xF000;
+#endif
 #ifdef IGBT_HighActive_ROME
-    IOCON1 = 0xC000;    
+    IOCON1 = 0xC000;
     IOCON2 = 0xC000;
-    IOCON3 = 0xC000;    
+    IOCON3 = 0xC000;
 #endif
     PTCONbits.PTEN = 0;
 
@@ -1345,7 +1361,8 @@ void __attribute__((interrupt, no_auto_psv)) _T4Interrupt (void)
     if(++cnt_motor_stop>10)
     {
         measuredSpeed = 0;
-        cnt_motor_stop = 11;
+//        cnt_motor_stop = 11;
+        if(cnt_motor_stop>30) cnt_motor_stop = 0;		//20180629 No56 retry
     }
 
     //checkParamUpdateToEEP();
@@ -2119,6 +2136,8 @@ VOID forceStopShutter(VOID)
 
 VOID startShutter(VOID)
 {
+	phaseOffsetCW  = PHASE_OFFSET_CW;
+	phaseOffsetCCW = PHASE_OFFSET_CCW_MAX;
     //Select profile for execution
     rampCurrentStep = 0;
     if(inputFlags.bits.shutterOpen && (inputFlags.bits.jogPercentage == 0))
@@ -2366,8 +2385,8 @@ VOID runShutterToReqSpeed(VOID)
                         //Disable current loop
                         rampStatusFlags.rampCurrentControlRequired = 0;
                         //set the current reference
-                        //refSpeed += gs16DownDecelaration; 20170614
-                        refSpeed += 15;		//20170624 ACC SLOW
+                        //refSpeed += gs16DownDecelaration;// 20170614
+                        refSpeed += 20;		//20180619 ACC SLOW
                         //check boundary of max speed
                         //if(refSpeed > RAMP_STARTING_SPEED_MAX)
                         //{
@@ -2563,7 +2582,8 @@ VOID runShutterToReqSpeed(VOID)
                         //Disable current loop
                         rampStatusFlags.rampCurrentControlRequired = 0;
                         //set the speed reference
-                        refSpeed += gs16UpDecelaration;
+                        //refSpeed += gs16UpDecelaration;
+						refSpeed += 15; //20180619
                         //check boundary of max speed
                         if(refSpeed > RAMP_STARTING_SPEED_MAX)
                         {
@@ -2709,7 +2729,7 @@ VOID stopShutter(VOID)
     rampCurrentPosition = hallCounts;
     rampCurrentSpeed = refSpeed;
 
-    //if current speed is greater than 200 rpm then apply descelaration
+    //if current speed is greater than 200 rpm then apply deceleration
     //then apply DC injection, then mechanical brake
     if(
 		(!gui8StopKeyPressed && (rampCurrentSpeed > SHUTTER_SPEED_MIN)) ||		//	Safety sensor is triggered
@@ -2875,6 +2895,8 @@ VOID stopShutter(VOID)
 #if 1
 VOID stopShutter(VOID)
 {
+	phaseOffsetCW  = PHASE_OFFSET_CW;
+	phaseOffsetCCW = PHASE_OFFSET_CCW_MAX;
 	//  Logic related to increasing I gain while stoping the shutter is tuned to optimize value - YG - Nov 15
 	#if 1
     static SHORT I_gainForStop = 0;		//	current gain during stop operation
@@ -2908,7 +2930,7 @@ VOID stopShutter(VOID)
             shtrMinDistReqFlg = FALSE;
         }
     }
-    //if current speed is greater than 200 rpm then apply descelaration
+    //if current speed is greater than 200 rpm then apply deceleration
     //then apply DC injection, then mechanical brake
 /*
     else if(
@@ -3153,6 +3175,8 @@ VOID stopShutter(VOID)
                 rampCurrentState = RAMP_STATE_END;
                 currentRampProfileNo = RAMP_PROFILE_END;
                 //Call stop motor to stop all the interrupt
+				// Measures against overcurrent error 20180122 by IME
+			    FLAG_overLoad = FALSE;
                 stopMotor();
 				//	Shutter is stopped, clear flag
 				gui8StopKeyPressed = 0;
@@ -3262,7 +3286,7 @@ VOID executeRampProfile(VOID)
             {
                 if(currentRampProfile.startSpeed > currentRampProfile.endSpeed)
                 {
-                    //descelaration
+                    //deceleration
                     if(rampCurrentSpeed > currentRampProfile.endSpeed)
                     {
 #if 0
@@ -3333,7 +3357,8 @@ VOID executeRampProfile(VOID)
                         //Disable current loop
                         rampStatusFlags.rampCurrentControlRequired = 0;
                         //set the speed reference
-                        refSpeed += currentRampProfile.speedChangeRate;
+                        //refSpeed += currentRampProfile.speedChangeRate;
+                        refSpeed += 20;		//20180619
 #if 0
 						refSpeed += lshSpeedChangeRate;
 #endif
@@ -3404,7 +3429,7 @@ VOID executeRampProfile(VOID)
             {
                 if(currentRampProfile.startCurrent > currentRampProfile.endCurrent)
                 {
-                    //descelaration
+                    //deceleration
                     if(rampCurrentTotCurr > currentRampProfile.endCurrent)
                     {
                         //Before increasing current check if system already achived required speed
@@ -3560,7 +3585,7 @@ VOID executeRampProfile(VOID)
             {
                 if(currentRampProfile.startOpenloop > currentRampProfile.endOpenloop)
                 {
-                    //descelaration
+                    //deceleration
                     if((rampCurrentOpenloopDuty <= currentRampProfile.startOpenloop) && (rampCurrentOpenloopDuty > currentRampProfile.endOpenloop))
                     {
                         //set the speed reference
@@ -3709,7 +3734,7 @@ VOID executeRampProfile(VOID)
             {
                 if(currentRampProfile.startSpeed > currentRampProfile.endSpeed)
                 {
-                    //descelaration
+                    //deceleration
                     if(rampCurrentSpeed > currentRampProfile.endSpeed)
                     {
 #if 0
@@ -3720,6 +3745,7 @@ VOID executeRampProfile(VOID)
                         refiTotalCurrent = currentRampProfile.endCurrent;
                         //Disable current loop
                         rampStatusFlags.rampCurrentControlRequired = 0;
+                        //set the speed reference
                         //refSpeed -= currentRampProfile.speedChangeRate;
 						refSpeed -= 30; //2010125
 #if 0
@@ -3781,7 +3807,8 @@ VOID executeRampProfile(VOID)
                         //Disable current loop
                         rampStatusFlags.rampCurrentControlRequired = 0;
                         //set the speed reference
-                        refSpeed += currentRampProfile.speedChangeRate;
+                        //refSpeed += currentRampProfile.speedChangeRate;
+						refSpeed += 15; //20180619
 #if 0
 						refSpeed += lshSpeedChangeRate;
 #endif
@@ -3856,7 +3883,7 @@ VOID executeRampProfile(VOID)
             {
                 if(currentRampProfile.startCurrent > currentRampProfile.endCurrent)
                 {
-                    //descelaration
+                    //deceleration
                     if(rampCurrentTotCurr > currentRampProfile.endCurrent)
                     {
                         //Before increasing current check if system already achived required speed
@@ -4010,7 +4037,7 @@ VOID executeRampProfile(VOID)
             {
                 if(currentRampProfile.startOpenloop > currentRampProfile.endOpenloop)
                 {
-                    //descelaration
+                    //deceleration
                     if((rampCurrentOpenloopDuty <= currentRampProfile.startOpenloop) && (rampCurrentOpenloopDuty > currentRampProfile.endOpenloop))
                     {
                         //set the speed reference
