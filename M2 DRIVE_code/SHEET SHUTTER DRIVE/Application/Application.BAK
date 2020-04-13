@@ -111,7 +111,12 @@ BYTE gucInstallationCalledFrom = 0;
 //20160806 AOYAGI
 	#define RISE_GEAR_POS1_OFFSET    900//600//850//300//500 20160915   //add 20161018
 	#define RISE_GEAR_POS2_OFFSET    400//300//450//200//450 20160915   //add 20161018
+  #ifdef BUG_No84_M2speed_Change           //20170614  201703_No.84
+	#define RISE_GEAR_POS3_OFFSET    0
+  #else
 	#define RISE_GEAR_POS3_OFFSET    200//100//200
+  #endif
+
 
 	#define FALL_GEAR_POS1_OFFSET    900//600//1150//300//500 20160915  //add 20161018
 	#define FALL_GEAR_POS2_OFFSET    400//300//450//200//450 20160915   //add 20161018
@@ -141,6 +146,12 @@ UINT8  FLAG_CMD_open_shutter=0;
 UINT8  CMD_open_shutter=0;
 UINT8  FLAG_StartApertureCorrection = 0;   //bug_No.12
 UINT8  FLAG_open_shutter_one = 0;
+//20170628 by IME
+UINT16 TIME_CMD_stop_shutter=100;	//Stop and ignore descent for 500ms. 5ms x 100=500ms
+
+UINT8 Power_ON_igbtOverTemp=0;
+UINT16 Time_uart_count=0;
+UINT8 Flag_powerUpCalib_osToggle=0;
 /******************************************************************************
  * initApplication
  *
@@ -245,6 +256,8 @@ void __attribute__((interrupt, no_auto_psv)) _T6Interrupt (void)
     //20160806 AOYAGI
     if(TIME_CMD_open_shutter)TIME_CMD_open_shutter--;
     if(TIME_CMD_close_shutter)TIME_CMD_close_shutter--;
+    //20170628 Stop and ignore descent for 500ms. 5ms x 100=500ms by IME
+    if(TIME_CMD_open_shutter<100)TIME_CMD_open_shutter++;
 }
 
 /******************************************************************************
@@ -395,7 +408,9 @@ VOID updateDriveFaultFlags(VOID)
 		}
 	}
 
-	if(uDriveApplBlockEEP.stEEPDriveApplBlock.operationCount_A600 >= (uDriveApplBlockEEP.stEEPDriveApplBlock.maintenanceCountLimit_A025*1000))
+// 2017/3/8 Measures against mistake maintenanceCountOverflow. by IME
+//	if(uDriveApplBlockEEP.stEEPDriveApplBlock.operationCount_A600 >= (uDriveApplBlockEEP.stEEPDriveApplBlock.maintenanceCountLimit_A025*1000))
+	if(uDriveApplBlockEEP.stEEPDriveApplBlock.operationCount_A600 >= ((UINT32)uDriveApplBlockEEP.stEEPDriveApplBlock.maintenanceCountLimit_A025*1000))
 	{
 		uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.maintenanceCountOverflow = TRUE;
 	}
@@ -671,7 +686,9 @@ VOID updateSytemCounters(VOID)
 				{
 					// if aperture count exceeds the EEPROM parameter -- then trigger a runtime calibration operation,
 					// at the end of runtime calibration, the shutter should come to rest at the aperture height instead of upper limit
-					if(uDriveApplBlockEEP.stEEPDriveApplBlock.correctedFreqAperture_A126 <= uDriveApplBlockEEP.stEEPDriveApplBlock.apertureHeightOperCount_A604)
+// 2017/3/8 by IME
+//					if(uDriveApplBlockEEP.stEEPDriveApplBlock.correctedFreqAperture_A126 <= uDriveApplBlockEEP.stEEPDriveApplBlock.apertureHeightOperCount_A604)
+					if((UINT32)uDriveApplBlockEEP.stEEPDriveApplBlock.correctedFreqAperture_A126 <= uDriveApplBlockEEP.stEEPDriveApplBlock.apertureHeightOperCount_A604)
 					{
                         uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveReady = FALSE;
                         uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.driveCalibrationFailed = FALSE;
@@ -732,7 +749,9 @@ VOID updateSytemCounters(VOID)
 				{
 					// if aperture count exceeds the EEPROM parameter -- then trigger a runtime calibration operation,
 					// at the end of runtime calibration, the shutter should come to rest at the aperture height instead of upper limit
-					if(uDriveApplBlockEEP.stEEPDriveApplBlock.correctedFreqAperture_A126 <= uDriveApplBlockEEP.stEEPDriveApplBlock.apertureHeightOperCount_A604)
+// 2017/3/8 by IME
+//					if(uDriveApplBlockEEP.stEEPDriveApplBlock.correctedFreqAperture_A126 <= uDriveApplBlockEEP.stEEPDriveApplBlock.apertureHeightOperCount_A604)
+					if((UINT32)uDriveApplBlockEEP.stEEPDriveApplBlock.correctedFreqAperture_A126 <= uDriveApplBlockEEP.stEEPDriveApplBlock.apertureHeightOperCount_A604)
 					{
                         uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveReady = FALSE;
                         uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.driveCalibrationFailed = FALSE;
@@ -805,7 +824,9 @@ VOID updateSytemCounters(VOID)
 				{
 					// if aperture count exceeds the EEPROM parameter -- then trigger a runtime calibration operation,
 					// at the end of runtime calibration, the shutter should come to rest at the aperture height instead of upper limit
-					if((uDriveApplBlockEEP.stEEPDriveApplBlock.correctedFreqAperture_A126 - 1) <= uDriveApplBlockEEP.stEEPDriveApplBlock.apertureHeightOperCount_A604)
+// 2017/3/8 by IME
+//					if((uDriveApplBlockEEP.stEEPDriveApplBlock.correctedFreqAperture_A126 - 1) <= uDriveApplBlockEEP.stEEPDriveApplBlock.apertureHeightOperCount_A604)    //bug_NO.12
+					if(((UINT32)uDriveApplBlockEEP.stEEPDriveApplBlock.correctedFreqAperture_A126 - 1) <= uDriveApplBlockEEP.stEEPDriveApplBlock.apertureHeightOperCount_A604)    //bug_NO.12
 					{
 						//	Added to handle aperture correction when operation count is incremented at upper limit - Jan 2016
 						//lsbStartApertureCorrection = TRUE;
@@ -1029,6 +1050,13 @@ VOID checkShutterPosition(VOID)
 			{
 				uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveReady = TRUE;
 			}
+            if(powerOnCalibration == TERMINATED)    //20170418  201703_No.22
+            {
+                        //stop calibration process
+                        uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.drivePowerOnCalibration = FALSE;
+                        uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveRuntimeCalibration = FALSE;
+                        uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveReady = TRUE;
+            }
             //reset the calibration state machine
             powerUpCalib.currentState = CALIB_STATE_END;
             //reset input flag to ramp generator

@@ -109,7 +109,7 @@ EXTERN UINT8  ShutterInstallationStep;
 EXTERN BOOL ShutterInstallationEnabled;
 
 EXTERN UINT8 Power_ON_igbtOverTemp;
-EXTERN UINT16 Time_uart_count; 
+EXTERN UINT16 Time_uart_count;
 EXTERN UINT8 Flag_powerUpCalib_osToggle;
 
 //define Correction No.
@@ -123,3 +123,5 @@ EXTERN UINT8 Flag_powerUpCalib_osToggle;
 #define  BUG_No84_M2speed_Change                 //20170614  201703_No.84
 #define  BUG_NoCQ07_Limit_enterCmdRcvd           //20170627  201703_No.CQ07
 
+//20170628 by IME
+EXTERN UINT16 TIME_CMD_stop_shutter;	//Stop and ignore descent for a moment.

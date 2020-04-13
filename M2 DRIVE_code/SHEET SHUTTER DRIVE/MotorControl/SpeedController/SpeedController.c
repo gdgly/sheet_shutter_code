@@ -78,7 +78,8 @@ UINT16 PhaseAdvance;
                             /* actual position of the motor */
 
 // 2016/3/3 Motor Stal & PWM Cost
-#define MS_500T 10000//5000//1000//300//500          /* after this time has elapsed, the motor is    */
+//#define MS_500T 10000//5000//1000//300//500          /* after this time has elapsed, the motor is    */
+#define MS_500T 2000		// 2017/06/13 by IME
                             /* consider stalled and it's stopped    */
 
 /* PI parameters */
@@ -481,6 +482,10 @@ void __attribute__((interrupt, no_auto_psv)) _IC1Interrupt (void)
         }
         calculatePhaseValue(currentSector);
 		lastSector = currentSector;
+
+		//20170628
+		// Monitoring of shutter false moment should present in all interrupt - YG - NOV 15
+		monitorShutterFalseMovement();
 	}
 }
 
@@ -556,6 +561,10 @@ void __attribute__((interrupt, no_auto_psv)) _IC2Interrupt (void)
             }
         calculatePhaseValue(currentSector);
 		lastSector = currentSector;
+
+		//20170628
+		// Monitoring of shutter false moment should present in all interrupt - YG - NOV 15
+		monitorShutterFalseMovement();
 	}
 }
 
@@ -621,6 +630,10 @@ void __attribute__((interrupt, no_auto_psv)) _IC3Interrupt (void)
             }
         calculatePhaseValue(currentSector);
 		lastSector = currentSector;
+
+		//20170628
+		// Monitoring of shutter false moment should present in all interrupt - YG - NOV 15
+		monitorShutterFalseMovement();
 	}
 }
 

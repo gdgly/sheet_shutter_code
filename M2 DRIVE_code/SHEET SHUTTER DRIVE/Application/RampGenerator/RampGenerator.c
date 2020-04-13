@@ -75,7 +75,9 @@
                                                 //50% of S1UP speed.
 
 //	Maximum count allowed if shutter is moving in wrong direction
-#define	MAX_FALSE_MOVEMENT_COUNT_LIMIT		54  // Number of hall pulses / mechanical revolution  X allowed false revolution
+//20170614
+//#define	MAX_FALSE_MOVEMENT_COUNT_LIMIT		54  // Number of hall pulses / mechanical revolution  X allowed false revolution
+#define	MAX_FALSE_MOVEMENT_COUNT_LIMIT		216  // Number of hall pulses / mechanical revolution  X allowed false revolution
 												// 18 (750W motor) X 3
 
 /* Enumaration for ramp profile */
@@ -413,6 +415,14 @@ VOID initRampProfileData(VOID)
     rampDnGoingProfile[i].endPosition = uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.fallChangeGearPos1_A106;
     rampDnGoingProfile[i].startSpeed = RAMP_START_SPEED;
     rampDnGoingProfile[i].endSpeed = uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.s1Down_A528;
+	// lowerStoppingPos_A101-1600 20170624 by IME
+    if((rampCurrentPosition>
+    		(uDriveCommonBlockEEP.stEEPDriveCommonBlock.lowerStoppingPos_A101-1600))
+    		&&(rampDnGoingProfile[i].endSpeed>1900))
+	{
+		rampDnGoingProfile[i].endSpeed *= 3;
+		rampDnGoingProfile[i].endSpeed /= 4;	// 75%
+	}
     rampDnGoingProfile[i].speedChangeRate = gs16DownAccelaration; //20160809 aoyagi for test
     i++;
     rampDnGoingProfile[i].rampGenFlags = dnRunMode;
@@ -535,7 +545,7 @@ VOID initJogProfileData(VOID)
     rampJogUpProfile[i].endSpeed = 500;
 #else
     rampJogUpProfile[i].endSpeed = SHUTTER_SPEED_MIN_STOP;
-#endif    
+#endif
     rampJogUpProfile[i].speedChangeRate = gs16UpDecelaration;
 
     //Initialize Jog down going profile
@@ -1129,11 +1139,11 @@ VOID monitorSafetySensors(VOID)
 			else if(sensorList[i].sensorCurrVal == LOW)
 			{
 				sensorList[i].sensorLowDebounceCnt++;
-                
+
                 //Clear photo electric fault
-                if((i==2)&&(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.peObstacle)&&(sensorList[i].sensorLowDebounceCnt >=550))    //20170418  201703_No.15                  
-                    uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.peObstacle = FALSE;                     
-                        
+                if((i==2)&&(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.peObstacle)&&(sensorList[i].sensorLowDebounceCnt >=550))    //20170418  201703_No.15
+                    uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.peObstacle = FALSE;
+
 				if(sensorList[i].sensorLowDebounceCnt >= sensorInactiveDebounceValue[i])
 				{
 					//sensorList[i].sensorLowDebounceCnt = sensorInactiveDebounceValue[i];
@@ -1243,10 +1253,10 @@ VOID initSensorList(VOID)
     photoElecObsSensTrigrd = sensorList[PHOTOELECTRIC_SENSOR].sensorCurrSteadyVal;
     tempSensTrigrd = sensorList[TEMPERATURE_SENSOR].sensorCurrSteadyVal;
     originSensorDetected = sensorList[ORIGIN_SENSOR].sensorCurrSteadyVal;
-    
+
 #ifdef  BUG_No51_SnowA008  //20170612  201703_No.51
-    updatePhotoElectricDebounceTime();    
-#endif    
+    updatePhotoElectricDebounceTime();
+#endif
 }
 #endif	//	PROGRAMMABLE_DEBOUNCE
 
@@ -1479,9 +1489,9 @@ void __attribute__ ((interrupt, no_auto_psv)) _INT1Interrupt(void)
 #if 1
     #ifdef BUG_No83_igbtOverTemp     //20170606  201703_No.83
       else if(Power_ON_igbtOverTemp==1)
-    #else      
+    #else
       else
-    #endif    
+    #endif
         igbtOverTempSensorTriggered(TRUE);
 #endif
 }
@@ -1654,7 +1664,7 @@ VOID microSwSensor_PowerON(VOID)
             {
                 //reset max microSwitchSensorLimit error flag
                 uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.microSwitchSensorLimit = FALSE;
-            }    
+            }
 }
 #endif
 
@@ -2205,7 +2215,7 @@ VOID runShutterToReqSpeed(VOID)
             }
             else
             {
-                if(++lockDeactivationDelayCnt >= 4)//MECHANICAL_LOCK_DEACTIVATION_DELAY_CNT) //5
+                if(++lockDeactivationDelayCnt >= 1)//MECHANICAL_LOCK_DEACTIVATION_DELAY_CNT) //5 //20170627 4
                 {
                     lockRelease;
                     rampStatusFlags.rampBrakeOn = 0;
@@ -2216,9 +2226,9 @@ VOID runShutterToReqSpeed(VOID)
                 {
                     rampStatusFlags.rampDcInjectionOn = 0;
 //                    if(uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.shutterType_A537 == BEAD_SHUTTER)
-                        rampStatusFlags.rampMaintainHoldingDuty = 0;
+//                        rampStatusFlags.rampMaintainHoldingDuty = 0;
 //                    else
-//                        rampStatusFlags.rampMaintainHoldingDuty = 1;
+                        rampStatusFlags.rampMaintainHoldingDuty = 1;	//20170624
 
                     refSpeed = SHUTTER_SPEED_MIN;
                     refiTotalCurrent = RAMP_STARTING_CURRENT_MIN;
@@ -2261,9 +2271,9 @@ VOID runShutterToReqSpeed(VOID)
         {
             rampStatusFlags.rampDcInjectionOn = 0;
 //            if(uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.shutterType_A537 == BEAD_SHUTTER)
-                rampStatusFlags.rampMaintainHoldingDuty = 0;
+//                rampStatusFlags.rampMaintainHoldingDuty = 0;
 //            else
-//                rampStatusFlags.rampMaintainHoldingDuty = 1;
+                rampStatusFlags.rampMaintainHoldingDuty = 1;		//20170624
 
             refSpeed = SHUTTER_SPEED_MIN;
             refiTotalCurrent = RAMP_STARTING_CURRENT_MIN;
@@ -2308,18 +2318,23 @@ VOID runShutterToReqSpeed(VOID)
                 if(rampCurrentSpeed < currentRampProfile.endSpeed)
                 {
                     //if required state is found then start current mode
-                    if(rampCurrentSpeed < RAMP_STARTING_SPEED_MAX)
+                    //if(rampCurrentSpeed < RAMP_STARTING_SPEED_MAX)
+                    if(rampCurrentSpeed < 2450)		//20170628 by IME
                     {
                         //Set the current reference
                         refiTotalCurrent = 0;
                         //Disable current loop
                         rampStatusFlags.rampCurrentControlRequired = 0;
                         //set the current reference
-                        refSpeed += gs16DownDecelaration;
+                        //refSpeed += gs16DownDecelaration; 20170614
+                        refSpeed += 15;		//20170624 ACC SLOW
                         //check boundary of max speed
-                        if(refSpeed > RAMP_STARTING_SPEED_MAX)
+                        //if(refSpeed > RAMP_STARTING_SPEED_MAX)
+                        //{
+                        //    refSpeed = RAMP_STARTING_SPEED_MAX;
+                        if(refSpeed > 2450)		//20170628 by IME
                         {
-                            refSpeed = RAMP_STARTING_SPEED_MAX;
+                            refSpeed = 2450;
                         }
                         //enable speed control
                         rampStatusFlags.rampSpeedControlRequired = 1;
@@ -3207,7 +3222,8 @@ VOID executeRampProfile(VOID)
                         //Disable current loop
                         rampStatusFlags.rampCurrentControlRequired = 0;
                         //set the speed reference
-                        refSpeed -= currentRampProfile.speedChangeRate;
+                        //refSpeed -= currentRampProfile.speedChangeRate;
+                        refSpeed -= 15;			//20170624 DEC SLOW
 #if 0
 						refSpeed -= lshSpeedChangeRate;
 #endif

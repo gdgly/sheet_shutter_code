@@ -146,9 +146,11 @@ UINT8  FLAG_CMD_open_shutter=0;
 UINT8  CMD_open_shutter=0;
 UINT8  FLAG_StartApertureCorrection = 0;   //bug_No.12
 UINT8  FLAG_open_shutter_one = 0;
+//20170628 by IME
+UINT16 TIME_CMD_stop_shutter=100;	//Stop and ignore descent for 500ms. 5ms x 100=500ms
 
 UINT8 Power_ON_igbtOverTemp=0;
-UINT16 Time_uart_count=0;  
+UINT16 Time_uart_count=0;
 UINT8 Flag_powerUpCalib_osToggle=0;
 /******************************************************************************
  * initApplication
@@ -254,6 +256,8 @@ void __attribute__((interrupt, no_auto_psv)) _T6Interrupt (void)
     //20160806 AOYAGI
     if(TIME_CMD_open_shutter)TIME_CMD_open_shutter--;
     if(TIME_CMD_close_shutter)TIME_CMD_close_shutter--;
+    //20170628 Stop and ignore descent for 500ms. 5ms x 100=500ms by IME
+    if(TIME_CMD_stop_shutter<100)TIME_CMD_stop_shutter++;
 }
 
 /******************************************************************************
@@ -1051,7 +1055,7 @@ VOID checkShutterPosition(VOID)
                         //stop calibration process
                         uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.drivePowerOnCalibration = FALSE;
                         uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveRuntimeCalibration = FALSE;
-                        uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveReady = TRUE;                
+                        uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveReady = TRUE;
             }
             //reset the calibration state machine
             powerUpCalib.currentState = CALIB_STATE_END;
@@ -1086,7 +1090,7 @@ VOID powerUpCalibration(VOID)
             case CALIB_SEARCH_ORG_UP_DIR:
                 {
                     //If origin sensor toggle is detected then continue movement for 50mm
-                    if(powerUpCalib.osToggle)                                  
+                    if(powerUpCalib.osToggle)
                     {
                         //update the target position and state machine
                         powerUpCalib.targetPosition = powerUpCalib.currentPosition - HALL_COUNT(OS_VALIDATION_LENGTH);
