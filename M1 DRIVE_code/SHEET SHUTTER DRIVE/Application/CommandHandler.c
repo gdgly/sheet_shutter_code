@@ -89,7 +89,7 @@
 #define EXPECTED_CRC_APERTUREHEIGHT                0x7292
 
 //CONST UINT32 drive_fw_version = 0x00000406;  //bug_NO.64
-CONST UINT32 drive_fw_version = 18082;    //Drive version 1808.2        20170418   201703_No.29
+CONST UINT32 drive_fw_version = 20040;    //Drive version 1808.2        20170418   201703_No.29
 
 enum {
 	no_error = 0,
