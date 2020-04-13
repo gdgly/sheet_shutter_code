@@ -187,7 +187,8 @@ configureUART(UINT8 lucUartNumber)
 			CloseUART1(); // Turn off UART1 module
 			ConfigIntUART1(UART_RX_INT_EN 
 						& (UART_RX_INT_PR1+COMM_UART_PRIORITY)
-						& UART_TX_INT_EN & UART_TX_INT_PR1); // Configure UART1 receive and transmit interrupt 
+                        & UART_TX_INT_DIS ); // Configure UART1 receive and transmit    //20170531
+                       //& UART_TX_INT_EN & UART_TX_INT_PR1); // Configure UART1 receive and transmit interrupt 
 			
 			OpenUART1(UART_MODE_VALUE, UART_STA_VALUE, BRG); // Configure UART1 module to transmit 8 bit data, no parity and one stopbit at 38400 baud
 		}
@@ -202,7 +203,8 @@ configureUART(UINT8 lucUartNumber)
 			CloseUART2(); // Turn off UART2 module
 			ConfigIntUART2(UART_RX_INT_EN 
 						& (UART_RX_INT_PR1+COMM_UART_PRIORITY)
-						& UART_TX_INT_EN & UART_TX_INT_PR1); // Configure UART2 receive and transmit interrupt 
+                        & UART_TX_INT_DIS ); // Configure UART1 receive and transmit   //20170531
+            			//& UART_TX_INT_EN & UART_TX_INT_PR1); // Configure UART2 receive and transmit interrupt 
 			
 			OpenUART2(UART_MODE_VALUE, UART_STA_VALUE, BRG); // Configure UART2 module to transmit 8 bit data, no parity and one stopbit at 38400 baud
 		}
@@ -254,7 +256,8 @@ configureUART(UINT8 lucUartNumber)
 
 // gets the index of the buffer array which is in use by the specified UART 
 UINT8 getBufferIndex(UINT8 lucUartNumber)
-{
+{
+
 	UINT8 status = NOT_FOUND; 
 	UINT8 index = 0; 	
 
@@ -430,7 +433,8 @@ uartSendTxBuffer (UINT8 lucUartNumber, const UINT8 *lpu8Buffer, UINT8 lucCount)
 			//	Transmit the first byte in global buffer to initiate transmit interrupt.
 			//	Transmission of remaining bytes would be handled by corresponding UART interrupt
             txResetCount = 0;
-            writeCharToUART(lucUartNumber, *&stTxRxBuffer[index].uchTxBuffer[0]); 
+           // writeCharToUART(lucUartNumber, *&stTxRxBuffer[index].uchTxBuffer[0]); 
+            generic_UART1_TX_Handler(UART_CHANNEL_1);  //20170531
 		}
 	}	//	else transmit ends here
 
@@ -851,6 +855,32 @@ void genericTXInterruptHandler(UINT8 channelNumber)
     }
 }
 
+void generic_UART1_TX_Handler(UINT8 channelNumber)   //20170531
+{
+    UINT8 UART_TX_FIFO=0;
+    UINT8 index =0;
+    
+    if(txInProgress==TRUE)
+    {
+        if((U1STAbits.TRMT)&&(stTxRxBuffer[index].uchTxBufferByteCount)) 
+        {
+                index = getBufferIndex(channelNumber); 
+                while((stTxRxBuffer[index].uchTxBufferByteCount!=0)&&(UART_TX_FIFO<4))
+                {
+                    writeCharToUART(channelNumber, stTxRxBuffer[index].uchTxBuffer[stTxRxBuffer[index].uchTxBufferIndex]);
+                    UART_TX_FIFO++;   
+                    stTxRxBuffer[index].uchTxBufferIndex++;
+                    stTxRxBuffer[index].uchTxBufferByteCount--;
+                } 
+        }
+        else if((U1STAbits.TRMT)&&(stTxRxBuffer[index].uchTxBufferByteCount==0))
+        {
+            PORTCbits.RC4 = 0; //Disable transmitt for UART1
+            txInProgress =FALSE;
+        }
+    }
+    
+}
 
 
 void writeCharToUART(UINT8 channelNumber, UINT8 character)

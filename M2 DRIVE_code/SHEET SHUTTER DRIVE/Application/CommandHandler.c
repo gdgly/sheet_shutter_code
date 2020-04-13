@@ -88,7 +88,7 @@
 #define EXPECTED_CRC_APERTUREHEIGHT                0x7292
 
 //CONST UINT32 drive_fw_version = 0x00000406;
-CONST UINT32 drive_fw_version = 17042;    //Drive version 1704.1        20170418   201703_No.29
+CONST UINT32 drive_fw_version = 17061;    //Drive version 1704.1        20170418   201703_No.29
 enum {
 	no_error = 0,
 	UART_channel_disabled,
@@ -461,10 +461,6 @@ VOID commandHandler(VOID)
     //}
 
    flag_uart_cmd=readCmndFromCommBuffer();
-   
-    if(flag_uart_cmd){Time_uart_count=0; LED_YELLOW=1; }              //20170502  201703_No.xx
-    else if(Time_uart_count>=50){initCommandHandler();Time_uart_count=0; LED_YELLOW=0;}   
-   
     if((flag_uart_cmd)||((FLAG_CMD_open_shutter==1)&&(TIME_CMD_open_shutter==0)&&(TIME_CMD_close_shutter==0)))
     {
         if((new_cmd == uCBCommand.stCBCommand.recdCmdState)||((FLAG_CMD_open_shutter==1)&&(TIME_CMD_open_shutter==0)&&(TIME_CMD_close_shutter==0)))
