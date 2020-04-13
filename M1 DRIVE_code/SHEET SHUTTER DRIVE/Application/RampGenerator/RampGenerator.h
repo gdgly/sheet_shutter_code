@@ -1,8 +1,8 @@
 /********************************************************************************
 * FileName: RampGenerator.h
-* Description:
-* This header file contains the decleration of all the attributes and
-* services for RampGenerator.c file. It implements ramp generator for
+* Description:  
+* This header file contains the decleration of all the attributes and 
+* services for RampGenerator.c file. It implements ramp generator for 
 * speed and current mode of operation
 *********************************************************************************/
 
@@ -17,9 +17,9 @@
 
 /****************************************************************************
  *  Modification History
- *
- *  Date                  Name          Comments
- *  09/04/2014            iGate          Initial Creation
+ *  
+ *  Date                  Name          Comments 
+ *  09/04/2014            iGate          Initial Creation                                                               
 *****************************************************************************/
 #ifndef RAMP_GENERATOR_H
 #define RAMP_GENERATOR_H
@@ -44,11 +44,11 @@
 
 #if (SHUTTER_TYPE == SHUTTER_2M_2M)
     //#define SHUTTER_LOAD_HOLDING_DUTY        2000
-    //#define SHUTTER_LOAD_HOLDING_DUTY        1557   //5%
-    #define SHUTTER_LOAD_HOLDING_DUTY          3200   //7%
-    //#define SHUTTER_LOAD_HOLDING_DUTY        3200   //10%
-    //#define SHUTTER_LOAD_HOLDING_DUTY        4700   //15%
-    //#define SHUTTER_LOAD_HOLDING_DUTY        6400   //20%
+    //#define SHUTTER_LOAD_HOLDING_DUTY        1557   //5% 
+    #define SHUTTER_LOAD_HOLDING_DUTY          3200   //7% 
+    //#define SHUTTER_LOAD_HOLDING_DUTY        3200   //10% 
+    //#define SHUTTER_LOAD_HOLDING_DUTY        4700   //15% 
+    //#define SHUTTER_LOAD_HOLDING_DUTY        6400   //20% 
 #elif (SHUTTER_TYPE == SHUTTER_4M_4M)
     #define SHUTTER_LOAD_HOLDING_DUTY        3000
 #else
@@ -151,7 +151,7 @@ typedef enum rampState
     RAMP_STATE_END
 }rampState_en;
 
-//List of safety sensors
+//List of safety sensors 
 typedef enum safetySensors
 {
     EMERGENCY_SENSOR,
@@ -223,16 +223,16 @@ typedef struct _rampOutputStatus
 /* flags used as the interface between Logic Solver and Ramp Generator blocks */
 typedef union _InputFlags
 {
-	unsigned char value;
+	unsigned char value; 
 	struct{
 	unsigned char shutterOpen	:1;	/* TRUE indicates Open command from Control board */
 	unsigned char shutterClose	:1;	/* TRUE indicates Close command from Control board */
 	unsigned char shutterStop	:1;	/* TRUE indicates Stop command from Control board */
-    unsigned char jogPercentage :2; /*  0 - No Jog, use normal speed profile
-                                                1 - 10% Jog
+    unsigned char jogPercentage :2; /*  0 - No Jog, use normal speed profile 
+                                                1 - 10% Jog 
                                                 2 - 50% Jog */
 	unsigned char aperture		:1;	/* TRUE indicates Aperture active - open/ close only upto Aperture read from EEPROM */
-	}bits;
+	}bits; 
 }InputFlags_u;
 
 typedef struct _rampStatusFlags
@@ -272,11 +272,11 @@ typedef struct _safetySensors
 	unsigned sensorCurrVal	            :1;
     unsigned sensorPrevVal	            :1;
     unsigned sensorCurrSteadyVal	    :1;
-    unsigned sensorPrevSteadyVal    	:1;
+    unsigned sensorPrevSteadyVal    	:1;    
 	unsigned unused			            :12;
     SHORT sensorDebounceCnt;
     SHORT sensorData;
-    VOID (*sensorFuncPtr)(BOOL);
+    VOID (*sensorFuncPtr)(BOOL);  
 }safetySensors_t;
 #else
 #define	LOW		0
@@ -287,29 +287,15 @@ typedef struct _safetySensors
 	unsigned sensorCurrVal	            :1;
     unsigned sensorPrevVal	            :1;
     unsigned sensorCurrSteadyVal	    :1;
-    unsigned sensorPrevSteadyVal    	:1;
+    unsigned sensorPrevSteadyVal    	:1;    
 	unsigned unused			            :12;
     SHORT sensorHighDebounceCnt;
 	SHORT sensorLowDebounceCnt;
 	SHORT sensorSteadyStateCnt;
     SHORT sensorData;
-    VOID (*sensorFuncPtr)(BOOL);
+    VOID (*sensorFuncPtr)(BOOL);  
 }safetySensors_t;
 #endif	//	PROGRAMMABLE_DEBOUNCE
-
-// 201806008 To move from "RampGenerator.c" by IME
-typedef enum rampProfileNo
-{
-    RAMP_INCH_UP_PROFILE,
-    RAMP_INCH_DN_PROFILE,
-    RAMP_JOG_UP_PROFILE,
-    RAMP_JOG_DN_PROFILE,
-    RAMP_APERTURE_UP_PROFILE,
-    RAMP_APERTURE_DN_PROFILE,
-    RAMP_GOING_UP_PROFILE,
-    RAMP_GOING_DN_PROFILE,
-    RAMP_PROFILE_END
-}rampProfileNo_en;
 
 EXTERN InputFlags_u inputFlags;     /* Application Input flags */
 EXTERN InputFlags_u inputFlags_Installation;
@@ -334,15 +320,15 @@ VOID stopMotor(VOID);
 
 /* This function generates ramp for shutter operation */
 VOID runProfileRamp(VOID);
-
+    
 /* This function starts ramp generator */
-VOID startRampGenerator(VOID);
+VOID startRampGenerator(VOID);  
 
 /* This function stops ramp generator */
-VOID stopRampGenerator(VOID);
+VOID stopRampGenerator(VOID); 
 
-/* This function is required to update drive status - Moving up, Moving Down, Stopped */
-UINT8 getDriveMovement(VOID);
+/* This function is required to update drive status - Moving up, Moving Down, Stopped */ 
+UINT8 getDriveMovement(VOID); 
 
 VOID calculateDrift(BOOL);
 

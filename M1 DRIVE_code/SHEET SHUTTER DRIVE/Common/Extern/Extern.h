@@ -110,10 +110,10 @@ EXTERN UINT8  ShutterInstallationStep;
 EXTERN BOOL ShutterInstallationEnabled;
 
 EXTERN UINT8 Power_ON_igbtOverTemp;
-EXTERN UINT16 Time_uart_count;
+EXTERN UINT16 Time_uart_count; 
 EXTERN UINT8 Flag_powerUpCalib_osToggle;
 
-//define IGBT type
+//define IGBT type    
 //#define IGBT_LowActive_IR
 #define IGBT_HighActive_ROME
 

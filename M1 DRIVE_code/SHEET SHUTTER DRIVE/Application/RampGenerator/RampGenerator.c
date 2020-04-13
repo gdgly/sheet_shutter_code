@@ -40,7 +40,6 @@
 #include "./Application/Application.h"
 #include "./Application/CommandHandler.h"
 #include "./MotorControl/CurrentController/CurrentLimit.h"
-#include "./MotorControl/SpeedController/SpeedController.h"
 
 #define CHARGE_BOOTSTRAP_CAP    1
 
@@ -80,9 +79,9 @@
 												// 18 (750W motor) X 3
 #define	MAX_FALSE_MOVEMENT_COUNT_LIMIT		162
 
+
 /* Enumaration for ramp profile */
-// 20180608 Move "RampGenerator.h" by IME
-/*typedef enum rampProfileNo
+typedef enum rampProfileNo
 {
     RAMP_INCH_UP_PROFILE,
     RAMP_INCH_DN_PROFILE,
@@ -94,7 +93,7 @@
     RAMP_GOING_DN_PROFILE,
     RAMP_PROFILE_END
 }rampProfileNo_en;
-*/
+
 //Declare array of sensors
 #ifndef PROGRAMMABLE_DEBOUNCE
 safetySensors_t sensorList[SAFETY_SENSOR_END] =
@@ -237,8 +236,6 @@ BYTE gucShutterFalseDownMovementCount = 0;
 BYTE gucTempFalseMovementCount = 0;
 #endif
 
-// Measures against overcurrent error 20180123 by IME
-extern BOOL  FLAG_overLoad;
 
 /******************************************************************************
  * initRampGenerator
@@ -639,6 +636,7 @@ VOID initApertureProfileData(VOID)
 #else
     rampApertureUpProfile[i].endPosition = (uDriveCommonBlockEEP.stEEPDriveCommonBlock.apertureHeightPos_A130 + 300);//APERPOS_OFFSET);		//20161201 add
 //  rampApertureUpProfile[i].endPosition = (uDriveCommonBlockEEP.stEEPDriveCommonBlock.apertureHeightPos_A130 + 200);//APERPOS_OFFSET);
+
 #endif
 
     rampApertureUpProfile[i].startSpeed = RAMP_START_SPEED;
@@ -1253,7 +1251,6 @@ VOID resetSensorStatus(VOID)
     {
        uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorOverheat = FALSE;
     }
-
     if(!emergencySensorTrigrd)
     {
         uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.emergencyStop = FALSE;
@@ -2166,8 +2163,6 @@ VOID forceStopShutter(VOID)
 
 VOID startShutter(VOID)
 {
-	phaseOffsetCW  = PHASE_OFFSET_CW;
-	phaseOffsetCCW = PHASE_OFFSET_CCW_MAX;
     //Select profile for execution
     rampCurrentStep = 0;
     if(inputFlags.bits.shutterOpen && (inputFlags.bits.jogPercentage == 0))
@@ -2933,8 +2928,6 @@ VOID stopShutter(VOID)
 #if 1
 VOID stopShutter(VOID)
 {
-	phaseOffsetCW  = PHASE_OFFSET_CW_START;
-	phaseOffsetCCW = PHASE_OFFSET_CCW_MAX;
 	//  Logic related to increasing I gain while stoping the shutter is tuned to optimize value - YG - Nov 15
 	#if 1
     static SHORT I_gainForStop = 0;		//	current gain during stop operation
@@ -3120,8 +3113,6 @@ VOID stopShutter(VOID)
                 rampCurrentState = RAMP_STATE_END;
                 currentRampProfileNo = RAMP_PROFILE_END;
                 //Call stop motor to stop all the interrupt
-				// Measures against overcurrent error 20180122 by IME
-			    FLAG_overLoad = FALSE;
                 stopMotor();
 				//	Shutter is stopped, clear flag
 				gui8StopKeyPressed = 0;
