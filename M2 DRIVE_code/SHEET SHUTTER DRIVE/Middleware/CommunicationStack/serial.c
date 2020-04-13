@@ -200,9 +200,9 @@ configureUART(UINT8 lucUartNumber)
 		if(UART2_Available)		//UART2 available
 		{
 			CloseUART2(); // Turn off UART2 module
-//			ConfigIntUART2(UART_RX_INT_EN        //20170527 test
-//						& (UART_RX_INT_PR1+COMM_UART_PRIORITY)
-//						& UART_TX_INT_EN & UART_TX_INT_PR1); // Configure UART2 receive and transmit interrupt 
+			ConfigIntUART2(UART_RX_INT_EN 
+						& (UART_RX_INT_PR1+COMM_UART_PRIORITY)
+						& UART_TX_INT_EN & UART_TX_INT_PR1); // Configure UART2 receive and transmit interrupt 
 			
 			OpenUART2(UART_MODE_VALUE, UART_STA_VALUE, BRG); // Configure UART2 module to transmit 8 bit data, no parity and one stopbit at 38400 baud
 		}
@@ -250,100 +250,7 @@ configureUART(UINT8 lucUartNumber)
 	return lucReturnValue;
 }
 
-UINT8
-configureUART2(UINT8 lucUartNumber)
-{
-    U2BRG = 454;//BRG; //Set Baud rate
-    U2MODE = 0;
-    U2STA = 0;
 
-    IEC1bits.U2RXIE = 0; // Enable timer interrupts
-
-    U2MODEbits.UARTEN = 1; //Enable UART for 8-bit data
-    //no parity, 1 Stop bit
-    //U1STAbits.URXEN= 1; //Enable Transmit and Receive
-    U2STAbits.UTXEN= 1;   
-    
-    
-//	UINT8 lucReturnValue = no_error;
-//	UINT8 index = 0; 
-//
-//	UINT16 UART_MODE_VALUE; // Holds the value of uart config reg
-//	UINT16 UART_STA_VALUE; // Holds the information regarding uart	TX & RX interrupt modes
-//
-//	/* Configure UART modules to transmit 8 bit data with one stopbit.	*/ 
-//	UART_MODE_VALUE = UART_EN & UART_IDLE_CON & UART_IrDA_DISABLE &
-//				UART_MODE_FLOW & UART_UEN_00 & UART_DIS_WAKE & 
-//				UART_DIS_LOOPBACK & UART_DIS_ABAUD & UART_UXRX_IDLE_ONE & 
-//				UART_BRGH_SIXTEEN & UART_NO_PAR_8BIT & UART_1STOPBIT;
-//
-//	//UART_STA_VALUE	= UART_INT_TX_BUF_EMPTY  & UART_IrDA_POL_INV_ZERO & 				 
-//	//			UART_SYNC_BREAK_DISABLED & UART_TX_ENABLE & UART_INT_RX_CHAR & 
-//	//			UART_ADR_DETECT_DIS & UART_RX_OVERRUN_CLEAR;
-//            
-//            
-//    UART_STA_VALUE	= UART_INT_TX_LAST_CH  & UART_IrDA_POL_INV_ZERO & 				 
-//                UART_SYNC_BREAK_DISABLED & UART_TX_ENABLE & UART_INT_RX_CHAR & 
-//                UART_ADR_DETECT_DIS & UART_RX_OVERRUN_CLEAR;
-//
-//            
-//	switch(lucUartNumber)
-//	{
-//	case UART_CHANNEL_1:
-//		if(UART1_Available)		//UART1 is enabled
-//		{
-//			CloseUART1(); // Turn off UART1 module
-//			ConfigIntUART1(UART_RX_INT_EN 
-//						& (UART_RX_INT_PR1+COMM_UART_PRIORITY)
-//						& UART_TX_INT_EN & UART_TX_INT_PR1); // Configure UART1 receive and transmit interrupt 
-//			
-//			OpenUART1(UART_MODE_VALUE, UART_STA_VALUE, BRG); // Configure UART1 module to transmit 8 bit data, no parity and one stopbit at 38400 baud
-//		}
-//		else		//UART1 is disabled
-//		{
-//			lucReturnValue = UART_channel_disabled;
-//		}
-//		break;
-//	case UART_CHANNEL_2:
-//		if(UART2_Available)		//UART2 available
-//		{
-//			CloseUART2(); // Turn off UART2 module
-////			ConfigIntUART2(UART_RX_INT_EN        //20170527 test
-////						& (UART_RX_INT_PR1+COMM_UART_PRIORITY)
-////						& UART_TX_INT_EN & UART_TX_INT_PR1); // Configure UART2 receive and transmit interrupt 
-//			
-//			OpenUART2(UART_MODE_VALUE, UART_STA_VALUE, BRG); // Configure UART2 module to transmit 8 bit data, no parity and one stopbit at 38400 baud
-//		}
-//		else	//UART2 is disabled
-//		{
-//			lucReturnValue = UART_channel_disabled;
-//		}
-//		break;
-//	case UART_CHANNEL_3:
-//		if(UART3_Available)		//UART3 available
-//		{
-//		}
-//		else	//UART3 is disabled
-//		{
-//			lucReturnValue = UART_channel_disabled;
-//		}
-//		break;
-//	case UART_CHANNEL_4:
-//		if(UART4_Available)		//UART4 available
-//		{
-//		}
-//		else	//UART4 is disabled
-//		{
-//			lucReturnValue = UART_channel_disabled;
-//		}
-//		break;
-//	default:	//Specified UART number is not in valid range
-//		lucReturnValue = invalid_UART_channel;
-//		break;
-//	}
-//
-//	return lucReturnValue;
-}
 
 // gets the index of the buffer array which is in use by the specified UART 
 UINT8 getBufferIndex(UINT8 lucUartNumber)
@@ -918,8 +825,6 @@ void genericTXInterruptHandler(UINT8 channelNumber)
     if(stTxRxBuffer[index].uchTxBufferByteCount == 0)
     {
         PORTCbits.RC4 = 0; //Disable transmitt for UART1 
-        txResetCount = 0;
-        txInProgress = FALSE;        
     }
     
     //if(stTxRxBuffer[index].uchTxBufferByteCount == 0)
@@ -1005,7 +910,9 @@ void __attribute__((__interrupt__, no_auto_psv)) _U1TXInterrupt(void)
 void genericRXInterruptHandler(UINT8 channelNumber)
 {
 	UINT8 index = getBufferIndex(channelNumber); 
-       
+    
+    
+    
     
 	//static UINT8 startupCount = 0; 
     
@@ -1026,8 +933,7 @@ void genericRXInterruptHandler(UINT8 channelNumber)
 			// Read the next character from the UART
 			stTxRxBuffer[index].uchRxBuffer[stTxRxBuffer[index].uchRxBufferWrIndex] 
 						= (UINT8)readCharFromUART(channelNumber); // typecasting ok as we have selected 8 bit receive 
-            WriteUART2(stTxRxBuffer[index].uchRxBuffer[stTxRxBuffer[index].uchRxBufferWrIndex]);  //20170527 test
-            
+
 			if(!stTxRxBuffer[index].uchRxBufferByteCount)
 			{
 				// save the timestamp when we received the first bit - for cleanup operation 

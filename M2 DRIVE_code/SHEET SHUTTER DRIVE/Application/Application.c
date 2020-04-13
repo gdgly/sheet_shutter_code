@@ -141,6 +141,9 @@ UINT8  FLAG_CMD_open_shutter=0;
 UINT8  CMD_open_shutter=0;
 UINT8  FLAG_StartApertureCorrection = 0;   //bug_No.12
 UINT8  FLAG_open_shutter_one = 0;
+
+UINT8 Power_ON_igbtOverTemp=0;
+
 /******************************************************************************
  * initApplication
  *
@@ -243,8 +246,6 @@ void __attribute__((interrupt, no_auto_psv)) _T6Interrupt (void)
     //calibration
     powerUpCalibration();
     //20160806 AOYAGI
-    
-    checkSerialTxCompleted();
     if(TIME_CMD_open_shutter)TIME_CMD_open_shutter--;
     if(TIME_CMD_close_shutter)TIME_CMD_close_shutter--;
 }

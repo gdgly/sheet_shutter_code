@@ -161,6 +161,7 @@ unsigned int RTDM_UART_STA_VALUE;
 	delayUs(1);
 	PORTGbits.RG8 = 1;			//	1uS pulse generated on MCU_LATCH_CTRL pin
 	/**************************************************/
+    Power_ON_igbtOverTemp=1;
 
 	// For testing only (Added on 27 Jan 2015 to enable fault input)
 	// These lines were disabled in initMCPWM() function called above
