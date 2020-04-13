@@ -1,7 +1,7 @@
 /********************************************************************************
 * FileName: SpeedController.h
-* Description:  
-* This header file contains the decleration of all the attributes and 
+* Description:
+* This header file contains the decleration of all the attributes and
 * services for SpeedController.c file. It implements speed mode of
 * motor operation
 *********************************************************************************/
@@ -17,9 +17,9 @@
 
 /****************************************************************************
  *  Modification History
- *  
- *  Date                  Name          Comments 
- *  09/04/2014            iGate          Initial Creation                                                               
+ *
+ *  Date                  Name          Comments
+ *  09/04/2014            iGate          Initial Creation
 *****************************************************************************/
 #ifndef SPEED_CONTROLLER_H
 #define SPEED_CONTROLLER_H
@@ -33,6 +33,15 @@
 #define HALLA_BIT	(PORTAbits.RA8) /* HALLA port pin - RA8 RPI24 */
 #define HALLB_BIT	(PORTCbits.RC6) /* HALLB port pin - RC6 RP54 */
 #define HALLC_BIT	(PORTFbits.RF0) /* HALLC port pin - RF0 RPI96 */
+
+#define PHASE_OFFSET_CW 728 //measured offset is 1274*(360/65536) = 7 degrees.
+#define PHASE_OFFSET_CW_START 3458
+#define PHASE_OFFSET_CCW_START 8554
+#define PHASE_OFFSET_CCW 8554
+#define PHASE_OFFSET_CW_MAX 3458
+#define PHASE_OFFSET_CCW_MAX 8554//9828
+#define PHASE_OFFSET_INC_STEP 20
+#define PHASE_OFFSET_DEC_STEP 50
 
 EXTERN tPIParm speedPIparms;
 /* This function initializes all the variables used by speed controller */

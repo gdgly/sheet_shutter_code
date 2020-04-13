@@ -110,10 +110,10 @@ EXTERN UINT8  ShutterInstallationStep;
 EXTERN BOOL ShutterInstallationEnabled;
 
 EXTERN UINT8 Power_ON_igbtOverTemp;
-EXTERN UINT16 Time_uart_count; 
+EXTERN UINT16 Time_uart_count;
 EXTERN UINT8 Flag_powerUpCalib_osToggle;
 
-//define IGBT type    
+//define IGBT type
 //#define IGBT_LowActive_IR
 #define IGBT_HighActive_ROME
 
@@ -127,6 +127,6 @@ EXTERN UINT8 Flag_powerUpCalib_osToggle;
 #define  BUG_No51_SnowA008                       //20170612  201703_No.51
 #define  BUG_NoCQ07_Limit_enterCmdRcvd           //20170627  201703_No.CQ07
 #define  BUG_No89_PHOTOELECTRIC_SENSOR       //priority5    //20171016  201703_No.89
-//#define  BUG_No88_M2overcurrentfault         //priority2    //20171029  201703_No.88
+#define  BUG_No88_M2overcurrentfault         //priority2    //20171029  201703_No.88
 #define  BUG_CQxx_BD_IGBTdamage              //priority1    //20171029  BD IGBT damage
 

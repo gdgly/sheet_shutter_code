@@ -30,6 +30,7 @@
 #include "./Middleware/ParameterDatabase/eeprom.h"
 #include "./Common/Delay/Delay.h"
 #include "./DMCI/RtdmInterface.h"
+#include "./Application/CommandHandler.h"
 
 //	Macro to enable feature of motor cable fault - Dec 2015
 #define ENABLE_MOTOR_CABLE_FAULT
@@ -42,10 +43,20 @@
 //#define PHASE_OFFSET_CCW 9840 //182 counts for 1 degree
 
 #ifdef USE_PHASE_INC_AND_CORRECTION
+// Measures against overcurrent error 20180330 by IME
+/*
 #define PHASE_OFFSET_CW 910//1274//2002 //measured offset is 1274*(360/65536) = 7 degrees.
 #define PHASE_OFFSET_CCW 9828//9828//53 degrees
 #define PHASE_OFFSET_INC_STEP 1
 #define PHASE_OFFSET_DEC_STEP 20
+#define PHASE_OFFSET_CW 546 //measured offset is 1274*(360/65536) = 7 degrees.
+#define PHASE_OFFSET_CW_START 728
+#define PHASE_OFFSET_CCW 10192
+#define PHASE_OFFSET_CW_MAX 910
+#define PHASE_OFFSET_CCW_MAX 10010
+#define PHASE_OFFSET_INC_STEP 20
+#define PHASE_OFFSET_DEC_STEP 50
+*/
 #else
 #define PHASE_OFFSET_CW 10000
 #define PHASE_OFFSET_CCW 0
@@ -55,6 +66,7 @@
 #define MAX_PH_ADV_DEG      1
 #define MAX_PH_ADV 		(int)(((float)MAX_PH_ADV_DEG / 360.0) * 65536.0)
 UINT16 PhaseAdvance;
+extern SHORT currentRampProfileNo;
 
 /*******************************************************************************/
 /* These Phase values represent the base Phase value of the sinewave for each  */
@@ -73,8 +85,9 @@ UINT16 PhaseAdvance;
                             /* transitions and Forcing steps according to the */
                             /* actual position of the motor */
 
+// Measures against overcurrent error 20180330 by IME
 //#define MS_500T 10000//1000//300//500          /* after this time has elapsed, the motor is    */ //20160804
-#define MS_500T 500              /* after this time has elapsed, the motor is    */
+#define MS_500T 300          /* after this time has elapsed, the motor is    */ //20160804
                             /* consider stalled and it's stopped    */
 
 /* PI parameters */
@@ -88,8 +101,11 @@ UINT16 PhaseAdvance;
 /* In the sinewave generation algorithm we need an offset to be added to the */
 /* pointer when energizing the motor in CCW. This is done to compensate an   */
 /* asymetry of the sinewave */
-SHORT phaseOffsetCW  = PHASE_OFFSET_CW;
-SHORT phaseOffsetCCW = PHASE_OFFSET_CCW;
+// Measures against overcurrent error 20180330 by IME
+//SHORT phaseOffsetCW  = PHASE_OFFSET_CW;
+//SHORT phaseOffsetCCW = PHASE_OFFSET_CCW;
+SHORT phaseOffsetCW  = PHASE_OFFSET_CW_START;
+SHORT phaseOffsetCCW = PHASE_OFFSET_CCW_START;
 
 /* Period filter for speed measurement */
 DWORD periodFilter;
@@ -165,6 +181,9 @@ SHORT nextSectorNo;
 SHORT previousSectorNo;
 SHORT phaseInc;
 
+BOOL  FLAG_overLoad =FALSE;
+BOOL  down_controlOutput_flag =FALSE;	// 20180607 by IME
+
 /* This function is used to measure actual running speed of motor */
 VOID measureActualSpeed(VOID);
 
@@ -191,7 +210,7 @@ VOID monitorSectorRotation(VOID);
  ********************************************************************************/
 void __attribute__((interrupt, no_auto_psv)) _T1Interrupt (void)
 {
-    SHORT currentSector;   
+    SHORT currentSector;
 //    PRIVATE WORD cnt10ms = 0;
 
     IFS0bits.T1IF = 0;
@@ -199,19 +218,19 @@ void __attribute__((interrupt, no_auto_psv)) _T1Interrupt (void)
 
 // 2016/3/3 Motor Stal & PWM Cost
 #ifdef BUG_No88_M2overcurrentfault
-     if(cnt_motor_stop>5) 
+     if(cnt_motor_stop>10)
      {
         if (requiredDirection == CW || requiredDirection== CCW)
         {
             currentSector = getCurrentSectorNo();
             calculatePhaseValue(currentSector);
         }
-     }    
+     }
 #endif
-     if(cnt_motor_stop>10)  
+     if(cnt_motor_stop>10)
      {
          measuredSpeed = 0;
-     }    
+     }
 
 #ifdef ENABLE_MOTOR_CABLE_FAULT
 	// **********************************************************************************************************************************************************
@@ -365,13 +384,13 @@ VOID monitorSectorRotation(VOID)
             //if emergency switch is triggered the stop shutter immediately
             forceStopShutter();
 			// 2016/11/16 When Down , Missing Save Origin Position.
-			hallCounts_bak = 0x7FFF;            
+			hallCounts_bak = 0x7FFF;
 #else
             rampCurrentState = RAMP_PWM_COASTING;
             pwmCostingReq = TRUE;
             currentLimitClamp = controlOutput;
-            outputDecRate = __builtin_divud(currentLimitClamp, PWM_COASTING_TIME);            
-#endif            
+            outputDecRate = __builtin_divud(currentLimitClamp, PWM_COASTING_TIME);
+#endif
             uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorStall = TRUE;
         }
         else
@@ -785,6 +804,10 @@ void __attribute__((interrupt, no_auto_psv)) _IC3Interrupt (void)
 #ifdef USE_PHASE_INC_AND_CORRECTION
 VOID calculatePhaseValue(WORD sectorNo)
 {
+// Measures against overcurrent error 20180330 by IME
+SHORT PhaseCurrentPosition;
+    PhaseCurrentPosition = hallCounts;
+/*
 	if(controlOutput < 0)
 	{
 		LED_RED = 0;
@@ -803,6 +826,92 @@ VOID calculatePhaseValue(WORD sectorNo)
         if(phaseOffsetCW <= PHASE_OFFSET_CW)
             phaseOffsetCW = PHASE_OFFSET_CW;
     }
+*/
+	if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.drivePowerOnCalibration
+		|| uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveRuntimeCalibration
+		|| uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveInstallation)
+	{
+		if(requiredDirection == CW)
+		{
+			phaseOffsetCW = 910;
+		}
+		else if(requiredDirection == CCW)
+		{
+			phaseOffsetCCW = 9828;
+		}
+	}
+	else if(requiredDirection == CW)
+	{
+		if(PhaseCurrentPosition>uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.riseChangeGearPos1_A103)
+		{
+			// 20180607 by IME
+			if((currentRampProfileNo==RAMP_APERTURE_UP_PROFILE)&&
+				(PhaseCurrentPosition<(uDriveCommonBlockEEP.stEEPDriveCommonBlock.apertureHeightPos_A130
+					+uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.riseChangeGearPos1_A103)))
+			{
+				if(phaseOffsetCW > PHASE_OFFSET_CW)
+				    phaseOffsetCW -= PHASE_OFFSET_DEC_STEP;
+				if(phaseOffsetCW <= PHASE_OFFSET_CW)
+				    phaseOffsetCW = PHASE_OFFSET_CW;
+			}
+	    	else if(measuredSpeed < 100)
+			{
+				phaseOffsetCW = PHASE_OFFSET_CW_START;
+			}
+	    	else if(measuredSpeed < 500)
+			{
+				if(phaseOffsetCW < PHASE_OFFSET_CW_MAX)
+					phaseOffsetCW++;
+				if(phaseOffsetCW >= PHASE_OFFSET_CW_MAX)
+					phaseOffsetCW = PHASE_OFFSET_CW_MAX;
+			}
+			else
+			{
+				if(phaseOffsetCW < PHASE_OFFSET_CW_MAX)
+					phaseOffsetCW += PHASE_OFFSET_INC_STEP;
+				if(phaseOffsetCW >= PHASE_OFFSET_CW_MAX)
+					phaseOffsetCW = PHASE_OFFSET_CW_MAX;
+			}
+		}
+		else
+		{
+			if(phaseOffsetCW > PHASE_OFFSET_CW)
+			    phaseOffsetCW -= PHASE_OFFSET_DEC_STEP;
+			if(phaseOffsetCW <= PHASE_OFFSET_CW)
+			    phaseOffsetCW = PHASE_OFFSET_CW;
+		}
+	}
+	else if(requiredDirection == CCW)
+	{
+		if(PhaseCurrentPosition<uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.fallChangeGearPos1_A106)
+		{
+	    	if(measuredSpeed < 100)
+	    	{
+				phaseOffsetCCW = PHASE_OFFSET_CCW_START;//PHASE_OFFSET_CCW_MAX; //20180621
+			}
+	    	else if(measuredSpeed < 500)
+			{
+				if(phaseOffsetCCW > PHASE_OFFSET_CCW)
+					phaseOffsetCCW--;
+				if(phaseOffsetCCW <= PHASE_OFFSET_CCW)
+					phaseOffsetCCW = PHASE_OFFSET_CCW;
+			}
+			else
+			{
+				if(phaseOffsetCCW > PHASE_OFFSET_CCW)
+					phaseOffsetCCW -= PHASE_OFFSET_DEC_STEP;
+				if(phaseOffsetCCW <= PHASE_OFFSET_CCW)
+					phaseOffsetCCW = PHASE_OFFSET_CCW;
+			}
+		}
+		else
+		{
+			if(phaseOffsetCCW < PHASE_OFFSET_CCW_MAX)
+			    phaseOffsetCCW += PHASE_OFFSET_INC_STEP;
+			if(phaseOffsetCCW >= PHASE_OFFSET_CCW_MAX)
+			    phaseOffsetCCW = PHASE_OFFSET_CCW_MAX;
+		}
+	}
 
     /* Motor commutation is actually based on the required direction, not */
     /* the current dir. This allows driving the motor in four quadrants */
@@ -901,10 +1010,12 @@ VOID measureActualSpeed(VOID)
 
 VOID speedControl(VOID)
 {
+// Measures against overcurrent error 20180330 by IME
+SHORT PhaseCurrentPosition;
+    PhaseCurrentPosition = hallCounts;
+/*
     speedPIparms.qInRef = refSpeed;
     speedPIparms.qInMeas = measuredSpeed;
-
-
 
 //    if(uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.shutterType_A537 == BEAD_SHUTTER)
 //    {
@@ -971,6 +1082,126 @@ VOID speedControl(VOID)
 
     //calculate percentage duty
     ctrlOpPercent = __builtin_divud(((unsigned long)controlOutput*100),MAX_SPEED_PI);
+*/
+    if((measurediTotal>10000)&&(FLAG_overLoad == FALSE))
+    {
+        FLAG_overLoad = 1;
+    }
+    if((flags.motorRunning ==0)||(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveInstallation)) FLAG_overLoad = FALSE;
+    if(FLAG_overLoad == 1)
+    {
+		if(requiredDirection == CW)
+		{
+			if(measuredSpeed < 500)
+			{
+				phaseOffsetCW = PHASE_OFFSET_CW_START;
+			}
+		}
+		else if(requiredDirection == CCW)
+		{
+			if(measuredSpeed < 500)
+			{
+				phaseOffsetCCW = PHASE_OFFSET_CCW_MAX;
+			}
+		}
+	}
+	speedPIparms.qOutMin = -(currentLimitClamp);
+    speedPIparms.qInRef = refSpeed;
+    speedPIparms.qInMeas = measuredSpeed;
+	if(FLAG_overLoad)
+	{
+		if(measurediTotal<4000)
+		{
+			FLAG_overLoad = 0;
+			speedPIparms.qOutMax = 6*measuredSpeed+5000;
+		}
+		else if(measurediTotal>15000)
+		{
+			speedPIparms.qOutMax = 4000;
+		}
+		else
+		{
+			speedPIparms.qOutMax = 5000;
+		}
+	}
+	else
+	{
+		speedPIparms.qOutMax = 6*measuredSpeed+5000;
+	}
+	//	Added on 6 Aug 2015 to enable motor rotation in no load condition for bead type shutter (while shutter go down operation)
+	if(rampStatusFlags.rampMaintainHoldingDuty == 0 && monitorSectorRoatCnt > 150)
+	{
+		rampStatusFlags.rampMaintainHoldingDuty = 1;
+	}
+    if(rampStatusFlags.rampMaintainHoldingDuty)
+    {
+    //20170209***igbtfail
+		if(requiredDirection == CCW)
+		{
+			if(rampOutputStatus.shutterCurrentPosition >= (uDriveCommonBlockEEP.stEEPDriveCommonBlock.lowerStoppingPos_A101 -
+									uDriveApplBlockEEP.stEEPDriveApplBlock.overrunProtection_A112))
+			{
+				if(monitorSectorRoatCnt > 300)
+				{
+					lockApply;
+					controlOutput = 0;
+					stopMotor();
+					rampStatusFlags.rampMaintainHoldingDuty = 0;
+					rampOutputStatus.shutterMoving = 0;
+					rampStatusFlags.shutterOperationStart = 0;
+					rampStatusFlags.shutterOperationComplete = 1;
+					rampStatusFlags.rampBrakeOn = 1;
+				}
+			}
+			if(measuredSpeed < 300)
+			{
+				controlOutput += HOLDING_DUTY_INC;
+				if(controlOutput >= 5000) //20180621
+				{
+					controlOutput = 5000; //20180621
+				}
+			}
+			else
+			{
+				rampStatusFlags.rampMaintainHoldingDuty = 0;
+				speedPIparms.qdSum = (LONG)controlOutput << 15;
+				speedPIparms.qOut = controlOutput;
+				calcPiNew(&speedPIparms);
+				if(flags.speedControl)
+					controlOutput = speedPIparms.qOut;
+			}
+		}
+		else if(measuredSpeed < 300)
+		{
+			controlOutput += HOLDING_DUTY_INC;
+			if(FLAG_overLoad&&(measurediTotal>15000))
+			{
+				if(controlOutput>4000) controlOutput=4000;
+			}
+			else
+			{
+				if(controlOutput>5000) controlOutput=5000;		//20180621
+			}
+		}
+		else
+		{
+			rampStatusFlags.rampMaintainHoldingDuty = 0;
+			speedPIparms.qdSum = (LONG)controlOutput << 15;
+			speedPIparms.qOut = controlOutput;
+			calcPiNew(&speedPIparms);
+			if(flags.speedControl)
+				controlOutput = speedPIparms.qOut;
+		}
+	}
+	else
+	{
+		calcPiNew(&speedPIparms);
+		if(flags.speedControl)
+			controlOutput = speedPIparms.qOut;
+	}
+
+	//calculate percentage duty
+	ctrlOpPercent = __builtin_divud(((unsigned long)controlOutput*100),MAX_SPEED_PI);
 }
 
 /******************************************************************************
@@ -994,6 +1225,8 @@ VOID initSpeedControllerVariables(VOID)
     hall2Triggered = 0;
     totalTimePeriod = 0;
     measuredSpeed = 0;
+// Measures against overcurrent error 20180330 by IME
+    FLAG_overLoad = FALSE;
 //    if(uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.shutterType_A537 == BEAD_SHUTTER)
 //    {
 ////        if(requiredDirection == CW)
