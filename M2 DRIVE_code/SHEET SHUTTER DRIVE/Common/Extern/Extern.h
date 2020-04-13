@@ -127,6 +127,10 @@ EXTERN UINT8 Flag_powerUpCalib_osToggle;
 #define  BUG_No89_PHOTOELECTRIC_SENSOR           //20171016  201703_No.89
 #define  BUG_No93_M2openTOstop                   //20171019  201703_No.93
 #define  BUG_No94_M2closeTOopen                  //20171020  201703_No.94
+#define  BUG_No97_IGBT_Foult                     //20171025  201703_No.97
 
 //20170628 by IME
 EXTERN UINT16 TIME_CMD_stop_shutter;	//Stop and ignore descent for a moment.
+EXTERN WORD  HALL_cnt;
+EXTERN WORD  TIME_HALL_cnt;
+

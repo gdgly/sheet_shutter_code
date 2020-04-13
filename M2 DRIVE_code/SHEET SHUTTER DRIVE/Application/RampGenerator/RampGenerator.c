@@ -986,6 +986,11 @@ VOID stopMotor(VOID)
 #endif
     AD1CON1bits.ADON = 0;   //turn OFF ADC module
 	flags.motorRunning = 0;	/* Indicate that the motor has been stopped */
+    
+#ifdef BUG_No97_IGBT_Foult
+    HALL_cnt=0;
+    TIME_HALL_cnt=0;    
+#endif    
 }
 
 /******************************************************************************
