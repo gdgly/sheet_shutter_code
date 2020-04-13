@@ -112,6 +112,10 @@ EXTERN UINT8 Power_ON_igbtOverTemp;
 EXTERN UINT16 Time_uart_count;
 EXTERN UINT8 Flag_powerUpCalib_osToggle;
 
+//define IGBT type    
+//#define IGBT_LowActive_IR
+#define IGBT_HighActive_ROME
+
 //define Correction No.
 #define  BUG_No41_microSwSensorTrigrd             //20170606  201703_No.41
 #define  BUG_No81_microSwSensor_PowerON          //20170605  201703_No.81

@@ -882,16 +882,30 @@ VOID pwmBufferControl(SHORT status)
  ********************************************************************************/
 VOID chargeBootstraps(VOID)
 {
+#ifdef IGBT_LowActive_IR
     IOCON1 = 0xC780;
 	IOCON2 = 0xC780;
-	IOCON3 = 0xC780;
+	IOCON3 = 0xC780;    
+#endif    
+#ifdef IGBT_HighActive_ROME
+    IOCON1 = 0xC740;   
+	IOCON2 = 0xC740;
+	IOCON3 = 0xC740;     
+#endif
     PTCONbits.PTEN = 1;
     pwmBufferControl(ENABLE);
 	delayMs(CHARGE_BOOTSTRAP_CAP);
     pwmBufferControl(DISABLE);
+#ifdef IGBT_LowActive_IR
     IOCON1 = 0xF000;
     IOCON2 = 0xF000;
-    IOCON3 = 0xF000;
+    IOCON3 = 0xF000;    
+#endif    
+#ifdef IGBT_HighActive_ROME
+    IOCON1 = 0xC000;    
+    IOCON2 = 0xC000;
+    IOCON3 = 0xC000;    
+#endif
     PTCONbits.PTEN = 0;
 
     PDC1 = PHASE1 / 2;	// initialise as 0 volts
