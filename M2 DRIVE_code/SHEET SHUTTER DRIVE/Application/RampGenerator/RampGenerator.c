@@ -1134,6 +1134,13 @@ VOID monitorSafetySensors(VOID)
 						sensorList[i].sensorFuncPtr(sensorList[i].sensorCurrSteadyVal);
 						sensorList[i].sensorPrevSteadyVal = sensorList[i].sensorCurrSteadyVal;
 					}
+#ifdef BUG_No89_PHOTOELECTRIC_SENSOR
+                    else if((i==2)&&(sensorList[i].sensorPrevSteadyVal==sensorList[i].sensorCurrSteadyVal)&&(photElecSensorFault ==FALSE))
+                    {
+						sensorList[i].sensorFuncPtr(sensorList[i].sensorCurrSteadyVal);
+						sensorList[i].sensorPrevSteadyVal = sensorList[i].sensorCurrSteadyVal;                        
+                    }
+#endif                     
 				}
 			}
 			else if(sensorList[i].sensorCurrVal == LOW)
@@ -1572,7 +1579,14 @@ VOID checkPhotoElecObsLevel(BOOL sts)
                 if(rampOutputStatus.shutterMoving && (requiredDirection == CCW))
                    {
                        //if current shutter position is above ignore PE level then only trigger stop shutter
-                       if(rampCurrentPosition < uDriveCommonBlockEEP.stEEPDriveCommonBlock.photoElecPosMonitor_A102)
+#ifdef BUG_No89_PHOTOELECTRIC_SENSOR
+                    if((rampCurrentPosition < uDriveCommonBlockEEP.stEEPDriveCommonBlock.photoElecPosMonitor_A102)&&
+                        //(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterUpperLimit == FALSE))
+                        (rampOutputStatus.shutterCurrentPosition > (uDriveCommonBlockEEP.stEEPDriveCommonBlock.upperStoppingPos_A100 +
+                                                       uDriveApplBlockEEP.stEEPDriveApplBlock.overrunProtection_A112)))    
+#else
+                    if(rampCurrentPosition < uDriveCommonBlockEEP.stEEPDriveCommonBlock.photoElecPosMonitor_A102)
+#endif
                        {
 //                           rampCurrentState = RAMP_STOP; //Set the current state to ramp stop
 //                           calcShtrMinDistValue();
@@ -2968,17 +2982,24 @@ VOID stopShutter(VOID)
 				    (
 						!gui8StopKeyPressed &&
 						(
-                            (rampCurrentSpeed > 500) //20160915
+                            (rampCurrentSpeed > 500)//800 //20160915
 						)
 					) ||
 					//	Stop key is pressed
 					(
 						(gui8StopKeyPressed) &&
 						(
-							(rampCurrentSpeed > 500) ||   //20160915SHUTTER_SPEED_MIN_STOP
+#ifdef BUG_No93_M2openTOstop
+							(rampCurrentSpeed > 500) /*|| //800  //20160915SHUTTER_SPEED_MIN_STOP
 							(
 								((measuredSpeed > GO_UP_MIN_SPEED_BEFORE_APPLYING_BRAKE) && (requiredDirection == CW))		//	measured speed is greater than 300 while going up
-							)
+							)*/            
+#else
+							(rampCurrentSpeed > 500) || //800  //20160915SHUTTER_SPEED_MIN_STOP
+							(
+								((measuredSpeed > GO_UP_MIN_SPEED_BEFORE_APPLYING_BRAKE) && (requiredDirection == CW))		//	measured speed is greater than 300 while going up
+							)            
+#endif            
 						)
 					)
 				) &&
@@ -3013,7 +3034,7 @@ VOID stopShutter(VOID)
         //refSpeed -= gs16UpDecelaration;20160915
         if(refSpeed>800) refSpeed = 800;
         else refSpeed -= 400; //20160915
-//        refSpeed -= 2000; //20160915
+        //refSpeed -= 800; //20160915
         if(refSpeed < SHUTTER_SPEED_MIN_STOP)
         {
             refSpeed = SHUTTER_SPEED_MIN_STOP;
