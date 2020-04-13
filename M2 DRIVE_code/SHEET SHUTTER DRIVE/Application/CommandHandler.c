@@ -461,6 +461,10 @@ VOID commandHandler(VOID)
     //}
 
    flag_uart_cmd=readCmndFromCommBuffer();
+   
+    if(flag_uart_cmd){Time_uart_count=0; LED_YELLOW=1; }              //20170502  201703_No.xx
+    else if(Time_uart_count>=200){initCommandHandler();Time_uart_count=0; LED_YELLOW=0;}   
+   
     if((flag_uart_cmd)||((FLAG_CMD_open_shutter==1)&&(TIME_CMD_open_shutter==0)&&(TIME_CMD_close_shutter==0)))
     {
         if((new_cmd == uCBCommand.stCBCommand.recdCmdState)||((FLAG_CMD_open_shutter==1)&&(TIME_CMD_open_shutter==0)&&(TIME_CMD_close_shutter==0)))

@@ -106,7 +106,6 @@ unsigned int RTDM_UART_STA_VALUE;
 	while(OSCCONbits.COSC != 0b011);
 	while(OSCCONbits.LOCK != 1);/* Wait for PLL to lock */
 
-    PORTAbits.RA7 = 1;
 	CORCONbits.SATA = 0;
     CORCONbits.IF = 0;
     //Add powerup delay
