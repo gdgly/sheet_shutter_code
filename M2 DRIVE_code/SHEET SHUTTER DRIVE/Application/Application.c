@@ -117,8 +117,11 @@ BYTE gucInstallationCalledFrom = 0;
 	#define RISE_GEAR_POS3_OFFSET    200//100//200
   #endif
 
-
+  #ifdef BUG_No92_M2speed_Change_A106
+   #define FALL_GEAR_POS1_OFFSET    1200
+  #else
 	#define FALL_GEAR_POS1_OFFSET    900//600//1150//300//500 20160915  //add 20161018
+  #endif
 	#define FALL_GEAR_POS2_OFFSET    400//300//450//200//450 20160915   //add 20161018
 	#define FALL_GEAR_POS3_OFFSET    200//100//200
 //20160806 AOYAGI

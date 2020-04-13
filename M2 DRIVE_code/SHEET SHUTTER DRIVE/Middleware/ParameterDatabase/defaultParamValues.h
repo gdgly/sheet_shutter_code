@@ -111,7 +111,11 @@ CONST _EEPDriveMotorCtrlBlock uEEP_M2DriveMotorCtrlBlockDefault =
    #else
 		200,      //UINT16 riseChangeGearPos3_A105;        
    #endif
+   #ifdef BUG_No92_M2speed_Change_A106
+        1200,      //UINT16 fallChangeGearPos1_A106;
+   #else
 		900,//600,//1150,    //UINT16 fallChangeGearPos1_A106; //20160915  //add 20161018
+   #endif
 		400,//300,//450,    //UINT16 fallChangeGearPos2_A107; //20160915   //add 20161018
 		200,      //UINT16 fallChangeGearPos3_A108;
 		20,//175,      //UINT8 	shtrRevOperMinLimit_A110;
