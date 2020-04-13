@@ -108,6 +108,7 @@ EXTERN _stTxRxBuffer	stTxRxBuffer[UART_AVAILABLE_CHANNEL_COUNT];
 
 // Configure the UART and initialize related buffers 
 unsigned char configureUART(unsigned char lucUartNumber);  
+unsigned char configureUART2(unsigned char lucUartNumber);
 
 // Check free UART transmit buffer - If UART transmit buffer is free, then only user should call 'uartSendTxBuffer'
 unsigned char uartCheckFreeTxBuffer (unsigned char lucUartNumber, unsigned char* lucPendingNoCharToTx);
