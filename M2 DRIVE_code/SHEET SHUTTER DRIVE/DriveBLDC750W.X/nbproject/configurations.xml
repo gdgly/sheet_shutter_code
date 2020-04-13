@@ -133,7 +133,7 @@
         <targetDevice>dsPIC33EP512GM706</targetDevice>
         <targetHeader></targetHeader>
         <targetPluginBoard></targetPluginBoard>
-        <platformTool>PICkit3PlatformTool</platformTool>
+        <platformTool>ICD3PlatformTool</platformTool>
         <languageToolchain>XC16</languageToolchain>
         <languageToolchainVersion>1.21</languageToolchainVersion>
         <platform>3</platform>
@@ -376,6 +376,7 @@
         <property key="CRC" value="true"/>
         <property key="CTMU" value="true"/>
         <property key="DCI" value="true"/>
+        <property key="Freeze All Other Peripherals" value="true"/>
         <property key="I2C1" value="true"/>
         <property key="I2C2" value="true"/>
         <property key="INPUT CAPTURE 1" value="true"/>
@@ -401,6 +402,7 @@
         <property key="SPI 1" value="true"/>
         <property key="SPI 2" value="true"/>
         <property key="SPI 3" value="true"/>
+        <property key="SecureSegment.SegmentProgramming" value="FullChipProgramming"/>
         <property key="TIMER1" value="true"/>
         <property key="TIMER2" value="true"/>
         <property key="TIMER3" value="true"/>
@@ -417,7 +419,6 @@
         <property key="UART 2" value="true"/>
         <property key="UART 3" value="true"/>
         <property key="UART 4" value="true"/>
-        <property key="firmware.download.all" value="false"/>
         <property key="hwtoolclock.frcindebug" value="false"/>
         <property key="memories.aux" value="false"/>
         <property key="memories.bootflash" value="true"/>
@@ -452,8 +453,6 @@
         <property key="programoptions.usehighvoltageonmclr" value="false"/>
         <property key="programoptions.uselvpprogramming" value="false"/>
         <property key="voltagevalue" value="3.25"/>
-        <property key="冻结所有其他外设" value="true"/>
-        <property key="安全段。分部编程" value="FullChipProgramming"/>
       </PICkit3PlatformTool>
     </conf>
   </confs>

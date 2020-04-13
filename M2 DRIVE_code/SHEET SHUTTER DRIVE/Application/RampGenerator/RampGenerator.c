@@ -1125,6 +1125,11 @@ VOID monitorSafetySensors(VOID)
 			else if(sensorList[i].sensorCurrVal == LOW)
 			{
 				sensorList[i].sensorLowDebounceCnt++;
+                
+                //Clear photo electric fault
+                if((i==2)&&(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.peObstacle)&&(sensorList[i].sensorLowDebounceCnt >=550))    //20170418  201703_No.15                  
+                    uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.peObstacle = FALSE;                     
+                        
 				if(sensorList[i].sensorLowDebounceCnt >= sensorInactiveDebounceValue[i])
 				{
 					//sensorList[i].sensorLowDebounceCnt = sensorInactiveDebounceValue[i];
