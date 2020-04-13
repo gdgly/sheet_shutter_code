@@ -984,7 +984,7 @@ SHORT PhaseCurrentPosition;
 		if(measurediTotal<4000)
 		{
 			FLAG_overLoad = 0;
-			speedPIparms.qOutMax = 4*measuredSpeed+5000;
+			speedPIparms.qOutMax = 4*measuredSpeed+5000;           
 		}
 		else if(measurediTotal>15000)
 		{
@@ -1028,7 +1028,15 @@ SHORT PhaseCurrentPosition;
 			if(measuredSpeed < 500)
 			{
 			    controlOutput += HOLDING_DUTY_INC;
-				if(controlOutput>5000) controlOutput=5000;
+				//if(controlOutput>5000) controlOutput=5000;
+                if(measuredSpeed>100)         //201808 Bug_No.102
+                {
+                    if(controlOutput>7000) controlOutput=7000;
+                }
+                else 
+                {
+                    if(controlOutput>5000) controlOutput=5000;
+                }                              
 			}
 			else
 			{
@@ -1050,7 +1058,15 @@ SHORT PhaseCurrentPosition;
 			}
 			else
 			{
-				if(controlOutput>5000) controlOutput=5000;
+				//if(controlOutput>5000) controlOutput=5000;
+                if(measuredSpeed>100)         //201808 Bug_No.102
+                {
+                    if(controlOutput>7000) controlOutput=7000;
+                }
+                else 
+                {
+                    if(controlOutput>5000) controlOutput=5000;
+                }               
 			}
         }
         else
