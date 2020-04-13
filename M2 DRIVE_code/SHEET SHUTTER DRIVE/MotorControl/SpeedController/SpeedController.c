@@ -42,7 +42,7 @@
 //#define PHASE_OFFSET_CCW 9840 //182 counts for 1 degree
 
 #ifdef USE_PHASE_INC_AND_CORRECTION
-#define PHASE_OFFSET_CW 2366//2366//6916//364 //measured offset is 364*(360/65536) = 2 degrees.
+#define PHASE_OFFSET_CW 2366//6916//364 //measured offset is 364*(360/65536) = 2 degrees.
 //#define PHASE_OFFSET_CW  1092  // 6 degrees.
 #define PHASE_OFFSET_CCW 9828//5096//8008//9828 // Fukui result - 54 degree 10192
 #define PHASE_OFFSET_CW_MAX 6916
@@ -203,6 +203,7 @@ VOID monitorSectorRotation(VOID);
  ********************************************************************************/
 void __attribute__((interrupt, no_auto_psv)) _T1Interrupt (void)
 {
+    SHORT currentSector;
 //    PRIVATE WORD cnt10ms = 0;
 
     IFS0bits.T1IF = 0;
@@ -210,10 +211,22 @@ void __attribute__((interrupt, no_auto_psv)) _T1Interrupt (void)
 	measureActualSpeed();
 
 // 2016/3/3 Motor Stal & PWM Cost
- if(cnt_motor_stop>10)
- {
-    measuredSpeed = 0;
- }
+#ifdef BUG_No88_M2overcurrentfault
+     if(cnt_motor_stop>5) 
+     {
+        if (requiredDirection == CW || requiredDirection== CCW)
+        {
+            currentSector = getCurrentSectorNo();
+            calculatePhaseValue(currentSector);
+        }
+        measuredSpeed = 0;
+     }    
+#else
+     if(cnt_motor_stop>10)  
+     {
+         measuredSpeed = 0;
+     }    
+#endif
 
 #ifdef ENABLE_MOTOR_CABLE_FAULT
 	// **********************************************************************************************************************************************************
@@ -441,7 +454,6 @@ void __attribute__((interrupt, no_auto_psv)) _IC1Interrupt (void)
     SHORT currentSector;
 
     IFS0bits.IC1IF = 0;
-    PORTAbits.RA7=!PORTAbits.RA7;
 
     currentSector = getCurrentSectorNo();
 
@@ -511,7 +523,6 @@ void __attribute__((interrupt, no_auto_psv)) _IC2Interrupt (void)
 	SHORT currentSector;
 
     IFS0bits.IC2IF = 0;
-    PORTAbits.RA7=!PORTAbits.RA7;
 
 	// 2016/3/3 Motor Stal & PWM Cost
 	cnt_motor_stop = 0;
@@ -590,7 +601,6 @@ void __attribute__((interrupt, no_auto_psv)) _IC3Interrupt (void)
     SHORT currentSector;
 
     IFS2bits.IC3IF = 0;
-    PORTAbits.RA7=!PORTAbits.RA7;
 
     currentSector = getCurrentSectorNo();
 

@@ -123,6 +123,7 @@ EXTERN UINT8 Flag_powerUpCalib_osToggle;
 #define  BUG_No84_M2speed_Change                 //20170614  201703_No.84
 #define  BUG_NoCQ07_Limit_enterCmdRcvd           //20170627  201703_No.CQ07
 #define  BUG_No92_M2speed_Change_A106            //20170913  201703_No.92
+#define  BUG_No88_M2overcurrentfault             //20171017  201703_No.88
 
 //20170628 by IME
 EXTERN UINT16 TIME_CMD_stop_shutter;	//Stop and ignore descent for a moment.
