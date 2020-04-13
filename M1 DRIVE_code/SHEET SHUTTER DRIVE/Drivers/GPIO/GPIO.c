@@ -23,7 +23,6 @@
 #include <p33Exxxx.h>
 #include "GPIO.h"
 #include "./Common/UserDefinition/Userdef.h"
-#include "./Common/Extern/Extern.h"
 
 /******************************************************************************
  * initGPIO
@@ -301,12 +300,7 @@ Added for motor control board hardware version 2 on 30 Dec 2014
 	
 	//	Added on 20Feb2015 for IGBT over temperature fault
 	/* Configure interrupt 1 for over temperature*/
-#ifdef IGBT_HighActive_ROME
-	INTCON2bits.INT1EP = 1;		//	Interrupt on positive edge as default value of this line is low in HW ver 2.    
-#endif
-#ifdef IGBT_LowActive_IR   
-	INTCON2bits.INT1EP = 0;		//	Interrupt on positive edge as default value of this line is low in HW ver 2.    
-#endif
+	INTCON2bits.INT1EP = 0;		//	Interrupt on positive edge as default value of this line is low in HW ver 2.
 	IEC1bits.INT1IE = 1;		//	Enable INT 1 interrupt.
     IPC5bits.INT1IP = 7;		//	Interrupt priority (highest)
 	IFS1bits.INT1IF = 0;		//	Clear interrupt flag.

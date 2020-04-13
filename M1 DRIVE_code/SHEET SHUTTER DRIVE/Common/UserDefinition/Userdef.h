@@ -104,7 +104,7 @@
 //#define PHASE_INC_CALC 746667UL  //((DWORD)(FCY/((DWORD)PDIV*2*FPWM))*65536) 
 
 /* Half of the PWM Deadtime; The effective deadtime written in ALTDTR registers is 2*ALTDTR_DIV2 */
-   #define	ALTDTR_DIV2	140//120
+#define	ALTDTR_DIV2	140//120
 //#define	ALTDTR_DIV2	280//(70*4)      //5us
 //#define	ALTDTR_DIV2	147//(70*2.1)      //2.1us
 //#define	ALTDTR_DIV2	210//(70*3)      //3us
