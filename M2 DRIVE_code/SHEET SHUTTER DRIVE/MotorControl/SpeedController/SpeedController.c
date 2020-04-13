@@ -83,7 +83,7 @@ UINT16 PhaseAdvance;
 
 // 2016/3/3 Motor Stal & PWM Cost
 //#define MS_500T 10000//5000//1000//300//500          /* after this time has elapsed, the motor is    */
-#define MS_500T 2000		// 2017/06/13 by IME
+#define MS_500T 500		// 2017/06/13 by IME
                             /* consider stalled and it's stopped    */
 
 /* PI parameters */

@@ -3,3 +3,5 @@ M2 DRIVE 20171114(Ver_1711.0)  == M2 DRIVE 20171110(Ver_1711.0)  ==  M2 DRIVE 20
 M2 DRIVE 20180126(Ver_1711_0)offsetccw  == M2 DRIVE 20171114(Ver_1711.0) + BX add...
 
 M2 DRIVE 20180126(Ver_1711_0)offsetccw No.3 4  ==  M2 DRIVE 20180126(Ver_1711_0)offsetccw  + No.3 4
+
+M2 DRIVE 20180126(Ver_1711_0)offsetccw No.3 4 (ROME PCB4.0 +0.5s)  ==  M2 DRIVE 20180126(Ver_1711_0)offsetccw No.3 4  + ROME  + No.1 is 2sec->0.5sec
