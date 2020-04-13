@@ -308,6 +308,8 @@ Added for motor control board hardware version 2 on 30 Dec 2014
 	RPINR0bits.INT1R = 0x24;	//  Assign INT1 to RPI36
 	/*	Sensor interface to motor drive board ends*/
 	
+    PORTAbits.RA7=0;    
+    
 	/*UART 1 initialization*/
 	TRISFbits.TRISF1 = 0;
     //CNPUFbits.CNPUF1 = 1; 
@@ -359,7 +361,7 @@ Added for motor control board hardware version 2 on 30 Dec 2014
     //TRISDbits.TRISD6 = 1; //strap4
     //CNPUDbits.CNPUD6 = 1; 
     
-    PORTAbits.RA7 = 1; //Turn OFF LED1
+    //PORTAbits.RA7 = 1; //Turn OFF LED1
     PORTCbits.RC0 = 1; //Turn OFF LED2 Orange
     
 	__builtin_write_OSCCONL(OSCCON | (1<<6)); 	 /* Set bit 6 */

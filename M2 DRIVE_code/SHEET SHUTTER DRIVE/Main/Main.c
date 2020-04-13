@@ -106,6 +106,7 @@ unsigned int RTDM_UART_STA_VALUE;
 	while(OSCCONbits.COSC != 0b011);
 	while(OSCCONbits.LOCK != 1);/* Wait for PLL to lock */
 
+    PORTAbits.RA7 = 1;
 	CORCONbits.SATA = 0;
     CORCONbits.IF = 0;
     //Add powerup delay
@@ -161,7 +162,6 @@ unsigned int RTDM_UART_STA_VALUE;
 	delayUs(1);
 	PORTGbits.RG8 = 1;			//	1uS pulse generated on MCU_LATCH_CTRL pin
 	/**************************************************/
-    Power_ON_igbtOverTemp=1;
 
 	// For testing only (Added on 27 Jan 2015 to enable fault input)
 	// These lines were disabled in initMCPWM() function called above

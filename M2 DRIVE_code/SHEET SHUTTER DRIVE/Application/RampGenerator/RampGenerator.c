@@ -1462,8 +1462,7 @@ void __attribute__ ((interrupt, no_auto_psv)) _INT1Interrupt(void)
     if(PWMCON1bits.FLTSTAT)
 		overcurrentfaultTriggered(TRUE);
 #if 1
-    //else
-    else if(Power_ON_igbtOverTemp==1) 
+    else
         igbtOverTempSensorTriggered(TRUE);
 #endif
 }
