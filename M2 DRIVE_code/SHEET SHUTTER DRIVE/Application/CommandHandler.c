@@ -87,7 +87,7 @@
 #define EXPECTED_CRC_CLEAN_ERROR                0xB253
 #define EXPECTED_CRC_APERTUREHEIGHT                0x7292
 
-CONST UINT32 drive_fw_version = 0x00000405;
+CONST UINT32 drive_fw_version = 0x00000406;
 
 enum {
 	no_error = 0,
@@ -540,7 +540,8 @@ VOID commandHandler(VOID)
 
                         if(faultTrgFlag == FALSE)
                         {
-                            if((!uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterUpperLimit)&&(inputFlags.value!=OPEN_SHUTTER))
+                            //if((!uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterUpperLimit)&&(inputFlags.value!=OPEN_SHUTTER)) 20170318protect overrun
+							if((!uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterUpperLimit)&&(inputFlags.value!=OPEN_SHUTTER)&&(inputFlags.value!=OPEN_SHUTTER_JOG_10)&&(inputFlags.value!=OPEN_SHUTTER_JOG_50))
                             {
                                 inputFlags.value = OPEN_SHUTTER;
                                 rampStatusFlags.rampOpenInProgress = 0;   //20160906 bug_No.87
@@ -616,8 +617,10 @@ VOID commandHandler(VOID)
                     if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveReady)
                     {
                         //if(!uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterApertureHeight)
-                            if(((uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterLowerLimit ||
-                           uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterBetweenLowlmtAphgt))&&(inputFlags.value!=OPEN_SHUTTER_APERTURE))
+                            //if(((uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterLowerLimit || //20170318 overrunprotect
+                           //uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterBetweenLowlmtAphgt))&&(inputFlags.value!=OPEN_SHUTTER_APERTURE))
+							if(((uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterLowerLimit ||
+                           uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterBetweenLowlmtAphgt))&&(inputFlags.value!=OPEN_SHUTTER_APERTURE)&&(inputFlags.value!=OPEN_SHUTTER_JOG_10)&&(inputFlags.value!=OPEN_SHUTTER_JOG_50))
                         {
                             if(FLAG_StartApertureCorrection==1){FLAG_StartApertureCorrection++;inputFlags.value = OPEN_SHUTTER; }   //bug_No.12
                             else if(FLAG_StartApertureCorrection>1){FLAG_StartApertureCorrection=0;inputFlags.value = OPEN_SHUTTER_APERTURE;}

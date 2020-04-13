@@ -528,6 +528,9 @@ VOID updateDriveStatusFlags(VOID)
         if(rampOutputStatus.shutterCurrentPosition >= (uDriveCommonBlockEEP.stEEPDriveCommonBlock.lowerStoppingPos_A101 -
                                                        uDriveApplBlockEEP.stEEPDriveApplBlock.overrunProtection_A112))
 		{
+			// 2016/11/16 When Down , Missing Save Origin Position.
+			hallCounts_bak = 0x7FFF;
+
 			// update drive status position to lower limit
             uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterLowerLimit = TRUE;
 		}
@@ -840,14 +843,18 @@ VOID updateSytemCounters(VOID)
         incrementOperationCnt = TRUE;
 		sShutterAtUpperLimitFlag = FALSE;
     }
-	else if(bDownApertureCmdRecd && !uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterApertureHeight)
+	else if(bUpApertureCmdRecd && !uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterApertureHeight)
+	//else if(bDownApertureCmdRecd && !uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterApertureHeight) //20161202 add
     {
         incrementOperationCnt = TRUE;
-		bDownApertureCmdRecd = FALSE;
+		//bDownApertureCmdRecd = FALSE;	//20161202 add
     }
 	//	Added to handle aperture correction when operation count is incremented at upper limit - Jan 2016
+
 	if(lsbStartApertureCorrection \
-	   && uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterLowerLimit)
+	   && uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterApertureHeight)	//20161202 add
+//	if(lsbStartApertureCorrection \
+//	   && uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterLowerLimit)
 	{
 		lsbStartApertureCorrection = FALSE;
 
