@@ -236,9 +236,6 @@ BYTE gucShutterFalseDownMovementCount = 0;
 BYTE gucTempFalseMovementCount = 0;
 #endif
 
-// Measures against overcurrent error 20180123 by IME
-extern BOOL  FLAG_overLoad;
-
 /******************************************************************************
  * initRampGenerator
  *
@@ -885,30 +882,16 @@ VOID pwmBufferControl(SHORT status)
  ********************************************************************************/
 VOID chargeBootstraps(VOID)
 {
-#ifdef IGBT_LowActive_IR
     IOCON1 = 0xC780;
 	IOCON2 = 0xC780;
-	IOCON3 = 0xC780;    
-#endif    
-#ifdef IGBT_HighActive_ROME
-    IOCON1 = 0xC740;   
-	IOCON2 = 0xC740;
-	IOCON3 = 0xC740;     
-#endif
+	IOCON3 = 0xC780;
     PTCONbits.PTEN = 1;
     pwmBufferControl(ENABLE);
 	delayMs(CHARGE_BOOTSTRAP_CAP);
     pwmBufferControl(DISABLE);
-#ifdef IGBT_LowActive_IR
     IOCON1 = 0xF000;
     IOCON2 = 0xF000;
-    IOCON3 = 0xF000;    
-#endif    
-#ifdef IGBT_HighActive_ROME
-    IOCON1 = 0xC000;    
-    IOCON2 = 0xC000;
-    IOCON3 = 0xC000;    
-#endif
+    IOCON3 = 0xF000;
     PTCONbits.PTEN = 0;
 
     PDC1 = PHASE1 / 2;	// initialise as 0 volts
@@ -3156,8 +3139,6 @@ VOID stopShutter(VOID)
                 rampCurrentState = RAMP_STATE_END;
                 currentRampProfileNo = RAMP_PROFILE_END;
                 //Call stop motor to stop all the interrupt
-				// Measures against overcurrent error 20180122 by IME
-			    FLAG_overLoad = FALSE;
                 stopMotor();
 				//	Shutter is stopped, clear flag
 				gui8StopKeyPressed = 0;
@@ -3213,11 +3194,13 @@ VOID executeRampProfile(VOID)
                 if(++rampDcInjectionOnCounter >= currentRampProfile.dcInjectionTime)
                 {
                     rampStatusFlags.rampDcInjectionOn = 0;
+// Measures against overcurrent error 20180305 by IME
 //                    if(uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.shutterType_A537 == BEAD_SHUTTER)
-                        rampStatusFlags.rampMaintainHoldingDuty = 0;
+//                        rampStatusFlags.rampMaintainHoldingDuty = 0;
 //                    else
 //                        rampStatusFlags.rampMaintainHoldingDuty = 1;
-                    refSpeed = SHUTTER_SPEED_MIN;
+					rampStatusFlags.rampMaintainHoldingDuty = 1;
+					refSpeed = SHUTTER_SPEED_MIN;
                     refiTotalCurrent = RAMP_STARTING_CURRENT_MIN;
                     #if (STARTUP_IN_CURRENT_MODE == 1)
                     if(currentRampProfile.rampGenFlags.currentMode)
@@ -3236,10 +3219,12 @@ VOID executeRampProfile(VOID)
         else if(currentRampProfile.rampGenFlags.brakeRelease && rampStatusFlags.rampDcInjectionOn)
         {
             rampStatusFlags.rampDcInjectionOn = 0;
+// Measures against overcurrent error 20180305 by IME
 //            if(uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.shutterType_A537 == BEAD_SHUTTER)
-                rampStatusFlags.rampMaintainHoldingDuty = 0;
+//                rampStatusFlags.rampMaintainHoldingDuty = 0;
 //            else
 //                rampStatusFlags.rampMaintainHoldingDuty = 1;
+			rampStatusFlags.rampMaintainHoldingDuty = 1;
             refSpeed = SHUTTER_SPEED_MIN;
             refiTotalCurrent = RAMP_STARTING_CURRENT_MIN;
             #if (STARTUP_IN_CURRENT_MODE == 1)
@@ -3721,7 +3706,6 @@ VOID executeRampProfile(VOID)
                         refiTotalCurrent = currentRampProfile.endCurrent;
                         //Disable current loop
                         rampStatusFlags.rampCurrentControlRequired = 0;
-                        //set the speed reference
                         //refSpeed -= currentRampProfile.speedChangeRate;
 						refSpeed -= 30; //2010125
 #if 0

@@ -31,13 +31,15 @@
 #include "./MotorControl/SpeedController/SpeedController.h"
 #include "./Middleware/ParameterDatabase/eeprom.h"
 
-#define CURRENT_FILTER_CONST 70//100//500//1000
+// Measures against overcurrent error 20180305 by IME
+//#define CURRENT_FILTER_CONST 70//100//500//1000
+//#define CALCULATE_ADC_OFFSET_CNT    100  /* Number of samples taken for ADC offset calculation */
+#define CURRENT_FILTER_CONST 500
+#define CALCULATE_ADC_OFFSET_CNT    4  /* Number of samples taken for ADC offset calculation */
 
 #define MAX_ADC_VOLTAGE     3300
 
 #define MAX_ADC_COUNT       1024 /* ADC configured in 10 bit mode */
-
-#define CALCULATE_ADC_OFFSET_CNT    100  /* Number of samples taken for ADC offset calculation */
 
 #define P_CURRENT_PI 13000
 #define I_CURRENT_PI 900
@@ -233,8 +235,8 @@ void __attribute__((interrupt, no_auto_psv)) _T5Interrupt (void)
 	//static unsigned int lsui8Count = 0;
     IFS1bits.T5IF = 0;
 #ifdef BUG_No82_UartRxTimeOut1S     //20170606  201703_No.82
-    Time_uart_count++;     
-#endif    
+    Time_uart_count++;
+#endif
 	/*lsui8Count++;
 	if(lsui8Count >= 50)
 	{	//Blink after 1 sec
