@@ -88,7 +88,8 @@
 #define EXPECTED_CRC_APERTUREHEIGHT                0x7292
 
 //CONST UINT32 drive_fw_version = 0x00000406;
-CONST UINT32 drive_fw_version = 18045;    //Drive version 1804.5        20170418   201703_No.29
+CONST UINT32 drive_fw_version = 18046;    //Drive version 1804.6        20170418   201703_No.29
+
 enum {
 	no_error = 0,
 	UART_channel_disabled,
@@ -535,7 +536,6 @@ VOID commandHandler(VOID)
                             stopShutter();
                         /*************add 20161017 end************************/
                     break;
-
                 case confirm_sub_state_install:
                     if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveInstallation)
                     {
@@ -567,29 +567,33 @@ VOID commandHandler(VOID)
                     if((TIME_CMD_open_shutter==0)&&(TIME_CMD_close_shutter==0))
                     {
                         FLAG_CMD_open_shutter=0;
-                    if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveReady)
-                    {
-						//instruct function for to not scan PE sensor - YG - Nov 2015
-                        faultTrgFlag = readCurrSensorState(FALSE)
-                        				| uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.powerFail;
-
-                        if(faultTrgFlag == FALSE)
+                        if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveReady)
                         {
-                            //if((!uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterUpperLimit)&&(inputFlags.value!=OPEN_SHUTTER)) 20170318protect overrun
-							if((!uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterUpperLimit)&&(inputFlags.value!=OPEN_SHUTTER)&&(inputFlags.value!=OPEN_SHUTTER_JOG_10)&&(inputFlags.value!=OPEN_SHUTTER_JOG_50))
+							//instruct function for to not scan PE sensor - YG - Nov 2015
+                            faultTrgFlag = readCurrSensorState(FALSE)
+                            				| uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.powerFail;
+                            if(faultTrgFlag == FALSE)
                             {
-                                inputFlags.value = OPEN_SHUTTER;
-                                rampStatusFlags.rampOpenInProgress = 0;   //20160906 bug_No.87
-                                TIME_CMD_open_shutter = 100;
-                                //if shutter is moving then calculate min distance travel required.
-                                if(rampOutputStatus.shutterMoving)
+                                //if((!uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterUpperLimit)&&(inputFlags.value!=OPEN_SHUTTER)) 20170318protect overrun
+								if((!uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterUpperLimit)&&(inputFlags.value!=OPEN_SHUTTER)&&(inputFlags.value!=OPEN_SHUTTER_JOG_10)&&(inputFlags.value!=OPEN_SHUTTER_JOG_50))
                                 {
-                                    calcShtrMinDistValue();
-                                }
+                                    inputFlags.value = OPEN_SHUTTER;
+                                    rampStatusFlags.rampOpenInProgress = 0;   //20160906 bug_No.87
+                                    TIME_CMD_open_shutter = 100;
+                                    //if shutter is moving then calculate min distance travel required.
+                                    if(rampOutputStatus.shutterMoving)
+                                    {
+                                        calcShtrMinDistValue();
+                                    }
 #ifdef DEBUG_SHUTTER_MOVEMENT_IN_WRONG_DIRECTION
-								//	Clear false direction movement debug count
-								gucTempFalseMovementCount = 0;
+									//	Clear false direction movement debug count
+									gucTempFalseMovementCount = 0;
 #endif
+                                }
+                                else
+                                {
+                                    status = nack;
+                                }
                             }
                             else
                             {
@@ -600,11 +604,6 @@ VOID commandHandler(VOID)
                         {
                             status = nack;
                         }
-                    }
-                    else
-                    {
-                        status = nack;
-                    }
                     }
                     else {
                         FLAG_CMD_open_shutter=1;
@@ -649,38 +648,40 @@ VOID commandHandler(VOID)
                     if((TIME_CMD_open_shutter==0)&&(TIME_CMD_close_shutter==0))
                     {
                         FLAG_CMD_open_shutter=0;
-                    if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveReady)
-                    {
-                        //if(!uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterApertureHeight)
-                            //if(((uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterLowerLimit || //20170318 overrunprotect
-                           //uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterBetweenLowlmtAphgt))&&(inputFlags.value!=OPEN_SHUTTER_APERTURE))
-					    //20180705 Bug_1806_No20,No69,No71
-						//if(((uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterLowerLimit ||
-                        //uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterBetweenLowlmtAphgt))&&(inputFlags.value!=OPEN_SHUTTER_APERTURE)&&(inputFlags.value!=OPEN_SHUTTER_JOG_10)&&(inputFlags.value!=OPEN_SHUTTER_JOG_50))
-						if((((!uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterUpperLimit)&&(FLAG_StartApertureCorrection==1))||
-                           ((!uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterApertureHeight)&&(FLAG_StartApertureCorrection==0)))
-                                &&(inputFlags.value!=OPEN_SHUTTER_APERTURE)&&(inputFlags.value!=OPEN_SHUTTER_JOG_10)&&(inputFlags.value!=OPEN_SHUTTER_JOG_50))
+                        if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveReady)
                         {
-                            if(FLAG_StartApertureCorrection==1){FLAG_StartApertureCorrection++;inputFlags.value = OPEN_SHUTTER; }   //bug_No.12
-                            else if(FLAG_StartApertureCorrection>1){FLAG_StartApertureCorrection=0;inputFlags.value = OPEN_SHUTTER_APERTURE;}
-                            else inputFlags.value = OPEN_SHUTTER_APERTURE;
-                            TIME_CMD_open_shutter = 100;
-                            bUpApertureCmdRecd = TRUE;
-                            //if shutter is moving then calculate min distance travel required.
-                            if(rampOutputStatus.shutterMoving)
+                            //if(!uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterApertureHeight)
+                                //if(((uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterLowerLimit || //20170318 overrunprotect
+                               //uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterBetweenLowlmtAphgt))&&(inputFlags.value!=OPEN_SHUTTER_APERTURE))
+						    //20180705 Bug_1806_No20,No69,No71
+							//if(((uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterLowerLimit ||
+                            //uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterBetweenLowlmtAphgt))&&(inputFlags.value!=OPEN_SHUTTER_APERTURE)&&(inputFlags.value!=OPEN_SHUTTER_JOG_10)&&(inputFlags.value!=OPEN_SHUTTER_JOG_50))
+							if((((!uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterUpperLimit)&&(FLAG_StartApertureCorrection==1))||
+                               ((!uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterApertureHeight)&&(FLAG_StartApertureCorrection==0)))
+                                    &&(inputFlags.value!=OPEN_SHUTTER_APERTURE)&&(inputFlags.value!=OPEN_SHUTTER_JOG_10)&&(inputFlags.value!=OPEN_SHUTTER_JOG_50))
                             {
-                                calcShtrMinDistValue();
+								//20180709 Bug_201806_No80
+                                //if(FLAG_StartApertureCorrection==1){FLAG_StartApertureCorrection++;inputFlags.value = OPEN_SHUTTER; }   //bug_No.12
+                                //else if(FLAG_StartApertureCorrection>1){FLAG_StartApertureCorrection=0;inputFlags.value = OPEN_SHUTTER_APERTURE;}
+                                if(FLAG_StartApertureCorrection>0){inputFlags.value = OPEN_SHUTTER; }
+                                else inputFlags.value = OPEN_SHUTTER_APERTURE;
+                                TIME_CMD_open_shutter = 100;
+                                bUpApertureCmdRecd = TRUE;
+                                //if shutter is moving then calculate min distance travel required.
+                                if(rampOutputStatus.shutterMoving)
+                                {
+                                    calcShtrMinDistValue();
+                                }
+                            }
+                            else
+                            {
+                                status = nack;
                             }
                         }
                         else
                         {
                             status = nack;
                         }
-                    }
-                    else
-                    {
-                        status = nack;
-                    }
                     }
                     else {
                         FLAG_CMD_open_shutter=1;
@@ -698,28 +699,32 @@ VOID commandHandler(VOID)
                     FLAG_CMD_open_shutter=0;
                     if((TIME_CMD_open_shutter==0)&&(TIME_CMD_close_shutter==0))
                     {
-                    //If shutter is at lower limit then do not process command
-                    if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveReady)
-                    {
-						//instruct function for to not scan PE sensor - YG - Nov 2015
-                        faultTrgFlag = readCurrSensorState(TRUE)
-                        				| uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.powerFail;
-
-                        if(faultTrgFlag == FALSE)
+                    	//If shutter is at lower limit then do not process command
+                        if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveReady)
                         {
-                            if(!uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterLowerLimit)
+					    	//instruct function for to not scan PE sensor - YG - Nov 2015
+                    	    faultTrgFlag = readCurrSensorState(TRUE)
+                            				| uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.powerFail;
+                            if(faultTrgFlag == FALSE)
                             {
-                                inputFlags.value = CLOSE_SHUTTER;
-                                TIME_CMD_close_shutter=160;   //20160907  bug_No.107
-                                //if shutter is moving then calculate min distance travel required.
-                                if(rampOutputStatus.shutterMoving)
+                                if(!uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterLowerLimit)
                                 {
-                                    calcShtrMinDistValue();
-                                }
-#ifdef DEBUG_SHUTTER_MOVEMENT_IN_WRONG_DIRECTION
-								//	Clear false direction movement debug count
-								gucTempFalseMovementCount = 0;
+                                    inputFlags.value = CLOSE_SHUTTER;
+                                    TIME_CMD_close_shutter=160;   //20160907  bug_No.107
+                                    //if shutter is moving then calculate min distance travel required.
+                                    if(rampOutputStatus.shutterMoving)
+                                    {
+                                        calcShtrMinDistValue();
+                                    }
+#ifdef DEBUG_SHUTTER    _MOVEMENT_IN_WRONG_DIRECTION
+									//	Clear false direction movement debug count
+									gucTempFalseMovementCount = 0;
 #endif
+                                }
+                                else
+                                {
+                                    status = nack;
+                                }
                             }
                             else
                             {
@@ -730,11 +735,6 @@ VOID commandHandler(VOID)
                         {
                             status = nack;
                         }
-                    }
-                    else
-                    {
-                        status = nack;
-                    }
                     }
                     else status =no_reply_reqd;
                     break;
@@ -777,23 +777,28 @@ VOID commandHandler(VOID)
                     FLAG_CMD_open_shutter=0;
                     if((TIME_CMD_open_shutter==0)&&(TIME_CMD_close_shutter==0))
                     {
-                    if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveReady)
-                    {
-						//instruct function for to not scan PE sensor - YG - Nov 2015
-                        faultTrgFlag = readCurrSensorState(TRUE)
-                        				| uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.powerFail;
-
-                        if(faultTrgFlag == FALSE)
+                        if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveReady)
                         {
-                            if(!uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterLowerLimit)
+							//instruct function for to not scan PE sensor - YG - Nov 2015
+                            faultTrgFlag = readCurrSensorState(TRUE)
+                            				| uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.powerFail;
+
+                            if(faultTrgFlag == FALSE)
                             {
-                                inputFlags.value = CLOSE_SHUTTER_APERTURE;
-                                TIME_CMD_close_shutter=160;   //20160907  bug_No.107
-                                bDownApertureCmdRecd = TRUE;
-                                //if shutter is moving then calculate min distance travel required.
-                                if(rampOutputStatus.shutterMoving)
+                                if(!uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterLowerLimit)
                                 {
-                                    calcShtrMinDistValue();
+                                    inputFlags.value = CLOSE_SHUTTER_APERTURE;
+                                    TIME_CMD_close_shutter=160;   //20160907  bug_No.107
+                                    bDownApertureCmdRecd = TRUE;
+                                    //if shutter is moving then calculate min distance travel required.
+                                    if(rampOutputStatus.shutterMoving)
+                                    {
+                                        calcShtrMinDistValue();
+                                    }
+                                }
+                                else
+                                {
+                                    status = nack;
                                 }
                             }
                             else
@@ -805,11 +810,6 @@ VOID commandHandler(VOID)
                         {
                             status = nack;
                         }
-                    }
-                    else
-                    {
-                        status = nack;
-                    }
                     }
                     else status =no_reply_reqd;
                     break;
@@ -888,7 +888,7 @@ VOID commandHandler(VOID)
                             }
 #ifdef BUG_No76or73_powerUpCalib_osToggle      //20170607  201703_No.76 or 73
                             if(paramIndex == 537)
-                                        Flag_powerUpCalib_osToggle=1;
+                                Flag_powerUpCalib_osToggle=1;
 #endif
                            if((paramIndex == 605)&&(FLAG_StartApertureCorrection>0))
                             {
@@ -1133,7 +1133,6 @@ VOID commandHandler(VOID)
                         status = nack;
                     }
                     break;
-
                 default:
                         // could not recognise the command, hence reply with NACK - code is not expected to come here
                         status = nack; // NACK to be sent to CB

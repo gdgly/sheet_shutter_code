@@ -1206,7 +1206,6 @@ VOID updatePhotoElectricDebounceTime(VOID)
   #else
     sensorActiveDebounceValue[PHOTOELECTRIC_SENSOR] = uDriveApplBlockEEP.stEEPDriveApplBlock.snowModePhotoelec_A008;
   #endif
-
 #endif
 }
 
@@ -1225,6 +1224,7 @@ VOID resetSensorStatus(VOID)
     {
        uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorOverheat = FALSE;
     }
+
     if(!emergencySensorTrigrd)
     {
         uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.emergencyStop = FALSE;
@@ -1289,7 +1289,6 @@ VOID initSensorList(VOID)
     photoElecObsSensTrigrd = sensorList[PHOTOELECTRIC_SENSOR].sensorCurrSteadyVal;
     tempSensTrigrd = sensorList[TEMPERATURE_SENSOR].sensorCurrSteadyVal;
     originSensorDetected = sensorList[ORIGIN_SENSOR].sensorCurrSteadyVal;
-
 #ifdef  BUG_No51_SnowA008  //20170612  201703_No.51
     updatePhotoElectricDebounceTime();
 #endif
@@ -1566,6 +1565,7 @@ VOID calculateDrift(BOOL sts)
 					{
 						hallCounts_bak = hallCounts;	// 2016/11/16 When Down , Missing Save Origin Position.
                     	hallCounts = uDriveCommonBlockEEP.stEEPDriveCommonBlock.originSensorPosMonitor_A128;
+                    	FLAG_StartApertureCorrection = 0;		//20180709 Bug_201806_No80
                     }
                 //}
             }
@@ -1673,7 +1673,6 @@ VOID microSwSensorTiggered(BOOL sts)
                 inputFlags.value = OPEN_SHUTTER_JOG_50;
                 rampCurrentState = RAMP_START;
             }
-
             // Increment micro switch sensor count - A080
 			uDriveApplBlockEEP.stEEPDriveApplBlock.microSensorCounter_A080++;
             // if count has exceeded limit value A603
@@ -3122,7 +3121,6 @@ VOID stopShutter(VOID)
 		#endif
        if((requiredDirection == CCW)&&(currentDirection == CW)){applyBrake = TRUE;} //20160915REVERSEPROTECT
        if((requiredDirection == CW)&&(currentDirection == CCW)){applyBrake = TRUE;} //20160915REVERSEPROTECT
-
     }
     else
     {
