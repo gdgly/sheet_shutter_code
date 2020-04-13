@@ -236,6 +236,8 @@ BYTE gucShutterFalseDownMovementCount = 0;
 BYTE gucTempFalseMovementCount = 0;
 #endif
 
+// Measures against overcurrent error 20180123 by IME
+extern BOOL  FLAG_overLoad;
 
 /******************************************************************************
  * initRampGenerator
@@ -883,30 +885,16 @@ VOID pwmBufferControl(SHORT status)
  ********************************************************************************/
 VOID chargeBootstraps(VOID)
 {
-#ifdef IGBT_LowActive_IR
     IOCON1 = 0xC780;
 	IOCON2 = 0xC780;
-	IOCON3 = 0xC780;    
-#endif    
-#ifdef IGBT_HighActive_ROME
-    IOCON1 = 0xC740;   
-	IOCON2 = 0xC740;
-	IOCON3 = 0xC740;     
-#endif
+	IOCON3 = 0xC780;
     PTCONbits.PTEN = 1;
     pwmBufferControl(ENABLE);
 	delayMs(CHARGE_BOOTSTRAP_CAP);
     pwmBufferControl(DISABLE);
-#ifdef IGBT_LowActive_IR
     IOCON1 = 0xF000;
     IOCON2 = 0xF000;
-    IOCON3 = 0xF000;    
-#endif    
-#ifdef IGBT_HighActive_ROME
-    IOCON1 = 0xC000;    
-    IOCON2 = 0xC000;
-    IOCON3 = 0xC000;    
-#endif 
+    IOCON3 = 0xF000;
     PTCONbits.PTEN = 0;
 
     PDC1 = PHASE1 / 2;	// initialise as 0 volts
@@ -1152,9 +1140,9 @@ VOID monitorSafetySensors(VOID)
                     else if((i==2)&&(sensorList[i].sensorPrevSteadyVal==sensorList[i].sensorCurrSteadyVal)&&(photElecSensorFault ==FALSE))
                     {
 						sensorList[i].sensorFuncPtr(sensorList[i].sensorCurrSteadyVal);
-						sensorList[i].sensorPrevSteadyVal = sensorList[i].sensorCurrSteadyVal;                        
+						sensorList[i].sensorPrevSteadyVal = sensorList[i].sensorCurrSteadyVal;
                     }
-#endif                     
+#endif
 				}
 			}
 			else if(sensorList[i].sensorCurrVal == LOW)
@@ -1597,7 +1585,7 @@ VOID checkPhotoElecObsLevel(BOOL sts)
                     if((rampCurrentPosition < uDriveCommonBlockEEP.stEEPDriveCommonBlock.photoElecPosMonitor_A102)&&
                         //(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterUpperLimit == FALSE))
                         (rampOutputStatus.shutterCurrentPosition > (uDriveCommonBlockEEP.stEEPDriveCommonBlock.upperStoppingPos_A100 +
-                                                       uDriveApplBlockEEP.stEEPDriveApplBlock.overrunProtection_A112)))    
+                                                       uDriveApplBlockEEP.stEEPDriveApplBlock.overrunProtection_A112)))
 #else
                     if(rampCurrentPosition < uDriveCommonBlockEEP.stEEPDriveCommonBlock.photoElecPosMonitor_A102)
 #endif
@@ -1612,7 +1600,7 @@ VOID checkPhotoElecObsLevel(BOOL sts)
                            //set fault status
                            //uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveApplicationFault.bits.peObstacle = TRUE;   //bug_No.78
                            inputFlags.value = OPEN_SHUTTER_JOG_50;
-                           rampCurrentState = RAMP_START;     
+                           rampCurrentState = RAMP_START;
                           //2016/09/03 PHOTOELECTRIC_SENSOR 2nd input after not reverce
                           uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.peSensorStatus = photoElecObsSensTrigrd;   //bug_No.97
 
@@ -1956,7 +1944,7 @@ VOID checkRampCommand(VOID)
         {
             if(
 #ifdef BUG_No94_M2closeTOopen
-				((!rampStatusFlags.rampOpenInProgress) && (!rampOutputStatus.shutterMoving)&&(measuredSpeed<500)) ||   //1000-->500 20171027  close to open retset phase for shengzheng   
+				((!rampStatusFlags.rampOpenInProgress) && (!rampOutputStatus.shutterMoving)&&(measuredSpeed<500)) ||   //1000-->500 20171027  close to open retset phase for shengzheng
 				// Added to overcome installation issue (A100) - RN- NOV 2015
 				(gucInstallationInitiated && (inputFlags.value == OPEN_SHUTTER_JOG_10))
 			)
@@ -1965,14 +1953,14 @@ VOID checkRampCommand(VOID)
                 {
                     rampDcInjectionOnCounter=0;
                 }
-                phaseOffsetCW=2366;  //add 20171027  close to open retset phase for shengzheng                    
+                phaseOffsetCW=2366;  //add 20171027  close to open retset phase for shengzheng
 #else
-				((!rampStatusFlags.rampOpenInProgress) && (!rampOutputStatus.shutterMoving)) ||     
+				((!rampStatusFlags.rampOpenInProgress) && (!rampOutputStatus.shutterMoving)) ||
 				// Added to overcome installation issue (A100) - RN- NOV 2015
 				(gucInstallationInitiated && (inputFlags.value == OPEN_SHUTTER_JOG_10))
 			)
-            {                    
-#endif                    
+            {
+#endif
 				gucInstallationInitiated = SERVICED;
                 rampCurrentState = RAMP_START;
                 rampStatusFlags.rampOpenInProgress = 1;
@@ -3020,13 +3008,13 @@ VOID stopShutter(VOID)
 							(rampCurrentSpeed > 500) /*|| //800  //20160915SHUTTER_SPEED_MIN_STOP
 							(
 								((measuredSpeed > GO_UP_MIN_SPEED_BEFORE_APPLYING_BRAKE) && (requiredDirection == CW))		//	measured speed is greater than 300 while going up
-							)*/            
+							)*/
 #else
 							(rampCurrentSpeed > 500) || //800  //20160915SHUTTER_SPEED_MIN_STOP
 							(
 								((measuredSpeed > GO_UP_MIN_SPEED_BEFORE_APPLYING_BRAKE) && (requiredDirection == CW))		//	measured speed is greater than 300 while going up
-							)            
-#endif            
+							)
+#endif
 						)
 					)
 				) &&
@@ -3154,6 +3142,8 @@ VOID stopShutter(VOID)
                 rampCurrentState = RAMP_STATE_END;
                 currentRampProfileNo = RAMP_PROFILE_END;
                 //Call stop motor to stop all the interrupt
+				// Measures against overcurrent error 20180122 by IME
+			    FLAG_overLoad = FALSE;
                 stopMotor();
 				//	Shutter is stopped, clear flag
 				gui8StopKeyPressed = 0;
@@ -3718,7 +3708,8 @@ VOID executeRampProfile(VOID)
                         //Disable current loop
                         rampStatusFlags.rampCurrentControlRequired = 0;
                         //set the speed reference
-                        refSpeed -= currentRampProfile.speedChangeRate;
+                        //refSpeed -= currentRampProfile.speedChangeRate;
+						refSpeed -= 30; //2010125
 #if 0
 						refSpeed -= lshSpeedChangeRate;
 #endif

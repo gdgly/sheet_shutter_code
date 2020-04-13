@@ -42,12 +42,16 @@
 //#define PHASE_OFFSET_CCW 9840 //182 counts for 1 degree
 
 #ifdef USE_PHASE_INC_AND_CORRECTION
-#define PHASE_OFFSET_CW 2366//6916//364 //measured offset is 364*(360/65536) = 2 degrees.
+// Measures against overcurrent error 20180123 by IME
+//#define PHASE_OFFSET_CW 2366//6916//364 //measured offset is 364*(360/65536) = 2 degrees.
 //#define PHASE_OFFSET_CW  1092  // 6 degrees.
+#define PHASE_OFFSET_CW 2366 //6916 20180125
+#define PHASE_OFFSET_CW_START 6916 // 2366 20180125
 #define PHASE_OFFSET_CCW 9828//5096//8008//9828 // Fukui result - 54 degree 10192
+#define PHASE_OFFSET_CCW_START 6916
 #define PHASE_OFFSET_CW_MAX 6916
 #define PHASE_OFFSET_CCW_MAX 9828 //5096     //2016/08/17 Down Moving after Over Current by IME
-#define PHASE_OFFSET_INC_STEP 1
+#define PHASE_OFFSET_INC_STEP 10
 #define PHASE_OFFSET_DEC_STEP 20
 #else
 #define PHASE_OFFSET_CW 10000
@@ -93,8 +97,11 @@ UINT16 PhaseAdvance;
 /* In the sinewave generation algorithm we need an offset to be added to the */
 /* pointer when energizing the motor in CCW. This is done to compensate an   */
 /* asymetry of the sinewave */
+// Measures against overcurrent error 20180123 by IME
 SHORT phaseOffsetCW  = PHASE_OFFSET_CW;
-SHORT phaseOffsetCCW = PHASE_OFFSET_CCW;
+//SHORT phaseOffsetCCW = PHASE_OFFSET_CCW;
+//SHORT phaseOffsetCW  = PHASE_OFFSET_CW_START; //20180126
+SHORT phaseOffsetCCW = PHASE_OFFSET_CCW_START;
 
 /* Period filter for speed measurement */
 DWORD periodFilter;
@@ -212,19 +219,19 @@ void __attribute__((interrupt, no_auto_psv)) _T1Interrupt (void)
 
 // 2016/3/3 Motor Stal & PWM Cost
 #ifdef BUG_No88_M2overcurrentfault
-     if(cnt_motor_stop>5) 
+     if(cnt_motor_stop>5)
      {
         if (requiredDirection == CW || requiredDirection== CCW)
         {
             currentSector = getCurrentSectorNo();
             calculatePhaseValue(currentSector);
         }
-     } 
-#endif    
-     if(cnt_motor_stop>10)  
+     }
+#endif
+     if(cnt_motor_stop>10)
      {
          measuredSpeed = 0;
-     }    
+     }
 
 
 #ifdef ENABLE_MOTOR_CABLE_FAULT
@@ -379,13 +386,13 @@ VOID monitorSectorRotation(VOID)
             //if emergency switch is triggered the stop shutter immediately
             forceStopShutter();
 			// 2016/11/16 When Down , Missing Save Origin Position.
-			hallCounts_bak = 0x7FFF;            
+			hallCounts_bak = 0x7FFF;
 #else
             rampCurrentState = RAMP_PWM_COASTING;
             pwmCostingReq = TRUE;
             currentLimitClamp = controlOutput;
-            outputDecRate = __builtin_divud(currentLimitClamp, PWM_COASTING_TIME);            
-#endif             
+            outputDecRate = __builtin_divud(currentLimitClamp, PWM_COASTING_TIME);
+#endif
             uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveMotorFault.bits.motorStall = TRUE;
         }
         else
@@ -659,6 +666,8 @@ void __attribute__((interrupt, no_auto_psv)) _IC3Interrupt (void)
 #ifdef USE_PHASE_INC_AND_CORRECTION
 VOID calculatePhaseValue(WORD sectorNo)
 {
+// Measures against overcurrent error 20180123 by IME
+/*
     if(measuredSpeed >= 500)
     {
         if(requiredDirection == CW)
@@ -687,6 +696,41 @@ VOID calculatePhaseValue(WORD sectorNo)
         if(phaseOffsetCCW >= PHASE_OFFSET_CCW)
             phaseOffsetCCW = PHASE_OFFSET_CCW;
     }
+*/
+	if(requiredDirection == CW)
+	{
+		if(hallCounts>uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.riseChangeGearPos1_A103)
+		{
+			// phaseOffsetCW = PHASE_OFFSET_CW_START; //20180126
+			   if(phaseOffsetCW < PHASE_OFFSET_CW_MAX)
+                phaseOffsetCW  += PHASE_OFFSET_INC_STEP;
+               if(phaseOffsetCW >= PHASE_OFFSET_CW_MAX)
+                phaseOffsetCW = PHASE_OFFSET_CW_MAX;
+			   
+		}
+		else
+		{
+			if(phaseOffsetCW > PHASE_OFFSET_CW)
+			    phaseOffsetCW -= PHASE_OFFSET_DEC_STEP;
+			if(phaseOffsetCW <= PHASE_OFFSET_CW)
+			    phaseOffsetCW = PHASE_OFFSET_CW;
+		}
+	}
+	else if(requiredDirection == CCW)
+	{
+		if(hallCounts<(uDriveCommonBlockEEP.stEEPDriveCommonBlock.lowerStoppingPos_A101
+			-uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.fallChangeGearPos1_A106))
+		{
+			phaseOffsetCCW = PHASE_OFFSET_CCW_START;
+		}
+		else
+		{
+            if(phaseOffsetCCW < PHASE_OFFSET_CCW)
+                phaseOffsetCCW  += PHASE_OFFSET_INC_STEP;
+            if(phaseOffsetCCW >= PHASE_OFFSET_CCW)
+                phaseOffsetCCW = PHASE_OFFSET_CCW;
+		}
+	}
 
     /* Motor commutation is actually based on the required direction, not */
     /* the current dir. This allows driving the motor in four quadrants */
@@ -783,7 +827,8 @@ VOID measureActualSpeed(VOID)
 VOID speedControl(VOID)
 {
      //***********************20160906_add over load start************************
-    SHORT  refSpeed_80_pct;
+// Measures against overcurrent error 20180123 by IME
+/*    SHORT  refSpeed_80_pct;
     refSpeed_80_pct = refSpeed*5/10;     //50%
     if((measuredSpeed < refSpeed_80_pct)&&(FLAG_overLoad == FALSE))
     {
@@ -793,6 +838,7 @@ VOID speedControl(VOID)
     else OverLoad_cnt = 0;
     if((flags.motorRunning ==0)||(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveInstallation)) FLAG_overLoad = FALSE;
     if(FLAG_overLoad == TRUE)refSpeed = refSpeed/2;   //50%
+*/
     //**********************20160906_add over load end **************************
 
 
@@ -801,6 +847,8 @@ VOID speedControl(VOID)
 
 //    if(uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.shutterType_A537 == BEAD_SHUTTER)
 //    {
+// Measures against overcurrent error 20180123 by IME
+/*
         if(requiredDirection == CW)
         {
             speedPIparms.qOutMax = currentLimitClamp;
@@ -811,6 +859,9 @@ VOID speedControl(VOID)
             speedPIparms.qOutMax = currentLimitClamp;
             speedPIparms.qOutMin = -(currentLimitClamp);
         }
+*/
+	speedPIparms.qOutMax = 6*measuredSpeed+5000;
+	speedPIparms.qOutMin = -(currentLimitClamp);
 //    }
 //    else if (uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.shutterType_A537 == M1_SHUTTER)
 //    {
@@ -840,6 +891,10 @@ VOID speedControl(VOID)
         if(measuredSpeed < SHUTTER_SPEED_MIN_STOP)
         {
             controlOutput += HOLDING_DUTY_INC;
+			// Measures against overcurrent error 20180123 by IME
+         	if(controlOutput>5000){
+				controlOutput=5000;
+			}
         }
         else
         {

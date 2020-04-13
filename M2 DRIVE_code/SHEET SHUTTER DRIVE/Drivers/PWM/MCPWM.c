@@ -1,4 +1,67 @@
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /*********************************************************************************
 * FileName: MCPWM.c
 * Description:
@@ -24,7 +87,6 @@
 #include <p33Exxxx.h>
 #include "MCPWM.h"
 #include "./Common/UserDefinition/Userdef.h"
-#include "./Common/Extern/Extern.h"
 
 /******************************************************************************
  * initMCPWM
@@ -44,16 +106,9 @@ VOID initMCPWM(VOID)
 	PHASE3 = (FCY/FPWM - 1);
     PTPER = 2*(FCY/FPWM - 1)+1;
     
-#ifdef IGBT_LowActive_IR
     IOCON1 = 0xF000;
 	IOCON2 = 0xF000;
-	IOCON3 = 0xF000;    
-#endif    
-#ifdef IGBT_HighActive_ROME
-    IOCON1 = 0xC000;    
-    IOCON2 = 0xC000;
-    IOCON3 = 0xC000;     
-#endif
+	IOCON3 = 0xF000;
 	
 	/* 2 us of dead time */
 	DTR1 = 0x0000;	
