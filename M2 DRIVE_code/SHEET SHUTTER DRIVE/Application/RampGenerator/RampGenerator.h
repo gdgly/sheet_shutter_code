@@ -300,6 +300,8 @@ EXTERN rampTripSts_t rampTripSts;
 EXTERN safetySensors_t sensorList[];
 EXTERN SHORT saveParamToEepromCnt;
 
+EXTERN UINT16 Time_uart_count;   //20170502  201703_No.xx
+
 /* This function initializes all variables required by ramp generator */
 VOID initRampGenerator(VOID);
 
