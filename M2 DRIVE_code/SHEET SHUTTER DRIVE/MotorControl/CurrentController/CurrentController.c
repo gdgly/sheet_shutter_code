@@ -232,6 +232,9 @@ void __attribute__((interrupt, no_auto_psv)) _T5Interrupt (void)
 {
 	//static unsigned int lsui8Count = 0;
     IFS1bits.T5IF = 0;
+#ifdef BUG_No82_UartRxTimeOut1S     //20170606  201703_No.82
+    Time_uart_count++;     
+#endif    
 	/*lsui8Count++;
 	if(lsui8Count >= 50)
 	{	//Blink after 1 sec

@@ -141,6 +141,9 @@ UINT8  FLAG_CMD_open_shutter=0;
 UINT8  CMD_open_shutter=0;
 UINT8  FLAG_StartApertureCorrection = 0;   //bug_No.12
 UINT8  FLAG_open_shutter_one = 0;
+
+UINT8 Power_ON_igbtOverTemp=0;
+UINT16 Time_uart_count=0;    
 /******************************************************************************
  * initApplication
  *
@@ -1077,7 +1080,7 @@ VOID powerUpCalibration(VOID)
             case CALIB_SEARCH_ORG_UP_DIR:
                 {
                     //If origin sensor toggle is detected then continue movement for 50mm
-                    if(powerUpCalib.osToggle)
+                    if(powerUpCalib.osToggle)                                  
                     {
                         //update the target position and state machine
                         powerUpCalib.targetPosition = powerUpCalib.currentPosition - HALL_COUNT(OS_VALIDATION_LENGTH);
