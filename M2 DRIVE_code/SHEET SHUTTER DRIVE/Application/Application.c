@@ -547,7 +547,7 @@ VOID updateDriveStatusFlags(VOID)
                                                        uDriveApplBlockEEP.stEEPDriveApplBlock.overrunProtection_A112))
 		{
 			// 2016/11/16 When Down , Missing Save Origin Position.
-			hallCounts_bak = 0x7FFF;
+//			hallCounts_bak = 0x7FFF;	//20191223 Delete by IME
 
 			// update drive status position to lower limit
             uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterLowerLimit = TRUE;
@@ -575,6 +575,7 @@ VOID updateDriveStatusFlags(VOID)
 		if(rampOutputStatus.shutterCurrentPosition <= (uDriveCommonBlockEEP.stEEPDriveCommonBlock.upperStoppingPos_A100 +
                                                        uDriveApplBlockEEP.stEEPDriveApplBlock.overrunProtection_A112))
         {
+			hallCounts_bak = 0x7FFF;	//20191223 ADD by IME
 			// update drive status position to upper limit
             uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterUpperLimit = TRUE;
 		}
@@ -1395,6 +1396,9 @@ VOID startInstallation(VOID)
 	// Added to overcome installation issue (A100) - RN- NOV 2015
 	gucInstallationInitiated = INITIATED;
     ShutterInstallationEnabled = TRUE;
+
+    writeBYTE(EEP_SHUTTER_INSTALLATION_STEP, INSTALL_A100);    //add 20200303
+    ShutterInstallationStep = INSTALL_A100;                    //add 20200303
 }
 
 VOID shutterInstallation(VOID)

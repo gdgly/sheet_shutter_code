@@ -172,7 +172,7 @@ DWORD periodStateVar;
 
 //Observed hall counts for one hall sensor (IC2) is 155, 148, 151
 SHORT hallCounts = 0;
-SHORT hallCounts_bak = 0x7FFF;
+SHORT hallCounts_bak;// = 0x7FFF;	//20191223 Delete by IME
 
 /* Variable used by inbuilt division function */
 UINT tmpQu = 0;
@@ -724,11 +724,11 @@ SHORT PhaseCurrentPosition;
 	}
 	else if(requiredDirection == CW)
 	{
-		if(PhaseCurrentPosition>uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.riseChangeGearPos1_A103)
+		if(PhaseCurrentPosition>(SHORT)uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.riseChangeGearPos1_A103)
 		{
 			// 20180607 by IME
 			if((currentRampProfileNo==RAMP_APERTURE_UP_PROFILE)&&
-				(PhaseCurrentPosition<(uDriveCommonBlockEEP.stEEPDriveCommonBlock.apertureHeightPos_A130
+				(PhaseCurrentPosition<(SHORT)(uDriveCommonBlockEEP.stEEPDriveCommonBlock.apertureHeightPos_A130
 					+uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.riseChangeGearPos1_A103)))
 			{
 				if(phaseOffsetCW > PHASE_OFFSET_CW)
@@ -765,7 +765,7 @@ SHORT PhaseCurrentPosition;
 	}
 	else if(requiredDirection == CCW)
 	{
-		if(PhaseCurrentPosition<uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.fallChangeGearPos1_A106)
+		if(PhaseCurrentPosition<(SHORT)uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.fallChangeGearPos1_A106)
 		{
 	    	if(measuredSpeed < 300)
 	    	{
@@ -984,7 +984,7 @@ SHORT PhaseCurrentPosition;
 		if(measurediTotal<4000)
 		{
 			FLAG_overLoad = 0;
-			speedPIparms.qOutMax = 4*measuredSpeed+5000;           
+			speedPIparms.qOutMax = 4*measuredSpeed+5000;
 		}
 		else if(measurediTotal>15000)
 		{
@@ -1033,10 +1033,10 @@ SHORT PhaseCurrentPosition;
                 {
                     if(controlOutput>7000) controlOutput=7000;
                 }
-                else 
+                else
                 {
                     if(controlOutput>5000) controlOutput=5000;
-                }                              
+                }
 			}
 			else
 			{
@@ -1063,10 +1063,10 @@ SHORT PhaseCurrentPosition;
                 {
                     if(controlOutput>7000) controlOutput=7000;
                 }
-                else 
+                else
                 {
                     if(controlOutput>5000) controlOutput=5000;
-                }               
+                }
 			}
         }
         else
@@ -1112,7 +1112,8 @@ VOID initSpeedControllerVariables(VOID)
 	SHORT lshcurrentLimitClampNew;
 
     hall2Triggered = 0;
-    totalTimePeriod = 0;
+//    totalTimePeriod = 0;		// 20190319 delete to kahuka error
+    totalTimePeriod = MAXPERIOD;	// 20190319 add to kahuka error
     measuredSpeed = 0;
 // Measures against overcurrent error 20180305 by IME
     FLAG_overLoad = FALSE;
@@ -1167,7 +1168,7 @@ VOID initSpeedControllerVariables(VOID)
 		}
 		else
 		{
-			lshcurrentLimitClampNew = uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.PWMFreqMotorCtrl_A500;
+			lshcurrentLimitClampNew = (SHORT)uEEPDriveMotorCtrlBlock.stEEPDriveMotorCtrlBlock.PWMFreqMotorCtrl_A500;
 		}
 
         //initPiNew(&speedPIparms,P_SPEED_PI_CW,I_SPEED_PI_CW,C_SPEED_PI,currentLimitClamp,-(currentLimitClamp),0);

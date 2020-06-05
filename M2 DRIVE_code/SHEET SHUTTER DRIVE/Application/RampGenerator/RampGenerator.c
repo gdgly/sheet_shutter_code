@@ -1975,7 +1975,8 @@ VOID checkRampCommand(VOID)
         {
             if(
 #ifdef BUG_No94_M2closeTOopen
-				((!rampStatusFlags.rampOpenInProgress) && (!rampOutputStatus.shutterMoving)&&(measuredSpeed<500)) ||   //1000-->500 20171027  close to open retset phase for shengzheng
+//				((!rampStatusFlags.rampOpenInProgress) && (!rampOutputStatus.shutterMoving)&&(measuredSpeed<500)) ||   //1000-->500 20171027  close to open retset phase for shengzheng
+				((!rampStatusFlags.rampOpenInProgress) && (!rampOutputStatus.shutterMoving)&&(measuredSpeed==0)) ||   //<500 --> ==0 20200107
 				// Added to overcome installation issue (A100) - RN- NOV 2015
 				(gucInstallationInitiated && (inputFlags.value == OPEN_SHUTTER_JOG_10))
 			)
@@ -2909,7 +2910,7 @@ VOID stopShutter(VOID)
 	#endif
 
 	// 2016/11/16 When Down , Missing Save Origin Position.
-	hallCounts_bak = 0x7FFF;
+//	hallCounts_bak = 0x7FFF;	//20191223 Delete by IME
 
     BOOL applyBrake = FALSE;
     rampCurrentPosition = hallCounts;
