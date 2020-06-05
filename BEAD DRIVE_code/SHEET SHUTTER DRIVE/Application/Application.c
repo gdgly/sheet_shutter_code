@@ -97,7 +97,7 @@ BYTE gucInstallationCalledFrom = 0;
 #if (SHUTTER_TYPE == SHUTTER_2M_2M)
 
 	// default value changed on request from BX san - YG - NOV 15    //bug_NO.53
-            #define RISE_GEAR_POS1_OFFSET_BEAD    400 //400
+            #define RISE_GEAR_POS1_OFFSET_BEAD    350 //20200107 //400 //400
             #define RISE_GEAR_POS2_OFFSET_BEAD    250 //350
             #define RISE_GEAR_POS3_OFFSET_BEAD    150
 
@@ -538,7 +538,7 @@ VOID updateDriveStatusFlags(VOID)
                                                        uDriveApplBlockEEP.stEEPDriveApplBlock.overrunProtection_A112))
 		{
 			// 2016/11/16 When Down , Missing Save Origin Position.
-			hallCounts_bak = 0x7FFF;
+//			hallCounts_bak = 0x7FFF;	//20191223 Delete by IME
 
 			// update drive status position to lower limit
             uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterLowerLimit = TRUE;
@@ -584,6 +584,7 @@ VOID updateDriveStatusFlags(VOID)
 		if(rampOutputStatus.shutterCurrentPosition <= (uDriveCommonBlockEEP.stEEPDriveCommonBlock.upperStoppingPos_A100 +
                                                        uDriveApplBlockEEP.stEEPDriveApplBlock.overrunProtection_A112))
         {
+			hallCounts_bak = 0x7FFF;	//20191223 ADD by IME
 			// update drive status position to upper limit
 			/************* 20180726 Bug_No94,No95,No97 start */
             //uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.shutterUpperLimit = TRUE;

@@ -290,6 +290,7 @@ VOID executePowerFailRoutine(VOID)
 	//lockApply;
 	//INTCON2bits.GIE = 0; //Disable all interrupts
 	forceStopShutter();
+	SPI1INTInit();		//20191223 ADD by IME
 	uDriveCommonBlockEEP.stEEPDriveCommonBlock.currentValueMonitor_A129 = hallCounts;
 	//if installation was in progress then reset shutter positions
 	if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveInstallation)
