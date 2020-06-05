@@ -150,7 +150,7 @@ DWORD periodStateVar;
 
 //Observed hall counts for one hall sensor (IC2) is 155, 148, 151
 SHORT hallCounts = 0;
-SHORT hallCounts_bak = 0x7FFF;
+SHORT hallCounts_bak;// = 0x7FFF;	//20191223 Delete by IME
 
 /* Variable used by inbuilt division function */
 UINT tmpQu = 0;

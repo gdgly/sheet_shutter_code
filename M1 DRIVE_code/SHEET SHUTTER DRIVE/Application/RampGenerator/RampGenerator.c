@@ -2937,7 +2937,7 @@ VOID stopShutter(VOID)
 	#endif
 
 	// 2016/11/16 When Down , Missing Save Origin Position.
-	hallCounts_bak = 0x7FFF;
+//	hallCounts_bak = 0x7FFF;	//20191223 Delete by IME
 
     BOOL applyBrake = FALSE;
     rampCurrentPosition = hallCounts;

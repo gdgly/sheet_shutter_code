@@ -230,8 +230,8 @@ void __attribute__((interrupt, no_auto_psv)) _T5Interrupt (void)
 	//static unsigned int lsui8Count = 0;
     IFS1bits.T5IF = 0;
 #ifdef BUG_No82_UartRxTimeOut1S     //20170606  201703_No.82
-    Time_uart_count++;     
-#endif     
+    Time_uart_count++;
+#endif
 	/*lsui8Count++;
 	if(lsui8Count >= 50)
 	{	//Blink after 1 sec
@@ -245,6 +245,7 @@ VOID executePowerFailRoutine(VOID)
 	//lockApply;
 	//INTCON2bits.GIE = 0; //Disable all interrupts
 	forceStopShutter();
+	SPI1INTInit();		//20191223 ADD by IME
 	uDriveCommonBlockEEP.stEEPDriveCommonBlock.currentValueMonitor_A129 = hallCounts;
 	//if installation was in progress then reset shutter positions
 	if(uDriveStatusFaultBlockEEP.stEEPDriveStatFaultBlock.uDriveStatus.bits.driveInstallation)
