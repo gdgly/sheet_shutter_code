@@ -110,7 +110,7 @@
 #define WAIT_FOR_SHUTTERA007                29
 
 
-#define POWER_ON_SEQ_INTERSCREEN_DELAY		100
+#define POWER_ON_SEQ_INTERSCREEN_DELAY		30
 
 
 /****************************************************************************/

@@ -47,7 +47,7 @@ extern uint8_t flag_commask_loginok;
 /****************************************************************************
  *  Macro definitions:
  ****************************************************************************/
-#define COMM_MODULE_WAIT_TIME 	400	// 4sec @ 10mS systick
+#define COMM_MODULE_WAIT_TIME 	30	// 4sec @ 10mS systick
 
 #define WAIT_BEFORE_SENDING_NEXT_COMMAND	1//1	// 10mS @ 10mS systick
 

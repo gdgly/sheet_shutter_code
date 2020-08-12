@@ -95,7 +95,7 @@
 // Power on state for initiating "START_INSTALLATION" command
 #define START_INSTALLATION		4
 
-#define HEART_BEAT_DURATION		200		//	2 Sec using 10mS tick counter
+#define HEART_BEAT_DURATION		30		//	2 Sec using 10mS tick counter
 
 #define PORTF_POWERLEDPIN	(GPIO_PIN_4)
 #define PORTE_AUTOMANUALLEDPIN (GPIO_PIN_0)
