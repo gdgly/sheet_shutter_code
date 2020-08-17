@@ -492,7 +492,7 @@ uint8_t parameterListFirstScreen()
 		lStartIndex = SHUTTER_PARAM_START_INDEX;
 		lLastIndex = TOTAL_PARAMETERS1;
 	}
-	else if(1 == psActiveMenu->ui8FocusIndex)
+	else if(5 == psActiveMenu->ui8FocusIndex)
 	{
 		//
 		// Indices for drive parameters
@@ -501,7 +501,7 @@ uint8_t parameterListFirstScreen()
 		lLastIndex = DRIVE_PARAM_START_INDEX + TOTAL_PARAMETERS2;
 	}
 #ifdef ENABLE_SERVICE_PARAMS
-	else if(2 == psActiveMenu->ui8FocusIndex)
+	else if(1 == psActiveMenu->ui8FocusIndex)
 	{
 		//
 		// Indices for service parameters
@@ -698,11 +698,11 @@ uint8_t parameterListUp()
 		{
 			lLastIndex = TOTAL_PARAMETERS1;
 		}
-		else if(1 == psActiveMenu->ui8FocusIndex)
+		else if(5 == psActiveMenu->ui8FocusIndex)
 		{
 			lLastIndex = DRIVE_PARAM_START_INDEX + TOTAL_PARAMETERS2;
 		}
-		else if(2 == psActiveMenu->ui8FocusIndex)
+		else if(1 == psActiveMenu->ui8FocusIndex)
 		{
 			lLastIndex = SERVICE_PARAM_START_INDEX + TOTAL_SERVICE_PARAMETERS;
 		}
@@ -872,11 +872,11 @@ uint8_t parameterListDown()
 		{
 			lLastIndex = TOTAL_PARAMETERS1;
 		}
-		else if(1 == psActiveMenu->ui8FocusIndex)
+		else if(5 == psActiveMenu->ui8FocusIndex)
 		{
 			lLastIndex = DRIVE_PARAM_START_INDEX + TOTAL_PARAMETERS2;
 		}
-		else if(2 == psActiveMenu->ui8FocusIndex)
+		else if(1 == psActiveMenu->ui8FocusIndex)
 		{
 			lLastIndex = SERVICE_PARAM_START_INDEX + TOTAL_SERVICE_PARAMETERS;
 		}

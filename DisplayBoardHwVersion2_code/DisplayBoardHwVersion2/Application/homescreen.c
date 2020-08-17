@@ -299,7 +299,7 @@ void operationKeysHandler(void)
 			//
 			if(gstUMtoCMoperational.commandRequestStatus == eINACTIVE)
 			{
-				lsui8StopState_count++;     //201806_Bug_No.22    //ÈÃSTOP·¢2´ÎÃüÁî
+				lsui8StopState_count++;     //201806_Bug_No.22    //ÈÃSTOP·¢2´ÎÃ?Á?
 				if(lsui8StopState_count>=2)  //201806_Bug_No.22
 				    gKeysStatus.bits.Key_Stop_pressed = 0;
 				lsui8StopState = 1;
@@ -1237,7 +1237,7 @@ uint8_t homeScreenRunTime(void)
 				if((gstDriveBoardStatus.bits.drivePowerOnCalibration != 1)&&(gstDriveBoardStatus.bits.driveRunTimeCalibration!=1)&&
                                          (gstDriveBoardStatus.bits.driveInstallation!=1)&&(gstDriveBoardStatus.bits.driveFaultUnrecoverable!=1))
 				{
-                              if((menu_gesture_flag_cyw == 0)&&(menu_gesture_flag_A007==0))  ////201806_Bug_No.10
+                              if((menu_gesture_flag_cyw == 0)&&(menu_gesture_flag_A007==0)&&(gstControlBoardStatus.bits.autoManual==1))  ////201806_Bug_No.10
                                {
                                        if(LCD_DISP_GUESTURE == 1)
                                        {
@@ -1495,7 +1495,7 @@ uint8_t homeScreenPaint(void)
 if((gstDriveBoardStatus.bits.drivePowerOnCalibration != 1)&&(gstDriveBoardStatus.bits.driveRunTimeCalibration!=1)&&
                                          (gstDriveBoardStatus.bits.driveInstallation!=1)&&(gstDriveBoardStatus.bits.driveFaultUnrecoverable!=1))
 {
-	   if((menu_gesture_flag_cyw == 0)&&(menu_gesture_flag_A007==0))   //201806_Bug_No.10
+	   if((menu_gesture_flag_cyw == 0)&&(menu_gesture_flag_A007==0)&&(gstControlBoardStatus.bits.autoManual==1))   //201806_Bug_No.10
         {
         if(LCD_DISP_GUESTURE == 1)
         {

@@ -147,9 +147,10 @@ stMenu gSettingsMenu;
 
 stMenuItem gsMainMenuItems[] =
 {
-    {gLanguageSupportDatabase.japaneseText[0], &gOperationMenu, 0,gLanguageSupportDatabase.englishText[0]},
+	{gLanguageSupportDatabase.japaneseText[2], &gSettingsMenu, 0,gLanguageSupportDatabase.englishText[2]},
+	{gLanguageSupportDatabase.japaneseText[0], &gOperationMenu, 0,gLanguageSupportDatabase.englishText[0]},
     {gLanguageSupportDatabase.japaneseText[1], &gStatusMenu, 0,gLanguageSupportDatabase.englishText[1]},
-    {gLanguageSupportDatabase.japaneseText[2], &gSettingsMenu, 0,gLanguageSupportDatabase.englishText[2]},
+
 };
 
 stMenu gsMainMenu =
@@ -182,13 +183,13 @@ stMenu gParameterResetMenu;
 stMenuItem gSettingsMenuItems[] =
 {
 	{gLanguageSupportDatabase.japaneseText[6], 0, &gsParameterListFunctionalBlock,gLanguageSupportDatabase.englishText[6]},
-	{gLanguageSupportDatabase.japaneseText[7], 0, &gsParameterListFunctionalBlock,gLanguageSupportDatabase.englishText[7]},
 	{"リモコン_トウロク", 0, &gsWirelessFunctionalBlockcyw,"WIRELESS LOGIN "},//SERVICE PARAM
 	{gLanguageSupportDatabase.japaneseText[8], 0, &gsDateTimeFunctionalBlock,gLanguageSupportDatabase.englishText[8]},
 	{gLanguageSupportDatabase.japaneseText[9], &gSDCardMenu, 0,gLanguageSupportDatabase.englishText[9]},
 	{gLanguageSupportDatabase.japaneseText[10], &gParameterResetMenu, 0,gLanguageSupportDatabase.englishText[10]},
 	//{gLanguageSupportDatabase.japaneseText[11], 0, &gsParamInitFunctionalBlock},
-	//{"テカザシ_センサ", 0, &gsGestureFunctionalBlock},//add cyw GESTURE SENSOR
+	//{"テカザシ_センサ", 0, &gsGestureFunctionalBlock},//add cyw GESTURE SENSOR
+	{gLanguageSupportDatabase.japaneseText[7], 0, &gsParameterListFunctionalBlock,gLanguageSupportDatabase.englishText[7]},
 };
 
 stMenu gSettingsMenu =
