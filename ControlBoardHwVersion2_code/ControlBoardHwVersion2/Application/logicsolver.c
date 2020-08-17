@@ -4028,6 +4028,9 @@ void logicSolver(void) {
 					// De-activate multi-function output and inter-lock output
 					DEACTIVATE_MULTI_FUNC_OUT_1;
 					DEACTIVATE_MULTI_FUNC_OUT_2;
+					DEACTIVATE_MULTI_FUNC_OUT_3;
+					DEACTIVATE_MULTI_FUNC_OUT_4;
+					DEACTIVATE_MULTI_FUNC_OUT_5;										
 					RELAY_OPEN;
 
 				} //if (gstCMDitoDH.commandResponseStatus == eSUCCESS || gstCMDitoDH.commandResponseStatus == eTIME_OUT || gstCMDitoDH.commandResponseStatus == eFAIL)

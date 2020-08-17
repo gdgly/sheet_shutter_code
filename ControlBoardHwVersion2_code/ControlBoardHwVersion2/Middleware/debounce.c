@@ -639,6 +639,7 @@ void initOutputGPIOs(void)
 	MAP_GPIOPadConfigSet(MULTI_FUNC_OUT_1_GPIO_BASE, MULTI_FUNC_OUT_1,
 			GPIO_STRENGTH_2MA, GPIO_PIN_TYPE_OD);
 
+    DEACTIVATE_MULTI_FUNC_OUT_1;
 
 	/*
 			Interlock multifunction output 2 GPIO configuration
@@ -652,6 +653,8 @@ void initOutputGPIOs(void)
 	MAP_GPIOPadConfigSet(MULTI_FUNC_OUT_2_GPIO_BASE, MULTI_FUNC_OUT_2,
 			GPIO_STRENGTH_2MA, GPIO_PIN_TYPE_OD);
 
+	DEACTIVATE_MULTI_FUNC_OUT_2;		
+	
 #ifdef VERSION_2HARDWARE
 	//	Added on 05 Dec 2014 as per new requirement from client
 	/*
@@ -684,9 +687,9 @@ void initOutputGPIOs(void)
 
 	//	Set high by default
 	DEACTIVATE_MULTI_FUNC_OUT_3;
-	ACTIVATE_MULTI_FUNC_OUT_3;
-	DEACTIVATE_MULTI_FUNC_OUT_3;
-	ACTIVATE_MULTI_FUNC_OUT_3;
+	// ACTIVATE_MULTI_FUNC_OUT_3;
+	// DEACTIVATE_MULTI_FUNC_OUT_3;
+	// ACTIVATE_MULTI_FUNC_OUT_3;
 
 	/*
 		Interlock multifunction output 4 GPIO configuration
@@ -702,9 +705,9 @@ void initOutputGPIOs(void)
 
 	//	Set high by default
 	DEACTIVATE_MULTI_FUNC_OUT_4;
-	ACTIVATE_MULTI_FUNC_OUT_4;
-	DEACTIVATE_MULTI_FUNC_OUT_4;
-	ACTIVATE_MULTI_FUNC_OUT_4;
+	// ACTIVATE_MULTI_FUNC_OUT_4;
+	// DEACTIVATE_MULTI_FUNC_OUT_4;
+	// ACTIVATE_MULTI_FUNC_OUT_4;
 
 	/*
 		Interlock multifunction output 5 GPIO configuration
@@ -727,9 +730,9 @@ void initOutputGPIOs(void)
 
 	//	Set high by default
 	DEACTIVATE_MULTI_FUNC_OUT_5;
-	ACTIVATE_MULTI_FUNC_OUT_5;
-	DEACTIVATE_MULTI_FUNC_OUT_5;
-	ACTIVATE_MULTI_FUNC_OUT_5;
+	// ACTIVATE_MULTI_FUNC_OUT_5;
+	// DEACTIVATE_MULTI_FUNC_OUT_5;
+	// ACTIVATE_MULTI_FUNC_OUT_5;
 
 #endif
 }
