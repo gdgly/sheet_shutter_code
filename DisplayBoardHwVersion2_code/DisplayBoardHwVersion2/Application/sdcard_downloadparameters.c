@@ -85,13 +85,18 @@ extern uint8_t gu8_language;
 extern unsigned char menu_gesture_flag_cyw;
 
 
-const uint16_t  PARAM_ALL_SDCARD_CYW[param_all_list_long]={0,1,2,3,4,5,6,7,9,10,11,16,20,26,27,28,41,42,61,62,63,71,72,
-		                          103,104,105,106,107,108,110,120,131,
-								  200,
-
-								  500,501,504,505,506,507,508,509,510,511,512,513,514,515,516,517,518,519,520,521,522,523,524,525,526,527,528,529,530,531,636,537,538,539,540,541,542,543,544,545,546,547,548,551,
-								  600,601,602,605,606,607,608,609,610,611,612,613,614,615,638,
-								  801,802,805,806};
+const uint16_t  PARAM_ALL_SDCARD_CYW[param_all_list_long]={
+	                              0,1,2,3,4,5,6,7, 8, 9,10,
+								  11,16,20, 25,26,27,28,41,
+								  42,61,62,63,71,72,73,74,75,78,80,100,101,102,
+		                          103,104,105,106,107,108,110,120,126,127,128,129,130,131,
+								  200,500,501,504,505,506,507,508,509,
+								  510,511,512,513,514,515,516,517,518,
+								  519,520,521,522,523,524,525,526,527,
+								  528,529,530,531,636,537,538,539,540,
+								  541,542,543,544,545,546,547,548,551,
+								  600,601,602,605,606,607,608,609,610,
+								  611,612,613,614,615,638,801,802,805,806};
 const dest_enum_cyw PARAM_ALL_BELONG_CYW[param_all_list_long]=
                                {eDestControlBoard,//0
 								eDestControlBoard,//1
@@ -101,11 +106,13 @@ const dest_enum_cyw PARAM_ALL_BELONG_CYW[param_all_list_long]=
 								eDestControlBoard,//5
 								eDestControlBoard,//6
 								eDestControlBoard,//7
+								eDestControlBoard,//8
 								eDestControlBoard,//9
 								eDestControlBoard,//10
 								eDestDriveBoard,//11
 								eDestControlBoard,//16
 								eDestControlBoard,//20
+								eDestDriveBoard,//25
 								eDestDisplayBoard,//26
 								eDestControlBoard,//27
 								eDestControlBoard,//28
@@ -116,6 +123,14 @@ const dest_enum_cyw PARAM_ALL_BELONG_CYW[param_all_list_long]=
 								eDestControlBoard,//63
 								eDestControlBoard,//71
 								eDestControlBoard,//72
+								eDestControlBoard,//73
+								eDestControlBoard,//74
+								eDestControlBoard,//75
+								eDestControlBoard,//78
+								eDestDriveBoard,//80
+								eDestDriveBoard,//100
+								eDestDriveBoard,//101
+								eDestDriveBoard,//102
 								eDestDriveBoard,//103
 								eDestDriveBoard,//104
 								eDestDriveBoard,//105
@@ -124,6 +139,11 @@ const dest_enum_cyw PARAM_ALL_BELONG_CYW[param_all_list_long]=
 								eDestDriveBoard,//108
 								eDestDriveBoard,//110
 								eDestControlBoard,//120
+								eDestDriveBoard,//126
+								eDestDriveBoard,//127
+								eDestDriveBoard,//128
+								eDestDriveBoard,//129
+								eDestDriveBoard,//130
 								eDestControlBoard,//131
 								eDestControlBoard,//200
 
@@ -231,7 +251,7 @@ uint8_t downloadParametersRunTime(void)
 					// Generate filename
 					RTCGet(&gstcurrentDateTime);
 					memset(gcDLParamfilename, 0, sizeof(gcDLParamfilename));
-					ustrncpy(gcDLParamfilename, "par_\0", 9);
+					ustrncpy(gcDLParamfilename, "PAR_\0", 9);
 					usnprintf(gcDLParamfilename, sizeof(gcDLParamfilename), "%s%04u%02u%02u%02u%02u.txt\0", gcDLParamfilename,gstcurrentDateTime.tm_year + 1900, gstcurrentDateTime.tm_mon + 1, gstcurrentDateTime.tm_mday,  gstcurrentDateTime.tm_hour, gstcurrentDateTime.tm_min);
 
 					// Create File and add Header for file
