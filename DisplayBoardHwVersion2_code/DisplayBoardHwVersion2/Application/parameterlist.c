@@ -216,16 +216,16 @@ const unsigned char cucWR_1PBS_OR_OPEN_english[][40] =
 const unsigned char cucCLOSE_OPR_STATE[][40] =
 {
 	"ノーマル",//"NORMAL",
-	"オシキリ",//"CONTINUOUS PRESS"
-	"オシキリ1",
-    "オシキリ2"
+	"オシキリ_カコウ",//"CONTINUOUS PRESS"
+	"オシキリ_ジョウショウ",
+    "オシキリ"
 };
 const unsigned char cucCLOSE_OPR_STATE_english[][40] =
 {
 	"NORMAL",//"NORMAL",
-	"CONTINUOUS PRESS",//"CONTINUOUS PRESS"
-	"CONTINUOUS PRESS1",
-	"CONTINUOUS PRESS2"
+	"3PBS DOWN",//"CONTINUOUS PRESS"
+	"3PBS UP",
+	"3PBS UP+DOWN"
 };
 const unsigned char cucSnow_Mode_State[][40] =
 {
@@ -288,7 +288,7 @@ const stParamDatabase gsParamDatabase[TOTAL_PARAMETERS] =
 		{	28	,	 true	,	 false	,	 false	,	eDestControlBoard	,	"A008 ユキモード"				,	eSTATE	    ,	8	,	{	0	,	0	,	0	                                    }	,	{	(unsigned char *)cucSnow_Mode_State	            ,	3,(unsigned char *)cucSnow_Mode_State_english	},"A008 SNOW MODE"	 }	,
 		{	29	,	 true	,	 false	,	 false	,	eDestControlBoard	,	"A009 ドウサセイゲン タイマ"		,	eVAL_INT	,	9	,	{	0	,	30	,	(unsigned char *)cucUnitSec				}	,	{	0												,	0	},"A009 OPR RESTRIC TMR"	 }	,
 		{	30	,	 true	,	 false	,	 false	,	eDestControlBoard	,	"A010 I-ロック チエンタイマ"		,	eVAL_INT	,	10	,	{	0	,	2	,	(unsigned char *)cucUnitSec				}	,	{	0												,	0	},"A010 INTERLOCK DELAY"	 }	,
-		{	31	,	 true	,	 false	,	 false	,	eDestControlBoard	,	"A016 カコウドウサ セッテイ"		    ,	eSTATE		,	16	,	{	0	,	0	,	0										}	,	{	(unsigned char *)cucCLOSE_OPR_STATE				,	4,(unsigned char *)cucCLOSE_OPR_STATE_english},"A016 CLOSE OPR SET"	 }	,
+		{	31	,	 true	,	 false	,	 false	,	eDestControlBoard	,	"A016 オシキリ　セッテイ"		    ,	eSTATE		,	16	,	{	0	,	0	,	0										}	,	{	(unsigned char *)cucCLOSE_OPR_STATE				,	4,(unsigned char *)cucCLOSE_OPR_STATE_english},"A016 PRESS HOLD SET"	 }	,
 		{	32	,	 true	,	 false	,	 false	,	eDestDriveBoard	    ,	"A025 メンテナンスカウント"			,	eVAL_INT	,	25	,	{	1	,	9999,	(unsigned char *)cucUnitX1000   	}	,	{	0												,	0	},"A025 MAINTAIN CNT"	 }	,
 		{   33   ,   true   ,    false  ,    false  ,  eDestDisplayBoard    ,   "A026 バックライト"            ,   eVAL_INT    ,   26 ,    {   0   ,   60  ,   (unsigned char *)cucUnitS               }   ,   {   0                                              ,   0   },"A026 LCD BACKLIGHT"    }  ,
 		{	34	,	 true	,	 false	,	 false	,	eDestDisplayBoard	,	"A041 テカザシ_センサ"		    ,	eSTATE		,	37	,	{	0	,	0	,	0										}	,	{	(unsigned char *)cucEnable_Disable_State		,	2,(unsigned char *)cucEnable_Disable_State_english	},"A041 EN GESTURE"	 }	,
