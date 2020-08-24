@@ -1963,8 +1963,17 @@ void logicSolver(void) {
 						)
 				{
 
+					// if Open operation setting should be enabled, then trigger JOG Close command
+					if(gu8_close_oprset == 2 	||  gu8_close_oprset == 3) 
+					{
 
-					if (
+						sstLStoCMDrCmdToBeSent.commandToDriveBoard.val = 0;
+						sstLStoCMDrCmdToBeSent.commandToDriveBoard.bits.openShutterJog = 1;
+						sstLStoCMDrCmdToBeSent.additionalCommandData = 50;
+						OpenCmdForDistinguish = 0;
+
+					}
+					else  if (
 							// Check Aperture setting to disabled
 							// 23 Oct, Added additional check to disable "Aperture feature" in Manual Mode
 							((gu8_en_apheight_ctl == 0) || (gstControlBoardStatus.bits.autoManual == 0)) ||
@@ -2254,7 +2263,7 @@ void logicSolver(void) {
 								) ||
 								 (
 										 (
-												 gu8_close_oprset == 1 										&&
+												 (gu8_close_oprset == 1 	||  gu8_close_oprset == 3)	    &&
 												 gSensorStatus.bits.Sensor_1PBS_active == 0					&&
 												 gSensorStatus.bits.Sensor_Wireless_1PBS_active == 0
 										 ) &&
@@ -2278,7 +2287,7 @@ void logicSolver(void) {
 
 					// if Close operation setting should be enabled, then trigger JOG Close command
 					if (
-							(gu8_close_oprset == 1) /*&&                             //20161012
+							(gu8_close_oprset == 1 	||  gu8_close_oprset == 3) /*&&                             //20161012
 							(gstDriveApplicationFault.bits.microSwitch == 1 ||
 							 gstDriveApplicationFault.bits.wraparound == 1 ||
 							 gstDriveApplicationFault.bits.peObstacle == 1  ||
@@ -2540,7 +2549,68 @@ void logicSolver(void) {
 				}
 
 			} // Stop button pressed either from display or control and same send it to Drive when no error present
-			  // Open button released
+			  // Open button released with last command sent is "Open Shutter Jog 10%"
+			else if
+			(
+			// check Open released from display board
+			((gstCMDitoLS.commandRequestStatus == eACTIVE && gstCMDitoLS.commandDisplayBoardLS.bits.openReleased) ||
+			 gKeysStatus.bits.Key_Open_released || gSensorStatus.bits.Sensor_1PBS_inactive || gSensorStatus.bits.Sensor_Obstacle_inactive ||
+
+			 // Added by Yogesh on 17 Dec 14 for Wireless functionality
+			 gKeysStatus.bits.Wireless_Open_released || gSensorStatus.bits.Sensor_Wireless_1PBS_inactive)&&
+						(gstDriveStatus.bits.shutterUpperLimit == 0) &&
+						// Check any fault is not active on drive board
+						(gstDriveStatus.bits.driveFault == 0) && (gstDriveStatus.bits.driveFaultUnrecoverable == 0) &&						
+						(sstLStoCMDrCmdSent.commandToDriveBoard.bits.openShutterJog == 1)
+			)
+			{
+
+				gstLStoCMDr.commandRequestStatus = eACTIVE;
+				gstLStoCMDr.commandToDriveBoard.val = 0;
+				gstLStoCMDr.commandToDriveBoard.bits.stopShutter = 1;
+				OpenCmdForDistinguish = 0;
+				seHandleKeysStartupState = CmdSentWaitingForReply;
+
+				// Update last command sent
+				sstLStoCMDrCmdSent.commandToDriveBoard.val =
+						gstLStoCMDr.commandToDriveBoard.val;
+				if (gstCMDitoLS.commandDisplayBoardLS.bits.openReleased)
+				{
+
+					sucOpenKeyDisplay = 0;
+
+				}
+
+				if (gKeysStatus.bits.Key_Open_released)
+				{
+					sucOpenKeyControl = 0;
+				}
+
+				if (gSensorStatus.bits.Sensor_Obstacle_inactive)
+				{
+					sucStartupControl = 0;
+				}
+
+				// Added by Yogesh on 17 Dec 14 for Wireless functionality
+				if (gKeysStatus.bits.Wireless_Open_released)
+				{
+					sucWirelessOpenKeyControl = 0;
+				}
+
+				if (gSensorStatus.bits.Sensor_1PBS_inactive)
+				{
+					suc1PBSControl = 0;
+					Flag_OpenCmdsend=0;   //20170627   201703_No.CQ05
+				}
+
+				if (gSensorStatus.bits.Sensor_Wireless_1PBS_inactive)
+				{
+					sucWireless1PBSControl = 0;
+					Flag_OpenCmdsend=0;   //20170627   201703_No.CQ05
+				}
+
+			}			
+			  // Open button released without last command sent is "Open Shutter Jog 10%"
 			else if
 			(
 			// check Open released from display board

@@ -130,7 +130,7 @@ typedef enum _PARAM_CTRL{
 extern const uint8_t guc_Paramsize_Ctrl[_NO_OF_PARAMS];
 extern const uint32_t gui_ParamAddr_Ctrl[_NO_OF_PARAMS];
 extern const uint16_t gui_ParamNo_Ctrl[_NO_OF_PARAMS];
-extern const uint16_t gui_InitValSetParamNo_table[22];
+extern const uint16_t gui_InitValSetParamNo_table[24];
 extern const uint16_t gui_InitSheetPosParamNo_table[5];
 
 extern const uint32_t gu32_ctrl_fwver_DEF;
