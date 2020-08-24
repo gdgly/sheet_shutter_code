@@ -72,6 +72,7 @@ extern  uint16_t gu16_lcdlight;
 extern unsigned char menu_gesture_flag_cyw;
 extern const uint16_t gu16_backlight_DEF;
 extern const uint8_t gu8_guestue_DEF;
+extern const uint8_t gu8_language_DEF;
 
 const unsigned char cucUnitSec[] = "sec";
 const unsigned char cucUnitmA[] = "mA";
@@ -450,8 +451,10 @@ void Para_On_Display_Board_init_cyw(void)
 
 	gu16_lcdlight =gu16_backlight_DEF;
 	menu_gesture_flag_cyw =gu8_guestue_DEF;
+	gu8_language = gu8_language_DEF;
 	writeParameterUpdateInDB((PARAM_DISP)gsParamDatabase[Para_LcdBackLight_Index_cyw].paramEEPROMIndex, (uint8_t *)&gu16_lcdlight);
 	writeParameterUpdateInDB((PARAM_DISP)gsParamDatabase[Para_Guesture_Index_cyw].paramEEPROMIndex, (uint8_t *)&menu_gesture_flag_cyw);
+	writeParameterUpdateInDB((PARAM_DISP)gsParamDatabase[Para_Languange_Index_cyw].paramEEPROMIndex, (uint8_t *)&gu8_language);
 
 }
 /******************************************************************************
