@@ -99,12 +99,12 @@ const uint16_t gui_ParamNo_Ctrl[_NO_OF_PARAMS] =
 };
 
 // Table of param no. to initialize w.r.t. A021INIT_VALUESET
-const uint16_t gui_InitValSetParamNo_table[22] =
+const uint16_t gui_InitValSetParamNo_table[24] =
 {
 		0,	1,	2,	3,	4,	5,
 		6,	7,	9,	10,	16,	27,
 		28,	61,	62,	63,	71,	72,
-		131, 73, 74, 75
+	   131, 73, 74, 75, 78,  8
 };
 
 // Table of param no. to initialize w.r.t. A120INIT_SHEETPOSPAR
