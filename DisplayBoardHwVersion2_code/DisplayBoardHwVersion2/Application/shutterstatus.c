@@ -49,7 +49,8 @@
 uint32_t gui32ShutterStatusParamA200 = 0;
 uint32_t gui32ParamA200StoredValue = 0;
 bool gRefreshStatusScreen = true;
-
+extern uint8_t open_disable_enable_cyw;//0-enable 1-disable
+extern uint8_t close_disable_enable_cyw;//0-enable 1-disable
 /*const unsigned char gStateSymbols[4][5] =
 {
 	{'B', 'I', 'D', 'U', 'T'} ,
@@ -179,7 +180,10 @@ uint8_t shutterStatusRunTime(void)
 {
 	static uint32_t lsTickCount1Seconds = 0;
 	static uint8_t lsDelay1SecStart = 0;
-
+       static uint8_t lsui8OpenState = 0;
+	static uint8_t lsui8CloseState = 0;
+	static uint8_t lsui8StopState = 0;
+      static uint8_t lsui8StopState_count=0;   //201806_Bug_No.22
 	//
 	// Start 5 seconds delay
 	//
@@ -277,7 +281,186 @@ uint8_t shutterStatusRunTime(void)
 			gstUMtoCMdatabase.commandResponseStatus = eNO_STATUS;
 		}
 	}
+if(gstUMtoCMoperational.commandRequestStatus == eINACTIVE)
+    {
 
+
+         if((gKeysStatus.bits.Key_Open_pressed) && (0 == lsui8CloseState) && (0 == lsui8StopState)&&(open_disable_enable_cyw==0))
+         {
+        	 gKeysStatus.bits.Key_Open_pressed = 0;  //2016  opening 70ms send open
+        	 lsui8OpenState = 1;
+        	 gstUMtoCMoperational.commandToControlBoard.bits.openPressed = 1;
+        	 gstUMtoCMoperational.commandRequestStatus = eACTIVE;
+         }
+         if(gKeysStatus.bits.Key_Open_released)
+         {
+         			//
+         			// Initiate open command
+         			//
+         			if(gstUMtoCMoperational.commandRequestStatus == eINACTIVE)
+         			{
+         				gKeysStatus.bits.Key_Open_released = 0;
+         				lsui8OpenState = 0;
+         				gstUMtoCMoperational.commandToControlBoard.bits.openReleased = 1;
+         				gstUMtoCMoperational.commandRequestStatus = eACTIVE;
+         			}
+         }
+         if((gKeysStatus.bits.Key_Close_pressed) && (0 == lsui8OpenState) && (0 == lsui8StopState)&&(close_disable_enable_cyw==0))
+         		{
+         			//
+         			// Initiate close command
+         			//
+         			if(gstUMtoCMoperational.commandRequestStatus == eINACTIVE)
+         			{
+         				gKeysStatus.bits.Key_Close_pressed = 0;
+         				lsui8CloseState = 1;
+         				gstUMtoCMoperational.commandToControlBoard.bits.closePressed = 1;
+         				gstUMtoCMoperational.commandRequestStatus = eACTIVE;
+         			}
+         		}
+
+         		if(gKeysStatus.bits.Key_Close_released)
+         		{
+         			//
+         			// Initiate close command
+         			//
+         			if(gstUMtoCMoperational.commandRequestStatus == eINACTIVE)
+         			{
+         				gKeysStatus.bits.Key_Close_released = 0;
+         				lsui8CloseState = 0;
+         				gstUMtoCMoperational.commandToControlBoard.bits.closeReleased = 1;
+         				gstUMtoCMoperational.commandRequestStatus = eACTIVE;
+         			}
+         		}
+
+         		//
+         		// Check whether stop key is pressed
+         		//
+         		if((gKeysStatus.bits.Key_Stop_pressed) && (0 == lsui8OpenState) && (0 == lsui8CloseState))
+         		{
+         			//
+         			// Initiate stop command
+         			//
+         			if(gstUMtoCMoperational.commandRequestStatus == eINACTIVE)
+         			{
+         				lsui8StopState_count++;     //201806_Bug_No.22    //ÈÃSTOP·¢2´Î
+         				if(lsui8StopState_count>=2)  //201806_Bug_No.22
+         				    gKeysStatus.bits.Key_Stop_pressed = 0;
+         				lsui8StopState = 1;
+         				gstUMtoCMoperational.commandToControlBoard.bits.stopPressed = 1;
+         				gstUMtoCMoperational.commandRequestStatus = eACTIVE;
+         			}
+         		}
+
+         		if(gKeysStatus.bits.Key_Stop_released)
+         		{
+         			//
+         			// Initiate stop command
+         			//
+         			if(gstUMtoCMoperational.commandRequestStatus == eINACTIVE)
+         			{
+         				gKeysStatus.bits.Key_Stop_released = 0;
+         				lsui8StopState_count=0;    //201806_Bug_No.22
+         				lsui8StopState = 0;
+         				gstUMtoCMoperational.commandToControlBoard.bits.stopReleased = 1;
+         				gstUMtoCMoperational.commandRequestStatus = eACTIVE;
+         			}
+         		}
+    }
+
+
+   // gui8SettingsModeStatus = DEACTIVATED;
+   // gui8SettingsScreen     = DEACTIVATED;
+	if(gstUMtoCMoperational.commandRequestStatus == eACTIVE)
+		{
+			if(gstUMtoCMoperational.commandResponseStatus == eSUCCESS)
+			{
+				if(gstUMtoCMoperational.commandToControlBoard.bits.openPressed == 1)
+							{
+								gstUMtoCMoperational.commandToControlBoard.bits.openPressed = 0;
+								gstUMtoCMoperational.commandRequestStatus = eINACTIVE;
+								gstUMtoCMoperational.commandResponseStatus = eNO_STATUS;
+							}
+							else if(gstUMtoCMoperational.commandToControlBoard.bits.openReleased == 1)
+							{
+								gstUMtoCMoperational.commandToControlBoard.bits.openReleased = 0;
+								gstUMtoCMoperational.commandRequestStatus = eINACTIVE;
+								gstUMtoCMoperational.commandResponseStatus = eNO_STATUS;
+							}
+							else if(gstUMtoCMoperational.commandToControlBoard.bits.closePressed == 1)
+							{
+								gstUMtoCMoperational.commandToControlBoard.bits.closePressed = 0;
+								gstUMtoCMoperational.commandRequestStatus = eINACTIVE;
+								gstUMtoCMoperational.commandResponseStatus = eNO_STATUS;
+							}
+							else if(gstUMtoCMoperational.commandToControlBoard.bits.closeReleased == 1)
+							{
+								gstUMtoCMoperational.commandToControlBoard.bits.closeReleased = 0;
+								gstUMtoCMoperational.commandRequestStatus = eINACTIVE;
+								gstUMtoCMoperational.commandResponseStatus = eNO_STATUS;
+							}
+							else if(gstUMtoCMoperational.commandToControlBoard.bits.stopPressed == 1)
+							{
+								gstUMtoCMoperational.commandToControlBoard.bits.stopPressed = 0;
+								gstUMtoCMoperational.commandRequestStatus = eINACTIVE;
+								gstUMtoCMoperational.commandResponseStatus = eNO_STATUS;
+							}
+							else if(gstUMtoCMoperational.commandToControlBoard.bits.stopReleased == 1)
+							{
+								gstUMtoCMoperational.commandToControlBoard.bits.stopReleased = 0;
+								gstUMtoCMoperational.commandRequestStatus = eINACTIVE;
+								gstUMtoCMoperational.commandResponseStatus = eNO_STATUS;
+							}
+			}
+
+			else if( (gstUMtoCMoperational.commandResponseStatus == eTIME_OUT) ||
+					(gstUMtoCMoperational.commandResponseStatus == eFAIL)
+			)
+			{
+				if(gstUMtoCMoperational.commandToControlBoard.bits.settingsModeStatus == 1)
+				{
+					gstUMtoCMoperational.commandToControlBoard.bits.settingsModeStatus = 0;
+					gstUMtoCMoperational.commandRequestStatus = eINACTIVE;
+					gstUMtoCMoperational.commandResponseStatus = eNO_STATUS;
+				}
+				else if(gstUMtoCMoperational.commandToControlBoard.bits.openPressed == 1)
+							{
+								gstUMtoCMoperational.commandToControlBoard.bits.openPressed = 0;
+								gstUMtoCMoperational.commandRequestStatus = eINACTIVE;
+								gstUMtoCMoperational.commandResponseStatus = eNO_STATUS;
+							}
+							else if(gstUMtoCMoperational.commandToControlBoard.bits.openReleased == 1)
+							{
+								gstUMtoCMoperational.commandToControlBoard.bits.openReleased = 0;
+								gstUMtoCMoperational.commandRequestStatus = eINACTIVE;
+								gstUMtoCMoperational.commandResponseStatus = eNO_STATUS;
+							}
+							else if(gstUMtoCMoperational.commandToControlBoard.bits.closePressed == 1)
+							{
+								gstUMtoCMoperational.commandToControlBoard.bits.closePressed = 0;
+								gstUMtoCMoperational.commandRequestStatus = eINACTIVE;
+								gstUMtoCMoperational.commandResponseStatus = eNO_STATUS;
+							}
+							else if(gstUMtoCMoperational.commandToControlBoard.bits.closeReleased == 1)
+							{
+								gstUMtoCMoperational.commandToControlBoard.bits.closeReleased = 0;
+								gstUMtoCMoperational.commandRequestStatus = eINACTIVE;
+								gstUMtoCMoperational.commandResponseStatus = eNO_STATUS;
+							}
+							else if(gstUMtoCMoperational.commandToControlBoard.bits.stopPressed == 1)
+							{
+								gstUMtoCMoperational.commandToControlBoard.bits.stopPressed = 0;
+								gstUMtoCMoperational.commandRequestStatus = eINACTIVE;
+								gstUMtoCMoperational.commandResponseStatus = eNO_STATUS;
+							}
+							else if(gstUMtoCMoperational.commandToControlBoard.bits.stopReleased == 1)
+							{
+								gstUMtoCMoperational.commandToControlBoard.bits.stopReleased = 0;
+								gstUMtoCMoperational.commandRequestStatus = eINACTIVE;
+								gstUMtoCMoperational.commandResponseStatus = eNO_STATUS;
+							}
+			}
+		}
 	updateFaultLEDStatus();
 
 	return 0;
