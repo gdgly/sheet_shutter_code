@@ -1,7 +1,7 @@
 /*
  * GP2AP054A.h
  *
- *  Created on: 2015Äê7ÔÂ7ÈÕ
+ *  Created on: 2015ï¿½ï¿½7ï¿½ï¿½7ï¿½ï¿½
  *      Author: x220
  */
 
@@ -146,7 +146,7 @@ struct gp_params{
 	u8 diff_max_x, diff_max_y;
 	bool x_plus, x_minus, y_plus, y_minus;
 	u8 gs_state;
-	u8 speed_counts;
+	u32 speed_counts;
 	//// Thresholds depending on the performance ////
 	s16 ignore_diff_th;
 	u16 ignore_z_th;
@@ -443,11 +443,11 @@ extern struct gp_params st_gp;
 
 
 
-#define PORTF_OPENPLUSE     (GPIO_PIN_0)//¿ªÂö³å Õâ¸ö¿í¶ÈÊÇ  Ö»ÔÚAUTOÓÐ×÷ÓÃ°Ñ
-#define PORTF_STOPPLUSE     (GPIO_PIN_1)//Í£Âö³å Õâ¸ö¿í¶È²»ÊÇÒ»¸ö¶¨ÖµºÍÊÖÔÚ¸ÐÓ¦Æ÷µÄÊ±¼äÓÐ¹ØÏµ  Ö»ÔÚAUTOÓÐ×÷ÓÃ°Ñ
-#define PORTF_CLOSEPLUSE    (GPIO_PIN_2)//±ÕÂö³å Õâ¸ö¿í¶ÈÊÇ  Ö»ÔÚAUTOÓÐ×÷ÓÃ°Ñ
+#define PORTF_OPENPLUSE     (GPIO_PIN_0)//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½  Ö»ï¿½ï¿½AUTOï¿½ï¿½ï¿½ï¿½ï¿½Ã°ï¿½
+#define PORTF_STOPPLUSE     (GPIO_PIN_1)//Í£ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È²ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½ï¿½Ú¸ï¿½Ó¦ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½Ð¹ï¿½Ïµ  Ö»ï¿½ï¿½AUTOï¿½ï¿½ï¿½ï¿½ï¿½Ã°ï¿½
+#define PORTF_CLOSEPLUSE    (GPIO_PIN_2)//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½  Ö»ï¿½ï¿½AUTOï¿½ï¿½ï¿½ï¿½ï¿½Ã°ï¿½
 #define OPENPLUSE_LEVELLOW  ROM_GPIOPinWrite(GPIO_PORTF_BASE, PORTF_OPENPLUSE, 0);
-//Ö»ÔÚOPENPLUSEÄÇ¸ö½ÅÐ´0
+//Ö»ï¿½ï¿½OPENPLUSEï¿½Ç¸ï¿½ï¿½ï¿½Ð´0
 #define OPENPLUSE_LEVELHIGH  ROM_GPIOPinWrite(GPIO_PORTF_BASE, PORTF_OPENPLUSE, PORTF_OPENPLUSE);
 #define STOPPLUSE_LEVELLOW  ROM_GPIOPinWrite(GPIO_PORTF_BASE, PORTF_STOPPLUSE, 0);
 #define STOPPLUSE_LEVELHIGH ROM_GPIOPinWrite(GPIO_PORTF_BASE, PORTF_STOPPLUSE, PORTF_STOPPLUSE);

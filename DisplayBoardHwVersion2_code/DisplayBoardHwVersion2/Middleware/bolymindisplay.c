@@ -38,6 +38,8 @@
 #include "driverlib/rom.h"
 #include "driverlib/pin_map.h"
 #include "bolymindisplay.h"
+#include "Application/intertaskcommunication.h"
+
 
 void Set_lcdlightON(void);
 
@@ -1671,7 +1673,7 @@ void GrLineDrawVerticalBolymin(uint8_t lucX, uint8_t lucY1, uint8_t lucY2, bool 
  *                              rightmost pixel of rectangle.
  *
  * Function Returns: void
- * NOTE:lucYMin°¢lucYMax,It should be always even number from 0,8,16,24,36,40,48,56,64
+ * NOTE:lucYMinÔøΩÔøΩlucYMax,It should be always even number from 0,8,16,24,36,40,48,56,64
  *
 *********************************************************************************/
 void GrRectFIllBolymin(uint8_t lucXMin, uint8_t lucXMax, uint8_t lucYMin, uint8_t lucYMax, bool lbFillColor, bool lGlowRightmostColumn)
@@ -1873,7 +1875,7 @@ void GrRectDrawBolymin(uint8_t lucXMin, uint8_t lucXMax, uint8_t lucYMin, uint8_
  * lucY                 :   vertical position ranging from 0 to 63.
  *
  * Function Returns: void
- * NOTE:lucYMin°¢lucYMax,It should be always even number from 0,8,16,24,36,40,48,56,64
+ * NOTE:lucYMinÔøΩÔøΩlucYMax,It should be always even number from 0,8,16,24,36,40,48,56,64
  *
 *********************************************************************************/
 void GrStringDrawBolymin(unsigned char *plucBolyminPixelData, unsigned char lucLength,
@@ -1922,12 +1924,15 @@ void bolyminDisplayInit(void)    //ROM_SysCtlDelay(1) ==0.06us
     lcd_init();   //LCD Initialize
 }
 
+extern uint8_t Flag_lcdbackon;
+
 void LCD_BACKLIGHT_ON(void)
 {
 	//
 	//  power on
 	//
 	 ROM_GPIOPinWrite(DISPLAY_ENV_PORT, DISPLAY_ENV_PIN, DISPLAY_ENV_PIN);
+	
 }
 
 void LCD_BACKLIGHT_OFF(void)
@@ -1936,7 +1941,49 @@ void LCD_BACKLIGHT_OFF(void)
 	//  power off
 	//
 	ROM_GPIOPinWrite(DISPLAY_ENV_PORT, DISPLAY_ENV_PIN, 0);
+	
 }
+
+void LCD_BACKLIGHT_TOGGLE(void)
+{
+    if(ROM_GPIOPinRead(DISPLAY_ENV_PORT, DISPLAY_ENV_PIN))
+	{
+		ROM_GPIOPinWrite(DISPLAY_ENV_PORT, DISPLAY_ENV_PIN, 0);
+	}
+	else
+	{
+		ROM_GPIOPinWrite(DISPLAY_ENV_PORT, DISPLAY_ENV_PIN, DISPLAY_ENV_PIN);
+	}
+	
+}
+
+// void LCD_BACKLIGHT_GETSTATUS(void)
+// {
+// 	//  if(ROM_GPIOPinRead(DISPLAY_ENV_PORT, DISPLAY_ENV_PIN))
+// 	// {
+// 	// 	gstLEDcontrolRegister.BacklightLCD = 1;
+// 	// }
+// 	// else
+// 	// {
+// 	// 	gstLEDcontrolRegister.BacklightLCD = 0;
+// 	// };
+// 	gstLEDcontrolRegister.BacklightLCD  = Flag_lcdbackon;
+// }
+
+// void LCD_BACKLIGHT_SETSTATUS(void)
+// {
+// 	 if(gstLEDcontrolRegister.BacklightLCD == 1)
+// 	{
+// 		LCD_BACKLIGHT_ON();
+// 	}
+// 	else
+// 	{
+// 		LCD_BACKLIGHT_OFF();
+// 	}
+// }
+
+
+
 /******************************************************************************
  * FunctionName: lcd_init
  *
@@ -1989,256 +2036,256 @@ void  lcd_init(void)
    ROM_GPIOPinWrite(DISPLAY_CS_PORT, DISPLAY_CS_PIN, DISPLAY_CS_PIN);// not Selected LCD
 }
 
-//CYW ìIîüêî  íËà  ì˙?ï–òÔñº ç›êî?íÜìIà íu
+//CYW ÔøΩIÔøΩÔøΩÔøΩÔøΩ  ÔøΩÔøΩÔøΩ ÔøΩÔøΩ?ÔøΩ–òÔñº ÔøΩ›êÔøΩ?ÔøΩÔøΩÔøΩIÔøΩ íu
 uint8_t found_KATAKANA_sub_cyw(uint16_t x_code)
 {
 	uint8_t Tp_sub=0;
 	switch(x_code)
 	{
-	case 0x6321://"ÉA"
+	case 0x6321://"ÔøΩA"
 		Tp_sub = 95;
 		break;
-	case 0x6323://"ÉC"
+	case 0x6323://"ÔøΩC"
 		Tp_sub = 95+1;
 		 break;
-	case 0x6325://"ÉE"
+	case 0x6325://"ÔøΩE"
 		Tp_sub = 95+2;
 		break;
-	case 0x6327://"ÉG"
+	case 0x6327://"ÔøΩG"
 		Tp_sub = 95+3;
 		break;
-	case 0x6329://"ÉG"
+	case 0x6329://"ÔøΩG"
 		Tp_sub = 95+4;
 		break;
-	case 0x632a://"ÉJ"
+	case 0x632a://"ÔøΩJ"
 		Tp_sub = 95+5;
 		break;
-	case 0x632c://"ÉL"
+	case 0x632c://"ÔøΩL"
 		Tp_sub = 95+6;
 		break;
-	case 0x632e://"ÉN"
+	case 0x632e://"ÔøΩN"
 		Tp_sub = 95+7;
 		break;
-	case 0x6330://"ÉP"
+	case 0x6330://"ÔøΩP"
 		Tp_sub = 95+8;
 		break;
-	case 0x6332://"ÉR"
+	case 0x6332://"ÔøΩR"
 		Tp_sub = 95+9;
 		break;
-	case 0x6334://"ÉT"
+	case 0x6334://"ÔøΩT"
 		Tp_sub = 95+10;
 		break;
-	case 0x6336://"ÉV"
+	case 0x6336://"ÔøΩV"
 		Tp_sub = 95+11;
 		break;
-	case 0x6338://"ÉX"
+	case 0x6338://"ÔøΩX"
 		Tp_sub = 95+12;
 		break;
-	case 0x633a://"ÉZ"
+	case 0x633a://"ÔøΩZ"
 		Tp_sub = 95+13;
 		break;
-	//case 0x633c://"É\"
-	case 0x6300://"É\"
+	//case 0x633c://"ÔøΩ\"
+	case 0x6300://"ÔøΩ\"
 		Tp_sub = 95+14;
 		break;
-	case 0x633e://"É^"
+	case 0x633e://"ÔøΩ^"
 		Tp_sub = 95+15;
 		break;
-	case 0x6340://"É`"
+	case 0x6340://"ÔøΩ`"
 		Tp_sub = 95+16;
 		break;
-	case 0x6343://"Éc"
+	case 0x6343://"ÔøΩc"
 		Tp_sub = 95+17;
 		break;
-	case 0x6345://"Ée"
+	case 0x6345://"ÔøΩe"
 		Tp_sub = 95+18;
 		break;
-	case 0x6347://"Ég"
+	case 0x6347://"ÔøΩg"
 		Tp_sub = 95+19;
 		break;
-	case 0x6349://"Éi"
+	case 0x6349://"ÔøΩi"
 		Tp_sub = 95+20;
 		break;
-	case 0x634a://"Éj"
+	case 0x634a://"ÔøΩj"
 		Tp_sub = 95+21;
 		break;
-	case 0x634b://"Ék"
+	case 0x634b://"ÔøΩk"
 		Tp_sub = 95+22;
 		break;
-	case 0x634c://"Él"
+	case 0x634c://"ÔøΩl"
 		Tp_sub = 95+23;
 		break;
-	case 0x634d://"Ém"
+	case 0x634d://"ÔøΩm"
 		Tp_sub = 95+24;
 		break;
-	case 0x634e://"Én"
+	case 0x634e://"ÔøΩn"
 		Tp_sub = 95+25;
 		break;
-	case 0x6351://"Éq"
+	case 0x6351://"ÔøΩq"
 		Tp_sub = 95+26;
 		break;
-	case 0x6354://"Ét"
+	case 0x6354://"ÔøΩt"
 		Tp_sub = 95+27;
 		break;
-	//case 0x6357://"Éw"
+	//case 0x6357://"ÔøΩw"
 	case 0x62b6:
 		Tp_sub = 95+28;
 		break;
-	case 0x635a://"Éz"
+	case 0x635a://"ÔøΩz"
 		Tp_sub = 95+29;
 		break;
-	case 0x635d://"É}"
+	case 0x635d://"ÔøΩ}"
 		Tp_sub = 95+30;
 		break;
-	case 0x635e://"É~"
+	case 0x635e://"ÔøΩ~"
 		Tp_sub = 95+31;
 		break;
-	case 0x6360://"ÉÄ"
+	case 0x6360://"ÔøΩÔøΩ"
 		Tp_sub = 95+32;
 		break;
-	case 0x6361://"ÉÅ"
+	case 0x6361://"ÔøΩÔøΩ"
 		Tp_sub = 95+33;
 		break;
-	case 0x6362://"ÉÇ"
+	case 0x6362://"ÔøΩÔøΩ"
 		Tp_sub = 95+34;
 		break;
-	case 0x6364://"ÉÑ"
+	case 0x6364://"ÔøΩÔøΩ"
 		Tp_sub = 95+35;
 		break;
-	case 0x6366://"ÉÜ"
+	case 0x6366://"ÔøΩÔøΩ"
 		Tp_sub = 95+36;
 		break;
-	case 0x6368://"Éà"
+	case 0x6368://"ÔøΩÔøΩ"
 		Tp_sub = 95+37;
 		break;
-	case 0x6369://"Éâ"
+	case 0x6369://"ÔøΩÔøΩ"
 		Tp_sub = 95+38;
 		break;
-	case 0x636a://"Éä"
+	case 0x636a://"ÔøΩÔøΩ"
 		Tp_sub = 95+39;
 		break;
-	case 0x636b://"Éã"
+	case 0x636b://"ÔøΩÔøΩ"
 		Tp_sub = 95+40;
 		break;
-	case 0x636c://"Éå"
+	case 0x636c://"ÔøΩÔøΩ"
 		Tp_sub = 95+41;
 		break;
-	case 0x636d://"Éç"
+	case 0x636d://"ÔøΩÔøΩ"
 		Tp_sub = 95+42;
 		break;
-	case 0x636f://"Éè"
+	case 0x636f://"ÔøΩÔøΩ"
 		Tp_sub = 95+43;
 		break;
-	case 0x6372://"Éí"
+	case 0x6372://"ÔøΩÔøΩ"
 		Tp_sub = 95+44;
 		break;
-	case 0x6373://"Éì"
+	case 0x6373://"ÔøΩÔøΩ"
 		Tp_sub = 95+45;
 		break;
-	case 0x632b://"ÉK"
+	case 0x632b://"ÔøΩK"
 		Tp_sub = 95+54;
 		break;
-	case 0x632d://"ÉM"
+	case 0x632d://"ÔøΩM"
 		Tp_sub = 95+55;
 		break;
-	case 0x632f://"ÉO"
+	case 0x632f://"ÔøΩO"
 		Tp_sub = 95+56;
 		break;
-	case 0x6331://"ÉQ"
+	case 0x6331://"ÔøΩQ"
 		Tp_sub = 95+57;
 		break;
-	case 0x6333://"ÉS"
+	case 0x6333://"ÔøΩS"
 		Tp_sub = 95+58;
 		break;
-	case 0x6335://"ÉU"
+	case 0x6335://"ÔøΩU"
 		Tp_sub = 95+59;
 		break;
-	case 0x6337://"ÉW"
+	case 0x6337://"ÔøΩW"
 		Tp_sub = 95+60;
 		break;
-	case 0x6339://"ÉY"
+	case 0x6339://"ÔøΩY"
 		Tp_sub = 95+61;
 		break;
-	case 0x633b://"É["
+	case 0x633b://"ÔøΩ["
 		Tp_sub = 95+62;
 		break;
-	case 0x633d://"É]"
+	case 0x633d://"ÔøΩ]"
 		Tp_sub = 95+63;
 		break;
-	case 0x633f://"É_"
+	case 0x633f://"ÔøΩ_"
 		Tp_sub = 95+64;
 		break;
-	case 0x6341://"Éa"
+	case 0x6341://"ÔøΩa"
 		Tp_sub = 95+65;
 		break;
-	case 0x6344://"Éd"
+	case 0x6344://"ÔøΩd"
 		Tp_sub = 95+66;
 		break;
-	case 0x6346://"Éf"
+	case 0x6346://"ÔøΩf"
 		Tp_sub = 95+67;
 		break;
-	case 0x6348://"Éh"
+	case 0x6348://"ÔøΩh"
 		Tp_sub = 95+68;
 		break;
-	case 0x6350://"Ép"
+	case 0x6350://"ÔøΩp"
 		Tp_sub = 95+69;
 		break;
-	case 0x6353://"És"
+	case 0x6353://"ÔøΩs"
 		Tp_sub = 95+70;
 		break;
-	case 0x6356://"Év"
+	case 0x6356://"ÔøΩv"
 		Tp_sub = 95+71;
 		break;
-	case 0x6359://"Éy"
+	case 0x6359://"ÔøΩy"
 		Tp_sub = 95+72;
 		break;
-	case 0x635c://"É|"
+	case 0x635c://"ÔøΩ|"
 		Tp_sub = 95+73;
 		break;
-	case 0x634f://"Éo"
+	case 0x634f://"ÔøΩo"
 		Tp_sub = 95+74;
 		break;
-	case 0x6352://"Ér"
+	case 0x6352://"ÔøΩr"
 		Tp_sub = 95+75;
 		break;
-	case 0x6355://"Éu"
+	case 0x6355://"ÔøΩu"
 		Tp_sub = 95+76;
 		break;
-	case 0x6358://"Éx"
+	case 0x6358://"ÔøΩx"
 		Tp_sub = 95+77;
 		break;
-	case 0x635b://"É{"
+	case 0x635b://"ÔøΩ{"
 		Tp_sub = 95+78;
 		break;
-	case 0x6320://"É@"
+	case 0x6320://"ÔøΩ@"
 		Tp_sub = 95+79;
 		break;
-	case 0x6322://"ÉB"
+	case 0x6322://"ÔøΩB"
 		Tp_sub = 95+80;
 		break;
-	case 0x6324://"ÉD"
+	case 0x6324://"ÔøΩD"
 		Tp_sub = 95+81;
 		break;
-	case 0x6326://"ÉF"
+	case 0x6326://"ÔøΩF"
 		Tp_sub = 95+82;
 		break;
 
-	case 0x6328://"ÉH"
+	case 0x6328://"ÔøΩH"
 		Tp_sub = 95+83;
 		break;
-	case 0x6363://"ÉÉ"
+	case 0x6363://"ÔøΩÔøΩ"
 		Tp_sub = 95+84;
 		break;
-	case 0x6365://"ÉÖ"
+	case 0x6365://"ÔøΩÔøΩ"
 		Tp_sub = 95+85;
 		break;
-	case 0x6367://"Éá"
+	case 0x6367://"ÔøΩÔøΩ"
 		Tp_sub = 95+86;
 		break;
-	case 0x6342://"Éb"
+	case 0x6342://"ÔøΩb"
 		Tp_sub = 95+87;
 		break;
-	case 0x613b://"Å["
+	case 0x613b://"ÔøΩ["
 		Tp_sub = 95+88;
 		break;
 

@@ -160,7 +160,7 @@ void logWatchDogTimerError(void);
  * Function Returns: void
  *
  ********************************************************************************/
-//char test_test[]="‚Ö";
+//char test_test[]="ï¿½ï¿½";
 //#define DISABLE_WATCHDOG 0 //jingzhikanmengou
 
 
@@ -788,7 +788,7 @@ void main(void) {
 		Set_lcdlightOFF();
 		Out_of_settingmode_cyw();
 		communicationModuleControlBoard();
-		if((menu_gesture_flag_cyw == 0)&&(menu_gesture_flag_A007==0))//²Ëµ¥Ê¹ÄÜÁËÊÖÊÆcyw add    //201806_Bug_No.10
+		if(((menu_gesture_flag_cyw == 0)||((menu_gesture_flag_cyw == 2)&&(gstControlBoardStatus.bits.autoManual==1)))&&(menu_gesture_flag_A007==0))//ï¿½Ëµï¿½Ê¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½cyw add    //201806_Bug_No.10
 	     {//cyw add
 				            shoushi_cyw++;//cyw add
 				            if(shoushi_cyw>=5)//=6Ô¼2.4ms//cyw add
@@ -926,7 +926,7 @@ void initDisplayBoard(void) {
 	for (iTmp = 0; iTmp < _NO_OF_PARAMS; iTmp++) {
 		initParameterDB((PARAM_DISP) iTmp);
 	}
-
+    Parameter_check();//æ£€æŸ¥ä¸‹å‚æ•°çš„èŒƒå›´ 
 	//EEPROM_Gesture_Load_cyw();//add cyw
 
 	initLogger();

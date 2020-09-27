@@ -97,6 +97,9 @@ typedef struct stLEDcontrolRegister
 				0b1001 0011 ?BLINK at 0.45 sec
 				0b1010 0011 ?BLINK at 0.5 sec
 	 */
+	uint16_t guestureLED;//手动模式时LED和背光灯的点闪次数
+	
+	uint8_t  BacklightLCD;
 } _LEDcontrolRegister;
 
 

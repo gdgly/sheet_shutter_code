@@ -47,7 +47,7 @@ extern "C"
 
 // Total parameters with Display Board
 //#define _NO_OF_PARAMS 39//add guest ann lcd backlight
-#define _NO_OF_PARAMS 59  //add 20 err opreation count  ////20170414      201703_No.31
+#define _NO_OF_PARAMS 60  //add 20 err opreation count  ////20170414      201703_No.31
 
 // Max logs for Anomaly History and Change Setting History
 #define _MAX_ANOMALY_LOGS	20
@@ -80,10 +80,11 @@ extern "C"
 #define Japanese_IDX  0
 #define English_IDX 1
 
-
-#define Para_Guesture_Index_cyw        11
+#define Para_Guesture_UD_Index_cyw     11
+#define Para_Guesture_Index_cyw        12
 #define Para_LcdBackLight_Index_cyw    10
-#define Para_Languange_Index_cyw       12
+#define Para_Languange_Index_cyw       13
+
 /****************************************************************************/
 
 

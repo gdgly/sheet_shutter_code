@@ -28,6 +28,12 @@
 uint8_t  LCD_DISP_GUESTURE=0;
 uint8_t setting_flag=1;//���������ò��?
 uint8_t error_guesture_cyw=0;
+extern uint8_t gu8_gesture_manual;
+extern uint32_t g_ui32TickCount;
+uint32_t gTickCount1Second_1s = 0;
+uint32_t get_timego(uint32_t x_data_his);
+
+
 
 void Start(void)
  {
@@ -1095,11 +1101,11 @@ void changeOPmode(struct gp_params *p_gp, bool init_reg_on)
 
    						//if(p_gp->speed_counts < (u16)COUNTS_HIGH_SP*100/(u16)STANDARD_SAMPLING_RATE){
    						//if(p_gp->speed_counts < 10){
-   						if(p_gp->speed_counts < 20)//20151201
-   						{
-   						    p_gp->res_gs |=((u16)SPEED_HIGH<<4);
-   						     p_gp->res_gs = 0;//2015�?��� ̫�?˲������?
-   						}//else if(p_gp->speed_counts < (u16)COUNTS_MID_SP*(u16)gs_sampling_rate/(u16)STANDARD_SAMPLING_RATE){
+   						// if(p_gp->speed_counts < 10)//20151201
+   						//{
+   						//    p_gp->res_gs |=((u16)SPEED_HIGH<<4);
+   						//     p_gp->res_gs = 0;//2015�?��� ̫�?˲������?
+   						//} //else if(p_gp->speed_counts < (u16)COUNTS_MID_SP*(u16)gs_sampling_rate/(u16)STANDARD_SAMPLING_RATE){
    						//	p_gp->res_gs |=((u16)SPEED_MID<<4);
    						//}
    						clearGSparams(p_gp);
@@ -1247,170 +1253,122 @@ void changeOPmode(struct gp_params *p_gp, bool init_reg_on)
 
    }
 /*���Ǻ��?ָ���*/
+uint32_t guesture_led_fre ;
    void output_gs_level(struct gp_params *p_gp)
    {
-//       static u8 open_count=0,stop_count=0,close_count=0,leftright_count=0;
-//       if(stop_count == 0)
-//       {
-//       if((p_gp->res_gs)&0xff00)//stop
-//       {
-//           stop_count=1;
-//           STOPPLUSE_LEVELLOW;
-//       }
-//       }
-//       if(open_count == 0)
-//       {
-//       if(((p_gp->res_gs)&0x0f)==0x8)//open
-//       {
-//           open_count=1;
-//           OPENPLUSE_LEVELLOW;
-//       }
-//       }
-//       if(close_count == 0)
-//       {
-//       if(((p_gp->res_gs)&0x0f)==0x4)//close
-//       {
-//           close_count=1;
-//           CLOSEPLUSE_LEVELLOW;
-//       }
-//       }
-//       if(leftright_count==0)
-//       {
-//    	   if((((p_gp->res_gs)&0x0f)==0x1)||(((p_gp->res_gs)&0x0f)==0x2))//close
-//    	         {
-//    		        leftright_count=1;
-//    	             //CLOSEPLUSE_LEVELLOW;
-//    	         }
-//       }
-//       if(leftright_count)
-//       {
-//    	   leftright_count++;
-//    	   if(leftright_count>= 80)
-//    	   {
-//    		   leftright_count = 0;
-//    		   p_gp->res_gs=0;
-//    	   }
-//       }
-//       if(stop_count)
-//       {
-//           stop_count++;
-//           if(stop_count>=80)//�������
-//           {
-//                stop_count = 0;
-//                STOPPLUSE_LEVELHIGH;
-//                p_gp->res_gs=0;
-//           }
-//       }
-//       if(open_count)
-//       {
-//           open_count++;
-//           if(open_count>=80)//�������
-//           {
-//               open_count = 0;
-//               OPENPLUSE_LEVELHIGH;
-//               p_gp->res_gs=0;
-//           }
-//       }
-//       if(close_count)
-//       {
-//          close_count++;
-//          if(close_count>=80)//�������
-//          {
-//              close_count = 0;
-//              CLOSEPLUSE_LEVELHIGH;
-//              p_gp->res_gs=0;
-//          }
-//
-//       }
+          if((gstDriveBoardStatus.bits.drivePowerOnCalibration== 1)||(gstDriveBoardStatus.bits.driveRunTimeCalibration==1)||
+	     (gstDriveBoardStatus.bits.driveInstallation==1)||(gstDriveBoardStatus.bits.driveFaultUnrecoverable==1))
+		 {
+			 return;
+		 }
 
 	   if(LCD_Count<=1)
-	       {
-	         if((p_gp->res_gs)&0xff00)//����ط���ֵ����ٽ?���ٽ?�ʱ�?�����ܳ���������� �� �?������
-	         {
-	        	// STOPPLUSE_LEVELLOW;
-	        	// DISP_GUESTER_9_16(4, 12, 32, 45);
-	        		if((gstDriveBoardStatus.bits.drivePowerOnCalibration != 1)&&(gstDriveBoardStatus.bits.driveRunTimeCalibration!=1)&&
-	        	                                         (gstDriveBoardStatus.bits.driveInstallation!=1)&&(gstDriveBoardStatus.bits.driveFaultUnrecoverable!=1))
+	    {
+	         if(
+				 (gstControlBoardStatus.bits.autoManual==1)
+				 ||
+			    (
+					(gstControlBoardStatus.bits.autoManual==0)&&(gu8_gesture_manual==0)
+				)
+			   )
+			 {
+				 if((p_gp->res_gs&0xff00)||((p_gp->res_gs&0x0f)==0x1)||((p_gp->res_gs&0x0f)==0x2)||((p_gp->res_gs&0x0f)==0x4)||((p_gp->res_gs&0x0f)==0x8))
+				 {
+					 DISP_GUESTER_13_16(2, 14, 32, 45);
+	        	     Set_lcdlightON();
+	        	     OPENPLUSE_LEVELLOW;
+	                 LCD_Count=80;
+	                 LCD_DISP_GUESTURE =1 ;
+	                 goto flag11;
+				 }
+				 else if((p_gp->res_gs&0x0f)!=0)
+				 {
+					 LCD_Count=80;
+				 }
+			 }
 
-	        	 DISP_GUESTER_13_16(2, 14, 32, 45);
-	        	 Set_lcdlightON();
-	        	 OPENPLUSE_LEVELLOW;
-	             LCD_Count=80;
-	             LCD_DISP_GUESTURE =1 ;
-	             goto flag11;
-	            // p_gp->res_gs = p_gp->res_gs&0xff00;
-	         }
-
-	         switch((p_gp->res_gs)&0x0f){
-	  	   				case 0x1:
-	  	   				// DISP_GUESTER(4, 12, 32, 45);
-	  	   				if((gstDriveBoardStatus.bits.drivePowerOnCalibration != 1)&&(gstDriveBoardStatus.bits.driveRunTimeCalibration!=1)&&
-	  	   			                                         (gstDriveBoardStatus.bits.driveInstallation!=1)&&(gstDriveBoardStatus.bits.driveFaultUnrecoverable!=1))
-
-	  	   				 DISP_GUESTER_13_16(2, 14, 32, 45);
-	  	   				Set_lcdlightON();
-	  	   				OPENPLUSE_LEVELLOW;
-	  	   					LCD_Count=80;
-	  	   				LCD_DISP_GUESTURE =1 ;
-	  	   				break;
-
-	  	   				case 0x2:
-	  	   				// DISP_GUESTER(4, 12, 32, 45);
-	  	   				if((gstDriveBoardStatus.bits.drivePowerOnCalibration != 1)&&(gstDriveBoardStatus.bits.driveRunTimeCalibration!=1)&&
-	  	   			                                         (gstDriveBoardStatus.bits.driveInstallation!=1)&&(gstDriveBoardStatus.bits.driveFaultUnrecoverable!=1))
-
-	  	   				 DISP_GUESTER_13_16(2, 14, 32, 45);
-	  	   				Set_lcdlightON();
-	  	   				OPENPLUSE_LEVELLOW;
-	  	   					LCD_Count=80;
-	  	   					LCD_DISP_GUESTURE =1 ;
-
-	  	   				break;
-
-	  	   				case 0x4:
-	  	   				// DISP_GUESTER(4, 12, 32, 45);
-	  	   				if((gstDriveBoardStatus.bits.drivePowerOnCalibration != 1)&&(gstDriveBoardStatus.bits.driveRunTimeCalibration!=1)&&
-	  	   			                                         (gstDriveBoardStatus.bits.driveInstallation!=1)&&(gstDriveBoardStatus.bits.driveFaultUnrecoverable!=1))
-
-	  	   				 DISP_GUESTER_13_16(2, 14, 32, 45);
-	  	   				Set_lcdlightON();
-	  	   				OPENPLUSE_LEVELLOW;
-	  	   				    LCD_Count=80;
-	  	   				LCD_DISP_GUESTURE =1 ;
-	                      break;
-	  	   				case 0x8:
-	  	   				// DISP_GUESTER(4, 12, 32, 45);
-	  	   				if((gstDriveBoardStatus.bits.drivePowerOnCalibration != 1)&&(gstDriveBoardStatus.bits.driveRunTimeCalibration!=1)&&
-	  	   			                                         (gstDriveBoardStatus.bits.driveInstallation!=1)&&(gstDriveBoardStatus.bits.driveFaultUnrecoverable!=1))
-
-	  	   				 DISP_GUESTER_13_16(2, 14, 32, 45);
-	  	   				Set_lcdlightON();
-	  	   		       OPENPLUSE_LEVELLOW;
-	  	   					LCD_Count=80;
-	  	   				LCD_DISP_GUESTURE =1 ;
-	  	   				break;
-
-	  	   				case 0x03:
-	  	   				case 0x05:
-	  	   				case 0x06:
-	  	   				case 0x07:
-	  	   				case 0x09:
-	  	   				case 0x0a:
-	  	   				case 0x0b:
-	  	   				case 0x0c:
-	  	   				case 0x0d:
-	  	   				case 0x0e:
-	  	   				case 0x0f:
-	  	   				     LCD_Count=80;
-	  	   				break;
-	  	   				default:
-	  	   				break;
-	  	   			}
-	       }
+            if((gstControlBoardStatus.bits.autoManual==0)&&(gu8_gesture_manual==1))
+			{
+				  if((p_gp->res_gs&0xff00)||((p_gp->res_gs&0x0f)==0x1)||((p_gp->res_gs&0x0f)==0x2)||((p_gp->res_gs&0x0f)==0x4)||((p_gp->res_gs&0x0f)==0x8))
+				 {
+					 if(gstDriveBoardStatus.bits.shutterUpperLimit==1)
+					 {
+                          CLOSEPLUSE_LEVELLOW;
+					 }
+					 else
+					 {
+						 OPENPLUSE_LEVELLOW;
+					 }
+					  DISP_GUESTER_13_16(2, 14, 32, 45);
+	        	     Set_lcdlightON();
+					  LCD_Count=80;
+	                 LCD_DISP_GUESTURE =1 ;
+					 goto flag11;
+				 }
+				 else if((p_gp->res_gs&0x0f)!=0)
+				 {
+					 LCD_Count=80;
+				 }
+			}
+            
+             if((gstControlBoardStatus.bits.autoManual==0)&&(gu8_gesture_manual==2))
+			 {
+                   if(get_timego(gTickCount1Second_1s)<100)
+				   //if(1)
+				   {
+					   if(((p_gp->res_gs&0x0f)==DIR_BOTTOM)&&(gstDriveBoardStatus.bits.shutterUpperLimit==0))
+					   {
+                           DISP_GUESTER_13_16(2, 14, 32, 45);
+	        	           //Set_lcdlightON();
+	        	           OPENPLUSE_LEVELLOW;
+	                       LCD_Count=80;
+	                       LCD_DISP_GUESTURE =1 ;
+						   gstLEDcontrolRegister.guestureLED = 50;//300times
+                           guesture_led_fre=g_ui32TickCount;
+						   //LCD_BACKLIGHT_GETSTATUS();
+                           LCD_BACKLIGHT_OFF();//同LED能够同步闪
+	                       goto flag11;
+					   }
+					   else if(((p_gp->res_gs&0x0f)==DIR_TOP)&&(gstDriveBoardStatus.bits.shutterLowerLimit==0))
+					   {
+						   DISP_GUESTER_13_16(2, 14, 32, 45);
+	        	           //Set_lcdlightON();
+	        	           CLOSEPLUSE_LEVELLOW;
+	                       LCD_Count=80;
+	                       LCD_DISP_GUESTURE =1 ;
+						    gstLEDcontrolRegister.guestureLED = 50;//300times
+                           guesture_led_fre=g_ui32TickCount;
+						   //LCD_BACKLIGHT_GETSTATUS();
+                           LCD_BACKLIGHT_OFF();
+	                       goto flag11;
+					   }
+					   else if((p_gp->res_gs&0xff0f)!=0)
+					   {
+						   LCD_Count=80;
+					   }
+					   
+					   
+				   }
+				   else
+				   {
+					   if((p_gp->res_gs&0xff0f)!=0)
+					   {
+						   LCD_Count=80;
+					   }
+				   }
+			 }
+			 
+			 
+	  	}
+	       
 flag11:	  	   if(LCD_Count)
+               {
 	  	             LCD_Count--;
-	  	           if(LCD_Count==1)
-	  	           {
+					// LCD_BACKLIGHT_TOGGLE();
+                    // gstLEDcontrolRegister.autoManualLED=_BLINK_STATUS_100_MSEC;
+			   }
+	  	        if(LCD_Count==1)
+	  	        {
 	  	        	 //GrRectFIllBolymin(4, 12, 32, 45, true, true);
 	  	        	// GrRectFIllBolymin(2, 14, 32, 45, true, true);
 	  	        	 STOPPLUSE_LEVELHIGH;
@@ -1418,7 +1376,8 @@ flag11:	  	   if(LCD_Count)
 	  	        	 CLOSEPLUSE_LEVELHIGH;
 	  	             p_gp->res_gs=0;
 	  	             LCD_Count = 0;
-	  	           }
+					//gstLEDcontrolRegister.autoManualLED = LED_OFF;
+	  	        }
 
    }
 /*���Ǻ��?ָ���*/
@@ -1568,6 +1527,7 @@ unsigned char Tp_count=0;
 unsigned char Tp_flag=0;
 unsigned int Tp_count_over=0;
 
+
 void getZoom_cyw(struct gp_params *p_gp)
 {
     unsigned short int Tp_D0,Tp_D1,Tp_D2,Tp_D3;
@@ -1616,7 +1576,11 @@ void getZoom_cyw(struct gp_params *p_gp)
             //IniALLparams(&p_gp);//�ԼĴ�����ֵ
         }
     }
-
+    
+	if((Tp_D0+Tp_D1+Tp_D2+Tp_D3)<1000)
+	{
+        gTickCount1Second_1s  = g_ui32TickCount;
+	}
 }
 
 unsigned char Flag_His_RL=0;
@@ -2191,7 +2155,8 @@ void guest_reinit(void)
 	LCD_Count = 0;
 	clearGSparams(&st_gp);
 	 STOPPLUSE_LEVELHIGH;
-	  	         	 OPENPLUSE_LEVELHIGH;
-	  	        	 CLOSEPLUSE_LEVELHIGH;
+	OPENPLUSE_LEVELHIGH;
+	CLOSEPLUSE_LEVELHIGH;
+    gstLEDcontrolRegister.guestureLED =0;
 	}
 }

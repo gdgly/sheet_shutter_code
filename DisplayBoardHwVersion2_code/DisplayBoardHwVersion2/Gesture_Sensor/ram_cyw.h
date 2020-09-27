@@ -1,7 +1,7 @@
 /*
  * ram.h
  *
- *  Created on: 2015дЙ7тб6ху
+ *  Created on: 2015О©╫О©╫7О©╫О©╫6О©╫О©╫
  *      Author: x220
  */
 
@@ -9,12 +9,12 @@
 #define RAM_H_
 
 
-//#define GP2A054Register_DEBUG 0  //╤╗рЕакуБ╦Ж╤т054╣д╪д╢ФфВфВж╣╫Ьпп╣Вйт
-//#define UART_DEBUG 0//╤╗рЕакуБ╦Жтзйжйф╦пс╕╣╫╣дй╠╨Р╩Ам╗╧Щ╢╝©з╦Ь╣Гдт╥╒йЩ╬щ
-//#define GUEST_DISP 0//йжйфотй╬тзр╨╬╖ио  ио об вС ср мё
-//#define GP2A054_DUBUG 0//╣Вйт054 ╟яD0D1D2D3╣дйЩ╬щотй╬тзLCDио сКйжйфтзр╨╬╖иоотй╬╡╩╪Фхщ
-//#define CLEAR_RAM_DEBUG 0//╤╗рЕакуБ╦Ж╠Да©╩Атзр╩╤╗й╠╨РгЕЁЩ╪фкЦ╣джп╪Д╫А╧Ш ╤т╦дифйжйф╣дв╪х╥ц╩й╡ц╢п╖╧Ш
-#define GUEST_LEVELOUT 0//╤╗рЕакуБ╦ЖйжйфвВн╙бЖЁЕйДЁЖ сКйжйфтзр╨╬╖иоотй╬╡╒╡╩ЁЕм╩
+//#define GP2A054Register_DEBUG 0  //О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫054О©╫д╪д╢О©╫О©╫О©╫О©╫О©╫ж╣О©╫О©╫О©╫п╣О©╫О©╫О©╫
+//#define UART_DEBUG 0//О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫ф╦О©╫с╕О©╫О©╫О©╫О©╫й╠О©╫О©╫О©╫м╗О©╫О©╫О©╫О©╫О©╫з╦О©╫О©╫О©╫О©╫т╥О©╫О©╫О©╫О©╫О©╫
+//#define GUEST_DISP 0//О©╫О©╫О©╫О©╫О©╫О©╫й╬О©╫О©╫р╨О©╫О©╫О©╫О©╫  О©╫О©╫ О©╫О©╫ О©╫О©╫ О©╫О©╫ мё
+//#define GP2A054_DUBUG 0//О©╫О©╫О©╫О©╫054 О©╫О©╫D0D1D2D3О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫й╬О©╫О©╫LCDО©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫р╨О©╫О©╫О©╫О©╫О©╫О©╫й╬О©╫О©╫О©╫О©╫О©╫О©╫
+//#define CLEAR_RAM_DEBUG 0//О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫р╩О©╫О©╫й╠О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫п╪О©╫О©╫О©╫ О©╫т╦О©╫О©╫О©╫О©╫О©╫О©╫ф╣О©╫в╪х╥ц╩й╡ц╢п╖О©╫О©╫
+#define GUEST_LEVELOUT 0//О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫н╙О©╫О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫р╨О©╫О©╫О©╫О©╫О©╫О©╫й╬О©╫О©╫О©╫О©╫О©╫О©╫м╩
 
 
 extern const unsigned char FONT_STOP[];
@@ -33,6 +33,12 @@ extern unsigned char menu_gesture_flag_A007;
 extern uint8_t shoushi_cyw;
 
 
-
-
+void LCD_BACKLIGHT_TOGGLE(void);
+void LED_AOTUMAU_TOGGLE(void);
+//void LCD_BACKLIGHT_SETSTATUS(void);
+//void LCD_BACKLIGHT_GETSTATUS(void);
+void LCD_BACKLIGHT_OFF(void);
+void Parameter_check(void);
+void LED_AOTUMAU_ON(void);
+void LED_AOTUMAU_OFF(void);
 #endif /* RAM_H_ */

@@ -725,6 +725,30 @@ void checkLEDStatus(uint8_t lui8LED, uint8_t lui8LEDStatus, uint8_t lui8Previous
 	}
 }
 
+
+void LED_AOTUMAU_TOGGLE(void)
+{
+	if(ROM_GPIOPinRead(GPIO_PORTE_BASE, AUTO_MANUAL_LED))
+	{
+        ROM_GPIOPinWrite(GPIO_PORTE_BASE, AUTO_MANUAL_LED,0);
+	}
+	else
+	{
+	    ROM_GPIOPinWrite(GPIO_PORTE_BASE, AUTO_MANUAL_LED,AUTO_MANUAL_LED);
+	}
+	
+}
+
+void LED_AOTUMAU_ON(void)
+{
+	  ROM_GPIOPinWrite(GPIO_PORTE_BASE, AUTO_MANUAL_LED,AUTO_MANUAL_LED);
+}
+void LED_AOTUMAU_OFF(void)
+{
+	  ROM_GPIOPinWrite(GPIO_PORTE_BASE, AUTO_MANUAL_LED,0);
+}
+
+
 /******************************************************************************
  * FunctionName: displayBoardLEDHandler
  *

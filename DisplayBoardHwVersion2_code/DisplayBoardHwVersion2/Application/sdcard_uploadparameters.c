@@ -87,6 +87,7 @@ extern const uint16_t  PARAM_ALL_SDCARD_CYW[param_all_list_long];
 extern const dest_enum_cyw PARAM_ALL_BELONG_CYW[param_all_list_long];
 
 extern uint16_t gu16_lcdlight;
+extern unsigned char gu8_gesture_manual;
 extern unsigned char menu_gesture_flag_cyw;
 /******************************************************************************
  * FunctionName: uploadParametersRunTime
@@ -124,7 +125,7 @@ uint8_t uploadDrvParametersPaint(void)
 	uint8_t i = 0,Tp_max_sdcardlist=0;
 	if(gu8_language == Japanese_IDX)
 	{
-	gSDCardUPParamDRVbrdMenuItems[i].pcText_japanese = "ƒtƒ@ƒCƒ‹_ƒZƒ“ƒ^ƒN:";
+	gSDCardUPParamDRVbrdMenuItems[i].pcText_japanese = "ï¿½tï¿½@ï¿½Cï¿½ï¿½_ï¿½Zï¿½ï¿½ï¿½^ï¿½N:";
 	}
 	else
 	{
@@ -162,7 +163,7 @@ uint8_t uploadCtrlParametersPaint(void)
 	uint8_t i = 0;
 	if(gu8_language == Japanese_IDX)
 	{
-	gSDCardUPParamCTRLbrdMenuItems[i].pcText_japanese = "ƒtƒ@ƒCƒ‹_ƒZƒ“ƒ^ƒN:";
+	gSDCardUPParamCTRLbrdMenuItems[i].pcText_japanese = "ï¿½tï¿½@ï¿½Cï¿½ï¿½_ï¿½Zï¿½ï¿½ï¿½^ï¿½N:";
 	}
 	else
 	{
@@ -215,8 +216,8 @@ uint8_t SDUpParamDRVPaint(void)
 	//displayText("FROM SD CARD?", 2, 32, false, false, false, false, false, false);
 	if(gu8_language == Japanese_IDX)
 	{
-	displayText("ƒpƒ‰ƒ[ƒ^ƒ’SDƒJ[ƒhƒj", 2, 0, false, false, false, false,false,false);
-	displayText("ƒRƒs[ƒVƒ}ƒXƒJ?", 2, 16, false, false, false, false,false,false);
+	displayText("ï¿½pï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½^ï¿½ï¿½SDï¿½Jï¿½[ï¿½hï¿½j", 2, 0, false, false, false, false,false,false);
+	displayText("ï¿½Rï¿½sï¿½[ï¿½Vï¿½}ï¿½Xï¿½J?", 2, 16, false, false, false, false,false,false);
 	}
 	else
 	{
@@ -291,7 +292,7 @@ uint8_t SDUpParamDRVCTRLRunTime(void)
 							// Display SDCARD failed message
 							//displayText("SDCARD FAILURE", 2, 0, false, false, false, false, false, false);
 							if(gu8_language == Japanese_IDX)
-							displayText("SDƒJ[ƒhƒtƒŠƒ‡ƒE", 2, 0, false, false, false, false, false, false);
+							displayText("SDï¿½Jï¿½[ï¿½hï¿½tï¿½ï¿½ï¿½ï¿½ï¿½E", 2, 0, false, false, false, false, false, false);
 							else
 							displayText("SDCARD FAILURE", 2, 0, false, false, false, false, false, true);
 
@@ -337,6 +338,11 @@ uint8_t SDUpParamDRVCTRLRunTime(void)
 								gu16_lcdlight =  strtoint(SDULParamValue);
 								writeParameterUpdateInDB((PARAM_DISP)gsParamDatabase[Para_LcdBackLight_Index_cyw].paramEEPROMIndex, (uint8_t *)&gu16_lcdlight);
 
+							}
+                            if(PARAM_ALL_SDCARD_CYW[gui8DriveParamCount]==40)
+							{
+							     gu8_gesture_manual = strtoint(SDULParamValue);
+								 writeParameterUpdateInDB((PARAM_DISP)gsParamDatabase[Para_Guesture_UD_Index_cyw].paramEEPROMIndex, (uint8_t *)&gu8_gesture_manual);
 							}
 							if(PARAM_ALL_SDCARD_CYW[gui8DriveParamCount]==41)
 							{
@@ -397,7 +403,7 @@ uint8_t SDUpParamDRVCTRLRunTime(void)
 					//
 					//
 					if(gu8_language == Japanese_IDX)
-					displayText("ƒRƒs[ƒJƒ“ƒŠƒ‡ƒE", 2, 0, false, false, false, false, false, false);
+					displayText("ï¿½Rï¿½sï¿½[ï¿½Jï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½E", 2, 0, false, false, false, false, false, false);
 					else
 					displayText("SUCCESSFUL", 2, 16, false, false, false, false, false, true);
 
@@ -465,7 +471,7 @@ uint8_t SDUpParamDRVCTRLRunTime(void)
 
 						if(gu8_language == Japanese_IDX)
 						{
-						displayText("ƒJƒLƒRƒ~NG", 2, 0, false, false, false, false, false, false);
+						displayText("ï¿½Jï¿½Lï¿½Rï¿½~NG", 2, 0, false, false, false, false, false, false);
 						}
 						else
 						{
@@ -475,7 +481,7 @@ uint8_t SDUpParamDRVCTRLRunTime(void)
 
 						//displayText("NACK ERROR", 2, 48, false, false, false, false, false, false);
 						if(gu8_language == Japanese_IDX)
-						displayText("NACKƒGƒ‰[", 2, 48, false, false, false, false, false, false);
+						displayText("NACKï¿½Gï¿½ï¿½ï¿½[", 2, 48, false, false, false, false, false, false);
 						else
 					    displayText("NACK ERROR", 2, 48, false, false, false, false, false, true);
 						//
@@ -517,7 +523,7 @@ uint8_t SDUpParamDRVCTRLRunTime(void)
 				//	displayText("FAILED", 2, 16, false, false, false, false, false, false);
 					if(gu8_language == Japanese_IDX)
 					{
-					displayText("ƒJƒLƒRƒ~NG", 2, 0, false, false, false, false, false, false);
+					displayText("ï¿½Jï¿½Lï¿½Rï¿½~NG", 2, 0, false, false, false, false, false, false);
 					}
 					else
 					{
@@ -527,7 +533,7 @@ uint8_t SDUpParamDRVCTRLRunTime(void)
 
 					//
 					if(gu8_language == Japanese_IDX)
-					displayText("ƒcƒEƒVƒ“ƒGƒ‰[", 2, 48, false, false, false, false, false, false);
+					displayText("ï¿½cï¿½Eï¿½Vï¿½ï¿½ï¿½Gï¿½ï¿½ï¿½[", 2, 48, false, false, false, false, false, false);
 					else
 					displayText("COMM ERROR", 2, 48, false, false, false, false, false, true);
 					//
@@ -546,7 +552,7 @@ uint8_t SDUpParamDRVCTRLRunTime(void)
 		{
 			displayText("               ", 2, 48, false, false, false, false, false, false);   //20161207
 			/*if(gu8_language == Japanese_IDX)
-			displayText("ƒRƒ}ƒ“ƒhƒ\ ƒEƒVƒ“ƒGƒ‰[", 2, 48, false, false, false, false,false,false);
+			displayText("ï¿½Rï¿½}ï¿½ï¿½ï¿½hï¿½\ ï¿½Eï¿½Vï¿½ï¿½ï¿½Gï¿½ï¿½ï¿½[", 2, 48, false, false, false, false,false,false);
 			else
 			displayText("ERROR SENDING CMD", 2, 48, false, false, false, false,false,true);*/
 		}
@@ -622,9 +628,9 @@ uint8_t SDUpParamDRVEnter(void)
 
 		if(gu8_language == Japanese_IDX)
 		{
-			displayText("SDƒJ[ƒh‚ÖƒRƒs[", 2, 0, false, false, false, false, false, false);
-		displayText("ƒJƒ“ƒŠƒ‡ƒE", 2, 16, false, false, false, false,false,false);
-		displayText("ƒIƒ}ƒ`ƒNƒ_ƒTƒC...", 2, 48, false, false, false, false, false, false);
+			displayText("SDï¿½Jï¿½[ï¿½hï¿½ÖƒRï¿½sï¿½[", 2, 0, false, false, false, false, false, false);
+		displayText("ï¿½Jï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½E", 2, 16, false, false, false, false,false,false);
+		displayText("ï¿½Iï¿½}ï¿½`ï¿½Nï¿½_ï¿½Tï¿½C...", 2, 48, false, false, false, false, false, false);
 		}
 		else
 		{
@@ -648,7 +654,7 @@ uint8_t SDUpParamDRVEnter(void)
 		{
 			displayText("               ", 2, 48, false, false, false, false, false, false);   //20161207
 			/*if(gu8_language == Japanese_IDX)
-			displayText("ƒRƒ}ƒ“ƒhƒ\ ƒEƒVƒ“ƒGƒ‰[", 2, 48, false, false, false, false,false,false);
+			displayText("ï¿½Rï¿½}ï¿½ï¿½ï¿½hï¿½\ ï¿½Eï¿½Vï¿½ï¿½ï¿½Gï¿½ï¿½ï¿½[", 2, 48, false, false, false, false,false,false);
 			else
 			displayText("ERROR SENDING CMD", 2, 48, false, false, false, false,false,true);*/
 		}
@@ -681,10 +687,10 @@ uint8_t SDUpParamCTRLEnter(void)
 
 		if(gu8_language == Japanese_IDX)
 		{
-		displayText("SDƒJ[ƒh‚ÖƒRƒs[", 2, 0, false, false, false, false, false, false);
-		displayText("ƒJƒ“ƒŠƒ‡ƒE", 2, 16, false, false, false, false, false, false);
+		displayText("SDï¿½Jï¿½[ï¿½hï¿½ÖƒRï¿½sï¿½[", 2, 0, false, false, false, false, false, false);
+		displayText("ï¿½Jï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½E", 2, 16, false, false, false, false, false, false);
 		//
-		displayText("ƒIƒ}ƒ`ƒNƒ_ƒTƒC...", 2, 48, false, false, false, false, false, false);
+		displayText("ï¿½Iï¿½}ï¿½`ï¿½Nï¿½_ï¿½Tï¿½C...", 2, 48, false, false, false, false, false, false);
 		}
 		else
 		{
@@ -708,7 +714,7 @@ uint8_t SDUpParamCTRLEnter(void)
 		{
 			displayText("               ", 2, 48, false, false, false, false, false, false);   //20161207
 			/*if(gu8_language == Japanese_IDX)
-			displayText("ƒRƒ}ƒ“ƒhƒ\ ƒEƒVƒ“ƒGƒ‰[", 2, 48, false, false, false, false, false, false);
+			displayText("ï¿½Rï¿½}ï¿½ï¿½ï¿½hï¿½\ ï¿½Eï¿½Vï¿½ï¿½ï¿½Gï¿½ï¿½ï¿½[", 2, 48, false, false, false, false, false, false);
 			else
 			displayText("ERROR SENDING CMD", 2, 48, false, false, false, false, false, true);*/
 		}
@@ -735,8 +741,8 @@ uint8_t SDUpParamDRVUp(void)
 		GrRectFIllBolymin(0, 127, 0, 63, 0x00, true);
 		if(gu8_language == Japanese_IDX)
 			{
-			displayText("ƒpƒ‰ƒ[ƒ^ƒ’SDƒJ[ƒhƒj", 2, 0, false, false, false, false,false,false);
-			displayText("ƒRƒs[ƒVƒ}ƒXƒJ?", 2, 16, false, false, false, false,false,false);
+			displayText("ï¿½pï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½^ï¿½ï¿½SDï¿½Jï¿½[ï¿½hï¿½j", 2, 0, false, false, false, false,false,false);
+			displayText("ï¿½Rï¿½sï¿½[ï¿½Vï¿½}ï¿½Xï¿½J?", 2, 16, false, false, false, false,false,false);
 			}
 			else
 			{
@@ -771,8 +777,8 @@ uint8_t SDUpParamDRVDown(void)
 		GrRectFIllBolymin(0, 127, 0, 63, 0x00, true);
 		if(gu8_language == Japanese_IDX)
 			{
-			displayText("ƒpƒ‰ƒ[ƒ^ƒ’SDƒJ[ƒhƒj", 2, 0, false, false, false, false,false,false);
-			displayText("ƒRƒs[ƒVƒ}ƒXƒJ?", 2, 16, false, false, false, false,false,false);
+			displayText("ï¿½pï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½^ï¿½ï¿½SDï¿½Jï¿½[ï¿½hï¿½j", 2, 0, false, false, false, false,false,false);
+			displayText("ï¿½Rï¿½sï¿½[ï¿½Vï¿½}ï¿½Xï¿½J?", 2, 16, false, false, false, false,false,false);
 			}
 			else
 			{

@@ -157,9 +157,36 @@ extern uint8_t  LCD_DISP_GUESTURE;
  * Function Returns: void
  *
  ********************************************************************************/
+extern uint32_t guesture_led_fre ;
 void homescreenLEDHandler(void)
 {
-	if(1 == gstControlBoardStatus.bits.autoManual)
+	
+	if(gstLEDcontrolRegister.guestureLED)
+	{
+        if(get_timego(guesture_led_fre)>5)
+		{
+			guesture_led_fre = g_ui32TickCount;
+			gstLEDcontrolRegister.guestureLED--;
+			LCD_BACKLIGHT_TOGGLE();
+			LED_AOTUMAU_TOGGLE();
+			if(gstLEDcontrolRegister.guestureLED==0)
+			{
+              // LCD_BACKLIGHT_SETSTATUS();
+                      Set_lcdlightON();
+                     if(1 == gstControlBoardStatus.bits.autoManual)
+                     {
+                         LED_AOTUMAU_ON();
+                       }
+                      else
+                      {
+                        LED_AOTUMAU_OFF();
+                        }
+                     
+			}
+		} 
+
+	}
+	else if(1 == gstControlBoardStatus.bits.autoManual)
 	{
 		gstLEDcontrolRegister.autoManualLED = LED_ON;
 	}
@@ -1237,7 +1264,8 @@ uint8_t homeScreenRunTime(void)
 				if((gstDriveBoardStatus.bits.drivePowerOnCalibration != 1)&&(gstDriveBoardStatus.bits.driveRunTimeCalibration!=1)&&
                                          (gstDriveBoardStatus.bits.driveInstallation!=1)&&(gstDriveBoardStatus.bits.driveFaultUnrecoverable!=1))
 				{
-                              if((menu_gesture_flag_cyw == 0)&&(menu_gesture_flag_A007==0))  ////201806_Bug_No.10
+                               if(((menu_gesture_flag_cyw == 0)||((menu_gesture_flag_cyw == 2)&&(gstControlBoardStatus.bits.autoManual==1)))&&(menu_gesture_flag_A007==0))  ////201806_Bug_No.10
+                              ////201806_Bug_No.10
                                {
                                        if(LCD_DISP_GUESTURE == 1)
                                        {
@@ -1495,7 +1523,8 @@ uint8_t homeScreenPaint(void)
 if((gstDriveBoardStatus.bits.drivePowerOnCalibration != 1)&&(gstDriveBoardStatus.bits.driveRunTimeCalibration!=1)&&
                                          (gstDriveBoardStatus.bits.driveInstallation!=1)&&(gstDriveBoardStatus.bits.driveFaultUnrecoverable!=1))
 {
-	   if((menu_gesture_flag_cyw == 0)&&(menu_gesture_flag_A007==0))   //201806_Bug_No.10
+	    if(((menu_gesture_flag_cyw == 0)||((menu_gesture_flag_cyw == 2)&&(gstControlBoardStatus.bits.autoManual==1)))&&(menu_gesture_flag_A007==0))  ////201806_Bug_No.10
+                                 //201806_Bug_No.10
         {
         if(LCD_DISP_GUESTURE == 1)
         {

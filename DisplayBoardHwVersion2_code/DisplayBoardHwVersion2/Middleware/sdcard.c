@@ -405,7 +405,7 @@ uint8_t list_SDCard_cyw(void)
 			if((*g_sFileInfo.lfname)!=0)
 			{
 
-				if(g_sFileInfo.lfname[0]=='p'&&g_sFileInfo.lfname[1]=='a'&&g_sFileInfo.lfname[2]=='r')
+				if(g_sFileInfo.lfname[0]=='P'&&g_sFileInfo.lfname[1]=='a'&&g_sFileInfo.lfname[2]=='r')
 				{
 					//for(ui8MatchFileCount=MAX_FILES_FOR_SDPARAM-1;ui8MatchFileCount>=1;)
 					//{

@@ -56,25 +56,49 @@
 // Display Parameter Size Table
 const uint8_t guc_Paramsize_Disp[_NO_OF_PARAMS] =
 {
-		28,	28,	28,	28,	28,	28,	28,	28,	28,	28,	1, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 1, 4, 4, 2, 2, 2,
-		28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 1,  1, 4 , 4 ,  4,  4,  4,  4,  4,  4,  4, 4, 4 , 4 ,  4,  4,//20170414      201703_No.31
-		4,  4,  4,  4,  4, 4
+		28,	28,	28,	28,	28,
+		28,	28,	28,	28,	28,
+		1, 16, 16, 16, 16, 
+		16, 16, 16, 16, 16,
+		16, 1, 4, 4, 2,
+		2, 2,28, 28, 28,
+		28, 28, 28, 28, 28, 
+		28, 28, 1,  1, 1, 
+		4,  4,  4,  4, 4,
+	    4,  4,  4,  4, 4,
+		4,  4,  4,  4, 4,  
+		4,  4,  4,  4, 4//20170414      201703_No.31
 };
 
 // Display Parameter Address Table
 //Testing 13Jun 14   2CRC
 const uint32_t gui_ParamAddr_Disp[_NO_OF_PARAMS] =
 {
-		0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 303, 321, 339, 357, 375, 393, 411, 429, 447, 465, 483, 486, 492, 498, 502, 506,
-		510,540,570,600,630,660,690,720,750,780,810, 813, 816, 822, 828, 834, 840 , 846,852,858,864,870,876,882,888,894,900,906,912, 918,
-		924,930
+		0, 30, 60, 90, 120,
+		150, 180, 210, 240, 270,
+		300, 303, 321, 339, 357,
+		375, 393, 411, 429, 447,
+		465, 483, 486, 492, 498,
+		502, 506, 510, 540, 570,
+		600, 630, 660, 690, 720,
+		750, 780, 810, 813, 816,
+		819, 825, 831, 837, 843,
+		849, 855, 861, 867, 873,
+		879, 885, 891, 897, 903, 
+		909, 915, 921, 927, 933
 };////20170414      201703_No.31
 
 // Display Board Parameters Number Table
 const uint16_t gui_ParamNo_Disp[_NO_OF_PARAMS] =
 {
-		30,	31,	32,	33,	34,	35,	36,	37,	38,	39,	40,	50,	51,	52,	53,	54,	55,	56,	57,	58,	59,	60,	452, 453, 800, 804,26,
-		900,901,902,903,904,905,906,907,908,909,41,42
+		30,	31,	32,	33,	34,
+		35,	36,	37,	38,	39,
+		40,	50,	51,	52,	53,
+		54,	55,	56,	57,	58,
+		59,	60,	452, 453, 800,
+		804,26,900,901,902,
+		903,904,905,906,907,
+		908,909,41,42,40
 };
 
 //Default Values for Display Parameter. This is saved in Flash.
@@ -107,6 +131,7 @@ const uint16_t gu16_commbuffof_di2ct_DEF = 0;
 const uint8_t gu8_guestue_DEF = 1;//20160918 from 0 to 1
 const uint16_t gu16_backlight_DEF = 30;
 const uint8_t gu8_language_DEF = 0;
+const uint8_t gu8_guestue_manual_DEF = 0;
 const struct stControlAnomaly gstAH_anomhist_11_DEF = {0x00000000, 0x0000, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00000000};
 const struct stControlAnomaly gstAH_anomhist_12_DEF = {0x00000000, 0x0000, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00000000};
 const struct stControlAnomaly gstAH_anomhist_13_DEF = {0x00000000, 0x0000, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00000000};
@@ -182,6 +207,7 @@ uint8_t * const guc_ptrParamDefault_Disp[_NO_OF_PARAMS] =
 		(uint8_t*)&gstAH_anomhist_20_DEF,
 		(uint8_t*)&gu8_guestue_DEF,
 		(uint8_t*)&gu8_language_DEF,
+		(uint8_t*)&gu8_guestue_manual_DEF,
 		//20170414      201703_No.31 start
 		(uint8_t*)&gu32_Anomaly_OP_1_DEF,
 		(uint8_t*)&gu32_Anomaly_OP_2_DEF,
@@ -236,6 +262,8 @@ uint16_t gu16_commbuffof_di2ct = 0;
 extern unsigned char menu_gesture_flag_cyw;
 uint16_t gu16_lcdlight = 0;
 uint8_t gu8_language = 0;
+uint8_t gu8_gesture_manual = 0;
+
 struct stControlAnomaly gstAH_anomhist_11 = {0x00000000, 0x0000, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00000000};
 struct stControlAnomaly gstAH_anomhist_12 = {0x00000000, 0x0000, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00000000};
 struct stControlAnomaly gstAH_anomhist_13 = {0x00000000, 0x0000, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00000000};
@@ -289,7 +317,8 @@ uint8_t *guc_ptrParam_Disp[_NO_OF_PARAMS] = {
 		(uint8_t*)&gstAH_anomhist_19,
 		(uint8_t*)&gstAH_anomhist_20,
 		(uint8_t*)&menu_gesture_flag_cyw,
-		(uint8_t*)&gu8_language
+		(uint8_t*)&gu8_language,
+		(uint8_t*)&gu8_gesture_manual
 };
 
 /****************************************************************************/
@@ -298,15 +327,20 @@ uint8_t *guc_ptrParam_Disp[_NO_OF_PARAMS] = {
 /****************************************************************************
  *  Function definitions for this file:
 ****************************************************************************/
+
+
+
+
 uint8_t initParameterDB(PARAM_DISP paramindex)
 {
-	uint8_t psize = guc_Paramsize_Disp[paramindex];
-	uint8_t param_eeprom_val[_MAX_EEPROM_READVALSIZE];
-	uint16_t paramreadcrc;
-	uint16_t calccrc;
-	uint8_t iSize;
-	uint8_t returnfuncid;
+    uint8_t psize = guc_Paramsize_Disp[paramindex];
+    uint8_t param_eeprom_val[_MAX_EEPROM_READVALSIZE];
+    uint16_t paramreadcrc;
+    uint16_t calccrc;
+    uint8_t iSize;
+    uint8_t returnfuncid;
 
+   
 	memset(param_eeprom_val, 0, sizeof(param_eeprom_val));
 
 	if(guc_ptrParamDefault_Disp[paramindex]) {

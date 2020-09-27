@@ -67,6 +67,7 @@ void Set_lcdlightOFF(void)
 {
 	uint32_t backlight_count_now=0;
 	//uint32_t tp_g_ui32TickCount=0;
+	if(gstLEDcontrolRegister.guestureLED) return;
 
 	if(Flag_lcdbackon == 1)
 	{

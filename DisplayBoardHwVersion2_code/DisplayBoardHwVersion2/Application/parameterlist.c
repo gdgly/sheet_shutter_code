@@ -70,8 +70,11 @@ uint8_t gParamListRenderStarted = 0;
 
 extern  uint16_t gu16_lcdlight;
 extern unsigned char menu_gesture_flag_cyw;
+extern unsigned char gu8_gesture_manual;
 extern const uint16_t gu16_backlight_DEF;
 extern const uint8_t gu8_guestue_DEF;
+extern const uint8_t gu8_language_DEF ;
+extern const uint8_t gu8_guestue_manual_DEF ;
 
 const unsigned char cucUnitSec[] = "sec";
 const unsigned char cucUnitmA[] = "mA";
@@ -111,16 +114,44 @@ const unsigned char cucHigh_Low_Normal_english[][40]=
 	"NORMAL",
 	"HIGH"
 };
+
 const unsigned char cucEnable_Disable_State[][40] =
 {
 	"ユウコウ",//ENABLE
 	"ムコウ"//DISABLE
+	
 };
 const unsigned char cucEnable_Disable_State_english[][40] =
 {
 	"ENABLE",//ENABLE
 	"DISABLE"//DISABLE
 };
+
+const unsigned char guestureEnable_Disable_State[][40] =
+{
+	"ユウコウ",//ENABLE
+	"ムコウ",//DISABLE
+	"オート_ユウコウ"//EN IN AUTO
+};
+const unsigned char guestureEnable_Disable_State_english[][40] =
+{
+	"ENABLE",//ENABLE
+	"DISABLE",//DISABLE
+    "EN IN AUTO"//EN IN AUTO
+};
+const unsigned char guesture_manual_State[][40]=
+{
+   "ジョウショウ",
+   "1PBSタイプ",
+   "ジェスチャー"
+};
+const unsigned char guesture_manual_State_english[][40]=
+{
+   "UP",
+   "1PBS TYPE",
+   "GESTURE"
+};
+
 const unsigned char cucValid_Invalid_State[][40] =
 {
 	"ユウコウ",//VALID
@@ -259,63 +290,65 @@ const stParamDatabase gsParamDatabase[TOTAL_PARAMETERS] =
 		{	9	,	 true	,	 false	,	 false	,	eDestControlBoard	,	"A010 I-ロック チエンタイマ"		,	eVAL_INT	,	10	,	{	0	,	2	,	(unsigned char *)cucUnitSec				}	,	{	0												,	0	},"A010 INTERLOCK DELAY"	 }	,
 		//	{   7   ,    true   ,    false  ,    false  ,   eDestDisplayBoard   ,   "A200 GUEST ON/OFF"         ,   eSTATE      ,   26 ,   {   0   ,   0   ,   0                                       }   ,   {   (unsigned char *)cucValid_Invalid_State			,	2   }    }  ,
 		{   10   ,    true   ,    false  ,    false  ,  eDestDisplayBoard   ,   "A026 バックライト"            	,   eVAL_INT    ,   26 ,   {   0   ,   60  ,   (unsigned char *)cucUnitS               }   ,   {   0                                               ,   0   },"A026 LCD BACKLIGHT"    }  ,
-		{	11	,	 true	,	 false	,	 false	,	eDestDisplayBoard	,	"A041 テカザシ_センサ"		    ,	eSTATE		,	37	,	{	0	,	0	,	0										}	,	{	(unsigned char *)cucEnable_Disable_State		,	2,(unsigned char *)cucEnable_Disable_State_english	},"A041 EN GESTURE"	 }	,
-		{	12	,	 true	,	 false	,	 false	,	eDestDisplayBoard	,	"A042 ゲンゴ"		            ,	eSTATE		,	38	,	{	0	,	0	,	0										}	,	{	(unsigned char *)language_Mode_State		    ,	2,(unsigned char *)language_Mode_State	},"A042 LANGUAGE"	 }	,
-		{	13	,	 true	,	 false	,	 false	,	eDestControlBoard	,	"A061 センサON/OFF"			,	eSTATE		,	61	,	{	0	,	0	,	0										}	,	{	(unsigned char *)cucYES_NO_State_1				,	2,(unsigned char *)cucYES_NO_State_english	},"A061 SENSR IP SETING"	 }	,    //add A061,201806_Bug_No.9
-		{	14	,	 true	,	 false	,	 false	,	eDestControlBoard	,	"A062 1PBS　ON/OFF"		    ,	eSTATE		,	62	,	{	0	,	0	,	0										}	,	{	(unsigned char *)cucYES_NO_State_1				,	2,(unsigned char *)cucYES_NO_State_english	},"A062 1 PBS IP SETING"	 }	,    //add A062,201806_Bug_No.9
-		{	15	,	 true	,	 false	,	 false	,	eDestControlBoard	,	"A063 3PBS　ON/OFF"		    ,	eSTATE		,	63	,	{	0	,	0	,	0										}	,	{	(unsigned char *)cucYES_NO_State_1				,	2,(unsigned char *)cucYES_NO_State_english	},"A063 3 PBS IP SETING"	 }	,    //add A063,201806_Bug_No.9
-		{	16	,	 true	,	 false	,	 false	,	eDestDriveBoard		,	"A130 ハンカイ セットイチ"			,	eVAL_INT	,	130	,	{	0	,	9000	,	0									}	,	{	0												,	0	},"A130 APR HGT POS"	 }	,
-		{	17	,	 true	,	 false	,	 false	,	eDestControlBoard	,	"A131 ハンカイ ON/OFF"		    ,	eSTATE		,	131	,	{	0	,	0	,	0										}	,	{	(unsigned char *)cucYES_NO_State				,	2,(unsigned char *)cucYES_NO_State_english	},"A131 EN APERT HEIGHT"	 }	,
-		{	18	,	 true	,	 false	,	 false	,	eDestDriveBoard		,	"A522 ジョウショウ ソ クド"	        ,	eSTATE      ,	522	,	{	0	,	0	,	0										}	,	{	(unsigned char *)cucHigh_Low_Normal				,	3,(unsigned char *)cucHigh_Low_Normal_english	},"A522 S1 UP"	 }	,
-		{	19	,	 true	,	 false	,	 false	,	eDestDriveBoard		,	"A528 カコウ ソ クド"	            ,	eSTATE      ,	528	,	{	0	,	0	,	0										}	,	{	(unsigned char *)cucHigh_Low_Normal				,	3,(unsigned char *)cucHigh_Low_Normal_english	},"A528 S1 DOWN"	 }	,
+		{   11  ,    true   ,    false  ,    false  ,   eDestDisplayBoard   ,   "A040 テカザシ_マニュアル"      ,    eSTATE     ,   39  ,   {   0    ,  0   ,   0                                       }   ,   {  (unsigned char *)guesture_manual_State             ,   3,  (unsigned char *)guesture_manual_State_english }, "A040 MANUAL GESTURE"},
+		{	12	,	 true	,	 false	,	 false	,	eDestDisplayBoard	,	"A041 テカザシ_センサ"		    ,	eSTATE		,	37	,	{	0	,	0	,	0										}	,	{	(unsigned char *)guestureEnable_Disable_State		,	3,(unsigned char *)guestureEnable_Disable_State_english	},"A041 EN GESTURE"	 }	,
+		{	13	,	 true	,	 false	,	 false	,	eDestDisplayBoard	,	"A042 ゲンゴ"		            ,	eSTATE		,	38	,	{	0	,	0	,	0										}	,	{	(unsigned char *)language_Mode_State		    ,	2,(unsigned char *)language_Mode_State	},"A042 LANGUAGE"	 }	,
+		{	14	,	 true	,	 false	,	 false	,	eDestControlBoard	,	"A061 センサON/OFF"			,	eSTATE		,	61	,	{	0	,	0	,	0										}	,	{	(unsigned char *)cucYES_NO_State_1				,	2,(unsigned char *)cucYES_NO_State_english	},"A061 SENSR IP SETING"	 }	,    //add A061,201806_Bug_No.9
+		{	15	,	 true	,	 false	,	 false	,	eDestControlBoard	,	"A062 1PBS　ON/OFF"		    ,	eSTATE		,	62	,	{	0	,	0	,	0										}	,	{	(unsigned char *)cucYES_NO_State_1				,	2,(unsigned char *)cucYES_NO_State_english	},"A062 1 PBS IP SETING"	 }	,    //add A062,201806_Bug_No.9
+		{	16	,	 true	,	 false	,	 false	,	eDestControlBoard	,	"A063 3PBS　ON/OFF"		    ,	eSTATE		,	63	,	{	0	,	0	,	0										}	,	{	(unsigned char *)cucYES_NO_State_1				,	2,(unsigned char *)cucYES_NO_State_english	},"A063 3 PBS IP SETING"	 }	,    //add A063,201806_Bug_No.9
+		{	17	,	 true	,	 false	,	 false	,	eDestDriveBoard		,	"A130 ハンカイ セットイチ"			,	eVAL_INT	,	130	,	{	0	,	9000	,	0									}	,	{	0												,	0	},"A130 APR HGT POS"	 }	,
+		{	18	,	 true	,	 false	,	 false	,	eDestControlBoard	,	"A131 ハンカイ ON/OFF"		    ,	eSTATE		,	131	,	{	0	,	0	,	0										}	,	{	(unsigned char *)cucYES_NO_State				,	2,(unsigned char *)cucYES_NO_State_english	},"A131 EN APERT HEIGHT"	 }	,
+		{	19	,	 true	,	 false	,	 false	,	eDestDriveBoard		,	"A522 ジョウショウ ソ クド"	        ,	eSTATE      ,	522	,	{	0	,	0	,	0										}	,	{	(unsigned char *)cucHigh_Low_Normal				,	3,(unsigned char *)cucHigh_Low_Normal_english	},"A522 S1 UP"	 }	,
+		{	20	,	 true	,	 false	,	 false	,	eDestDriveBoard		,	"A528 カコウ ソ クド"	            ,	eSTATE      ,	528	,	{	0	,	0	,	0										}	,	{	(unsigned char *)cucHigh_Low_Normal				,	3,(unsigned char *)cucHigh_Low_Normal_english	},"A528 S1 DOWN"	 }	,
 
 		//
 		// Drive Parameters
 		//
-		{	20	,	 true	,	 false	,	 false	,	eDestControlBoard	,	"A000 ジョウゲンテイシ タイマ"		,	eVAL_INT	,	0	,	{	1	,	60	,	(unsigned char *)cucUnitSec				}	,	{	0												,	0	},"A000 UP STOP TIME"	 }	,
-		{	21	,	 true	,	 false	,	 false	,	eDestControlBoard	,	"A001 I-ロック ユウセン"			,	eSTATE		,	1	,	{	0	,	0	,	0										}	,	{	(unsigned char *)cucPRIORITY_States				,	2,(unsigned char *)cucPRIORITY_States_english	},"A001 I-LOCK PRIORITY"	 }	,
-		{	22	,	 true	,	 false	,	 false	,	eDestControlBoard	,	"A002 I-ロック ON/OFF"		    ,	eSTATE		,	2	,	{	0	,	0	,	0										}	,	{	(unsigned char *)cucValid_Invalid_State			,	2,(unsigned char *)cucValid_Invalid_State_english	},"A002 I-LOCK VALID"	 }	,
-		{	23	,	 true	,	 false	,	 false	,	eDestControlBoard	,	"A003 UPチエン タイマ"			,	eVAL_INT	,	3	,	{	0	,	10	,	(unsigned char *)cucUnitSec				}	,	{	0												,	0	},"A003 UP DELAY"	 }	,
-		{	24	,	 true	,	 false	,	 false	,	eDestControlBoard	,	"A004 DOWNチエン タイマ"		    ,	eVAL_INT	,	4	,	{	0	,	10	,	(unsigned char *)cucUnitSec				}	,	{	0												,	0	},"A004 DOWN DELAY"	 }	,
-		{	25	,	 true	,	 false	,	 false	,	eDestControlBoard	,	"A005 チエンタイマON/OFF"		,	eSTATE		,	5	,	{	0	,	0	,	0										}	,	{	(unsigned char *)cucA005EN_UP_DWN_DELAY_States	,	3,(unsigned char *)cucA005EN_UP_DWN_DELAY_States_english	},"A005 EN UP DWN DELAY"	 }	,
-		{	26	,	 true	,	 false	,	 false	,	eDestControlBoard	,	"A006 モードコテイ"				,	eSTATE		,	6	,	{	0	,	0	,	0										}	,	{	(unsigned char *)cucA006AUTO_MAN_MODE_FIX_States,	3,(unsigned char *)cucA006AUTO_MAN_MODE_FIX_States_english	},"A006 AUTO MAN FIXING"	 }	,
-		{	27	,	 true	,	 false	,	 false	,	eDestControlBoard	,	"A007 Dユニット SWムコウ"		    ,	eSTATE		,	7	,	{	0	,	0	,	0										}	,	{	(unsigned char *)cucEnable_Disable_State		,	2,(unsigned char *)cucEnable_Disable_State_english	},"A007 EN PANEL SWITCH"	 }	,
-		{	28	,	 true	,	 false	,	 false	,	eDestControlBoard	,	"A008 ユキモード"				,	eSTATE	    ,	8	,	{	0	,	0	,	0	                                    }	,	{	(unsigned char *)cucSnow_Mode_State	            ,	3,(unsigned char *)cucSnow_Mode_State_english	},"A008 SNOW MODE"	 }	,
-		{	29	,	 true	,	 false	,	 false	,	eDestControlBoard	,	"A009 ドウサセイゲン タイマ"		,	eVAL_INT	,	9	,	{	0	,	30	,	(unsigned char *)cucUnitSec				}	,	{	0												,	0	},"A009 OPR RESTRIC TMR"	 }	,
-		{	30	,	 true	,	 false	,	 false	,	eDestControlBoard	,	"A010 I-ロック チエンタイマ"		,	eVAL_INT	,	10	,	{	0	,	2	,	(unsigned char *)cucUnitSec				}	,	{	0												,	0	},"A010 INTERLOCK DELAY"	 }	,
-		{	31	,	 true	,	 false	,	 false	,	eDestControlBoard	,	"A016 カコウドウサ セッテイ"		    ,	eSTATE		,	16	,	{	0	,	0	,	0										}	,	{	(unsigned char *)cucCLOSE_OPR_STATE				,	2,(unsigned char *)cucCLOSE_OPR_STATE_english},"A016 CLOSE OPR SET"	 }	,
-		{	32	,	 true	,	 false	,	 false	,	eDestDriveBoard	    ,	"A025 メンテナンスカウント"			,	eVAL_INT	,	25	,	{	1	,	9999,	(unsigned char *)cucUnitX1000   	}	,	{	0												,	0	},"A025 MAINTAIN CNT"	 }	,
-		{   33   ,   true   ,    false  ,    false  ,  eDestDisplayBoard    ,   "A026 バックライト"            ,   eVAL_INT    ,   26 ,    {   0   ,   60  ,   (unsigned char *)cucUnitS               }   ,   {   0                                              ,   0   },"A026 LCD BACKLIGHT"    }  ,
-		{	34	,	 true	,	 false	,	 false	,	eDestDisplayBoard	,	"A041 テカザシ_センサ"		    ,	eSTATE		,	37	,	{	0	,	0	,	0										}	,	{	(unsigned char *)cucEnable_Disable_State		,	2,(unsigned char *)cucEnable_Disable_State_english	},"A041 EN GESTURE"	 }	,
-		{	35	,	 true	,	 false	,	 false	,	eDestDisplayBoard	,	"A042 ゲンゴ"		            ,	eSTATE		,	38	,	{	0	,	0	,	0										}	,	{	(unsigned char *)language_Mode_State		    ,	2,(unsigned char *)language_Mode_State	},"A042 LANGUAGE"	 }	,
-		{	36	,	 true	,	 false	,	 false	,	eDestControlBoard	,	"A061 センサON/OFF"			,	eSTATE		,	61	,	{	0	,	0	,	0										}	,	{	(unsigned char *)cucYES_NO_State_1				,	2,(unsigned char *)cucYES_NO_State_english	},"A061 SENSR IP SETING"	 }	,    //20170613  201703_No.52
-		{	37	,	 true	,	 false	,	 false	,	eDestControlBoard	,	"A062 1PBS　ON/OFF"		    ,	eSTATE		,	62	,	{	0	,	0	,	0										}	,	{	(unsigned char *)cucYES_NO_State_1				,	2,(unsigned char *)cucYES_NO_State_english	},"A062 1 PBS IP SETING"	 }	,    //20170613  201703_No.52
-		{	38	,	 true	,	 false	,	 false	,	eDestControlBoard	,	"A063 3PBS　ON/OFF"		    ,	eSTATE		,	63	,	{	0	,	0	,	0										}	,	{	(unsigned char *)cucYES_NO_State_1				,	2,(unsigned char *)cucYES_NO_State_english	},"A063 3 PBS IP SETING"	 }	,    //20170613  201703_No.52
-		{	39	,	 true	,	 false	,	 false	,	eDestControlBoard	,	"A071 OPリレー1"				,	eSTATE		,	71	,	{	0	,	0	,	0										}	,	{	(unsigned char *)cucMult_Func_Out_State			,	11,(unsigned char *)cucMult_Func_Out_State_english},"A071 MULTI FUNC OP 1"	 }	,
-		{	40	,	 true	,	 false	,	 false	,	eDestControlBoard	,	"A072 OPリレー2"				,	eSTATE		,	72	,	{	0	,	0	,	0										}	,	{	(unsigned char *)cucMult_Func_Out_State			,	11,(unsigned char *)cucMult_Func_Out_State_english},"A072 MULTI FUNC OP 2"	 }	,
-		{	41	,	 true	,	 false	,	 false	,	eDestControlBoard	,	"A073 OPリレー3"				,	eSTATE		,	73	,	{	0	,	0	,	0										}	,	{	(unsigned char *)cucMult_Func_Out_State			,	11,(unsigned char *)cucMult_Func_Out_State_english},"A073 MULTI FUNC OP 3" }	,
-		{	42	,	 true	,	 false	,	 false	,	eDestControlBoard	,	"A074 OPリレー4"				,	eSTATE		,	74	,	{	0	,	0	,	0										}	,	{	(unsigned char *)cucMult_Func_Out_State			,	11,(unsigned char *)cucMult_Func_Out_State_english},"A074 MULTI FUNC OP 4"	 }	,
-		{	43	,	 true	,	 false	,	 false	,	eDestControlBoard	,	"A075 OPリレー5"				,	eSTATE		,	75	,	{	0	,	0	,	0										}	,	{	(unsigned char *)cucMult_Func_Out_State			,	11,(unsigned char *)cucMult_Func_Out_State_english},"A075 MULTI FUNC OP 5"	 }	,
-		{	44	,	 true	,	 false	,	 false	,	eDestControlBoard	,	"A078 リモコン センタク"			,	eSTATE		,	78	,	{	0	,	0	,	0										}	,	{	(unsigned char *)cucWR_1PBS_OR_OPEN				,	2,(unsigned char *)cucWR_1PBS_OR_OPEN_english},"A078 WR 1PBS OR OPEN"	 }	,
-		{	45	,	 true	,	 true	,	 false	,	eDestDriveBoard		,	"A080 マイクロセンサカウント"		,	eVAL_INT	,	80	,	{	0	,	99		,	0									}	,	{	0												,	0	},"A080 MICRO CNT MON"	 }	,
-		{	46	,	 true	,	 true	,	 false	,	eDestDriveBoard		,	"A100 ジョウゲン セットイチ"		    ,	eVAL_INT	,	100	,	{	0	,	9000	,	0									}	,	{	0												,	0	},"A100 UP STP POS"	 }	,
-		{	47	,	 true	,	 true	,	 false	,	eDestDriveBoard		,	"A101 カゲン セットイチ"			,	eVAL_INT	,	101	,	{	0	,	9000	,	0									}	,	{	0												,	0	},"A101 LOW STP POS"	 }	,
-		{	48	,	 true	,	 true	,	 false	,	eDestDriveBoard		,	"A102 コウデンギリ セットイチ"		,	eVAL_INT	,	102	,	{	0	,	9000	,	0									}	,	{	0												,	0	},"A102 PE POSITION"	 }	,
-		{	49	,	 true	,	 false	,	 false	,	eDestDriveBoard		,	"A103 ジョウショウ　ゲンソ ク1"		,	eVAL_INT	,	103	,	{	0	,	9000	,	0									}	,	{	0												,	0	},"A103 RCG POS 1"	 }	,
-		{	50	,	 true	,	 false	,	 false	,	eDestDriveBoard		,	"A104 ジョウショウ　ゲンソ ク2"		,	eVAL_INT	,	104	,	{	0	,	9000	,	0									}	,	{	0												,	0	},"A104 RCG POS 2"	 }	,
-		{	51	,	 true	,	 false	,	 false	,	eDestDriveBoard		,	"A105 ジョウショウ　ゲンソ ク3"		,	eVAL_INT	,	105	,	{	0	,	9000	,	0									}	,	{	0												,	0	},"A105 RCG POS 3"	 }	,
-		{	52	,	 true	,	 false	,	 false	,	eDestDriveBoard		,	"A106 カコウ　ゲンソ ク1"			,	eVAL_INT	,	106	,	{	0	,	9000	,	0									}	,	{	0												,	0	},"A106 FCG POS 1"	 }	,
-		{	53	,	 true	,	 false	,	 false	,	eDestDriveBoard		,	"A107 カコウ　ゲンソ ク2"			,	eVAL_INT	,	107	,	{	0	,	9000	,	0									}	,	{	0												,	0	},"A107 FCG POS 2"	 }	,
-		{	54	,	 true	,	 false	,	 false	,	eDestDriveBoard		,	"A108 カコウ　ゲンソ ク3"			,	eVAL_INT	,	108	,	{	0	,	9000	,	0									}	,	{	0												,	0	},"A108 FCG POS 3"	 }	,
-		{	55	,	 true	,	 false	,	 false	,	eDestDriveBoard		,	"A126 ゲンテンホセイカイスウ"		,	eVAL_INT	,	126	,	{	10	,	9999	,	0									}	,	{	0												,	0	},"A126 COR FRQ APER"	 }	,
-		{	56	,	 true	,	 false	,	 false	,	eDestDriveBoard		,	"A127 ゲンテンホセイセッテイ"		,	eSTATE		,	127	,	{	0	,	0		,	0									}	,	{	(unsigned char *)cucYES_NO_State				,	2,(unsigned char *)cucYES_NO_State_english	},"A127 AUT COR EN"	 }	,
-		{	57	,	 true	,	 true	,	 false	,	eDestDriveBoard		,	"A128 ゲンテン セットイチ"			,	eVAL_INT	,	128	,	{	0	,	9000	,	0									}	,	{	0												,	0	},"A128 ORG SENS POS"	 }	,
-		{	58	,	 true	,	 true	,	 true	,	eDestDriveBoard		,	"A129 ゲンザイノ シートイチ"		,	eVAL_INT	,	129	,	{	0	,	9000	,	0									}	,	{	0												,	0	},"A129 CUR VAL MON"	 }	,
-		{	59	,	 true	,	 false	,	 false	,	eDestDriveBoard		,	"A130 ハンカイ セットイチ"			,	eVAL_INT	,	130	,	{	0	,	9000	,	0									}	,	{	0												,	0	},"A130 APR HGT POS"	 }	,
-        {	60	,	 true	,	 false	,	 false	,	eDestControlBoard	,	"A131 ハンカイ ON/OFF"		    ,	eSTATE		,	131	,	{	0	,	0	,	0										}	,	{	(unsigned char *)cucYES_NO_State				,	2,(unsigned char *)cucYES_NO_State_english	},"A131 EN APERT HEIGHT"}	,
+		{	21	,	 true	,	 false	,	 false	,	eDestControlBoard	,	"A000 ジョウゲンテイシ タイマ"		,	eVAL_INT	,	0	,	{	1	,	60	,	(unsigned char *)cucUnitSec				}	,	{	0												,	0	},"A000 UP STOP TIME"	 }	,
+		{	22	,	 true	,	 false	,	 false	,	eDestControlBoard	,	"A001 I-ロック ユウセン"			,	eSTATE		,	1	,	{	0	,	0	,	0										}	,	{	(unsigned char *)cucPRIORITY_States				,	2,(unsigned char *)cucPRIORITY_States_english	},"A001 I-LOCK PRIORITY"	 }	,
+		{	23	,	 true	,	 false	,	 false	,	eDestControlBoard	,	"A002 I-ロック ON/OFF"		    ,	eSTATE		,	2	,	{	0	,	0	,	0										}	,	{	(unsigned char *)cucValid_Invalid_State			,	2,(unsigned char *)cucValid_Invalid_State_english	},"A002 I-LOCK VALID"	 }	,
+		{	24	,	 true	,	 false	,	 false	,	eDestControlBoard	,	"A003 UPチエン タイマ"			,	eVAL_INT	,	3	,	{	0	,	10	,	(unsigned char *)cucUnitSec				}	,	{	0												,	0	},"A003 UP DELAY"	 }	,
+		{	25	,	 true	,	 false	,	 false	,	eDestControlBoard	,	"A004 DOWNチエン タイマ"		    ,	eVAL_INT	,	4	,	{	0	,	10	,	(unsigned char *)cucUnitSec				}	,	{	0												,	0	},"A004 DOWN DELAY"	 }	,
+		{	26	,	 true	,	 false	,	 false	,	eDestControlBoard	,	"A005 チエンタイマON/OFF"		,	eSTATE		,	5	,	{	0	,	0	,	0										}	,	{	(unsigned char *)cucA005EN_UP_DWN_DELAY_States	,	3,(unsigned char *)cucA005EN_UP_DWN_DELAY_States_english	},"A005 EN UP DWN DELAY"	 }	,
+		{	27	,	 true	,	 false	,	 false	,	eDestControlBoard	,	"A006 モードコテイ"				,	eSTATE		,	6	,	{	0	,	0	,	0										}	,	{	(unsigned char *)cucA006AUTO_MAN_MODE_FIX_States,	3,(unsigned char *)cucA006AUTO_MAN_MODE_FIX_States_english	},"A006 AUTO MAN FIXING"	 }	,
+		{	28	,	 true	,	 false	,	 false	,	eDestControlBoard	,	"A007 Dユニット SWムコウ"		    ,	eSTATE		,	7	,	{	0	,	0	,	0										}	,	{	(unsigned char *)cucEnable_Disable_State		,	2,(unsigned char *)cucEnable_Disable_State_english	},"A007 EN PANEL SWITCH"	 }	,
+		{	29	,	 true	,	 false	,	 false	,	eDestControlBoard	,	"A008 ユキモード"				,	eSTATE	    ,	8	,	{	0	,	0	,	0	                                    }	,	{	(unsigned char *)cucSnow_Mode_State	            ,	3,(unsigned char *)cucSnow_Mode_State_english	},"A008 SNOW MODE"	 }	,
+		{	30	,	 true	,	 false	,	 false	,	eDestControlBoard	,	"A009 ドウサセイゲン タイマ"		,	eVAL_INT	,	9	,	{	0	,	30	,	(unsigned char *)cucUnitSec				}	,	{	0												,	0	},"A009 OPR RESTRIC TMR"	 }	,
+		{	31	,	 true	,	 false	,	 false	,	eDestControlBoard	,	"A010 I-ロック チエンタイマ"		,	eVAL_INT	,	10	,	{	0	,	2	,	(unsigned char *)cucUnitSec				}	,	{	0												,	0	},"A010 INTERLOCK DELAY"	 }	,
+		{	32	,	 true	,	 false	,	 false	,	eDestControlBoard	,	"A016 カコウドウサ セッテイ"		    ,	eSTATE		,	16	,	{	0	,	0	,	0										}	,	{	(unsigned char *)cucCLOSE_OPR_STATE				,	2,(unsigned char *)cucCLOSE_OPR_STATE_english},"A016 CLOSE OPR SET"	 }	,
+		{	33	,	 true	,	 false	,	 false	,	eDestDriveBoard	    ,	"A025 メンテナンスカウント"			,	eVAL_INT	,	25	,	{	1	,	9999,	(unsigned char *)cucUnitX1000   	}	,	{	0												,	0	},"A025 MAINTAIN CNT"	 }	,
+		{   34   ,   true   ,    false  ,    false  ,  eDestDisplayBoard    ,   "A026 バックライト"            ,   eVAL_INT    ,   26 ,    {   0   ,   60  ,   (unsigned char *)cucUnitS               }   ,   {   0                                              ,   0   },"A026 LCD BACKLIGHT"    }  ,
+		{   35  ,    true   ,    false  ,    false  ,   eDestDisplayBoard   ,   "A040 テカザシ_マニュアル"      ,    eSTATE     ,   39  ,   {   0    ,  0   ,   0                                       }   ,   {  (unsigned char *)guesture_manual_State             ,   3,  (unsigned char *)guesture_manual_State_english }, "A040 MANUAL GESTURE"},
+		{	36	,	 true	,	 false	,	 false	,	eDestDisplayBoard	,	"A041 テカザシ_センサ"		    ,	eSTATE		,	37	,	{	0	,	0	,	0										}	,	{	(unsigned char *)guestureEnable_Disable_State		,	3,(unsigned char *)guestureEnable_Disable_State_english	},"A041 EN GESTURE"	 }	,
+		{	37	,	 true	,	 false	,	 false	,	eDestDisplayBoard	,	"A042 ゲンゴ"		            ,	eSTATE		,	38	,	{	0	,	0	,	0										}	,	{	(unsigned char *)language_Mode_State		    ,	2,(unsigned char *)language_Mode_State	},"A042 LANGUAGE"	 }	,
+		{	38	,	 true	,	 false	,	 false	,	eDestControlBoard	,	"A061 センサON/OFF"			,	eSTATE		,	61	,	{	0	,	0	,	0										}	,	{	(unsigned char *)cucYES_NO_State_1				,	2,(unsigned char *)cucYES_NO_State_english	},"A061 SENSR IP SETING"	 }	,    //20170613  201703_No.52
+		{	39	,	 true	,	 false	,	 false	,	eDestControlBoard	,	"A062 1PBS　ON/OFF"		    ,	eSTATE		,	62	,	{	0	,	0	,	0										}	,	{	(unsigned char *)cucYES_NO_State_1				,	2,(unsigned char *)cucYES_NO_State_english	},"A062 1 PBS IP SETING"	 }	,    //20170613  201703_No.52
+		{	40	,	 true	,	 false	,	 false	,	eDestControlBoard	,	"A063 3PBS　ON/OFF"		    ,	eSTATE		,	63	,	{	0	,	0	,	0										}	,	{	(unsigned char *)cucYES_NO_State_1				,	2,(unsigned char *)cucYES_NO_State_english	},"A063 3 PBS IP SETING"	 }	,    //20170613  201703_No.52
+		{	41	,	 true	,	 false	,	 false	,	eDestControlBoard	,	"A071 OPリレー1"				,	eSTATE		,	71	,	{	0	,	0	,	0										}	,	{	(unsigned char *)cucMult_Func_Out_State			,	11,(unsigned char *)cucMult_Func_Out_State_english},"A071 MULTI FUNC OP 1"	 }	,
+		{	42	,	 true	,	 false	,	 false	,	eDestControlBoard	,	"A072 OPリレー2"				,	eSTATE		,	72	,	{	0	,	0	,	0										}	,	{	(unsigned char *)cucMult_Func_Out_State			,	11,(unsigned char *)cucMult_Func_Out_State_english},"A072 MULTI FUNC OP 2"	 }	,
+		{	43	,	 true	,	 false	,	 false	,	eDestControlBoard	,	"A073 OPリレー3"				,	eSTATE		,	73	,	{	0	,	0	,	0										}	,	{	(unsigned char *)cucMult_Func_Out_State			,	11,(unsigned char *)cucMult_Func_Out_State_english},"A073 MULTI FUNC OP 3" }	,
+		{	44	,	 true	,	 false	,	 false	,	eDestControlBoard	,	"A074 OPリレー4"				,	eSTATE		,	74	,	{	0	,	0	,	0										}	,	{	(unsigned char *)cucMult_Func_Out_State			,	11,(unsigned char *)cucMult_Func_Out_State_english},"A074 MULTI FUNC OP 4"	 }	,
+		{	45	,	 true	,	 false	,	 false	,	eDestControlBoard	,	"A075 OPリレー5"				,	eSTATE		,	75	,	{	0	,	0	,	0										}	,	{	(unsigned char *)cucMult_Func_Out_State			,	11,(unsigned char *)cucMult_Func_Out_State_english},"A075 MULTI FUNC OP 5"	 }	,
+		{	46	,	 true	,	 false	,	 false	,	eDestControlBoard	,	"A078 リモコン センタク"			,	eSTATE		,	78	,	{	0	,	0	,	0										}	,	{	(unsigned char *)cucWR_1PBS_OR_OPEN				,	2,(unsigned char *)cucWR_1PBS_OR_OPEN_english},"A078 WR 1PBS OR OPEN"	 }	,
+		{	47	,	 true	,	 true	,	 false	,	eDestDriveBoard		,	"A080 マイクロセンサカウント"		,	eVAL_INT	,	80	,	{	0	,	99		,	0									}	,	{	0												,	0	},"A080 MICRO CNT MON"	 }	,
+		{	48	,	 true	,	 true	,	 false	,	eDestDriveBoard		,	"A100 ジョウゲン セットイチ"		    ,	eVAL_INT	,	100	,	{	0	,	9000	,	0									}	,	{	0												,	0	},"A100 UP STP POS"	 }	,
+		{	49	,	 true	,	 true	,	 false	,	eDestDriveBoard		,	"A101 カゲン セットイチ"			,	eVAL_INT	,	101	,	{	0	,	9000	,	0									}	,	{	0												,	0	},"A101 LOW STP POS"	 }	,
+		{	50	,	 true	,	 true	,	 false	,	eDestDriveBoard		,	"A102 コウデンギリ セットイチ"		,	eVAL_INT	,	102	,	{	0	,	9000	,	0									}	,	{	0												,	0	},"A102 PE POSITION"	 }	,
+		{	51	,	 true	,	 false	,	 false	,	eDestDriveBoard		,	"A103 ジョウショウ　ゲンソ ク1"		,	eVAL_INT	,	103	,	{	0	,	9000	,	0									}	,	{	0												,	0	},"A103 RCG POS 1"	 }	,
+		{	52	,	 true	,	 false	,	 false	,	eDestDriveBoard		,	"A104 ジョウショウ　ゲンソ ク2"		,	eVAL_INT	,	104	,	{	0	,	9000	,	0									}	,	{	0												,	0	},"A104 RCG POS 2"	 }	,
+		{	53	,	 true	,	 false	,	 false	,	eDestDriveBoard		,	"A105 ジョウショウ　ゲンソ ク3"		,	eVAL_INT	,	105	,	{	0	,	9000	,	0									}	,	{	0												,	0	},"A105 RCG POS 3"	 }	,
+		{	54	,	 true	,	 false	,	 false	,	eDestDriveBoard		,	"A106 カコウ　ゲンソ ク1"			,	eVAL_INT	,	106	,	{	0	,	9000	,	0									}	,	{	0												,	0	},"A106 FCG POS 1"	 }	,
+		{	55	,	 true	,	 false	,	 false	,	eDestDriveBoard		,	"A107 カコウ　ゲンソ ク2"			,	eVAL_INT	,	107	,	{	0	,	9000	,	0									}	,	{	0												,	0	},"A107 FCG POS 2"	 }	,
+		{	56	,	 true	,	 false	,	 false	,	eDestDriveBoard		,	"A108 カコウ　ゲンソ ク3"			,	eVAL_INT	,	108	,	{	0	,	9000	,	0									}	,	{	0												,	0	},"A108 FCG POS 3"	 }	,
+		{	57	,	 true	,	 false	,	 false	,	eDestDriveBoard		,	"A126 ゲンテンホセイカイスウ"		,	eVAL_INT	,	126	,	{	10	,	9999	,	0									}	,	{	0												,	0	},"A126 COR FRQ APER"	 }	,
+		{	58	,	 true	,	 false	,	 false	,	eDestDriveBoard		,	"A127 ゲンテンホセイセッテイ"		,	eSTATE		,	127	,	{	0	,	0		,	0									}	,	{	(unsigned char *)cucYES_NO_State				,	2,(unsigned char *)cucYES_NO_State_english	},"A127 AUT COR EN"	 }	,
+		{	59	,	 true	,	 true	,	 false	,	eDestDriveBoard		,	"A128 ゲンテン セットイチ"			,	eVAL_INT	,	128	,	{	0	,	9000	,	0									}	,	{	0												,	0	},"A128 ORG SENS POS"	 }	,
+		{	60	,	 true	,	 true	,	 true	,	eDestDriveBoard		,	"A129 ゲンザイノ シートイチ"		,	eVAL_INT	,	129	,	{	0	,	9000	,	0									}	,	{	0												,	0	},"A129 CUR VAL MON"	 }	,
+		{	61	,	 true	,	 false	,	 false	,	eDestDriveBoard		,	"A130 ハンカイ セットイチ"			,	eVAL_INT	,	130	,	{	0	,	9000	,	0									}	,	{	0												,	0	},"A130 APR HGT POS"	 }	,
+        {	62	,	 true	,	 false	,	 false	,	eDestControlBoard	,	"A131 ハンカイ ON/OFF"		    ,	eSTATE		,	131	,	{	0	,	0	,	0										}	,	{	(unsigned char *)cucYES_NO_State				,	2,(unsigned char *)cucYES_NO_State_english	},"A131 EN APERT HEIGHT"}	,
 		//{  41   ,    true   ,    false  ,    false  ,   eDestDisplayBoard   ,   "A200 GUEST ON/OFF"      ,   eSTATE      ,   26 ,   {   0   ,   0   ,   0                                       }   ,   {   (unsigned char *)cucValid_Invalid_State	    ,	2   }    }  ,
-		{	61	,	 true	,	 false	,	 false	,	eDestDriveBoard		,	"A522 ジョウショウ ソ クド"	        ,	eSTATE      ,	522	,	{	0	,	0	,	0										}	,	{	(unsigned char *)cucHigh_Low_Normal				,	3,(unsigned char *)cucHigh_Low_Normal_english},"A522 S1 UP"	 }	,
-		{	62	,	 true	,	 false	,	 false	,	eDestDriveBoard		,	"A528 カコウ ソ クド"	            ,	eSTATE      ,	528	,	{	0	,	0	,	0										}	,	{	(unsigned char *)cucHigh_Low_Normal				,	3,(unsigned char *)cucHigh_Low_Normal_english},"A528 S1 DOWN"	 }	,
+		{	63	,	 true	,	 false	,	 false	,	eDestDriveBoard		,	"A522 ジョウショウ ソ クド"	        ,	eSTATE      ,	522	,	{	0	,	0	,	0										}	,	{	(unsigned char *)cucHigh_Low_Normal				,	3,(unsigned char *)cucHigh_Low_Normal_english},"A522 S1 UP"	 }	,
+		{	64	,	 true	,	 false	,	 false	,	eDestDriveBoard		,	"A528 カコウ ソ クド"	            ,	eSTATE      ,	528	,	{	0	,	0	,	0										}	,	{	(unsigned char *)cucHigh_Low_Normal				,	3,(unsigned char *)cucHigh_Low_Normal_english},"A528 S1 DOWN"	 }	,
    //     {	60	,	 true	,	 false	,	 false	,	eDestDriveBoard	    ,	"A537 シャッタータイプ"			,	eSTATE		,	537	,	{	0	,	0		,	0									}	,	{	(unsigned char *)cucA537_SH_TYPE_States			,	3,(unsigned char *)cucA537_SH_TYPE_States	},"A537 SHUTTER TYPE"	 }	,
 		
 		//
@@ -446,10 +479,53 @@ void Para_On_Display_Board_init_cyw(void)
 
 	gu16_lcdlight =gu16_backlight_DEF;
 	menu_gesture_flag_cyw =gu8_guestue_DEF;
+	gu8_language  =  gu8_language_DEF;
+	gu8_gesture_manual = gu8_guestue_manual_DEF;
 	writeParameterUpdateInDB((PARAM_DISP)gsParamDatabase[Para_LcdBackLight_Index_cyw].paramEEPROMIndex, (uint8_t *)&gu16_lcdlight);
 	writeParameterUpdateInDB((PARAM_DISP)gsParamDatabase[Para_Guesture_Index_cyw].paramEEPROMIndex, (uint8_t *)&menu_gesture_flag_cyw);
-
+    writeParameterUpdateInDB((PARAM_DISP)gsParamDatabase[Para_Languange_Index_cyw].paramEEPROMIndex, (uint8_t *)&gu8_language);
+    writeParameterUpdateInDB((PARAM_DISP)gsParamDatabase[Para_Guesture_UD_Index_cyw].paramEEPROMIndex,(uint8_t *)&gu8_gesture_manual);
 }
+
+void Parameter_check(void)
+{
+uint32_t languanges_m;
+uint32_t gesture_enable_m;
+uint32_t gesture_manual_m;
+uint32_t lcdbacklight_m;
+
+languanges_m = gsParamDatabase[Para_Languange_Index_cyw].stateTypeEntities.paramStateCount-1;
+gesture_enable_m = gsParamDatabase[Para_Guesture_Index_cyw].stateTypeEntities.paramStateCount-1;
+gesture_manual_m = gsParamDatabase[Para_Guesture_UD_Index_cyw].stateTypeEntities.paramStateCount-1;
+lcdbacklight_m = gsParamDatabase[Para_LcdBackLight_Index_cyw].valueTypeEntities.maxVal.ui32Val;
+
+if(gu16_lcdlight>lcdbacklight_m )
+{
+  gu16_lcdlight =gu16_backlight_DEF;
+  writeParameterUpdateInDB((PARAM_DISP)gsParamDatabase[Para_LcdBackLight_Index_cyw].paramEEPROMIndex, (uint8_t *)&gu16_lcdlight);
+}
+
+
+if(menu_gesture_flag_cyw >gesture_enable_m )
+{
+menu_gesture_flag_cyw =gu8_guestue_DEF;
+writeParameterUpdateInDB((PARAM_DISP)gsParamDatabase[Para_Guesture_Index_cyw].paramEEPROMIndex, (uint8_t *)&menu_gesture_flag_cyw);
+}
+
+if(gu8_gesture_manual>gesture_manual_m)
+{
+  gu8_gesture_manual = gu8_guestue_manual_DEF;
+ writeParameterUpdateInDB((PARAM_DISP)gsParamDatabase[Para_Guesture_UD_Index_cyw].paramEEPROMIndex,(uint8_t *)&gu8_gesture_manual);
+}
+
+
+if(gu8_language >languanges_m  )
+{
+gu8_language  =  gu8_language_DEF;
+ writeParameterUpdateInDB((PARAM_DISP)gsParamDatabase[Para_Languange_Index_cyw].paramEEPROMIndex, (uint8_t *)&gu8_language);
+}
+}
+
 /******************************************************************************
  * FunctionName: parameterListFirstScreen
  *

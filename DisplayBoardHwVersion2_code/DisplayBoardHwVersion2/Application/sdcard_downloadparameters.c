@@ -82,10 +82,11 @@ uint8_t sdcarddownload_parameter_cyw=0;
 uint8_t Disp_sdcarddownload_parameter_cyw=0;
 extern uint16_t gu16_lcdlight;
 extern uint8_t gu8_language;
+extern unsigned char gu8_gesture_manual;
 extern unsigned char menu_gesture_flag_cyw;
 
 
-const uint16_t  PARAM_ALL_SDCARD_CYW[param_all_list_long]={0,1,2,3,4,5,6,7,9,10,11,16,20,26,27,28,41,42,61,62,63,71,72,
+const uint16_t  PARAM_ALL_SDCARD_CYW[param_all_list_long]={0,1,2,3,4,5,6,7,9,10,11,16,20,26,27,28,40,41,42,61,62,63,71,72,
 		                          103,104,105,106,107,108,110,120,131,
 								  200,
 
@@ -109,6 +110,7 @@ const dest_enum_cyw PARAM_ALL_BELONG_CYW[param_all_list_long]=
 								eDestDisplayBoard,//26
 								eDestControlBoard,//27
 								eDestControlBoard,//28
+								eDestDisplayBoard,//40
 								eDestDisplayBoard,//41
 								eDestDisplayBoard,//42
 								eDestControlBoard,//61
@@ -231,7 +233,7 @@ uint8_t downloadParametersRunTime(void)
 					// Generate filename
 					RTCGet(&gstcurrentDateTime);
 					memset(gcDLParamfilename, 0, sizeof(gcDLParamfilename));
-					ustrncpy(gcDLParamfilename, "par_\0", 9);
+					ustrncpy(gcDLParamfilename, "Par_\0", 9);
 					usnprintf(gcDLParamfilename, sizeof(gcDLParamfilename), "%s%04u%02u%02u%02u%02u.txt\0", gcDLParamfilename,gstcurrentDateTime.tm_year + 1900, gstcurrentDateTime.tm_mon + 1, gstcurrentDateTime.tm_mday,  gstcurrentDateTime.tm_hour, gstcurrentDateTime.tm_min);
 
 					// Create File and add Header for file
@@ -256,7 +258,7 @@ uint8_t downloadParametersRunTime(void)
 						//displayText("SDCARD FAILURE", 2, 0, false, false, false, false, false, false);
 						if(gu8_language == Japanese_IDX)
 						{
-						displayText("SDƒJ[ƒhƒtƒŠƒ‡ƒE", 2, 0, false, false, false, false, false, false);
+						displayText("SDï¿½Jï¿½[ï¿½hï¿½tï¿½ï¿½ï¿½ï¿½ï¿½E", 2, 0, false, false, false, false, false, false);
 						}
 						else
 						{
@@ -277,6 +279,8 @@ uint8_t downloadParametersRunTime(void)
 					gstUMtoCMdatabase.dataToControlBoard.parameterNumber=PARAM_ALL_SDCARD_CYW[gui8DriveParamCount];
 					if(PARAM_ALL_SDCARD_CYW[gui8DriveParamCount]==26)
 						gstUMtoCMdatabase.getParameterValue = gu16_lcdlight;
+					if(PARAM_ALL_SDCARD_CYW[gui8DriveParamCount]==40)
+						gstUMtoCMdatabase.getParameterValue = gu8_gesture_manual;	
 					if(PARAM_ALL_SDCARD_CYW[gui8DriveParamCount]==41)
 						gstUMtoCMdatabase.getParameterValue = menu_gesture_flag_cyw;
 					if(PARAM_ALL_SDCARD_CYW[gui8DriveParamCount]==42)
@@ -334,7 +338,7 @@ uint8_t downloadParametersRunTime(void)
 					//displayText("SUCCESSFUL", 2, 48, false, false, false, false, false, false);
 					if(gu8_language == Japanese_IDX)
 					{
-					displayText("SDƒJ[ƒh@ƒRƒs[", 2, 0, false, false, false, false, false, false);
+					displayText("SDï¿½Jï¿½[ï¿½hï¿½@ï¿½Rï¿½sï¿½[", 2, 0, false, false, false, false, false, false);
 					displayText("OK", 2, 16, false, false, false, false, false, false);
 					}
 					else
@@ -384,7 +388,7 @@ savesdcard:				memset(gucParamDLFileWriteBuff, 0, sizeof(gucParamDLFileWriteBuff
 						// Display SDCARD failed message
 						//displayText("SDCARD FAILURE", 2, 0, false, false, false, false, false, false);
 						if(gu8_language == Japanese_IDX)
-						displayText("SDƒJ[ƒhƒtƒŠƒ‡ƒE", 2, 0, false, false, false, false, false, false);
+						displayText("SDï¿½Jï¿½[ï¿½hï¿½tï¿½ï¿½ï¿½ï¿½ï¿½E", 2, 0, false, false, false, false, false, false);
 						else
 						displayText("SDCARD FAILURE", 2, 0, false, false, false, false, false, true);
 						return 0;
@@ -439,7 +443,7 @@ savesdcard:				memset(gucParamDLFileWriteBuff, 0, sizeof(gucParamDLFileWriteBuff
 						//displayText("FAILED", 2, 16, false, false, false, false, false, false);
 						if(gu8_language == Japanese_IDX)
 						{
-						displayText("ƒJƒLƒRƒ~NG", 2, 0, false, false, false, false, false, false);
+						displayText("ï¿½Jï¿½Lï¿½Rï¿½~NG", 2, 0, false, false, false, false, false, false);
 						}
 						else
 						{
@@ -460,7 +464,7 @@ savesdcard:				memset(gucParamDLFileWriteBuff, 0, sizeof(gucParamDLFileWriteBuff
 
 						//displayText("NACK ERROR", 2, 48, false, false, false, false, false, false);
 						if(gu8_language == Japanese_IDX)
-						displayText("NACKƒGƒ‰[", 2, 48, false, false, false, false, false, false);
+						displayText("NACKï¿½Gï¿½ï¿½ï¿½[", 2, 48, false, false, false, false, false, false);
 						else
 						displayText("NACK ERROR", 2, 48, false, false, false, false, false, true);
 
@@ -507,7 +511,7 @@ savesdcard:				memset(gucParamDLFileWriteBuff, 0, sizeof(gucParamDLFileWriteBuff
 					//displayText("FAILED", 2, 16, false, false, false, false, false, false);
 					if(gu8_language == Japanese_IDX)
 					{
-					displayText("ƒJƒLƒRƒ~NG", 2, 0, false, false, false, false, false, false);
+					displayText("ï¿½Jï¿½Lï¿½Rï¿½~NG", 2, 0, false, false, false, false, false, false);
 					}
 					else
 					{
@@ -535,7 +539,7 @@ savesdcard:				memset(gucParamDLFileWriteBuff, 0, sizeof(gucParamDLFileWriteBuff
 					if(gu8_language == Japanese_IDX)
 					{
 					//displayText("COMM ERROR", 2, 48, false, false, false, false, false, false);
-					displayText("ƒcƒEƒVƒ“ƒGƒ‰[", 2, 48, false, false, false, false, false, false);
+					displayText("ï¿½cï¿½Eï¿½Vï¿½ï¿½ï¿½Gï¿½ï¿½ï¿½[", 2, 48, false, false, false, false, false, false);
 					}
 					else
 					{
@@ -558,7 +562,7 @@ savesdcard:				memset(gucParamDLFileWriteBuff, 0, sizeof(gucParamDLFileWriteBuff
 			displayText("               ", 2, 48, false, false, false, false, false, false);   //20161207
 			/*if(gu8_language == Japanese_IDX)
 			//
-			displayText("ƒRƒ}ƒ“ƒhƒ\ ƒEƒVƒ“ƒGƒ‰[", 2, 48, false, false, false, false, false, false);
+			displayText("ï¿½Rï¿½}ï¿½ï¿½ï¿½hï¿½\ ï¿½Eï¿½Vï¿½ï¿½ï¿½Gï¿½ï¿½ï¿½[", 2, 48, false, false, false, false, false, false);
 			else
 			displayText("ERR SENDING CMD", 2, 48, false, false, false, false, false, true);*/
 
@@ -613,8 +617,8 @@ uint8_t downloadParametersPaint(void)
 	//displayText("DRIVE PARAMETERS?", 2, 32, false, false, false, false,false,true);
 	if(gu8_language == Japanese_IDX)
 	{
-	displayText("SDƒJ[ƒh", 2, 0, false, false, false, false, false, false);
-	displayText("ƒpƒ‰ƒ[ƒ^ƒZ[ƒuƒVƒ}ƒXƒJ?", 2, 16, false, false, false, false,false,false);
+	displayText("SDï¿½Jï¿½[ï¿½h", 2, 0, false, false, false, false, false, false);
+	displayText("ï¿½pï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½^ï¿½Zï¿½[ï¿½uï¿½Vï¿½}ï¿½Xï¿½J?", 2, 16, false, false, false, false,false,false);
 	}
 	else
 	{
@@ -703,9 +707,9 @@ uint8_t downloadParametersEnter(void)
 		//displayText("TO SD CARD", 2, 32, false, false, false, false, false, false);
 		if(gu8_language == Japanese_IDX)
 		{
-		displayText("SDƒJ[ƒh‚Öƒpƒ‰ƒ[ƒ^ƒm", 2, 0, false, false, false, false,false,false);
-		displayText("ƒRƒs[ƒ’ƒVƒ}ƒX", 2, 16, false, false, false, false,false,false);
-		displayText("ƒIƒ}ƒ`ƒNƒ_ƒTƒC...", 2, 48, false, false, false, false, false, false);
+		displayText("SDï¿½Jï¿½[ï¿½hï¿½Öƒpï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½^ï¿½m", 2, 0, false, false, false, false,false,false);
+		displayText("ï¿½Rï¿½sï¿½[ï¿½ï¿½ï¿½Vï¿½}ï¿½X", 2, 16, false, false, false, false,false,false);
+		displayText("ï¿½Iï¿½}ï¿½`ï¿½Nï¿½_ï¿½Tï¿½C...", 2, 48, false, false, false, false, false, false);
 		}
 		else
 		{
@@ -725,7 +729,7 @@ uint8_t downloadParametersEnter(void)
 		{
 			displayText("               ", 2, 48, false, false, false, false, false, false);   //20161207
 			/*if(gu8_language == Japanese_IDX)
-			displayText("ƒRƒ}ƒ“ƒhƒ\ ƒEƒVƒ“ƒGƒ‰[", 2, 48, false, false, false, false,false,false);
+			displayText("ï¿½Rï¿½}ï¿½ï¿½ï¿½hï¿½\ ï¿½Eï¿½Vï¿½ï¿½ï¿½Gï¿½ï¿½ï¿½[", 2, 48, false, false, false, false,false,false);
 			else
 		    displayText("ERROR SENDING CMD", 2, 48, false, false, false, false,false,true);*/
 		}
@@ -766,8 +770,8 @@ uint8_t downloadParametersUp(void)
 
 		if(gu8_language == Japanese_IDX)
 			{
-			displayText("SDƒJ[ƒh", 2, 0, false, false, false, false, false, false);
-			displayText("ƒpƒ‰ƒ[ƒ^ƒZ[ƒuƒVƒ}ƒXƒJ?", 2, 16, false, false, false, false,false,false);
+			displayText("SDï¿½Jï¿½[ï¿½h", 2, 0, false, false, false, false, false, false);
+			displayText("ï¿½pï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½^ï¿½Zï¿½[ï¿½uï¿½Vï¿½}ï¿½Xï¿½J?", 2, 16, false, false, false, false,false,false);
 			}
 			else
 			{
@@ -820,8 +824,8 @@ uint8_t downloadParametersDown(void)
 		GrRectFIllBolymin(0, 127, 0, 63, 0x00, true);
 		if(gu8_language == Japanese_IDX)
 			{
-			displayText("SDƒJ[ƒh", 2, 0, false, false, false, false, false, false);
-			displayText("ƒpƒ‰ƒ[ƒ^ƒZ[ƒuƒVƒ}ƒXƒJ?", 2, 16, false, false, false, false,false,false);
+			displayText("SDï¿½Jï¿½[ï¿½h", 2, 0, false, false, false, false, false, false);
+			displayText("ï¿½pï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½^ï¿½Zï¿½[ï¿½uï¿½Vï¿½}ï¿½Xï¿½J?", 2, 16, false, false, false, false,false,false);
 			}
 			else
 			{

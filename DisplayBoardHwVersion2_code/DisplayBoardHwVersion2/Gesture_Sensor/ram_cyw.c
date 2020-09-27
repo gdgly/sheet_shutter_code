@@ -1,7 +1,7 @@
 /*
  * ram.c
  *
- *  Created on: 2015Äê7ÔÂ6ÈÕ
+ *  Created on: 2015ï¿½ï¿½7ï¿½ï¿½6ï¿½ï¿½
  *      Author: x220
  */
 #include <stdbool.h>
@@ -932,7 +932,8 @@ unsigned char warray_r[58]={0,};
 unsigned int LCD_Count=0;
 unsigned char flag_stop=0;
 
-unsigned char menu_gesture_flag_cyw =0;//Õâ¸ö±äÁ¿ÊÇÓÃÀ´±íÊ¾ÊÖÊÆÊ¹ÄÜµÄ
-unsigned char menu_gesture_flag_A007;  //Õâ¸öÊÇ¶ÁÈ¡A007µÄÖµ     //201806_Bug_No.10
+unsigned char menu_gesture_flag_cyw =0;//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½Ê¹ï¿½Üµï¿½
+unsigned char menu_gesture_flag_A007;  //ï¿½ï¿½ï¿½ï¿½Ç¶ï¿½È¡A007ï¿½ï¿½Öµ     //201806_Bug_No.10
+
 
 uint8_t shoushi_cyw=0;
